@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+
+        <item
+
+            android:id="@+id/overview"
+            android:checked="false"
+            android:icon="@drawable/d_overview"
+            android:title="Overview" />
+
+        <item
+
+            android:id="@+id/timetable"
+            android:checked="false"
+            android:icon="@drawable/d_timetable"
+            android:title="Timetable" />
+
+        <item
+
+            android:id="@+id/classes"
+            android:checked="false"
+            android:icon="@drawable/d_classes"
+            android:title="Classes" />
+
+        <item
+
+            android:id="@+id/homework"
+            android:checked="false"
+            android:icon="@drawable/d_homework"
+            android:title="Homework" />
+
+    </group>
+
+    <group
+
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="none">
+
+        <item
+
+            android:id="@+id/settings"
+            android:checked="false"
+            android:icon="@drawable/d_settings"
+            android:title="Settings" />
+
+    </group>
+
+</menu>
