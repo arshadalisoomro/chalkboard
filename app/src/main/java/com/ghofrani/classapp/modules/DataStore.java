@@ -29,6 +29,20 @@ public class DataStore {
     private static String nextClassString;
     private static String nextClassLocation;
 
+    private static boolean animationState = false;
+
+    public static boolean isAnimationState() {
+
+        return animationState;
+
+    }
+
+    public static void setAnimationState(boolean update) {
+
+        animationState = update;
+
+    }
+
     public static boolean getCurrentClass() {
 
         return currentClass;

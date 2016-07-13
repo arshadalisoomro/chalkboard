@@ -34,6 +34,7 @@ import com.ghofrani.classapp.fragment.timetable.Sunday;
 import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
+import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.service.TimeService;
 
 import java.util.ArrayList;
@@ -43,14 +44,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private MenuItem menuItemDrawer;
     private DrawerLayout drawerLayout;
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
     private Toolbar homeToolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ScrollView scrollView;
-    private ViewPagerAdapter adapter;
     private int lastTabPosition = 0;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +60,44 @@ public class HomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_home);
 
+        int extraPassed = getIntent().hasExtra("fragment") ? getIntent().getExtras().getInt("fragment") : 0;
+
         homeToolbar = (Toolbar) findViewById(R.id.home_toolbar);
-        homeToolbar.setTitle("Overview");
         homeToolbar.setTitleTextColor(Color.WHITE);
+
+        switch (extraPassed) {
+
+            case 0:
+
+                homeToolbar.setTitle("Overview");
+
+                break;
+
+            case 1:
+
+                homeToolbar.setTitle("Timetable");
+
+                break;
+
+            case 2:
+
+                homeToolbar.setTitle("Classes");
+
+                break;
+
+            case 3:
+
+                homeToolbar.setTitle("Homework");
+
+                break;
+
+        }
 
         setSupportActionBar(homeToolbar);
 
         scrollView = (ScrollView) findViewById(R.id.home_activity_scroll_view);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         navigationView.setCheckedItem(R.id.overview);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -90,7 +118,7 @@ public class HomeActivity extends AppCompatActivity {
 
                             if (menuItemDrawer.getItemId() == R.id.settings) {
 
-                                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                                switchToView(4);
 
                             } else {
 
@@ -98,140 +126,25 @@ public class HomeActivity extends AppCompatActivity {
 
                                     case R.id.overview:
 
-                                        fragmentManager = getSupportFragmentManager();
-                                        fragmentTransaction = fragmentManager.beginTransaction();
-
-                                        homeToolbar.setTitle("Overview");
-
-                                        OverviewFragment overviewFragment = new OverviewFragment();
-                                        fragmentTransaction.replace(R.id.home_activity_scroll_view, overviewFragment, "overview_fragment");
-                                        fragmentTransaction.commit();
-
-                                        tabLayout.setVisibility(AppBarLayout.GONE);
-                                        viewPager.setVisibility(LinearLayout.GONE);
-
-                                        scrollView.setVisibility(LinearLayout.VISIBLE);
+                                        switchToView(0);
 
                                         break;
 
                                     case R.id.timetable:
 
-                                        fragmentManager = getSupportFragmentManager();
-                                        fragmentTransaction = fragmentManager.beginTransaction();
-
-                                        fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.home_activity_scroll_view)).commit();
-
-                                        homeToolbar.setTitle("Timetable");
-
-                                        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-                                        adapter.addFragment(new Sunday(), "SUNDAY");
-                                        adapter.addFragment(new Monday(), "MONDAY");
-                                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                                        adapter.addFragment(new Thursday(), "THURSDAY");
-                                        adapter.addFragment(new Friday(), "FRIDAY");
-                                        adapter.addFragment(new Saturday(), "SATURDAY");
-
-                                        viewPager.setAdapter(adapter);
-
-                                        tabLayout.setupWithViewPager(viewPager);
-
-                                        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-
-                                            @Override
-                                            public void onTabSelected(TabLayout.Tab tabLayout) {
-
-                                                super.onTabSelected(tabLayout);
-
-                                                if (tabLayout.getPosition() == 1 && lastTabPosition == 0) {
-
-                                                    Animation animation = new Animation() {
-
-                                                        @Override
-                                                        protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                                            LinearLayout layout = (LinearLayout) findViewById(R.id.tab_layout_layout);
-                                                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-
-                                                            params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
-
-                                                            layout.setLayoutParams(params);
-
-                                                        }
-                                                    };
-
-                                                    animation.setDuration(200);
-                                                    drawerLayout.startAnimation(animation);
-
-                                                } else if (tabLayout.getPosition() == 0 && lastTabPosition == 1) {
-
-                                                    Animation animation = new Animation() {
-
-                                                        @Override
-                                                        protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                                            LinearLayout layout = (LinearLayout) findViewById(R.id.tab_layout_layout);
-                                                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-
-                                                            params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
-
-                                                            layout.setLayoutParams(params);
-
-                                                        }
-                                                    };
-
-                                                    animation.setDuration(200);
-                                                    drawerLayout.startAnimation(animation);
-
-                                                }
-
-                                                lastTabPosition = tabLayout.getPosition();
-
-                                            }
-
-                                        });
-
-                                        scrollView.setVisibility(LinearLayout.GONE);
-
-                                        tabLayout.setVisibility(AppBarLayout.VISIBLE);
-                                        viewPager.setVisibility(LinearLayout.VISIBLE);
-
-                                        break;
-
-                                    case R.id.homework:
-
-                                        fragmentManager = getSupportFragmentManager();
-                                        fragmentTransaction = fragmentManager.beginTransaction();
-
-                                        homeToolbar.setTitle("Homework");
-
-                                        HomeworkFragment homeworkFragment = new HomeworkFragment();
-                                        fragmentTransaction.replace(R.id.home_activity_scroll_view, homeworkFragment, "homework_fragment");
-                                        fragmentTransaction.commit();
-
-                                        tabLayout.setVisibility(AppBarLayout.GONE);
-                                        viewPager.setVisibility(LinearLayout.GONE);
-
-                                        scrollView.setVisibility(LinearLayout.VISIBLE);
+                                        switchToView(1);
 
                                         break;
 
                                     case R.id.classes:
 
-                                        fragmentManager = getSupportFragmentManager();
-                                        fragmentTransaction = fragmentManager.beginTransaction();
+                                        switchToView(2);
 
-                                        homeToolbar.setTitle("Classes");
+                                        break;
 
-                                        ClassesFragment classesFragment = new ClassesFragment();
-                                        fragmentTransaction.replace(R.id.home_activity_scroll_view, classesFragment, "classes_fragment");
-                                        fragmentTransaction.commit();
+                                    case R.id.homework:
 
-                                        tabLayout.setVisibility(AppBarLayout.GONE);
-                                        viewPager.setVisibility(LinearLayout.GONE);
-
-                                        scrollView.setVisibility(LinearLayout.VISIBLE);
+                                        switchToView(3);
 
                                         break;
 
@@ -307,13 +220,180 @@ public class HomeActivity extends AppCompatActivity {
 
         */
 
-        OverviewFragment overviewFragment = new OverviewFragment();
+        switchToView(extraPassed);
 
-        fragmentManager = getSupportFragmentManager();
+    }
 
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.home_activity_scroll_view, overviewFragment, "overview_fragment");
-        fragmentTransaction.commit();
+    private void switchToView(int id) {
+
+        switch (id) {
+
+            case 0:
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                homeToolbar.setTitle("Overview");
+
+                OverviewFragment overviewFragment = new OverviewFragment();
+                fragmentTransaction.replace(R.id.home_activity_scroll_view, overviewFragment, "overview_fragment");
+                fragmentTransaction.commit();
+
+                tabLayout.setVisibility(AppBarLayout.GONE);
+                viewPager.setVisibility(LinearLayout.GONE);
+
+                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                navigationView.setCheckedItem(R.id.overview);
+
+                break;
+
+            case 1:
+
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.home_activity_scroll_view)).commit();
+
+                homeToolbar.setTitle("Timetable");
+
+                ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+                adapter.addFragment(new Sunday(), "SUNDAY");
+                adapter.addFragment(new Monday(), "MONDAY");
+                adapter.addFragment(new Tuesday(), "TUESDAY");
+                adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                adapter.addFragment(new Thursday(), "THURSDAY");
+                adapter.addFragment(new Friday(), "FRIDAY");
+                adapter.addFragment(new Saturday(), "SATURDAY");
+
+                viewPager.setAdapter(adapter);
+
+                tabLayout.setupWithViewPager(viewPager);
+
+                tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tabLayout) {
+
+                        super.onTabSelected(tabLayout);
+
+                        if (tabLayout.getPosition() != 0) {
+
+                            if (!DataStore.isAnimationState()) {
+
+                                Animation animation = new Animation() {
+
+                                    @Override
+                                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                        LinearLayout layout = (LinearLayout) findViewById(R.id.tab_layout_layout);
+                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+
+                                        params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+
+                                        layout.setLayoutParams(params);
+
+                                    }
+                                };
+
+                                animation.setDuration(200);
+                                drawerLayout.startAnimation(animation);
+
+                                DataStore.setAnimationState(true);
+
+                            }
+
+                        } else {
+
+                            if (DataStore.isAnimationState()) {
+
+                                Animation animation = new Animation() {
+
+                                    @Override
+                                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                        LinearLayout layout = (LinearLayout) findViewById(R.id.tab_layout_layout);
+                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+
+                                        params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+
+                                        layout.setLayoutParams(params);
+
+                                    }
+                                };
+
+                                animation.setDuration(200);
+                                drawerLayout.startAnimation(animation);
+
+                                DataStore.setAnimationState(false);
+
+                            }
+
+                        }
+
+                        lastTabPosition = tabLayout.getPosition();
+
+                    }
+
+                });
+
+                scrollView.setVisibility(LinearLayout.GONE);
+
+                tabLayout.setVisibility(AppBarLayout.VISIBLE);
+                viewPager.setVisibility(LinearLayout.VISIBLE);
+
+                navigationView.setCheckedItem(R.id.timetable);
+
+                break;
+
+            case 2:
+
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+
+                homeToolbar.setTitle("Classes");
+
+                ClassesFragment classesFragment = new ClassesFragment();
+                fragmentTransaction.replace(R.id.home_activity_scroll_view, classesFragment, "classes_fragment");
+                fragmentTransaction.commit();
+
+                tabLayout.setVisibility(AppBarLayout.GONE);
+                viewPager.setVisibility(LinearLayout.GONE);
+
+                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                navigationView.setCheckedItem(R.id.classes);
+
+                break;
+
+            case 3:
+
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+
+                homeToolbar.setTitle("Homework");
+
+                HomeworkFragment homeworkFragment = new HomeworkFragment();
+                fragmentTransaction.replace(R.id.home_activity_scroll_view, homeworkFragment, "homework_fragment");
+                fragmentTransaction.commit();
+
+                tabLayout.setVisibility(AppBarLayout.GONE);
+                viewPager.setVisibility(LinearLayout.GONE);
+
+                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                navigationView.setCheckedItem(R.id.homework);
+
+                break;
+
+            case 4:
+
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+
+                break;
+
+        }
 
     }
 

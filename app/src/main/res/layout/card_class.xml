@@ -11,12 +11,15 @@
     <android.support.v7.widget.CardView
 
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/card_view_class"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <RelativeLayout
 
@@ -43,7 +46,7 @@
                 android:layout_height="16dp"
                 android:layout_alignBaseline="@id/class_title"
                 android:layout_alignParentRight="true"
-                android:translationY="-13dp"
+                android:translationY="-12.5dp"
                 app:mli_letter="H"
                 app:mli_letter_color="@color/textColor"
                 app:mli_letter_size="12"

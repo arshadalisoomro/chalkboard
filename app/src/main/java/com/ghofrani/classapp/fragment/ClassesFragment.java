@@ -1,10 +1,12 @@
 package com.ghofrani.classapp.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +14,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.activity.ViewClassActivity;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 import com.github.ivbaranov.mli.MaterialLetterIcon;
 
 public class ClassesFragment extends Fragment {
+
+    View.OnClickListener cardOnClick = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+
+            TextView classTitleTextView = (TextView) v.findViewById(R.id.class_title);
+
+            startActivity(new Intent(getContext(), ViewClassActivity.class).putExtra("class", classTitleTextView.getText()));
+
+        }
+
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +78,9 @@ public class ClassesFragment extends Fragment {
 
             TextView classLocationTeacher = (TextView) classCard.findViewById(R.id.class_location_teacher);
             classLocationTeacher.setText(result.getString(2) + ", " + result.getString(3));
+
+            CardView card = (CardView) classCard.findViewById(R.id.card_view_class);
+            card.setOnClickListener(cardOnClick);
 
             if ((index % 2) == 0) {
 

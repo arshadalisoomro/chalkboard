@@ -51,6 +51,14 @@
 
         </activity>
 
+        <activity
+
+            android:name=".activity.ViewClassActivity"
+            android:parentActivityName="com.ghofrani.classapp.activity.ViewClassActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <service
 
             android:name=".service.TimeService"
