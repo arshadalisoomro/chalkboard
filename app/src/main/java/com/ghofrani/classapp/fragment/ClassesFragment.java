@@ -20,7 +20,7 @@ import com.github.ivbaranov.mli.MaterialLetterIcon;
 
 public class ClassesFragment extends Fragment {
 
-    View.OnClickListener cardOnClick = new View.OnClickListener() {
+    private final View.OnClickListener cardOnClick = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -53,6 +53,9 @@ public class ClassesFragment extends Fragment {
     private void updateUI() {
 
         RelativeLayout classesLayout = (RelativeLayout) getView().findViewById(R.id.class_layout);
+
+        classesLayout.removeAllViews();
+
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         DatabaseHelper db = new DatabaseHelper(getContext());

@@ -33,7 +33,7 @@ public class HomeworkActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
 
             finish();
-            startActivity(new Intent(this, HomeActivity.class));
+            startActivity(new Intent(this, HomeActivity.class).putExtra("fragment", 3));
 
             return true;
 
@@ -49,7 +49,7 @@ public class HomeworkActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         finish();
-        startActivity(new Intent(this, HomeActivity.class));
+        startActivity(new Intent(this, HomeActivity.class).putExtra("fragment", 3));
 
     }
 
