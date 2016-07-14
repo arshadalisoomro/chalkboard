@@ -54,8 +54,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //Testing laptop repo.
-
         super.onCreate(savedInstanceState);
 
         startService(new Intent(getApplicationContext(), TimeService.class));
