@@ -35,11 +35,9 @@ import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
 import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.DatabaseHelper;
 import com.ghofrani.classapp.service.TimeService;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -179,6 +177,8 @@ public class HomeActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setVisibility(LinearLayout.GONE);
 
+        /*
+
         DatabaseHelper db = new DatabaseHelper(this);
 
         db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.SUNDAY);
@@ -216,6 +216,8 @@ public class HomeActivity extends AppCompatActivity {
         db.addClass(new String[]{"Free", "Ms. Schmidt", "Library"});
 
         db.close();
+
+        */
 
         switchToView(extraPassed);
 

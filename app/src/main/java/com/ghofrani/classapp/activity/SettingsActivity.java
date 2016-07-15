@@ -36,28 +36,17 @@ public class SettingsActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("updateData"));
 
-        finish();
-        startActivity(new Intent(this, HomeActivity.class));
+        super.onBackPressed();
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home) {
-
+        if (item.getItemId() == android.R.id.home)
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("updateData"));
 
-            finish();
-            startActivity(new Intent(this, HomeActivity.class));
-
-            return true;
-
-        } else {
-
-            return super.onOptionsItemSelected(item);
-
-        }
+        return super.onOptionsItemSelected(item);
 
     }
 
