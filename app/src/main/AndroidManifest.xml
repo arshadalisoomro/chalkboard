@@ -54,7 +54,7 @@
         <activity
 
             android:name=".activity.ViewClassActivity"
-            android:parentActivityName="com.ghofrani.classapp.activity.ViewClassActivity"
+            android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
             android:screenOrientation="portrait">
 
         </activity>
