@@ -67,7 +67,7 @@ public class ClassesFragment extends Fragment {
 
         while (result.moveToNext()) {
 
-            RelativeLayout classCard = (RelativeLayout) layoutInflater.inflate(R.layout.card_class, classesLayout, false);
+            RelativeLayout classCard = (RelativeLayout) layoutInflater.inflate(R.layout.view_card_class, classesLayout, false);
             classCard.setId(index);
 
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) classCard.getLayoutParams();

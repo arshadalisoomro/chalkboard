@@ -32,7 +32,7 @@
                 <include
 
                     android:id="@+id/home_toolbar"
-                    layout="@layout/toolbar" />
+                    layout="@layout/view_toolbar" />
 
                 <LinearLayout
 
@@ -97,7 +97,7 @@
             android:id="@+id/navigation_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:headerLayout="@layout/drawer_header"
+            app:headerLayout="@layout/view_drawer_header"
             app:menu="@menu/drawer" />
 
     </LinearLayout>

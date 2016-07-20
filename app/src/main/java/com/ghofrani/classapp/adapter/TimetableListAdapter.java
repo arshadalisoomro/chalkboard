@@ -48,7 +48,7 @@ public class TimetableListAdapter extends BaseAdapter {
         View view = convertView;
 
         if (view == null)
-            view = inflater.inflate(R.layout.list_child, null);
+            view = inflater.inflate(R.layout.view_list_child, null);
 
         String[] splitClasses = inputClasses[position].split(",");
 
