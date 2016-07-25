@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
 
-public class HomeworkActivity extends AppCompatActivity {
+public class AddHomeworkActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

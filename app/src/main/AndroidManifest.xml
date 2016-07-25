@@ -45,7 +45,7 @@
 
         <activity
 
-            android:name=".activity.HomeworkActivity"
+            android:name=".activity.AddHomeworkActivity"
             android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
             android:screenOrientation="portrait">
 
@@ -54,6 +54,14 @@
         <activity
 
             android:name=".activity.ViewClassActivity"
+            android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity
+
+            android:name=".activity.AddClassActivity"
             android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
             android:screenOrientation="portrait">
 

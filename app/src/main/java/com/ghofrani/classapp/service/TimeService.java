@@ -17,8 +17,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.activity.AddHomeworkActivity;
 import com.ghofrani.classapp.activity.HomeActivity;
-import com.ghofrani.classapp.activity.HomeworkActivity;
 import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
@@ -258,7 +258,7 @@ public class TimeService extends Service {
         if (currentClass) {
 
             Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
-            Intent homeworkIntent = new Intent(getApplicationContext(), HomeworkActivity.class);
+            Intent homeworkIntent = new Intent(getApplicationContext(), AddHomeworkActivity.class);
 
             PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             PendingIntent addHomeworkIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);

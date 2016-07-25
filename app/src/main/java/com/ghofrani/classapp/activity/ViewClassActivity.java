@@ -18,11 +18,11 @@ public class ViewClassActivity extends AppCompatActivity {
 
         Intent classIntent = getIntent();
 
-        Toolbar homeworkToolbar = (Toolbar) findViewById(R.id.add_view_class_toolbar);
-        homeworkToolbar.setTitle(classIntent.getExtras().getString("class"));
-        homeworkToolbar.setTitleTextColor(Color.WHITE);
+        Toolbar viewClassToolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
+        viewClassToolbar.setTitle(classIntent.getExtras().getString("class"));
+        viewClassToolbar.setTitleTextColor(Color.WHITE);
 
-        setSupportActionBar(homeworkToolbar);
+        setSupportActionBar(viewClassToolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

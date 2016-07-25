@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
@@ -49,6 +51,8 @@ public class HomeActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private ScrollView scrollView;
     private NavigationView navigationView;
+    private FloatingActionButton floatingActionButton;
+    private int currentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,22 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         setSupportActionBar(homeToolbar);
+
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.classes_fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+
+                if (currentView == 2)
+                    startActivity(new Intent(getApplicationContext(), AddClassActivity.class));
+                else if (currentView == 3)
+                    startActivity(new Intent(getApplicationContext(), AddHomeworkActivity.class));
+
+            }
+
+        });
 
         scrollView = (ScrollView) findViewById(R.id.home_activity_scroll_view);
 
@@ -229,6 +249,8 @@ public class HomeActivity extends AppCompatActivity {
 
             case 0:
 
+                floatingActionButton.setVisibility(View.INVISIBLE);
+
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -245,9 +267,13 @@ public class HomeActivity extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.overview);
 
+                currentView = 0;
+
                 break;
 
             case 1:
+
+                floatingActionButton.setVisibility(View.INVISIBLE);
 
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -342,9 +368,13 @@ public class HomeActivity extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.timetable);
 
+                currentView = 1;
+
                 break;
 
             case 2:
+
+                floatingActionButton.setVisibility(View.VISIBLE);
 
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -362,9 +392,13 @@ public class HomeActivity extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.classes);
 
+                currentView = 2;
+
                 break;
 
             case 3:
+
+                floatingActionButton.setVisibility(View.VISIBLE);
 
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -381,6 +415,8 @@ public class HomeActivity extends AppCompatActivity {
                 scrollView.setVisibility(LinearLayout.VISIBLE);
 
                 navigationView.setCheckedItem(R.id.homework);
+
+                currentView = 3;
 
                 break;
 
