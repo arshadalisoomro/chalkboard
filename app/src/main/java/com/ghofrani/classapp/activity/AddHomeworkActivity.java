@@ -11,11 +11,13 @@ import com.ghofrani.classapp.R;
 
 public class AddHomeworkActivity extends AppCompatActivity {
 
+    private boolean originNotification = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homework);
+        setContentView(R.layout.activity_add_homework);
 
         Toolbar homeworkToolbar = (Toolbar) findViewById(R.id.add_homework_toolbar);
         homeworkToolbar.setTitle("Add Homework");
@@ -25,12 +27,15 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        if (getIntent().hasExtra("originNotification"))
+            originNotification = true;
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home && originNotification) {
 
             finish();
             startActivity(new Intent(this, HomeActivity.class).putExtra("fragment", 3));
@@ -48,8 +53,16 @@ public class AddHomeworkActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        finish();
-        startActivity(new Intent(this, HomeActivity.class).putExtra("fragment", 3));
+        if (originNotification) {
+
+            finish();
+            startActivity(new Intent(this, HomeActivity.class).putExtra("fragment", 3));
+
+        } else {
+
+            super.onBackPressed();
+
+        }
 
     }
 

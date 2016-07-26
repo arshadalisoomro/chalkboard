@@ -28,6 +28,7 @@ public class DataStore {
 
     private static String nextClassString;
     private static String nextClassLocation;
+    private static String nextClassStartTime;
 
     private static boolean animationState = false;
 
@@ -224,6 +225,18 @@ public class DataStore {
     public static void setNextClassLocation(String update) {
 
         nextClassLocation = update;
+
+    }
+
+    public static String getNextClassStartTime() {
+
+        return nextClassStartTime;
+
+    }
+
+    public static void setNextClassStartTime(String update) {
+
+        nextClassStartTime = update;
 
     }
 

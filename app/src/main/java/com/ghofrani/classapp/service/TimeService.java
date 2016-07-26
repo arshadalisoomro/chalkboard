@@ -27,6 +27,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -59,6 +60,8 @@ public class TimeService extends Service {
     private String currentClassName;
     private DateTime currentClassStartTime;
     private DateTime currentClassEndTime;
+
+    private boolean currentToNextTransition = false;
 
     private final BroadcastReceiver updateData = new BroadcastReceiver() {
 
@@ -169,6 +172,7 @@ public class TimeService extends Service {
                         break;
 
                     default:
+
                         break;
 
                 }
@@ -207,6 +211,8 @@ public class TimeService extends Service {
 
         List<String> nextClassesVoid = new ArrayList<>();
 
+        boolean nextClassDefined = false;
+
         for (Map.Entry<String, String> entry : resultMap.entrySet()) {
 
             DateTimeFormatter formatter = DateTimeFormat.forPattern("HHmm");
@@ -228,8 +234,15 @@ public class TimeService extends Service {
                 nextClassesVoid.add(name + "," + startTimeString + " - " + endTimeString + "," + location);
                 nextClasses = true;
 
-                DataStore.setNextClassString(name);
-                DataStore.setNextClassLocation(db.getClassLocation(name));
+                if (!nextClassDefined) {
+
+                    DataStore.setNextClassString(name);
+                    DataStore.setNextClassLocation(db.getClassLocation(name));
+                    DataStore.setNextClassStartTime(entry.getKey());
+
+                    nextClassDefined = true;
+
+                }
 
             } else if (endTime.isAfter(currentTime) && startTime.isBefore(currentTime)) {
 
@@ -257,22 +270,24 @@ public class TimeService extends Service {
 
         if (currentClass) {
 
-            Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
-            Intent homeworkIntent = new Intent(getApplicationContext(), AddHomeworkActivity.class);
-
-            PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            PendingIntent addHomeworkIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-            notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
-            notificationBuilder.setOngoing(true);
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            notificationBuilder.setContentIntent(addHomeActivityIntent);
-            notificationBuilder.setWhen(0);
-            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationBuilder.setPriority(Notification.PRIORITY_MAX);
-            notificationBuilder.addAction(R.drawable.d_homework, "Add Homework", addHomeworkIntent);
+            currentToNextTransition = true;
 
             if (handler == null) {
+
+                Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                Intent homeworkIntent = new Intent(getApplicationContext(), AddHomeworkActivity.class).putExtra("originNotification", true);
+
+                PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent addHomeworkIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
+                notificationBuilder.setOngoing(true);
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationBuilder.setContentIntent(addHomeActivityIntent);
+                notificationBuilder.setWhen(0);
+                notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+                notificationBuilder.setPriority(Notification.PRIORITY_MAX);
+                notificationBuilder.addAction(R.drawable.d_homework, "Add Homework", addHomeworkIntent);
 
                 Runnable notificationRunnable = new Runnable() {
 
@@ -381,7 +396,57 @@ public class TimeService extends Service {
 
             }
 
+        } else if (nextClasses) {
+
+            if (currentToNextTransition) {
+
+                notificationManager.cancelAll();
+
+                if (handler != null) {
+
+                    handler.removeCallbacksAndMessages(null);
+                    handler = null;
+
+                }
+
+            }
+
+            Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
+            PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
+            notificationBuilder.setOngoing(true);
+            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            notificationBuilder.setContentIntent(addHomeActivityIntent);
+            notificationBuilder.setWhen(0);
+            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationBuilder.setPriority(Notification.PRIORITY_MAX);
+
+            notificationBuilder.setContentTitle("Next: " + DataStore.getNextClassString());
+
+            DateTime currentTime = new DateTime();
+
+            int minutesLeft = Minutes.minutesBetween(currentTime, DateTimeFormat.forPattern("HHmm").parseLocalTime(DataStore.getNextClassStartTime()).toDateTimeToday()).getMinutes();
+
+            if (minutesLeft >= 60) {
+
+                notificationBuilder.setContentText("In one hour at " + DataStore.getNextClassLocation());
+
+            } else if (minutesLeft <= 0) {
+
+                notificationBuilder.setContentText("In less than a minute at " + DataStore.getNextClassLocation());
+
+            } else {
+
+                notificationBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.getNextClassLocation());
+
+            }
+
+            notificationManager.notify(1, notificationBuilder.build());
+
         } else {
+
+            currentToNextTransition = false;
 
             notificationManager.cancelAll();
 

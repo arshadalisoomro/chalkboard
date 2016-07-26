@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
 import com.ghofrani.classapp.R;
 
@@ -22,6 +23,15 @@ public class AddClassActivity extends AppCompatActivity {
         setSupportActionBar(addClassToolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.toolbar_add_class, menu);
+
+        return true;
 
     }
 

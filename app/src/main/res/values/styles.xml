@@ -11,12 +11,16 @@
     </style>
 
     <style name="tab_layout" parent="Widget.Design.TabLayout">
+
         <item name="tabTextAppearance">@style/tab_text</item>
         <item name="tabSelectedTextColor">@color/textColor</item>
+
     </style>
 
     <style name="tab_text" parent="TextAppearance.AppCompat.Button">
+
         <item name="android:textColor">@color/textColor</item>
+
     </style>
 
 </resources>

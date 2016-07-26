@@ -98,7 +98,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setSupportActionBar(homeToolbar);
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.classes_fab);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
