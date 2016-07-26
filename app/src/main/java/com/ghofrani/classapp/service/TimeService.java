@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.AddHomeworkActivity;
@@ -388,55 +389,54 @@ public class TimeService extends Service {
 
         } else if (nextClasses) {
 
-            nextToCurrentTransition = true;
-
-            if (currentToNextTransition) {
-
-                notificationManager.cancelAll();
-
-                if (handler != null) {
-
-                    handler.removeCallbacksAndMessages(null);
-                    handler = null;
-
-                }
-
-                currentToNextTransition = false;
-
-            }
-
-            Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
-            PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext());
-            notificationCompatBuilder.setOngoing(true);
-            notificationCompatBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            notificationCompatBuilder.setContentIntent(addHomeActivityIntent);
-            notificationCompatBuilder.setWhen(0);
-            notificationCompatBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationCompatBuilder.setPriority(Notification.PRIORITY_MAX);
-
-            notificationCompatBuilder.setContentTitle("Next: " + DataStore.getNextClassString());
-
             DateTime currentTime = new DateTime();
 
             int minutesLeft = Minutes.minutesBetween(currentTime, DateTimeFormat.forPattern("HHmm").parseLocalTime(DataStore.getNextClassStartTime()).toDateTimeToday()).getMinutes();
 
-            if (minutesLeft >= 60) {
+            if(minutesLeft <= Integer.parseInt(sharedPreferences.getString("nextClassNotificationMinutes", "30"))){
 
-                notificationCompatBuilder.setContentText("In 60 minutes at " + DataStore.getNextClassLocation());
+                nextToCurrentTransition = true;
 
-            } else if (minutesLeft <= 0) {
+                if (currentToNextTransition) {
 
-                notificationCompatBuilder.setContentText("In less than a minute at " + DataStore.getNextClassLocation());
+                    notificationManager.cancelAll();
 
-            } else {
+                    if (handler != null) {
 
-                notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.getNextClassLocation());
+                        handler.removeCallbacksAndMessages(null);
+                        handler = null;
+
+                    }
+
+                    currentToNextTransition = false;
+
+                }
+
+                Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext());
+                notificationCompatBuilder.setOngoing(true);
+                notificationCompatBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                notificationCompatBuilder.setContentIntent(addHomeActivityIntent);
+                notificationCompatBuilder.setWhen(0);
+                notificationCompatBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+                notificationCompatBuilder.setPriority(Notification.PRIORITY_MAX);
+
+                notificationCompatBuilder.setContentTitle("Next: " + DataStore.getNextClassString());
+
+                if (minutesLeft >= 60)
+                    notificationCompatBuilder.setContentText("In 60 minutes at " + DataStore.getNextClassLocation());
+                else if (minutesLeft <= 0)
+                    notificationCompatBuilder.setContentText("In 0 minutes at " + DataStore.getNextClassLocation());
+                else if (minutesLeft == 1)
+                    notificationCompatBuilder.setContentText("In 1 minute at " + DataStore.getNextClassLocation());
+                else
+                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.getNextClassLocation());
+
+                notificationManager.notify(1, notificationCompatBuilder.build());
 
             }
-
-            notificationManager.notify(1, notificationCompatBuilder.build());
 
         } else {
 
