@@ -17,7 +17,7 @@
         <include
 
             android:id="@+id/add_homework_toolbar"
-            layout="@layout/view_toolbar" />
+            layout="@layout/view_toolbar_padded" />
 
     </android.support.design.widget.AppBarLayout>
 

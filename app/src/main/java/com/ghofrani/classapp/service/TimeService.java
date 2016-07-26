@@ -277,7 +277,7 @@ public class TimeService extends Service {
                 Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
                 Intent homeworkIntent = new Intent(getApplicationContext(), AddHomeworkActivity.class).putExtra("originNotification", true);
 
-                PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 PendingIntent addHomeworkIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                 notificationBuilder = new NotificationCompat.Builder(getApplicationContext());

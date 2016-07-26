@@ -21,6 +21,13 @@
 
         android:title="Notifications">
 
+        <CheckBoxPreference
+
+            android:defaultValue="false"
+            android:key="advancedNotification"
+            android:summary="This will show the advanced notification instead of the simple one"
+            android:title="Show advanced notification" />
+
         <ListPreference
 
             android:defaultValue="30"
