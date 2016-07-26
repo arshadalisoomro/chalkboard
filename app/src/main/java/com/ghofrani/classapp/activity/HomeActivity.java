@@ -110,7 +110,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 if (currentView == 2)
                     startActivity(new Intent(getApplicationContext(), AddClassActivity.class));
                 else if (currentView == 3)

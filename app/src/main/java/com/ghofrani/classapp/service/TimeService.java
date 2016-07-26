@@ -55,7 +55,8 @@ public class TimeService extends Service {
     }
 
     private Handler handler;
-    private NotificationCompat.Builder notificationBuilder;
+    private NotificationCompat.Builder notificationCompatBuilder;
+    private RemoteViews remoteViews;
     private NotificationManager notificationManager;
 
     private String currentClassName;
@@ -276,21 +277,24 @@ public class TimeService extends Service {
             if (handler == null) {
 
                 Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                Intent homeworkIntent = new Intent(getApplicationContext(), AddHomeworkActivity.class).putExtra("originNotification", true);
-
                 PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                PendingIntent addHomeworkIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                /*
+                Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomeworkActivity.class).putExtra("originNotification", true);
+                PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
-                notificationBuilder.setOngoing(true);
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                notificationBuilder.setContentIntent(addHomeActivityIntent);
-                notificationBuilder.setWhen(0);
-                notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-                notificationBuilder.setPriority(Notification.PRIORITY_MAX);
-                notificationBuilder.addAction(R.drawable.d_homework, "Add Homework", addHomeworkIntent);
+                remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
+
+                remoteViews.setOnClickPendingIntent(R.id.notification_button, addHomeworkActivityIntent);
+
+                notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setOngoing(true)
+                        .setContentIntent(addHomeActivityIntent)
+                        .setContent(remoteViews)
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .setWhen(0);
+
+                notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                 Runnable notificationRunnable = new Runnable() {
 
@@ -306,41 +310,17 @@ public class TimeService extends Service {
                         int minutesRemaining = currentClassEndTime.getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
                         String remainingText = "";
 
-                        if (minutesRemaining > 59) {
+                        if (minutesRemaining == 1)
+                            remainingText = "1 min. left";
+                        else
+                            remainingText = minutesRemaining + " mins. left";
 
-                            int hoursRemaining = (minutesRemaining - (minutesRemaining % 60)) / 60;
-                            minutesRemaining %= 60;
+                        remoteViews.setTextViewText(R.id.notification_header, currentClassName + " - " + remainingText);
 
-                            if (hoursRemaining == 1) {
-
-                                if (minutesRemaining > 1)
-                                    remainingText = "1 hour, " + minutesRemaining + " minutes remaining";
-                                else if (minutesRemaining == 1)
-                                    remainingText = "1 hour, 1 minute remaining";
-                                else if (minutesRemaining == 0)
-                                    remainingText = "1 hour remaining";
-
-                            } else {
-
-                                if (minutesRemaining > 1)
-                                    remainingText = hoursRemaining + " hours, " + minutesRemaining + " minutes remaining";
-                                else if (minutesRemaining == 1)
-                                    remainingText = hoursRemaining + " hours, 1 minute remaining";
-                                else if (minutesRemaining == 0)
-                                    remainingText = hoursRemaining + " hours remaining";
-
-                            }
-
-                        } else {
-
-                            if (minutesRemaining > 1)
-                                remainingText = minutesRemaining + " minutes remaining";
-                            else if (minutesRemaining == 1)
-                                remainingText = "1 minute remaining";
-                            else if (minutesRemaining == 0)
-                                remainingText = "Less than a minute remaining";
-
-                        }
+                        if(DataStore.getNextClasses())
+                            remoteViews.setTextViewText(R.id.notification_text, "Next: " + DataStore.getNextClassString() + " at " + DataStore.getNextClassLocation());
+                        else
+                            remoteViews.setTextViewText(R.id.notification_text, "No further classes");
 
                         String text = "";
                         int progressBarProgress = 0;
@@ -348,44 +328,33 @@ public class TimeService extends Service {
                         if (percentageValueInt >= 0 && percentageValueInt <= 100) {
 
                             text = String.valueOf(percentageValueInt) + "%";
-
                             progressBarProgress = percentageValueInt;
+
+                            remoteViews.setTextViewText(R.id.notification_progress_text, text.replace("%", ""));
+                            remoteViews.setProgressBar(R.id.notification_progress_bar, 100, percentageValueInt, false);
 
                         } else if (percentageValueInt < 0) {
 
                             text = "0%";
-
                             progressBarProgress = 0;
+
+                            remoteViews.setTextViewText(R.id.notification_progress_text, "0");
+                            remoteViews.setProgressBar(R.id.notification_progress_bar, 100, 0, false);
 
                         } else if (percentageValueInt > 100) {
 
                             text = "100%";
-
                             progressBarProgress = 100;
+
+                            remoteViews.setTextViewText(R.id.notification_progress_text, "100");
+                            remoteViews.setProgressBar(R.id.notification_progress_bar, 100, 100, false);
 
                         }
 
                         DataStore.setProgressBarText(text);
                         DataStore.setProgressBarProgress(progressBarProgress);
 
-                        notificationBuilder.setProgress(100, progressBarProgress, false);
-
-                        notificationBuilder.setContentTitle(currentClassName);
-
-                        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-                        inboxStyle.setBigContentTitle(currentClassName);
-
-                        notificationBuilder.setContentText(remainingText);
-                        inboxStyle.addLine(remainingText);
-
-                        if (DataStore.getNextClasses())
-                            inboxStyle.addLine("Next: " + DataStore.getNextClassString() + " in " + DataStore.getNextClassLocation());
-                        else
-                            inboxStyle.addLine("No further classes");
-
-                        notificationBuilder.setStyle(inboxStyle);
-
-                        notificationManager.notify(1, notificationBuilder.build());
+                        notificationManager.notify(0, notificationCompatBuilder.build());
 
                         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("updateProgressBar"));
 
@@ -399,26 +368,7 @@ public class TimeService extends Service {
 
                 handler.post(notificationRunnable);
 
-                */
-
             }
-
-            Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
-            PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-            RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
-
-            remoteViews.setProgressBar(R.id.notification_progress_bar, 100, 50, false);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setOngoing(true)
-                    .setContentIntent(addHomeActivityIntent)
-                    .setContent(remoteViews)
-                    .setWhen(0);
-
-            NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationmanager.notify(0, builder.build());
 
         } else if (nextClasses) {
 
@@ -438,15 +388,15 @@ public class TimeService extends Service {
             Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
             PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
-            notificationBuilder.setOngoing(true);
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            notificationBuilder.setContentIntent(addHomeActivityIntent);
-            notificationBuilder.setWhen(0);
-            notificationBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationBuilder.setPriority(Notification.PRIORITY_MAX);
+            notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext());
+            notificationCompatBuilder.setOngoing(true);
+            notificationCompatBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            notificationCompatBuilder.setContentIntent(addHomeActivityIntent);
+            notificationCompatBuilder.setWhen(0);
+            notificationCompatBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationCompatBuilder.setPriority(Notification.PRIORITY_MAX);
 
-            notificationBuilder.setContentTitle("Next: " + DataStore.getNextClassString());
+            notificationCompatBuilder.setContentTitle("Next: " + DataStore.getNextClassString());
 
             DateTime currentTime = new DateTime();
 
@@ -454,19 +404,19 @@ public class TimeService extends Service {
 
             if (minutesLeft >= 60) {
 
-                notificationBuilder.setContentText("In one hour at " + DataStore.getNextClassLocation());
+                notificationCompatBuilder.setContentText("In one hour at " + DataStore.getNextClassLocation());
 
             } else if (minutesLeft <= 0) {
 
-                notificationBuilder.setContentText("In less than a minute at " + DataStore.getNextClassLocation());
+                notificationCompatBuilder.setContentText("In less than a minute at " + DataStore.getNextClassLocation());
 
             } else {
 
-                notificationBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.getNextClassLocation());
+                notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.getNextClassLocation());
 
             }
 
-            notificationManager.notify(1, notificationBuilder.build());
+            notificationManager.notify(1, notificationCompatBuilder.build());
 
         } else {
 
