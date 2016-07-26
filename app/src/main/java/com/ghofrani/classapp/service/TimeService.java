@@ -64,6 +64,7 @@ public class TimeService extends Service {
     private DateTime currentClassEndTime;
 
     private boolean currentToNextTransition = false;
+    private boolean nextToCurrentTransition = false;
 
     private final BroadcastReceiver updateData = new BroadcastReceiver() {
 
@@ -274,6 +275,21 @@ public class TimeService extends Service {
 
             currentToNextTransition = true;
 
+            if (nextToCurrentTransition) {
+
+                notificationManager.cancelAll();
+
+                if (handler != null) {
+
+                    handler.removeCallbacksAndMessages(null);
+                    handler = null;
+
+                }
+
+                nextToCurrentTransition = false;
+
+            }
+
             if (handler == null) {
 
                 Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
@@ -330,7 +346,7 @@ public class TimeService extends Service {
                             text = String.valueOf(percentageValueInt) + "%";
                             progressBarProgress = percentageValueInt;
 
-                            remoteViews.setTextViewText(R.id.notification_progress_text, text.replace("%", ""));
+                            remoteViews.setTextViewText(R.id.notification_progress_text, String.valueOf(percentageValueInt));
                             remoteViews.setProgressBar(R.id.notification_progress_bar, 100, percentageValueInt, false);
 
                         } else if (percentageValueInt < 0) {
@@ -372,6 +388,8 @@ public class TimeService extends Service {
 
         } else if (nextClasses) {
 
+            nextToCurrentTransition = true;
+
             if (currentToNextTransition) {
 
                 notificationManager.cancelAll();
@@ -382,6 +400,8 @@ public class TimeService extends Service {
                     handler = null;
 
                 }
+
+                currentToNextTransition = false;
 
             }
 
@@ -404,7 +424,7 @@ public class TimeService extends Service {
 
             if (minutesLeft >= 60) {
 
-                notificationCompatBuilder.setContentText("In one hour at " + DataStore.getNextClassLocation());
+                notificationCompatBuilder.setContentText("In 60 minutes at " + DataStore.getNextClassLocation());
 
             } else if (minutesLeft <= 0) {
 
@@ -421,6 +441,7 @@ public class TimeService extends Service {
         } else {
 
             currentToNextTransition = false;
+            nextToCurrentTransition = false;
 
             notificationManager.cancelAll();
 

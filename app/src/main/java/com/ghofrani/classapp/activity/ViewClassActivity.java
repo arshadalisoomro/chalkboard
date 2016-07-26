@@ -7,8 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.ghofrani.classapp.R;
+import com.woalk.apps.lib.colorpicker.ColorPickerDialog;
+import com.woalk.apps.lib.colorpicker.ColorPickerSwatch;
 
 public class ViewClassActivity extends AppCompatActivity {
+
+    int mSelectedColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
