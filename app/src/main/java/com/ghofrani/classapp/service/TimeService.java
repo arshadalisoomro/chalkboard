@@ -14,7 +14,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.AddHomeworkActivity;
@@ -280,6 +281,8 @@ public class TimeService extends Service {
                 PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 PendingIntent addHomeworkIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+                /*
+
                 notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
                 notificationBuilder.setOngoing(true);
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
@@ -365,6 +368,8 @@ public class TimeService extends Service {
                         DataStore.setProgressBarText(text);
                         DataStore.setProgressBarProgress(progressBarProgress);
 
+                        notificationBuilder.setProgress(100, progressBarProgress, false);
+
                         notificationBuilder.setContentTitle(currentClassName);
 
                         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -394,7 +399,26 @@ public class TimeService extends Service {
 
                 handler.post(notificationRunnable);
 
+                */
+
             }
+
+            Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
+            PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
+
+            remoteViews.setProgressBar(R.id.notification_progress_bar, 100, 50, false);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setOngoing(true)
+                    .setContentIntent(addHomeActivityIntent)
+                    .setContent(remoteViews)
+                    .setWhen(0);
+
+            NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationmanager.notify(0, builder.build());
 
         } else if (nextClasses) {
 

@@ -7,6 +7,10 @@ import android.preference.PreferenceFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;

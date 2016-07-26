@@ -1,5 +1,6 @@
 package com.ghofrani.classapp.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,6 +18,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,9 +42,11 @@ import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
 import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.modules.DatabaseHelper;
 import com.ghofrani.classapp.service.TimeService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -58,10 +65,9 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
 
         startService(new Intent(getApplicationContext(), TimeService.class));
-
-        setContentView(R.layout.activity_home);
 
         int extraPassed = getIntent().hasExtra("fragment") ? getIntent().getExtras().getInt("fragment") : 0;
 
@@ -422,7 +428,9 @@ public class HomeActivity extends AppCompatActivity {
 
             case 4:
 
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this);
+                Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
+                startActivity(intent, options.toBundle());
 
                 break;
 
