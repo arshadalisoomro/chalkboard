@@ -24,6 +24,7 @@
         <activity
 
             android:name=".activity.HomeActivity"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
 
             <intent-filter>

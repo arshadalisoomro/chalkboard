@@ -427,9 +427,7 @@ public class HomeActivity extends AppCompatActivity {
 
             case 4:
 
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this);
-                Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
-                startActivity(intent, options.toBundle());
+                startActivity(new Intent(this, SettingsActivity.class));
 
                 break;
 

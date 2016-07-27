@@ -9,11 +9,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
@@ -439,43 +444,77 @@ public class OverviewFragment extends Fragment {
 
         }
 
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        final ViewGroup.LayoutParams listViewLayoutParams = listView.getLayoutParams();
 
         if (changeParams) {
 
             TextView groupText = (TextView) listView.findViewById(R.id.list_group_text);
-            LinearLayout.LayoutParams layoutParams;
+            LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
-            if (!listView.isGroupExpanded(0)) {
+            if (listView.isGroupExpanded(0)) {
 
-                params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+                final RelativeLayout parentLayout = (RelativeLayout) listView.getParent();
+                final int listViewLayoutParamsHeight = totalHeight + getPixelFromDP(8) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
 
-                layoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
-                layoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(8));
-                groupText.setLayoutParams(layoutParams);
+                Animation expandAnimation = new Animation() {
+
+                    @Override
+                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+                        relativeLayoutParams.height = (int) (getPixelFromDP(36) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+
+                        parentLayout.requestLayout();
+
+                    }
+                };
+
+                expandAnimation.setDuration(100);
+                parentLayout.startAnimation(expandAnimation);
+
+                listViewLayoutParams.height = listViewLayoutParamsHeight;
+
+                groupTextLayoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(16));
+                groupText.setLayoutParams(groupTextLayoutParams);
 
             } else {
 
-                params.height = totalHeight + getPixelFromDP(8) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+                final RelativeLayout parentLayout = (RelativeLayout) listView.getParent();
+                final int listViewLayoutParamsHeight = listViewLayoutParams.height;
 
-                layoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
-                layoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(16));
-                groupText.setLayoutParams(layoutParams);
+                Animation collapseAnimation = new Animation() {
+
+                    @Override
+                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+                        relativeLayoutParams.height = (int) (getPixelFromDP(36) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+
+                        parentLayout.requestLayout();
+
+                    }
+                };
+
+                collapseAnimation.setDuration(100);
+                parentLayout.startAnimation(collapseAnimation);
+
+                listViewLayoutParams.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+
+                groupTextLayoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(8));
+                groupText.setLayoutParams(groupTextLayoutParams);
 
             }
 
         } else {
 
             if (!listView.isGroupExpanded(0))
-                params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-
+                listViewLayoutParams.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
             else
-                params.height = totalHeight + getPixelFromDP(8) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-
+                listViewLayoutParams.height = totalHeight + getPixelFromDP(8) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
 
         }
 
-        listView.setLayoutParams(params);
+        listView.setLayoutParams(listViewLayoutParams);
         listView.requestLayout();
 
     }
