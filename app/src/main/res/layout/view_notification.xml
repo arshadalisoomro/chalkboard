@@ -20,8 +20,8 @@
             android:layout_height="match_parent"
             android:indeterminate="false"
             android:layout_centerInParent="true"
-            android:progressDrawable="@drawable/d_circular_progress_bar"
-            android:background="@drawable/d_circular_progress_bar_background"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:background="@drawable/circular_progress_bar_background"
             style="?android:attr/progressBarStyleHorizontal" />
 
         <TextView
@@ -71,7 +71,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
         android:clickable="true"
-        android:src="@drawable/d_homework_notification"
+        android:src="@drawable/homework_notification"
         android:background="#00000000" />
 
 </RelativeLayout>

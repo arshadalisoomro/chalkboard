@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.adapter.TimetableListAdapter;
+import com.ghofrani.classapp.adapter.TimetableList;
 import com.ghofrani.classapp.modules.DataStore;
 
 import java.util.Calendar;
@@ -36,7 +36,7 @@ public class Saturday extends Fragment {
 
             noClasses.setVisibility(View.GONE);
 
-            TimetableListAdapter listAdapter = new TimetableListAdapter(getContext(), DataStore.getClassesArray(Calendar.SATURDAY));
+            TimetableList listAdapter = new TimetableList(getContext(), DataStore.getClassesArray(Calendar.SATURDAY));
             listView.setAdapter(listAdapter);
 
             setListViewHeightBasedOnChildren(listView);

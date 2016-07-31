@@ -4,14 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ghofrani.classapp.service.TimeService;
+import com.ghofrani.classapp.service.Time;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        context.startService(new Intent(context, TimeService.class));
+        context.startService(new Intent(context, Time.class));
 
     }
 

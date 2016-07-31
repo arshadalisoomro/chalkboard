@@ -16,11 +16,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.activity.AddHomeworkActivity;
-import com.ghofrani.classapp.activity.HomeActivity;
+import com.ghofrani.classapp.activity.AddHomework;
+import com.ghofrani.classapp.activity.Main;
 import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
@@ -40,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TimeService extends Service {
+public class Time extends Service {
 
     private static final IntentFilter timeIntentFilter;
     private static BroadcastReceiver timeReceiver;
@@ -293,10 +292,10 @@ public class TimeService extends Service {
 
             if (handler == null) {
 
-                Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
                 PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomeworkActivity.class).putExtra("originNotification", true);
+                Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("originNotification", true);
                 PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                 remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
@@ -412,7 +411,7 @@ public class TimeService extends Service {
 
                 }
 
-                Intent homeActivityIntent = new Intent(getApplicationContext(), HomeActivity.class);
+                Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
                 PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext());

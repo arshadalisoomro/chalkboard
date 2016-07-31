@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.ghofrani.classapp.R;
 
-public class HomeworkFragment extends Fragment {
+public class Homework extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

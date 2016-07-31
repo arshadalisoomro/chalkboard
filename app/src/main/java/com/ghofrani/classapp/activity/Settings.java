@@ -15,7 +15,7 @@ import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
 
-public class SettingsActivity extends AppCompatActivity {
+public class Settings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

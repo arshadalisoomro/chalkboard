@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
 
-public class TimetableListAdapter extends BaseAdapter {
+public class TimetableList extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
     private final String[] inputClasses;
 
-    public TimetableListAdapter(Context context, String[] inputClasses) {
+    public TimetableList(Context context, String[] inputClasses) {
 
         this.inputClasses = inputClasses;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

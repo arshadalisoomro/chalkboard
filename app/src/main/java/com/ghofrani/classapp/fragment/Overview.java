@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.adapter.ExpandableListAdapter;
+import com.ghofrani.classapp.adapter.ClassList;
 import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
@@ -34,7 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class OverviewFragment extends Fragment {
+public class Overview extends Fragment {
 
     private final BroadcastReceiver updateProgressBarReceiver = new BroadcastReceiver() {
 
@@ -367,9 +365,9 @@ public class OverviewFragment extends Fragment {
 
         List<String> nextClasses = new ArrayList<>(nextClassesHM.keySet());
 
-        ExpandableListAdapter expandableListAdapter;
-        expandableListAdapter = new ExpandableListAdapter(getActivity(), nextClassesHM, nextClasses);
-        expandableListViewNC.setAdapter(expandableListAdapter);
+        ClassList classListAdapter;
+        classListAdapter = new ClassList(getActivity(), nextClassesHM, nextClasses);
+        expandableListViewNC.setAdapter(classListAdapter);
 
         setListViewHeightBasedOnChildren(expandableListViewNC, false);
 
@@ -400,9 +398,9 @@ public class OverviewFragment extends Fragment {
 
         List<String> tomorrowClasses = new ArrayList<>(tomorrowClassesHM.keySet());
 
-        ExpandableListAdapter expandableListAdapter;
-        expandableListAdapter = new ExpandableListAdapter(getActivity(), tomorrowClassesHM, tomorrowClasses);
-        expandableListViewTC.setAdapter(expandableListAdapter);
+        ClassList classListAdapter;
+        classListAdapter = new ClassList(getActivity(), tomorrowClassesHM, tomorrowClasses);
+        expandableListViewTC.setAdapter(classListAdapter);
 
         setListViewHeightBasedOnChildren(expandableListViewTC, false);
 

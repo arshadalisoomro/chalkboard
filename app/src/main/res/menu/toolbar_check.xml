@@ -8,7 +8,7 @@
     <item
 
         android:title="Done"
-        android:icon="@drawable/d_tick"
+        android:icon="@drawable/tick"
         android:orderInCategory="1"
         app:showAsAction="always" />
 

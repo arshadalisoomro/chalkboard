@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
 
-public class AddHomeworkActivity extends AppCompatActivity {
+public class AddHomework extends AppCompatActivity {
 
     private boolean originNotification = false;
 
@@ -53,7 +53,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
                     if (originNotification) {
 
                         finish();
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class).putExtra("fragment", 3));
+                        startActivity(new Intent(getApplicationContext(), Main.class).putExtra("fragment", 3));
 
                     } else {
 
@@ -103,7 +103,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 if (originNotification) {
 
                     finish();
-                    startActivity(new Intent(getApplicationContext(), HomeActivity.class).putExtra("fragment", 3));
+                    startActivity(new Intent(getApplicationContext(), Main.class).putExtra("fragment", 3));
 
                 } else {
 

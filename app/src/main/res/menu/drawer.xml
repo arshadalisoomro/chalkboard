@@ -13,28 +13,28 @@
 
             android:id="@+id/overview"
             android:checked="false"
-            android:icon="@drawable/d_overview"
+            android:icon="@drawable/overview"
             android:title="Overview" />
 
         <item
 
             android:id="@+id/timetable"
             android:checked="false"
-            android:icon="@drawable/d_timetable"
+            android:icon="@drawable/timetable"
             android:title="Timetable" />
 
         <item
 
             android:id="@+id/classes"
             android:checked="false"
-            android:icon="@drawable/d_classes"
+            android:icon="@drawable/classes"
             android:title="Classes" />
 
         <item
 
             android:id="@+id/homework"
             android:checked="false"
-            android:icon="@drawable/d_homework"
+            android:icon="@drawable/homework"
             android:title="Homework" />
 
     </group>
@@ -48,7 +48,7 @@
 
             android:id="@+id/settings"
             android:checked="false"
-            android:icon="@drawable/d_settings"
+            android:icon="@drawable/settings"
             android:title="Settings" />
 
     </group>

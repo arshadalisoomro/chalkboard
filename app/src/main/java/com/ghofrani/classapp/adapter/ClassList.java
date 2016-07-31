@@ -12,13 +12,13 @@ import com.ghofrani.classapp.R;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class ClassList extends BaseExpandableListAdapter {
 
     private final Context context;
     private final HashMap<String, List<String>> nextClassesHM;
     private final List<String> nextClasses;
 
-    public ExpandableListAdapter(Context context, HashMap<String,
+    public ClassList(Context context, HashMap<String,
             List<String>> nextClassesHM, List<String> nextClasses) {
 
         this.context = context;

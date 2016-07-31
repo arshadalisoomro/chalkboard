@@ -1,6 +1,5 @@
 package com.ghofrani.classapp.activity;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,10 +17,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,9 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.fragment.ClassesFragment;
-import com.ghofrani.classapp.fragment.HomeworkFragment;
-import com.ghofrani.classapp.fragment.OverviewFragment;
+import com.ghofrani.classapp.fragment.Classes;
+import com.ghofrani.classapp.fragment.Homework;
+import com.ghofrani.classapp.fragment.Overview;
 import com.ghofrani.classapp.fragment.timetable.Friday;
 import com.ghofrani.classapp.fragment.timetable.Monday;
 import com.ghofrani.classapp.fragment.timetable.Saturday;
@@ -42,14 +37,12 @@ import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
 import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.DatabaseHelper;
-import com.ghofrani.classapp.service.TimeService;
+import com.ghofrani.classapp.service.Time;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class Main extends AppCompatActivity {
 
     private MenuItem menuItemDrawer;
     private DrawerLayout drawerLayout;
@@ -67,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        startService(new Intent(getApplicationContext(), TimeService.class));
+        startService(new Intent(getApplicationContext(), Time.class));
 
         int extraPassed = getIntent().hasExtra("fragment") ? getIntent().getExtras().getInt("fragment") : 0;
 
@@ -111,9 +104,9 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (currentView == 2)
-                    startActivity(new Intent(getApplicationContext(), AddClassActivity.class));
+                    startActivity(new Intent(getApplicationContext(), AddClass.class));
                 else if (currentView == 3)
-                    startActivity(new Intent(getApplicationContext(), AddHomeworkActivity.class));
+                    startActivity(new Intent(getApplicationContext(), AddHomework.class));
 
             }
 
@@ -261,7 +254,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 homeToolbar.setTitle("Overview");
 
-                OverviewFragment overviewFragment = new OverviewFragment();
+                Overview overviewFragment = new Overview();
                 fragmentTransaction.replace(R.id.home_activity_scroll_view, overviewFragment, "overview_fragment");
                 fragmentTransaction.commit();
 
@@ -386,7 +379,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 homeToolbar.setTitle("Classes");
 
-                ClassesFragment classesFragment = new ClassesFragment();
+                Classes classesFragment = new Classes();
                 fragmentTransaction.replace(R.id.home_activity_scroll_view, classesFragment, "classes_fragment");
                 fragmentTransaction.commit();
 
@@ -410,7 +403,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 homeToolbar.setTitle("Homework");
 
-                HomeworkFragment homeworkFragment = new HomeworkFragment();
+                Homework homeworkFragment = new Homework();
                 fragmentTransaction.replace(R.id.home_activity_scroll_view, homeworkFragment, "homework_fragment");
                 fragmentTransaction.commit();
 
@@ -427,7 +420,7 @@ public class HomeActivity extends AppCompatActivity {
 
             case 4:
 
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new Intent(this, Settings.class));
 
                 break;
 

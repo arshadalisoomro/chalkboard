@@ -14,11 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.activity.ViewClassActivity;
+import com.ghofrani.classapp.activity.ViewClass;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 import com.github.ivbaranov.mli.MaterialLetterIcon;
 
-public class ClassesFragment extends Fragment {
+public class Classes extends Fragment {
 
     private final View.OnClickListener cardOnClick = new View.OnClickListener() {
 
@@ -27,7 +27,7 @@ public class ClassesFragment extends Fragment {
 
             TextView classTitleTextView = (TextView) v.findViewById(R.id.class_title);
 
-            startActivity(new Intent(getContext(), ViewClassActivity.class).putExtra("class", classTitleTextView.getText()));
+            startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classTitleTextView.getText()));
 
         }
 

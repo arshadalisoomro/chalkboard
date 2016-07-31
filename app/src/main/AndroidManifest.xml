@@ -23,7 +23,7 @@
 
         <activity
 
-            android:name=".activity.HomeActivity"
+            android:name=".activity.Main"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
 
@@ -38,39 +38,39 @@
 
         <activity
 
-            android:name=".activity.SettingsActivity"
-            android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
+            android:name=".activity.Settings"
+            android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">
 
         </activity>
 
         <activity
 
-            android:name=".activity.AddHomeworkActivity"
-            android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
+            android:name=".activity.AddHomework"
+            android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">
 
         </activity>
 
         <activity
 
-            android:name=".activity.ViewClassActivity"
-            android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
+            android:name=".activity.ViewClass"
+            android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">
 
         </activity>
 
         <activity
 
-            android:name=".activity.AddClassActivity"
-            android:parentActivityName="com.ghofrani.classapp.activity.HomeActivity"
+            android:name=".activity.AddClass"
+            android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">
 
         </activity>
 
         <service
 
-            android:name=".service.TimeService"
+            android:name=".service.Time"
             android:icon="@mipmap/ic_launcher"
             android:label="TimeService">
 

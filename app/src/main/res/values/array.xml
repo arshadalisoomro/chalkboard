@@ -24,4 +24,16 @@
 
     </string-array>
 
+    <integer-array name="colors">
+
+        <item>@color/black</item>
+        <item>@color/red</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/yellow</item>
+        <item>@color/magenta</item>
+        <item>@color/cyan</item>
+
+    </integer-array>
+
 </resources>
