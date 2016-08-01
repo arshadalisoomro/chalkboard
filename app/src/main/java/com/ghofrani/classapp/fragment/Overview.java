@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -25,12 +24,10 @@ import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.ClassList;
+import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.DatabaseHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 
 public class Overview extends Fragment {
 
@@ -54,13 +51,7 @@ public class Overview extends Fragment {
         }
 
     };
-    private ExpandableListView expandableListViewNC;
-    private HashMap<String, List<String>> nextClassesHM;
-    private ExpandableListView expandableListViewTC;
-    private HashMap<String, List<String>> tomorrowClassesHM;
-    private boolean currentClass = false;
-    private boolean nextClasses = false;
-    private boolean tomorrowClasses = false;
+
     private final BroadcastReceiver updateUI = new BroadcastReceiver() {
 
         @Override
@@ -82,6 +73,11 @@ public class Overview extends Fragment {
 
     };
 
+    private ExpandableListView expandableListViewNextClasses;
+    private LinkedList<StandardClass> nextClassesLinkedList;
+    private ExpandableListView expandableListViewTomorrowClasses;
+    private LinkedList<StandardClass> tomorrowClassesLinkedList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -94,8 +90,8 @@ public class Overview extends Fragment {
 
         super.onStart();
 
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateProgressBarReceiver, new IntentFilter("updateProgressBar"));
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateUI, new IntentFilter("updateUI"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateProgressBarReceiver, new IntentFilter("update_progress_bar"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateUI, new IntentFilter("update_UI"));
 
         updateUI();
 
@@ -113,54 +109,38 @@ public class Overview extends Fragment {
 
     private void updateUI() {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (DataStore.isCurrentClass()) {
 
-        currentClass = DataStore.getCurrentClass();
+            StandardClass currentClass = DataStore.getCurrentClass();
 
-        if (DataStore.getNextClasses()) {
+            TextView currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
+            currentClassTitleTextView.setText(currentClass.getName());
 
-            nextClasses = DataStore.getNextClasses();
-            nextClassesHM = DataStore.getNextClassesHM();
+            TextView currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_location_teacher);
+            String locationTeacher = currentClass.getTeacher() + ", " + currentClass.getLocation();
+            currentClassLocationTeacherTextView.setText(locationTeacher);
 
-        }
+            TextView currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
+            currentClassStartTimeTextView.setText(currentClass.getStartTimeString());
 
-        if (DataStore.getTomorrowClasses() && sharedPreferences.getBoolean("tomorrowClasses", true)) {
+            TextView currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
+            currentClassEndTimeTextView.setText(currentClass.getEndTimeString());
 
-            tomorrowClasses = DataStore.getTomorrowClasses();
-            tomorrowClassesHM = DataStore.getTomorrowClassesHM();
-
-        }
-
-        if (currentClass) {
-
-            String[] currentClassInfo = DataStore.getCurrentClassInfo();
-
-            TextView currentClassTitle = (TextView) getView().findViewById(R.id.current_class_title);
-            currentClassTitle.setText(currentClassInfo[0]);
-
-            TextView currentClassLocationTeacher = (TextView) getView().findViewById(R.id.current_class_location_teacher);
-            String locationTeacher = new DatabaseHelper(getActivity()).getClassTeacher(currentClassInfo[0]) + ", " + currentClassInfo[1];
-            currentClassLocationTeacher.setText(locationTeacher);
-
-            TextView currentClassStartTime = (TextView) getView().findViewById(R.id.current_class_start_time);
-            currentClassStartTime.setText(currentClassInfo[2]);
-
-            TextView currentClassEndTime = (TextView) getView().findViewById(R.id.current_class_end_time);
-            currentClassEndTime.setText(currentClassInfo[3]);
-
-            updateProgressBarCache();
+            updateProgressBar();
 
         }
 
-        if (nextClasses) {
+        if (DataStore.isNextClasses()) {
 
-            configureExpandableListViewNC();
-            expandableListViewNC.post(new Runnable() {
+            nextClassesLinkedList = DataStore.getNextClassesLinkedList();
+
+            configureExpandableListViewNextClasses();
+            expandableListViewNextClasses.post(new Runnable() {
 
                 @Override
                 public void run() {
 
-                    expandableListViewNC.setIndicatorBoundsRelative(expandableListViewNC.getRight() - getPixelFromDP(32), expandableListViewNC.getWidth());
+                    expandableListViewNextClasses.setIndicatorBoundsRelative(expandableListViewNextClasses.getRight() - getPixelFromDP(32), expandableListViewNextClasses.getWidth());
 
                 }
 
@@ -168,15 +148,17 @@ public class Overview extends Fragment {
 
         }
 
-        if (tomorrowClasses) {
+        if (DataStore.isTomorrowClasses() && PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tomorrow_classes", true)) {
 
-            configureExpandableListViewTC();
-            expandableListViewTC.post(new Runnable() {
+            tomorrowClassesLinkedList = DataStore.getTomorrowClassesLinkedList();
+
+            configureExpandableListViewTomorrowClasses();
+            expandableListViewTomorrowClasses.post(new Runnable() {
 
                 @Override
                 public void run() {
 
-                    expandableListViewTC.setIndicatorBoundsRelative(expandableListViewTC.getRight() - getPixelFromDP(32), expandableListViewTC.getWidth());
+                    expandableListViewTomorrowClasses.setIndicatorBoundsRelative(expandableListViewTomorrowClasses.getRight() - getPixelFromDP(32), expandableListViewTomorrowClasses.getWidth());
 
 
                 }
@@ -191,22 +173,10 @@ public class Overview extends Fragment {
 
     private void updateProgressBar() {
 
-        final ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.current_class_progress);
+        final ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
         progressBar.setIndeterminate(false);
 
-        TextView progressTextView = (TextView) getView().findViewById(R.id.current_class_progress_percentage);
-        progressTextView.setText(DataStore.getProgressBarText());
-
-        progressBar.setProgress(DataStore.getProgressBarProgress());
-
-    }
-
-    private void updateProgressBarCache() {
-
-        final ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.current_class_progress);
-        progressBar.setIndeterminate(false);
-
-        TextView progressTextView = (TextView) getView().findViewById(R.id.current_class_progress_percentage);
+        TextView progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
         progressTextView.setText(DataStore.getProgressBarText());
 
         progressBar.setProgress(DataStore.getProgressBarProgress());
@@ -215,22 +185,22 @@ public class Overview extends Fragment {
 
     private void setMarginsVisibility() {
 
-        if (currentClass) {
+        if (DataStore.isCurrentClass()) {
 
-            CardView noClasses = (CardView) getView().findViewById(R.id.no_classes);
-            noClasses.setVisibility(View.GONE);
+            CardView noClassesCard = (CardView) getView().findViewById(R.id.overview_no_classes_card);
+            noClassesCard.setVisibility(View.GONE);
 
-            CardView currentClassCard = (CardView) getView().findViewById(R.id.current_class_card);
+            CardView currentClassCard = (CardView) getView().findViewById(R.id.overview_current_class_card);
             currentClassCard.setVisibility(View.VISIBLE);
 
-            if (nextClasses) {
+            if (DataStore.isNextClasses()) {
 
                 RelativeLayout.LayoutParams layoutParamsCCC;
                 layoutParamsCCC = (RelativeLayout.LayoutParams) currentClassCard.getLayoutParams();
                 layoutParamsCCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(4));
                 currentClassCard.setLayoutParams(layoutParamsCCC);
 
-                CardView nextClassesCard = (CardView) getView().findViewById(R.id.next_classes_card);
+                CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.VISIBLE);
 
                 RelativeLayout.LayoutParams layoutParamsNCC;
@@ -238,12 +208,12 @@ public class Overview extends Fragment {
                 layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(4), getPixelFromDP(16), getPixelFromDP(16));
                 nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                if (tomorrowClasses) {
+                if (DataStore.isTomorrowClasses() && PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tomorrow_classes", true)) {
 
                     layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(4), getPixelFromDP(16), getPixelFromDP(4));
                     nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.VISIBLE);
 
                     RelativeLayout.LayoutParams layoutParamsTCC;
@@ -253,24 +223,24 @@ public class Overview extends Fragment {
 
                 } else {
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.GONE);
 
                 }
 
             } else {
 
-                CardView nextClassesCard = (CardView) getView().findViewById(R.id.next_classes_card);
+                CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.GONE);
 
-                if (tomorrowClasses) {
+                if (DataStore.isTomorrowClasses() && PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tomorrow_classes", true)) {
 
                     RelativeLayout.LayoutParams layoutParamsCCC;
                     layoutParamsCCC = (RelativeLayout.LayoutParams) currentClassCard.getLayoutParams();
                     layoutParamsCCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(4));
                     currentClassCard.setLayoutParams(layoutParamsCCC);
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.VISIBLE);
 
                     RelativeLayout.LayoutParams layoutParamsTCC;
@@ -280,7 +250,7 @@ public class Overview extends Fragment {
 
                 } else {
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.GONE);
 
                 }
@@ -289,15 +259,15 @@ public class Overview extends Fragment {
 
         } else {
 
-            CardView currentClassCard = (CardView) getView().findViewById(R.id.current_class_card);
+            CardView currentClassCard = (CardView) getView().findViewById(R.id.overview_current_class_card);
             currentClassCard.setVisibility(View.GONE);
 
-            if (nextClasses) {
+            if (DataStore.isNextClasses()) {
 
-                CardView noClasses = (CardView) getView().findViewById(R.id.no_classes);
+                CardView noClasses = (CardView) getView().findViewById(R.id.overview_no_classes_card);
                 noClasses.setVisibility(View.GONE);
 
-                CardView nextClassesCard = (CardView) getView().findViewById(R.id.next_classes_card);
+                CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.VISIBLE);
 
                 RelativeLayout.LayoutParams layoutParamsNCC;
@@ -305,12 +275,12 @@ public class Overview extends Fragment {
                 layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16));
                 nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                if (tomorrowClasses) {
+                if (DataStore.isTomorrowClasses() && PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tomorrow_classes", true)) {
 
                     layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(4));
                     nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.VISIBLE);
 
                     RelativeLayout.LayoutParams layoutParamsTCC;
@@ -320,22 +290,22 @@ public class Overview extends Fragment {
 
                 } else {
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.GONE);
 
                 }
 
             } else {
 
-                CardView nextClassesCard = (CardView) getView().findViewById(R.id.next_classes_card);
+                CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.GONE);
 
-                if (tomorrowClasses) {
+                if (DataStore.isTomorrowClasses() && PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tomorrow_classes", true)) {
 
-                    CardView noClasses = (CardView) getView().findViewById(R.id.no_classes);
+                    CardView noClasses = (CardView) getView().findViewById(R.id.overview_no_classes_card);
                     noClasses.setVisibility(View.GONE);
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.VISIBLE);
 
                     RelativeLayout.LayoutParams layoutParamsTCC;
@@ -345,10 +315,10 @@ public class Overview extends Fragment {
 
                 } else {
 
-                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.tomorrow_classes_card);
+                    CardView tomorrowClassesCard = (CardView) getView().findViewById(R.id.overview_tomorrow_classes_card);
                     tomorrowClassesCard.setVisibility(View.GONE);
 
-                    CardView noClasses = (CardView) getView().findViewById(R.id.no_classes);
+                    CardView noClasses = (CardView) getView().findViewById(R.id.overview_no_classes_card);
                     noClasses.setVisibility(View.VISIBLE);
 
                 }
@@ -359,30 +329,27 @@ public class Overview extends Fragment {
 
     }
 
-    private void configureExpandableListViewNC() {
+    private void configureExpandableListViewNextClasses() {
 
-        expandableListViewNC = (ExpandableListView) getView().findViewById(R.id.upcoming_classes_list);
+        expandableListViewNextClasses = (ExpandableListView) getView().findViewById(R.id.overview_next_classes_list);
 
-        List<String> nextClasses = new ArrayList<>(nextClassesHM.keySet());
+        ClassList classListAdapter = new ClassList(getActivity(), nextClassesLinkedList, "Next classes");
+        expandableListViewNextClasses.setAdapter(classListAdapter);
 
-        ClassList classListAdapter;
-        classListAdapter = new ClassList(getActivity(), nextClassesHM, nextClasses);
-        expandableListViewNC.setAdapter(classListAdapter);
+        setListViewHeightBasedOnChildren(expandableListViewNextClasses, false);
 
-        setListViewHeightBasedOnChildren(expandableListViewNC, false);
+        expandableListViewNextClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
-        expandableListViewNC.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            public boolean onGroupClick(ExpandableListView expandableListViewGroupListener, View view, int groupPosition, long id) {
 
-            public boolean onGroupClick(ExpandableListView expandableListViewGL, View view, int groupPosition, long id) {
+                expandableListViewNextClasses = expandableListViewGroupListener;
 
-                expandableListViewNC = expandableListViewGL;
-
-                if (!expandableListViewNC.isGroupExpanded(0))
-                    expandableListViewNC.expandGroup(0);
+                if (!expandableListViewNextClasses.isGroupExpanded(0))
+                    expandableListViewNextClasses.expandGroup(0);
                 else
-                    expandableListViewNC.collapseGroup(0);
+                    expandableListViewNextClasses.collapseGroup(0);
 
-                setListViewHeightBasedOnChildren(expandableListViewNC, true);
+                setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
 
                 return true;
 
@@ -392,30 +359,27 @@ public class Overview extends Fragment {
 
     }
 
-    private void configureExpandableListViewTC() {
+    private void configureExpandableListViewTomorrowClasses() {
 
-        expandableListViewTC = (ExpandableListView) getView().findViewById(R.id.tomorrow_classes_list);
+        expandableListViewTomorrowClasses = (ExpandableListView) getView().findViewById(R.id.overview_tomorrow_classes_list);
 
-        List<String> tomorrowClasses = new ArrayList<>(tomorrowClassesHM.keySet());
+        ClassList classListAdapter = new ClassList(getActivity(), tomorrowClassesLinkedList, "Tomorrow's classes");
+        expandableListViewTomorrowClasses.setAdapter(classListAdapter);
 
-        ClassList classListAdapter;
-        classListAdapter = new ClassList(getActivity(), tomorrowClassesHM, tomorrowClasses);
-        expandableListViewTC.setAdapter(classListAdapter);
+        setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, false);
 
-        setListViewHeightBasedOnChildren(expandableListViewTC, false);
+        expandableListViewTomorrowClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
-        expandableListViewTC.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            public boolean onGroupClick(ExpandableListView expandableListViewGroupListener, View view, int groupPosition, long id) {
 
-            public boolean onGroupClick(ExpandableListView expandableListViewGL, View view, int groupPosition, long id) {
+                expandableListViewTomorrowClasses = expandableListViewGroupListener;
 
-                expandableListViewTC = expandableListViewGL;
-
-                if (!expandableListViewTC.isGroupExpanded(0))
-                    expandableListViewTC.expandGroup(0);
+                if (!expandableListViewTomorrowClasses.isGroupExpanded(0))
+                    expandableListViewTomorrowClasses.expandGroup(0);
                 else
-                    expandableListViewTC.collapseGroup(0);
+                    expandableListViewTomorrowClasses.collapseGroup(0);
 
-                setListViewHeightBasedOnChildren(expandableListViewTC, true);
+                setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
 
                 return true;
 
@@ -446,7 +410,7 @@ public class Overview extends Fragment {
 
         if (changeParams) {
 
-            TextView groupText = (TextView) listView.findViewById(R.id.list_group_text);
+            TextView groupText = (TextView) listView.findViewById(R.id.view_list_group_text);
             LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
             if (listView.isGroupExpanded(0)) {

@@ -30,13 +30,13 @@ public class Tuesday extends Fragment {
         super.onStart();
 
         ListView listView = (ListView) getView().findViewById(R.id.tuesday_list_view);
-        TextView noClasses = (TextView) getView().findViewById(R.id.tuesday_no_classes);
+        TextView noClassesTextView = (TextView) getView().findViewById(R.id.tuesday_no_classes);
 
-        if (DataStore.getClassesArray(Calendar.TUESDAY) != null) {
+        if (DataStore.getClassesLinkedListOfDay(Calendar.TUESDAY) != null) {
 
-            noClasses.setVisibility(View.GONE);
+            noClassesTextView.setVisibility(View.GONE);
 
-            TimetableList listAdapter = new TimetableList(getContext(), DataStore.getClassesArray(Calendar.TUESDAY));
+            TimetableList listAdapter = new TimetableList(getContext(), DataStore.getClassesLinkedListOfDay(Calendar.TUESDAY));
             listView.setAdapter(listAdapter);
 
             setListViewHeightBasedOnChildren(listView);
@@ -45,7 +45,7 @@ public class Tuesday extends Fragment {
 
             listView.setVisibility(View.GONE);
 
-            noClasses.setVisibility(View.VISIBLE);
+            noClassesTextView.setVisibility(View.VISIBLE);
 
         }
 
@@ -68,9 +68,9 @@ public class Tuesday extends Fragment {
 
         }
 
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
+        ViewGroup.LayoutParams listViewLayoutParams = listView.getLayoutParams();
+        listViewLayoutParams.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(listViewLayoutParams);
 
     }
 

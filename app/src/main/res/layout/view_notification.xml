@@ -6,27 +6,27 @@
 
     <RelativeLayout
 
-        android:id="@+id/progress_layout"
+        android:id="@+id/view_notification_progress_layout"
         android:layout_width="54dp"
         android:layout_height="54dp"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="4dp"
-        android:layout_marginRight="7dp"
-        android:layout_centerVertical="true">
+        android:layout_marginRight="10dp">
 
         <ProgressBar
 
-            android:id="@+id/notification_progress_bar"
+            android:id="@+id/view_notification_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:indeterminate="false"
             android:layout_centerInParent="true"
-            android:progressDrawable="@drawable/circular_progress_bar"
             android:background="@drawable/circular_progress_bar_background"
-            style="?android:attr/progressBarStyleHorizontal" />
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar" />
 
         <TextView
 
-            android:id="@+id/notification_progress_text"
+            android:id="@+id/view_notification_progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -39,12 +39,12 @@
 
         android:layout_width="wrap_content"
         android:layout_height="54dp"
-        android:layout_toRightOf="@id/progress_layout"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/view_notification_progress_layout">
 
         <TextView
 
-            android:id="@+id/notification_header"
+            android:id="@+id/view_notification_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -53,10 +53,10 @@
 
         <TextView
 
-            android:id="@+id/notification_text"
+            android:id="@+id/view_notification_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/notification_header"
+            android:layout_below="@id/view_notification_header"
             android:textColor="#000000"
             android:textSize="14sp" />
 
@@ -64,14 +64,14 @@
 
     <ImageButton
 
-        android:id="@+id/notification_button"
+        android:id="@+id/view_notification_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
+        android:background="#00000000"
         android:clickable="true"
-        android:src="@drawable/homework_notification"
-        android:background="#00000000" />
+        android:src="@drawable/homework_notification" />
 
 </RelativeLayout>

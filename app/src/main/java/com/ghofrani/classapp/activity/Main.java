@@ -37,7 +37,7 @@ import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
 import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.service.Time;
+import com.ghofrani.classapp.service.Background;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +46,13 @@ public class Main extends AppCompatActivity {
 
     private MenuItem menuItemDrawer;
     private DrawerLayout drawerLayout;
-    private Toolbar homeToolbar;
+    private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ScrollView scrollView;
     private NavigationView navigationView;
     private FloatingActionButton floatingActionButton;
+    private FragmentManager fragmentManager;
     private int currentView;
 
     @Override
@@ -60,44 +61,86 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        startService(new Intent(getApplicationContext(), Time.class));
+        /*
 
-        int extraPassed = getIntent().hasExtra("fragment") ? getIntent().getExtras().getInt("fragment") : 0;
+        DatabaseHelper db = new DatabaseHelper(this);
 
-        homeToolbar = (Toolbar) findViewById(R.id.home_toolbar);
-        homeToolbar.setTitleTextColor(Color.WHITE);
+        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.SUNDAY);
+        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.SUNDAY);
+        db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.SUNDAY);
+        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.SUNDAY);
+
+        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.MONDAY);
+        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.MONDAY);
+        db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.MONDAY);
+        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.MONDAY);
+
+        db.insertClassIntoDay(new String[]{"Physics", "0820", "0920"}, Calendar.TUESDAY);
+        db.insertClassIntoDay(new String[]{"Free", "0920", "1020"}, Calendar.TUESDAY);
+        db.insertClassIntoDay(new String[]{"Chemistry", "1100", "1200"}, Calendar.TUESDAY);
+        db.insertClassIntoDay(new String[]{"Mathematics", "1200", "1300"}, Calendar.TUESDAY);
+
+        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.WEDNESDAY);
+        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.WEDNESDAY);
+        db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.WEDNESDAY);
+        db.insertClassIntoDay(new String[]{"Chemistry", "1200", "1300"}, Calendar.WEDNESDAY);
+
+        db.insertClassIntoDay(new String[]{"Chemistry", "0820", "0920"}, Calendar.THURSDAY);
+        db.insertClassIntoDay(new String[]{"TOK", "0920", "1020"}, Calendar.THURSDAY);
+        db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.THURSDAY);
+        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.THURSDAY);
+
+        db.addClass(new String[]{"Economics", "Ms. Hiba", "250"});
+        db.addClass(new String[]{"English", "Ms. King", "58"});
+        db.addClass(new String[]{"TOK", "Ms. Keogh", "2C"});
+        db.addClass(new String[]{"Chemistry", "Ms. Moss", "255"});
+        db.addClass(new String[]{"Spanish", "Ms. Morgan", "246"});
+        db.addClass(new String[]{"Mathematics", "Mr. Nabeel", "150"});
+        db.addClass(new String[]{"Physics", "Mr. Derus", "71"});
+        db.addClass(new String[]{"Free", "Ms. Schmidt", "Library"});
+
+        db.close();
+
+        */
+
+        startService(new Intent(getApplicationContext(), Background.class));
+
+        final int extraPassed = getIntent().hasExtra("fragment") ? getIntent().getExtras().getInt("fragment") : 0;
+
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
 
         switch (extraPassed) {
 
             case 0:
 
-                homeToolbar.setTitle("Overview");
+                toolbar.setTitle("Overview");
 
                 break;
 
             case 1:
 
-                homeToolbar.setTitle("Timetable");
+                toolbar.setTitle("Timetable");
 
                 break;
 
             case 2:
 
-                homeToolbar.setTitle("Classes");
+                toolbar.setTitle("Classes");
 
                 break;
 
             case 3:
 
-                homeToolbar.setTitle("Homework");
+                toolbar.setTitle("Homework");
 
                 break;
 
         }
 
-        setSupportActionBar(homeToolbar);
+        setSupportActionBar(toolbar);
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -112,9 +155,11 @@ public class Main extends AppCompatActivity {
 
         });
 
-        scrollView = (ScrollView) findViewById(R.id.home_activity_scroll_view);
+        scrollView = (ScrollView) findViewById(R.id.main_scroll_view);
 
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        fragmentManager = getSupportFragmentManager();
+
+        navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
 
         navigationView.setCheckedItem(R.id.overview);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -181,81 +226,38 @@ public class Main extends AppCompatActivity {
 
         });
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, homeToolbar, R.string.drawer_open, R.string.drawer_close);
+        final ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
         actionBarDrawerToggle.syncState();
 
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
         tabLayout.setVisibility(AppBarLayout.GONE);
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager = (ViewPager) findViewById(R.id.main_view_pager);
         viewPager.setVisibility(LinearLayout.GONE);
-
-        /*
-
-        DatabaseHelper db = new DatabaseHelper(this);
-
-        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.SUNDAY);
-        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.SUNDAY);
-        db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.SUNDAY);
-        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.SUNDAY);
-
-        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.MONDAY);
-        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.MONDAY);
-        db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.MONDAY);
-        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.MONDAY);
-
-        db.insertClassIntoDay(new String[]{"Physics", "0820", "0920"}, Calendar.TUESDAY);
-        db.insertClassIntoDay(new String[]{"Free", "0920", "1020"}, Calendar.TUESDAY);
-        db.insertClassIntoDay(new String[]{"Chemistry", "1100", "1200"}, Calendar.TUESDAY);
-        db.insertClassIntoDay(new String[]{"Mathematics", "1200", "1300"}, Calendar.TUESDAY);
-
-        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.WEDNESDAY);
-        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.WEDNESDAY);
-        db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.WEDNESDAY);
-        db.insertClassIntoDay(new String[]{"Chemistry", "1200", "1300"}, Calendar.WEDNESDAY);
-
-        db.insertClassIntoDay(new String[]{"Chemistry", "0820", "0920"}, Calendar.THURSDAY);
-        db.insertClassIntoDay(new String[]{"TOK", "0920", "1020"}, Calendar.THURSDAY);
-        db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.THURSDAY);
-        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.THURSDAY);
-
-        db.addClass(new String[]{"Economics", "Ms. Hiba", "250"});
-        db.addClass(new String[]{"English", "Ms. King", "58"});
-        db.addClass(new String[]{"TOK", "Ms. Keogh", "2C"});
-        db.addClass(new String[]{"Chemistry", "Ms. Moss", "255"});
-        db.addClass(new String[]{"Spanish", "Ms. Morgan", "246"});
-        db.addClass(new String[]{"Mathematics", "Mr. Nabeel", "150"});
-        db.addClass(new String[]{"Physics", "Mr. Derus", "71"});
-        db.addClass(new String[]{"Free", "Ms. Schmidt", "Library"});
-
-        db.close();
-
-        */
 
         switchToView(extraPassed);
 
     }
 
-    private void switchToView(int id) {
+    private void switchToView(int viewToSwitchTo) {
 
-        switch (id) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        switch (viewToSwitchTo) {
 
             case 0:
 
                 floatingActionButton.setVisibility(View.INVISIBLE);
 
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                homeToolbar.setTitle("Overview");
+                toolbar.setTitle("Overview");
 
                 Overview overviewFragment = new Overview();
-                fragmentTransaction.replace(R.id.home_activity_scroll_view, overviewFragment, "overview_fragment");
+                fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
                 fragmentTransaction.commit();
 
                 tabLayout.setVisibility(AppBarLayout.GONE);
@@ -265,20 +267,15 @@ public class Main extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.overview);
 
-                currentView = 0;
-
                 break;
 
             case 1:
 
                 floatingActionButton.setVisibility(View.INVISIBLE);
 
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
 
-                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.home_activity_scroll_view)).commit();
-
-                homeToolbar.setTitle("Timetable");
+                toolbar.setTitle("Timetable");
 
                 ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -303,14 +300,14 @@ public class Main extends AppCompatActivity {
 
                         if (tabLayout.getPosition() != 0) {
 
-                            if (!DataStore.isAnimationState()) {
+                            if (!DataStore.isAnimated()) {
 
                                 Animation animation = new Animation() {
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                        LinearLayout layout = (LinearLayout) findViewById(R.id.tab_layout_layout);
+                                        LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
 
                                         params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
@@ -323,20 +320,20 @@ public class Main extends AppCompatActivity {
                                 animation.setDuration(200);
                                 drawerLayout.startAnimation(animation);
 
-                                DataStore.setAnimationState(true);
+                                DataStore.setIsAnimated(true);
 
                             }
 
                         } else {
 
-                            if (DataStore.isAnimationState()) {
+                            if (DataStore.isAnimated()) {
 
                                 Animation animation = new Animation() {
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                        LinearLayout layout = (LinearLayout) findViewById(R.id.tab_layout_layout);
+                                        LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
 
                                         params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
@@ -349,7 +346,7 @@ public class Main extends AppCompatActivity {
                                 animation.setDuration(200);
                                 drawerLayout.startAnimation(animation);
 
-                                DataStore.setAnimationState(false);
+                                DataStore.setIsAnimated(false);
 
                             }
 
@@ -366,21 +363,16 @@ public class Main extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.timetable);
 
-                currentView = 1;
-
                 break;
 
             case 2:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
 
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-
-                homeToolbar.setTitle("Classes");
+                toolbar.setTitle("Classes");
 
                 Classes classesFragment = new Classes();
-                fragmentTransaction.replace(R.id.home_activity_scroll_view, classesFragment, "classes_fragment");
+                fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
                 fragmentTransaction.commit();
 
                 tabLayout.setVisibility(AppBarLayout.GONE);
@@ -390,21 +382,16 @@ public class Main extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.classes);
 
-                currentView = 2;
-
                 break;
 
             case 3:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
 
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-
-                homeToolbar.setTitle("Homework");
+                toolbar.setTitle("Homework");
 
                 Homework homeworkFragment = new Homework();
-                fragmentTransaction.replace(R.id.home_activity_scroll_view, homeworkFragment, "homework_fragment");
+                fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
                 fragmentTransaction.commit();
 
                 tabLayout.setVisibility(AppBarLayout.GONE);
@@ -413,8 +400,6 @@ public class Main extends AppCompatActivity {
                 scrollView.setVisibility(LinearLayout.VISIBLE);
 
                 navigationView.setCheckedItem(R.id.homework);
-
-                currentView = 3;
 
                 break;
 
@@ -425,6 +410,8 @@ public class Main extends AppCompatActivity {
                 break;
 
         }
+
+        currentView = viewToSwitchTo;
 
     }
 

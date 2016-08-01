@@ -8,7 +8,7 @@
 
     <TextView
 
-        android:id="@+id/list_item_text"
+        android:id="@+id/view_list_child_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
@@ -16,16 +16,16 @@
 
     <TextView
 
-        android:id="@+id/list_item_location"
+        android:id="@+id/view_list_child_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/list_item_text"
+        android:layout_below="@id/view_list_child_text"
         android:layout_marginBottom="7dp"
         android:textSize="12sp" />
 
     <TextView
 
-        android:id="@+id/list_item_time"
+        android:id="@+id/view_list_child_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

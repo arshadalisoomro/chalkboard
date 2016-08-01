@@ -7,10 +7,6 @@ import android.preference.PreferenceFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
@@ -23,11 +19,11 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Toolbar settingsToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
-        settingsToolbar.setTitle("Settings");
-        settingsToolbar.setTitleTextColor(Color.WHITE);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
+        toolbar.setTitle("Settings");
+        toolbar.setTitleTextColor(Color.WHITE);
 
-        setSupportActionBar(settingsToolbar);
+        setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -38,19 +34,19 @@ public class Settings extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("updateData"));
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_data"));
 
         super.onBackPressed();
 
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
 
-        if (item.getItemId() == android.R.id.home)
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("updateData"));
+        if (menuItem.getItemId() == android.R.id.home)
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_data"));
 
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(menuItem);
 
     }
 

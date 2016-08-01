@@ -22,25 +22,25 @@ public class AddHomework extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_homework);
 
-        Toolbar homeworkToolbar = (Toolbar) findViewById(R.id.add_homework_toolbar);
-        homeworkToolbar.setTitle("Add Homework");
-        homeworkToolbar.setTitleTextColor(Color.WHITE);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_homework_toolbar);
+        toolbar.setTitle("Add Homework");
+        toolbar.setTitleTextColor(Color.WHITE);
 
-        setSupportActionBar(homeworkToolbar);
+        setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (getIntent().hasExtra("originNotification"))
+        if (getIntent().hasExtra("origin_notification"))
             originNotification = true;
 
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
 
-        if(item.getItemId() == android.R.id.home) {
+        if (menuItem.getItemId() == android.R.id.home) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Discard changes?");
 
@@ -81,7 +81,7 @@ public class AddHomework extends AppCompatActivity {
 
         } else {
 
-            return super.onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(menuItem);
 
         }
 
@@ -90,7 +90,7 @@ public class AddHomework extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Discard changes?");
 
@@ -129,7 +129,7 @@ public class AddHomework extends AppCompatActivity {
 
     }
 
-    private void callSuperOnBackPressed(){
+    private void callSuperOnBackPressed() {
 
         super.onBackPressed();
 

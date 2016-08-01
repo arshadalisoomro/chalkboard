@@ -70,7 +70,7 @@
 
         <service
 
-            android:name=".service.Time"
+            android:name=".service.Background"
             android:icon="@mipmap/ic_launcher"
             android:label="TimeService">
 

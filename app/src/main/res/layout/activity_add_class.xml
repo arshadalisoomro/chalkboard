@@ -5,21 +5,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <include
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include
-
-            android:id="@+id/add_class_toolbar"
-            layout="@layout/view_toolbar_padded" />
-
-    </android.support.design.widget.AppBarLayout>
+        android:id="@+id/add_class_toolbar"
+        layout="@layout/view_toolbar_padded" />
 
     <ScrollView
 
@@ -32,84 +24,67 @@
         <RelativeLayout
 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="24dp">
 
-            <RelativeLayout
+            <android.support.design.widget.TextInputLayout
 
-                android:id="@+id/input_layout"
+                android:id="@+id/add_class_input_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="24dp">
+                android:layout_marginBottom="8dp">
 
-                <android.support.design.widget.TextInputLayout
+                <EditText
 
-                    android:id="@+id/input_name_layout"
+                    android:id="@+id/add_class_input_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp">
+                    android:hint="Name"
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:textSize="17sp" />
 
-                    <EditText
+            </android.support.design.widget.TextInputLayout>
 
-                        android:id="@+id/input_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Name"
-                        android:inputType="textPersonName"
-                        android:singleLine="true"
-                        android:textSize="17sp" />
+            <android.support.design.widget.TextInputLayout
 
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-
-                    android:id="@+id/input_teacher_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/input_name_layout"
-                    android:layout_marginBottom="8dp">
-
-                    <EditText
-
-                        android:id="@+id/input_teacher"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Teacher"
-                        android:inputType="textPersonName"
-                        android:singleLine="true"
-                        android:textSize="17sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-
-                    android:id="@+id/input_location_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/input_teacher_layout">
-
-                    <EditText
-
-                        android:id="@+id/input_location"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Location"
-                        android:inputType="textPersonName"
-                        android:singleLine="true"
-                        android:textSize="17sp" />
-
-                </android.support.design.widget.TextInputLayout>
-
-            </RelativeLayout>
-
-            <FrameLayout
-
-                android:id="@+id/color_frame_layout"
-                android:layout_below="@id/input_layout"
-                android:layout_marginTop="16dp"
+                android:id="@+id/add_class_input_teacher_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_class_input_name_layout"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+
+                    android:id="@+id/add_class_input_teacher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Teacher"
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:textSize="17sp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_class_input_teacher_layout">
+
+                <EditText
+
+                    android:id="@+id/add_class_input_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Location"
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:textSize="17sp" />
+
+            </android.support.design.widget.TextInputLayout>
 
         </RelativeLayout>
 

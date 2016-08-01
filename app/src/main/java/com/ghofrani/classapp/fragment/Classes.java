@@ -20,14 +20,14 @@ import com.github.ivbaranov.mli.MaterialLetterIcon;
 
 public class Classes extends Fragment {
 
-    private final View.OnClickListener cardOnClick = new View.OnClickListener() {
+    private final View.OnClickListener cardOnClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
 
-            TextView classTitleTextView = (TextView) v.findViewById(R.id.class_title);
+            TextView classCardTitleTextView = (TextView) v.findViewById(R.id.view_class_card_title);
 
-            startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classTitleTextView.getText()));
+            startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classCardTitleTextView.getText()));
 
         }
 
@@ -52,63 +52,63 @@ public class Classes extends Fragment {
     @SuppressWarnings("ResourceType")
     private void updateUI() {
 
-        RelativeLayout classesLayout = (RelativeLayout) getView().findViewById(R.id.class_layout);
-
-        classesLayout.removeAllViews();
+        RelativeLayout classesClassListLayout = (RelativeLayout) getView().findViewById(R.id.classes_class_list_layout);
+        classesClassListLayout.removeAllViews();
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        DatabaseHelper db = new DatabaseHelper(getContext());
+        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
 
-        Cursor result = db.getClasses();
+        Cursor cursor = databaseHelper.getClasses();
 
-        RelativeLayout[] cardViews = new RelativeLayout[result.getCount()];
-        int index = 1;
+        RelativeLayout[] cardViewRelativeLayoutArray = new RelativeLayout[cursor.getCount()];
 
-        while (result.moveToNext()) {
+        int loopIndex = 1;
 
-            RelativeLayout classCard = (RelativeLayout) layoutInflater.inflate(R.layout.view_card_class, classesLayout, false);
-            classCard.setId(index);
+        while (cursor.moveToNext()) {
 
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) classCard.getLayoutParams();
-            layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            RelativeLayout classCardLayout = (RelativeLayout) layoutInflater.inflate(R.layout.view_class_card, classesClassListLayout, false);
+            classCardLayout.setId(loopIndex);
 
-            classCard.setLayoutParams(layoutParams);
+            RelativeLayout.LayoutParams classCardLayoutLayoutParams = (RelativeLayout.LayoutParams) classCardLayout.getLayoutParams();
+            classCardLayoutLayoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+            classCardLayoutLayoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
 
-            TextView classTitle = (TextView) classCard.findViewById(R.id.class_title);
-            classTitle.setText(result.getString(1));
+            classCardLayout.setLayoutParams(classCardLayoutLayoutParams);
 
-            TextView classLocationTeacher = (TextView) classCard.findViewById(R.id.class_location_teacher);
-            classLocationTeacher.setText(result.getString(2) + ", " + result.getString(3));
+            TextView classCardTitleTextView = (TextView) classCardLayout.findViewById(R.id.view_class_card_title);
+            classCardTitleTextView.setText(cursor.getString(1));
 
-            CardView card = (CardView) classCard.findViewById(R.id.card_view_class);
-            card.setOnClickListener(cardOnClick);
+            TextView classCardLocationTeacherTextView = (TextView) classCardLayout.findViewById(R.id.view_class_card_location_teacher);
+            classCardLocationTeacherTextView.setText(cursor.getString(2) + ", " + cursor.getString(3));
 
-            if ((index % 2) == 0) {
+            CardView classCard = (CardView) classCardLayout.findViewById(R.id.view_class_card);
+            classCard.setOnClickListener(cardOnClickListener);
 
-                MaterialLetterIcon homeworkIcon = (MaterialLetterIcon) classCard.findViewById(R.id.homework_icon);
-                homeworkIcon.setShapeColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            if ((loopIndex % 2) == 0) {
+
+                MaterialLetterIcon homeworkIcon = (MaterialLetterIcon) classCardLayout.findViewById(R.id.view_class_card_homework_icon);
+                homeworkIcon.setShapeColor(ContextCompat.getColor(getContext(), R.color.accent));
 
             }
 
-            if (index == 1)
-                layoutParams.topMargin = getPixelFromDP(12);
+            if (loopIndex == 1)
+                classCardLayoutLayoutParams.topMargin = getPixelFromDP(12);
 
-            if (index == cardViews.length)
-                layoutParams.bottomMargin = getPixelFromDP(12);
+            if (loopIndex == cardViewRelativeLayoutArray.length)
+                classCardLayoutLayoutParams.bottomMargin = getPixelFromDP(12);
 
-            if (index > 1)
-                layoutParams.addRule(RelativeLayout.BELOW, index - 1);
+            if (loopIndex > 1)
+                classCardLayoutLayoutParams.addRule(RelativeLayout.BELOW, loopIndex - 1);
 
-            classesLayout.addView(classCard);
-            cardViews[index - 1] = classCard;
+            classesClassListLayout.addView(classCardLayout);
+            cardViewRelativeLayoutArray[loopIndex - 1] = classCardLayout;
 
-            index++;
+            loopIndex++;
 
         }
 
-        db.close();
+        databaseHelper.close();
 
     }
 

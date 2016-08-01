@@ -7,9 +7,9 @@
 
     <item
 
-        android:title="Done"
         android:icon="@drawable/tick"
         android:orderInCategory="1"
+        android:title="Done"
         app:showAsAction="always" />
 
 </menu>

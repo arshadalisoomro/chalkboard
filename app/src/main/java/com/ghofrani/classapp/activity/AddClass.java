@@ -1,20 +1,16 @@
 package com.ghofrani.classapp.activity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import com.ghofrani.classapp.R;
+
 public class AddClass extends AppCompatActivity {
 
     @Override
@@ -23,22 +19,22 @@ public class AddClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
 
-        Toolbar addClassToolbar = (Toolbar) findViewById(R.id.add_class_toolbar);
-        addClassToolbar.setTitle("Add Class");
-        addClassToolbar.setTitleTextColor(Color.WHITE);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_class_toolbar);
+        toolbar.setTitle("Add Class");
+        toolbar.setTitleTextColor(Color.WHITE);
 
-        setSupportActionBar(addClassToolbar);
+        setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
 
-        if(item.getItemId() == android.R.id.home) {
+        if (menuItem.getItemId() == android.R.id.home) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Discard changes?");
 
@@ -70,7 +66,7 @@ public class AddClass extends AppCompatActivity {
 
         } else {
 
-            return super.onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(menuItem);
 
         }
 
@@ -79,7 +75,7 @@ public class AddClass extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Discard changes?");
 
@@ -109,7 +105,7 @@ public class AddClass extends AppCompatActivity {
 
     }
 
-    private void callSuperOnBackPressed(){
+    private void callSuperOnBackPressed() {
 
         super.onBackPressed();
 

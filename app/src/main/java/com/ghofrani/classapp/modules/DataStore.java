@@ -1,180 +1,129 @@
 package com.ghofrani.classapp.modules;
 
+import com.ghofrani.classapp.model.StandardClass;
+
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 
 public class DataStore {
 
-    private static boolean currentClass;
-    private static String[] currentClassInfo;
+    private static boolean isCurrentClass;
+    private static StandardClass currentClass;
 
-    private static boolean nextClasses;
-    private static boolean tomorrowClasses;
+    private static boolean isNextClasses;
+    private static StandardClass nextClass;
+    private static LinkedList<StandardClass> nextClassesLinkedList;
 
-    private static HashMap<String, List<String>> nextClassesHM;
-    private static HashMap<String, List<String>> tomorrowClassesHM;
+    private static boolean isTomorrowClasses;
+    private static LinkedList<StandardClass> tomorrowClassesLinkedList;
+
+    private static LinkedList<StandardClass> sundayClasses;
+    private static LinkedList<StandardClass> mondayClasses;
+    private static LinkedList<StandardClass> tuesdayClasses;
+    private static LinkedList<StandardClass> wednesdayClasses;
+    private static LinkedList<StandardClass> thursdayClasses;
+    private static LinkedList<StandardClass> fridayClasses;
+    private static LinkedList<StandardClass> saturdayClasses;
 
     private static int progressBarProgress = 0;
     private static String progressBarText = "0%";
 
-    private static String[] sundayClasses;
-    private static String[] mondayClasses;
-    private static String[] tuesdayClasses;
-    private static String[] wednesdayClasses;
-    private static String[] thursdayClasses;
-    private static String[] fridayClasses;
-    private static String[] saturdayClasses;
+    private static boolean isAnimated = false;
 
-    private static String nextClassString;
-    private static String nextClassLocation;
-    private static String nextClassStartTime;
-
-    private static boolean animationState = false;
-
-    public static boolean isAnimationState() {
-
-        return animationState;
-
+    public static boolean isCurrentClass() {
+        return isCurrentClass;
     }
 
-    public static void setAnimationState(boolean update) {
-
-        animationState = update;
-
+    public static void setIsCurrentClass(boolean update) {
+        isCurrentClass = update;
     }
 
-    public static boolean getCurrentClass() {
-
+    public static StandardClass getCurrentClass() {
         return currentClass;
-
     }
 
-    public static void setCurrentClass(boolean update) {
-
+    public static void setCurrentClass(StandardClass update) {
         currentClass = update;
-
     }
 
-    public static String[] getCurrentClassInfo() {
-
-        return currentClassInfo;
-
+    public static boolean isNextClasses() {
+        return isNextClasses;
     }
 
-    public static void setCurrentClassInfo(String[] update) {
-
-        currentClassInfo = update;
-
+    public static void setIsNextClasses(boolean update) {
+        isNextClasses = update;
     }
 
-    public static boolean getNextClasses() {
-
-        return nextClasses;
-
+    public static StandardClass getNextClass() {
+        return nextClass;
     }
 
-    public static void setNextClasses(boolean update) {
-
-        nextClasses = update;
-
+    public static void setNextClass(StandardClass update) {
+        nextClass = update;
     }
 
-    public static boolean getTomorrowClasses() {
-
-        return tomorrowClasses;
-
+    public static LinkedList<StandardClass> getNextClassesLinkedList() {
+        return nextClassesLinkedList;
     }
 
-    public static void setTomorrowClasses(boolean update) {
-
-        tomorrowClasses = update;
-
+    public static void setNextClassesLinkedList(LinkedList<StandardClass> update) {
+        nextClassesLinkedList = update;
     }
 
-    public static HashMap<String, List<String>> getNextClassesHM() {
-
-        return nextClassesHM;
-
+    public static boolean isTomorrowClasses() {
+        return isTomorrowClasses;
     }
 
-    public static void setNextClassesHM(HashMap<String, List<String>> update) {
-
-        nextClassesHM = update;
-
+    public static void setIsTomorrowClasses(boolean update) {
+        isTomorrowClasses = update;
     }
 
-    public static HashMap<String, List<String>> getTomorrowClassesHM() {
-
-        return tomorrowClassesHM;
-
+    public static LinkedList<StandardClass> getTomorrowClassesLinkedList() {
+        return tomorrowClassesLinkedList;
     }
 
-    public static void setTomorrowClassesHM(HashMap<String, List<String>> update) {
-
-        tomorrowClassesHM = update;
-
+    public static void setTomorrowClassesLinkedList(LinkedList<StandardClass> update) {
+        tomorrowClassesLinkedList = update;
     }
 
-    public static int getProgressBarProgress() {
+    public static LinkedList<StandardClass> getClassesLinkedListOfDay(int day) {
 
-        return progressBarProgress;
-
-    }
-
-    public static void setProgressBarProgress(int update) {
-
-        progressBarProgress = update;
-
-    }
-
-    public static String getProgressBarText() {
-
-        return progressBarText;
-
-    }
-
-    public static void setProgressBarText(String update) {
-
-        progressBarText = update;
-
-    }
-
-    public static String[] getClassesArray(int day) {
-
-        String[] returnArray = null;
+        LinkedList<StandardClass> returnLinkedList;
 
         switch (day) {
 
             case Calendar.SUNDAY:
-                returnArray = sundayClasses;
+                returnLinkedList = sundayClasses;
                 break;
             case Calendar.MONDAY:
-                returnArray = mondayClasses;
+                returnLinkedList = mondayClasses;
                 break;
             case Calendar.TUESDAY:
-                returnArray = tuesdayClasses;
+                returnLinkedList = tuesdayClasses;
                 break;
             case Calendar.WEDNESDAY:
-                returnArray = wednesdayClasses;
+                returnLinkedList = wednesdayClasses;
                 break;
             case Calendar.THURSDAY:
-                returnArray = thursdayClasses;
+                returnLinkedList = thursdayClasses;
                 break;
             case Calendar.FRIDAY:
-                returnArray = fridayClasses;
+                returnLinkedList = fridayClasses;
                 break;
             case Calendar.SATURDAY:
-                returnArray = saturdayClasses;
+                returnLinkedList = saturdayClasses;
+                break;
+            default:
+                returnLinkedList = null;
                 break;
 
         }
 
-        return returnArray;
+        return returnLinkedList;
 
     }
 
-    public static void setClassesArray(String[] update, int day) {
+    public static void setClassesLinkedListOfDay(int day, LinkedList<StandardClass> update) {
 
         switch (day) {
 
@@ -204,40 +153,28 @@ public class DataStore {
 
     }
 
-    public static String getNextClassString() {
-
-        return nextClassString;
-
+    public static int getProgressBarProgress() {
+        return progressBarProgress;
     }
 
-    public static void setNextClassString(String update) {
-
-        nextClassString = update;
-
+    public static void setProgressBarProgress(int update) {
+        progressBarProgress = update;
     }
 
-    public static String getNextClassLocation() {
-
-        return nextClassLocation;
-
+    public static String getProgressBarText() {
+        return progressBarText;
     }
 
-    public static void setNextClassLocation(String update) {
-
-        nextClassLocation = update;
-
+    public static void setProgressBarText(String update) {
+        progressBarText = update;
     }
 
-    public static String getNextClassStartTime() {
-
-        return nextClassStartTime;
-
+    public static boolean isAnimated() {
+        return isAnimated;
     }
 
-    public static void setNextClassStartTime(String update) {
-
-        nextClassStartTime = update;
-
+    public static void setIsAnimated(boolean update) {
+        isAnimated = update;
     }
 
 }

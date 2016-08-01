@@ -4,22 +4,22 @@
 
     <style name="app_theme" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
 
     </style>
 
     <style name="tab_layout" parent="Widget.Design.TabLayout">
 
         <item name="tabTextAppearance">@style/tab_text</item>
-        <item name="tabSelectedTextColor">@color/textColor</item>
+        <item name="tabSelectedTextColor">@color/text</item>
 
     </style>
 
     <style name="tab_text" parent="TextAppearance.AppCompat.Button">
 
-        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColor">@color/text</item>
 
     </style>
 

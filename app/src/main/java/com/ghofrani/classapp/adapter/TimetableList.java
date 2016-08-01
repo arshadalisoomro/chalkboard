@@ -8,60 +8,55 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.model.StandardClass;
+
+import java.util.LinkedList;
 
 public class TimetableList extends BaseAdapter {
 
-    private static LayoutInflater inflater = null;
-    private final String[] inputClasses;
+    private final LinkedList<StandardClass> classesLinkedList;
+    private final LayoutInflater layoutInflater;
 
-    public TimetableList(Context context, String[] inputClasses) {
+    public TimetableList(Context context, LinkedList<StandardClass> classesLinkedList) {
 
-        this.inputClasses = inputClasses;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.classesLinkedList = classesLinkedList;
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
     @Override
     public int getCount() {
-
-        return inputClasses.length;
-
+        return classesLinkedList.size();
     }
 
     @Override
     public Object getItem(int position) {
-
-        return inputClasses[position];
-
+        return classesLinkedList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-
         return position;
-
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View view = convertView;
+        if (convertView == null)
+            convertView = layoutInflater.inflate(R.layout.view_list_child, null);
 
-        if (view == null)
-            view = inflater.inflate(R.layout.view_list_child, null);
+        StandardClass standardClass = classesLinkedList.get(position);
 
-        String[] splitClasses = inputClasses[position].split(",");
+        TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
+        listChildTitleTextView.setText(standardClass.getName());
 
-        TextView text = (TextView) view.findViewById(R.id.list_item_text);
-        text.setText(splitClasses[0]);
+        TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
+        listChildTimeTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
 
-        TextView time = (TextView) view.findViewById(R.id.list_item_time);
-        time.setText(splitClasses[1]);
+        TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
+        listChildLocationTextView.setText(standardClass.getLocation());
 
-        TextView location = (TextView) view.findViewById(R.id.list_item_location);
-        location.setText(splitClasses[2]);
-
-        return view;
+        return convertView;
 
     }
 }

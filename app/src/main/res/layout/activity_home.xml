@@ -4,7 +4,7 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/main_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="16dp"
@@ -14,7 +14,6 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
         <android.support.design.widget.CoordinatorLayout
@@ -31,19 +30,19 @@
 
                 <include
 
-                    android:id="@+id/home_toolbar"
+                    android:id="@+id/main_toolbar"
                     layout="@layout/view_toolbar" />
 
                 <LinearLayout
 
-                    android:id="@+id/tab_layout_layout"
+                    android:id="@+id/main_tab_layout_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="48dp">
 
                     <android.support.design.widget.TabLayout
 
-                        android:id="@+id/tab_layout"
+                        android:id="@+id/main_tab_layout"
                         style="@style/tab_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -61,7 +60,7 @@
 
                 <android.support.v4.view.ViewPager
 
-                    android:id="@+id/view_pager"
+                    android:id="@+id/main_view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="104dp"
@@ -69,7 +68,7 @@
 
                 <ScrollView
 
-                    android:id="@+id/home_activity_scroll_view"
+                    android:id="@+id/main_scroll_view"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="56dp"
@@ -83,7 +82,7 @@
 
             <android.support.design.widget.FloatingActionButton
 
-                android:id="@+id/fab"
+                android:id="@+id/main_floating_action_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
@@ -103,7 +102,7 @@
 
         <android.support.design.widget.NavigationView
 
-            android:id="@+id/navigation_view"
+            android:id="@+id/main_navigation_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:headerLayout="@layout/view_drawer_header"

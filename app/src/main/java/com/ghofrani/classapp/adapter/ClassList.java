@@ -1,6 +1,7 @@
 package com.ghofrani.classapp.adapter;
 
 import android.content.Context;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,43 +9,42 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.model.StandardClass;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 
 public class ClassList extends BaseExpandableListAdapter {
 
-    private final Context context;
-    private final HashMap<String, List<String>> nextClassesHM;
-    private final List<String> nextClasses;
+    private final LinkedList<StandardClass> classesLinkedList;
+    private final String groupTitle;
+    private final LayoutInflater layoutInflater;
 
-    public ClassList(Context context, HashMap<String,
-            List<String>> nextClassesHM, List<String> nextClasses) {
+    public ClassList(Context context, LinkedList<StandardClass> classesLinkedList, String groupTitle) {
 
-        this.context = context;
-        this.nextClassesHM = nextClassesHM;
-        this.nextClasses = nextClasses;
+        this.classesLinkedList = classesLinkedList;
+        this.groupTitle = groupTitle;
+        this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
     @Override
     public int getGroupCount() {
-        return nextClasses.size();
+        return 1;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return nextClassesHM.get(nextClasses.get(groupPosition)).size();
+        return classesLinkedList.size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return nextClasses.get(groupPosition);
+        return classesLinkedList.get(groupPosition);
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return nextClassesHM.get(nextClasses.get(groupPosition)).get(childPosition);
+        return classesLinkedList.get(childPosition);
     }
 
     @Override
@@ -65,18 +65,11 @@ public class ClassList extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
-        String groupTitle = (String) getGroup(groupPosition);
+        if (convertView == null)
+            convertView = layoutInflater.inflate(R.layout.view_list_group, parent, false);
 
-        if (convertView == null) {
-
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.view_list_group, parent, false);
-
-        }
-
-        TextView groupTextView = (TextView) convertView.findViewById(R.id.list_group_text);
-
-        groupTextView.setText(groupTitle);
+        TextView listGroupTitleTextView = (TextView) convertView.findViewById(R.id.view_list_group_text);
+        listGroupTitleTextView.setText(groupTitle);
 
         return convertView;
 
@@ -85,28 +78,19 @@ public class ClassList extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        String childInformation = (String) getChild(groupPosition, childPosition);
+        if (convertView == null)
+            convertView = layoutInflater.inflate(R.layout.view_list_child, parent, false);
 
-        if (convertView == null) {
+        StandardClass standardClass = classesLinkedList.get(childPosition);
 
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.view_list_child, parent, false);
+        TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
+        listChildTitleTextView.setText(standardClass.getName());
 
-        }
+        TextView listChildSubtitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
+        listChildSubtitleTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
 
-        String[] childInformationArray = childInformation.split(",");
-        String childTitle = childInformationArray[0];
-        String childSubtitle = childInformationArray[1];
-        String childLocation = childInformationArray[2];
-
-        TextView childTitleTextView = (TextView) convertView.findViewById(R.id.list_item_text);
-        childTitleTextView.setText(childTitle);
-
-        TextView childSubtitleTextView = (TextView) convertView.findViewById(R.id.list_item_time);
-        childSubtitleTextView.setText(childSubtitle);
-
-        TextView childLocationTextView = (TextView) convertView.findViewById(R.id.list_item_location);
-        childLocationTextView.setText(childLocation);
+        TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
+        listChildLocationTextView.setText(standardClass.getLocation());
 
         return convertView;
 

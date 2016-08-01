@@ -97,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean insertClassIntoDay(String[] classToInsert, int day) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
         long result;
@@ -110,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Sunday.COLUMN_START_TIME, classToInsert[1]);
                 contentValues.put(DatabaseContract.Sunday.COLUMN_END_TIME, classToInsert[2]);
 
-                result = db.insert(DatabaseContract.Sunday.TABLE_NAME, null, contentValues);
+                result = sqLiteDatabase.insert(DatabaseContract.Sunday.TABLE_NAME, null, contentValues);
 
                 break;
 
@@ -120,7 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Monday.COLUMN_START_TIME, classToInsert[1]);
                 contentValues.put(DatabaseContract.Monday.COLUMN_END_TIME, classToInsert[2]);
 
-                result = db.insert(DatabaseContract.Monday.TABLE_NAME, null, contentValues);
+                result = sqLiteDatabase.insert(DatabaseContract.Monday.TABLE_NAME, null, contentValues);
 
                 break;
 
@@ -130,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Tuesday.COLUMN_START_TIME, classToInsert[1]);
                 contentValues.put(DatabaseContract.Tuesday.COLUMN_END_TIME, classToInsert[2]);
 
-                result = db.insert(DatabaseContract.Tuesday.TABLE_NAME, null, contentValues);
+                result = sqLiteDatabase.insert(DatabaseContract.Tuesday.TABLE_NAME, null, contentValues);
 
                 break;
 
@@ -140,7 +140,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Wednesday.COLUMN_START_TIME, classToInsert[1]);
                 contentValues.put(DatabaseContract.Wednesday.COLUMN_END_TIME, classToInsert[2]);
 
-                result = db.insert(DatabaseContract.Wednesday.TABLE_NAME, null, contentValues);
+                result = sqLiteDatabase.insert(DatabaseContract.Wednesday.TABLE_NAME, null, contentValues);
 
                 break;
 
@@ -150,7 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Thursday.COLUMN_START_TIME, classToInsert[1]);
                 contentValues.put(DatabaseContract.Thursday.COLUMN_END_TIME, classToInsert[2]);
 
-                result = db.insert(DatabaseContract.Thursday.TABLE_NAME, null, contentValues);
+                result = sqLiteDatabase.insert(DatabaseContract.Thursday.TABLE_NAME, null, contentValues);
 
                 break;
 
@@ -160,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Friday.COLUMN_START_TIME, classToInsert[1]);
                 contentValues.put(DatabaseContract.Friday.COLUMN_END_TIME, classToInsert[2]);
 
-                result = db.insert(DatabaseContract.Friday.TABLE_NAME, null, contentValues);
+                result = sqLiteDatabase.insert(DatabaseContract.Friday.TABLE_NAME, null, contentValues);
 
                 break;
 
@@ -170,7 +170,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Saturday.COLUMN_START_TIME, classToInsert[1]);
                 contentValues.put(DatabaseContract.Saturday.COLUMN_END_TIME, classToInsert[2]);
 
-                result = db.insert(DatabaseContract.Saturday.TABLE_NAME, null, contentValues);
+                result = sqLiteDatabase.insert(DatabaseContract.Saturday.TABLE_NAME, null, contentValues);
 
                 break;
 
@@ -182,22 +182,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         }
 
+        sqLiteDatabase.close();
+
         return result != -1;
 
     }
 
     public boolean addClass(String[] classInfo) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
+
         long result;
 
         contentValues.put(DatabaseContract.ClassInfo.COLUMN_NAME, classInfo[0]);
         contentValues.put(DatabaseContract.ClassInfo.COLUMN_TEACHER, classInfo[1]);
         contentValues.put(DatabaseContract.ClassInfo.COLUMN_LOCATION, classInfo[2]);
 
-        result = db.insert(DatabaseContract.ClassInfo.TABLE_NAME, null, contentValues);
+        result = sqLiteDatabase.insert(DatabaseContract.ClassInfo.TABLE_NAME, null, contentValues);
+
+        sqLiteDatabase.close();
 
         return result != -1;
 
@@ -205,22 +210,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getClassLocation(String className) {
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
-        Cursor result = db.rawQuery("select * from "
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
                 + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
                 + className + "'", null);
 
-        if (result.moveToNext()) {
+        if (cursor.moveToNext()) {
 
-            String resultString = result.getString(3);
+            String resultString = cursor.getString(3);
 
-            result.close();
+            cursor.close();
+
+            sqLiteDatabase.close();
 
             return resultString;
 
         } else {
+
+            cursor.close();
+
+            sqLiteDatabase.close();
 
             return null;
 
@@ -230,22 +241,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getClassTeacher(String className) {
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
-        Cursor result = db.rawQuery("select * from "
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
                 + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
                 + className + "'", null);
 
-        if (result.moveToNext()) {
+        if (cursor.moveToNext()) {
 
-            String resultString = result.getString(2);
+            String resultString = cursor.getString(2);
 
-            result.close();
+            cursor.close();
+
+            sqLiteDatabase.close();
 
             return resultString;
 
         } else {
+
+            cursor.close();
+
+            sqLiteDatabase.close();
 
             return null;
 
@@ -255,70 +272,70 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getClasses(int day) {
 
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor resultSet;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor;
 
         switch (day) {
 
             case Calendar.SUNDAY:
 
-                resultSet = db.rawQuery("select * from " + DatabaseContract.Sunday.TABLE_NAME, null);
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Sunday.TABLE_NAME + " ORDER BY ROWID", null);
 
                 break;
 
             case Calendar.MONDAY:
 
-                resultSet = db.rawQuery("select * from " + DatabaseContract.Monday.TABLE_NAME, null);
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Monday.TABLE_NAME + " ORDER BY ROWID", null);
 
                 break;
 
             case Calendar.TUESDAY:
 
-                resultSet = db.rawQuery("select * from " + DatabaseContract.Tuesday.TABLE_NAME, null);
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Tuesday.TABLE_NAME + " ORDER BY ROWID", null);
 
                 break;
 
             case Calendar.WEDNESDAY:
 
-                resultSet = db.rawQuery("select * from " + DatabaseContract.Wednesday.TABLE_NAME, null);
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Wednesday.TABLE_NAME, null);
 
                 break;
 
             case Calendar.THURSDAY:
 
-                resultSet = db.rawQuery("select * from " + DatabaseContract.Thursday.TABLE_NAME, null);
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Thursday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
             case Calendar.FRIDAY:
 
-                resultSet = db.rawQuery("select * from " + DatabaseContract.Friday.TABLE_NAME, null);
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Friday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
             case Calendar.SATURDAY:
 
-                resultSet = db.rawQuery("select * from " + DatabaseContract.Saturday.TABLE_NAME, null);
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Saturday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
             default:
 
-                resultSet = null;
+                cursor = null;
 
                 break;
 
         }
 
-        return resultSet;
+        return cursor;
 
     }
 
     public Cursor getClasses() {
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
-        return db.rawQuery("select * from " + DatabaseContract.ClassInfo.TABLE_NAME, null);
+        return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.ClassInfo.TABLE_NAME + " order by rowid", null);
 
     }
 

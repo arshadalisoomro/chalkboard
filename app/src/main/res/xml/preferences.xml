@@ -11,7 +11,7 @@
         <CheckBoxPreference
 
             android:defaultValue="true"
-            android:key="tomorrowClasses"
+            android:key="tomorrow_classes"
             android:summary="This will show tomorrow's classes on the overview screen"
             android:title="Show tomorrow's classes" />
 
@@ -24,16 +24,16 @@
         <CheckBoxPreference
 
             android:defaultValue="false"
-            android:key="advancedNotification"
-            android:summary="This will show the advanced notification instead of the simple one"
-            android:title="Show advanced notification" />
+            android:key="detailed_notification"
+            android:summary="This will show the detailed notification"
+            android:title="Show detailed notification" />
 
         <ListPreference
 
             android:defaultValue="30"
             android:entries="@array/next_class_notification_minutes_text"
             android:entryValues="@array/next_class_notification_minutes_values"
-            android:key="nextClassNotificationMinutes"
+            android:key="next_class_notification_minutes"
             android:summary="Choose when a notification for the next class appears"
             android:title="Next class notification timing" />
 
