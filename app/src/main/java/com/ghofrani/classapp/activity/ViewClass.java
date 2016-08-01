@@ -17,11 +17,19 @@ public class ViewClass extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
         toolbar.setTitle(getIntent().getExtras().getString("class"));
+        toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    private int getPixelFromDP(float dPtoConvert) {
+
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dPtoConvert * scale + 0.5f);
 
     }
 

@@ -21,6 +21,7 @@ public class Settings extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         toolbar.setTitle("Settings");
+        toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);
@@ -47,6 +48,13 @@ public class Settings extends AppCompatActivity {
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_data"));
 
         return super.onOptionsItemSelected(menuItem);
+
+    }
+
+    private int getPixelFromDP(float dPtoConvert) {
+
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dPtoConvert * scale + 0.5f);
 
     }
 

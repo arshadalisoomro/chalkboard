@@ -139,7 +139,8 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:childDivider="#d3d3d3"
-                android:dividerHeight="1dp">
+                android:dividerHeight="1dp"
+                android:scrollbars="none">
 
             </ExpandableListView>
 
@@ -172,7 +173,8 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:childDivider="#d3d3d3"
-                android:dividerHeight="1dp">
+                android:dividerHeight="1dp"
+                android:scrollbars="none">
 
             </ExpandableListView>
 
