@@ -43,6 +43,7 @@ public class AddHomework extends AppCompatActivity {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Discard changes?");
+            builder.setMessage("This class will be deleted.");
 
             builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
@@ -93,6 +94,7 @@ public class AddHomework extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Discard changes?");
+        builder.setMessage("This class will be deleted.");
 
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 

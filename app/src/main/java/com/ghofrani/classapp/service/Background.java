@@ -50,6 +50,7 @@ public class Background extends Service {
     }
 
     private Handler notificationHandler;
+    private Runnable notificationRunnable;
     private NotificationCompat.Builder notificationCompatBuilder;
     private NotificationManager notificationManager;
     private RemoteViews remoteViews;
@@ -141,11 +142,25 @@ public class Background extends Service {
 
                         getData();
 
+                        if (notificationHandler != null) {
+
+                            notificationHandler.removeCallbacksAndMessages(null);
+                            notificationHandler.post(notificationRunnable);
+
+                        }
+
                         break;
 
                     case Intent.ACTION_TIMEZONE_CHANGED:
 
                         getData();
+
+                        if (notificationHandler != null) {
+
+                            notificationHandler.removeCallbacksAndMessages(null);
+                            notificationHandler.post(notificationRunnable);
+
+                        }
 
                         getAllClasses();
 
@@ -155,6 +170,13 @@ public class Background extends Service {
 
                         getData();
 
+                        if (notificationHandler != null) {
+
+                            notificationHandler.removeCallbacksAndMessages(null);
+                            notificationHandler.post(notificationRunnable);
+
+                        }
+
                         getAllClasses();
 
                         break;
@@ -162,6 +184,13 @@ public class Background extends Service {
                     case Intent.ACTION_DATE_CHANGED:
 
                         getData();
+
+                        if (notificationHandler != null) {
+
+                            notificationHandler.removeCallbacksAndMessages(null);
+                            notificationHandler.post(notificationRunnable);
+
+                        }
 
                         getAllClasses();
 
@@ -268,7 +297,7 @@ public class Background extends Service {
                         .setPriority(Notification.PRIORITY_MAX)
                         .setWhen(0);
 
-                Runnable notificationRunnable = new Runnable() {
+                notificationRunnable = new Runnable() {
 
                     public void run() {
 

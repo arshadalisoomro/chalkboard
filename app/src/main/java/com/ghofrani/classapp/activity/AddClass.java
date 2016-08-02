@@ -1,15 +1,24 @@
 package com.ghofrani.classapp.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.modules.DatabaseHelper;
 
 public class AddClass extends AppCompatActivity {
 
@@ -27,6 +36,8 @@ public class AddClass extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        getFragmentManager().beginTransaction().replace(R.id.add_class_color_frame_layout, new ColorFragment()).commit();
+
     }
 
     @Override
@@ -37,6 +48,7 @@ public class AddClass extends AppCompatActivity {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setTitle("Discard changes?");
+            builder.setMessage("This class will be deleted.");
 
             builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
@@ -64,6 +76,81 @@ public class AddClass extends AppCompatActivity {
 
             return true;
 
+        } else if (menuItem.getItemId() == R.id.toolbar_check_check) {
+
+            EditText inputNameEditText = (EditText) findViewById(R.id.add_class_input_name);
+
+            if (!inputNameEditText.getText().toString().isEmpty()) {
+
+                DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+                if (!databaseHelper.checkIfClassExists(inputNameEditText.getText().toString().trim())) {
+
+                    EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
+                    EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+
+                    if (!inputTeacherEditText.getText().toString().isEmpty() && !inputLocationEditText.getText().toString().isEmpty()) {
+
+                        String classToAddInfo[] = new String[3];
+                        classToAddInfo[0] = inputNameEditText.getText().toString().trim();
+                        classToAddInfo[1] = inputTeacherEditText.getText().toString().trim();
+                        classToAddInfo[2] = inputLocationEditText.getText().toString().trim();
+
+                        if (databaseHelper.addClass(classToAddInfo)) {
+
+                            databaseHelper.close();
+
+                            View view = this.getCurrentFocus();
+
+                            if (view != null) {
+
+                                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                            }
+
+                            setResult(0, new Intent().putExtra("switch_to_timetable", 1));
+
+                            finish();
+
+                            return true;
+
+                        } else {
+
+                            databaseHelper.close();
+
+                            Toast.makeText(this, "Error, try again!", Toast.LENGTH_LONG).show();
+
+                            return true;
+
+                        }
+
+                    } else {
+
+                        Toast.makeText(this, "Please add a teacher and location!", Toast.LENGTH_LONG).show();
+
+                        return true;
+
+                    }
+
+                } else {
+
+                    databaseHelper.close();
+
+                    Toast.makeText(this, "A class with this name exists already!", Toast.LENGTH_LONG).show();
+
+                    return true;
+
+                }
+
+            } else {
+
+                Toast.makeText(this, "Please add a name!", Toast.LENGTH_LONG).show();
+
+                return true;
+
+            }
+
         } else {
 
             return super.onOptionsItemSelected(menuItem);
@@ -78,6 +165,7 @@ public class AddClass extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Discard changes?");
+        builder.setMessage("This class will be deleted.");
 
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
@@ -107,6 +195,8 @@ public class AddClass extends AppCompatActivity {
 
     private void callSuperOnBackPressed() {
 
+        setResult(1, new Intent());
+
         super.onBackPressed();
 
     }
@@ -117,6 +207,52 @@ public class AddClass extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.toolbar_check, menu);
 
         return true;
+
+    }
+
+    public static class ColorFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+        @Override
+        public void onCreate(final Bundle savedInstanceState) {
+
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences_add_class);
+
+        }
+
+        @Override
+        public void onResume() {
+
+            super.onResume();
+
+            getPreferenceScreen()
+                    .getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(this);
+
+        }
+
+        @Override
+        public void onPause() {
+
+            super.onPause();
+
+            getPreferenceScreen()
+                    .getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(this);
+
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+            if (key.equals("add_class_color")) {
+
+                setPreferenceScreen(null);
+                addPreferencesFromResource(R.xml.preferences_add_class);
+
+            }
+
+        }
 
     }
 

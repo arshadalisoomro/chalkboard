@@ -24,67 +24,125 @@
         <RelativeLayout
 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="24dp">
+            android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputLayout
+            <RelativeLayout
 
-                android:id="@+id/add_class_input_name_layout"
-                android:layout_width="match_parent"
+                android:id="@+id/add_class_name_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
+                android:layout_marginTop="12dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp">
+
+                <ImageView
+
+                    android:id="@+id/add_class_name_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/overview"
+                    android:tint="#757575"
+                    android:translationY="1.5dp" />
 
                 <EditText
 
                     android:id="@+id/add_class_input_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="28dp"
+                    android:layout_toRightOf="@id/add_class_name_icon"
                     android:hint="Name"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:singleLine="true"
                     android:textSize="17sp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <RelativeLayout
 
-                android:id="@+id/add_class_input_teacher_layout"
-                android:layout_width="match_parent"
+                android:id="@+id/add_class_teacher_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/add_class_input_name_layout"
-                android:layout_marginBottom="8dp">
+                android:layout_below="@id/add_class_name_layout"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp">
+
+                <ImageView
+
+                    android:id="@+id/add_class_teacher_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/add"
+                    android:tint="#757575"
+                    android:translationY="1.5dp" />
 
                 <EditText
 
                     android:id="@+id/add_class_input_teacher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="28dp"
+                    android:layout_toRightOf="@id/add_class_teacher_icon"
                     android:hint="Teacher"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:singleLine="true"
                     android:textSize="17sp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <RelativeLayout
 
-                android:layout_width="match_parent"
+                android:id="@+id/add_class_location_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/add_class_input_teacher_layout">
+                android:layout_below="@id/add_class_teacher_layout"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp">
+
+                <ImageView
+
+                    android:id="@+id/add_class_location_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/location"
+                    android:tint="#757575"
+                    android:translationY="1.5dp" />
 
                 <EditText
 
                     android:id="@+id/add_class_input_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="28dp"
+                    android:layout_toRightOf="@id/add_class_location_icon"
                     android:hint="Location"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:singleLine="true"
                     android:textSize="17sp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
+
+            <FrameLayout
+
+                android:id="@+id/add_class_color_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_class_location_layout" />
 
         </RelativeLayout>
 

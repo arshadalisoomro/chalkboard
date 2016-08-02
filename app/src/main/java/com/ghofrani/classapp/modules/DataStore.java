@@ -29,6 +29,7 @@ public class DataStore {
     private static String progressBarText = "0%";
 
     private static boolean isAnimated = false;
+    private static int selectedTabPosition = 0;
 
     public static boolean isCurrentClass() {
         return isCurrentClass;
@@ -175,6 +176,14 @@ public class DataStore {
 
     public static void setIsAnimated(boolean update) {
         isAnimated = update;
+    }
+
+    public static int getSelectedTabPosition() {
+        return selectedTabPosition;
+    }
+
+    public static void setSelectedTabPosition(int update) {
+        selectedTabPosition = update;
     }
 
 }

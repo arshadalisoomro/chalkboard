@@ -51,7 +51,10 @@ public class Overview extends Fragment {
         }
 
     };
-
+    private ExpandableListView expandableListViewNextClasses;
+    private LinkedList<StandardClass> nextClassesLinkedList;
+    private ExpandableListView expandableListViewTomorrowClasses;
+    private LinkedList<StandardClass> tomorrowClassesLinkedList;
     private final BroadcastReceiver updateUI = new BroadcastReceiver() {
 
         @Override
@@ -72,11 +75,6 @@ public class Overview extends Fragment {
         }
 
     };
-
-    private ExpandableListView expandableListViewNextClasses;
-    private LinkedList<StandardClass> nextClassesLinkedList;
-    private ExpandableListView expandableListViewTomorrowClasses;
-    private LinkedList<StandardClass> tomorrowClassesLinkedList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,6 +133,7 @@ public class Overview extends Fragment {
             nextClassesLinkedList = DataStore.getNextClassesLinkedList();
 
             configureExpandableListViewNextClasses();
+
             expandableListViewNextClasses.post(new Runnable() {
 
                 @Override
@@ -153,6 +152,7 @@ public class Overview extends Fragment {
             tomorrowClassesLinkedList = DataStore.getTomorrowClassesLinkedList();
 
             configureExpandableListViewTomorrowClasses();
+
             expandableListViewTomorrowClasses.post(new Runnable() {
 
                 @Override

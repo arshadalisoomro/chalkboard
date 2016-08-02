@@ -24,6 +24,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.fragment.Classes;
@@ -147,7 +148,7 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (currentView == 2)
-                    startActivity(new Intent(getApplicationContext(), AddClass.class));
+                    startActivityForResult(new Intent(getApplicationContext(), AddClass.class), 0);
                 else if (currentView == 3)
                     startActivity(new Intent(getApplicationContext(), AddHomework.class));
 
@@ -244,6 +245,19 @@ public class Main extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+
+        super.onActivityResult(requestCode, resultCode, resultIntent);
+
+        if (resultCode == 0) {
+
+            switchToView(resultIntent.getIntExtra("switch_to_timetable", requestCode));
+            Toast.makeText(this, "Add your class into the timetable!", Toast.LENGTH_LONG).show();
+
+        }
+    }
+
     private void switchToView(int viewToSwitchTo) {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -267,11 +281,13 @@ public class Main extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.overview);
 
+                currentView = viewToSwitchTo;
+
                 break;
 
             case 1:
 
-                floatingActionButton.setVisibility(View.INVISIBLE);
+                floatingActionButton.setVisibility(View.VISIBLE);
 
                 fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
 
@@ -294,11 +310,11 @@ public class Main extends AppCompatActivity {
                 tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
                     @Override
-                    public void onTabSelected(TabLayout.Tab tabLayout) {
+                    public void onTabSelected(TabLayout.Tab tabLayoutTab) {
 
-                        super.onTabSelected(tabLayout);
+                        super.onTabSelected(tabLayoutTab);
 
-                        if (tabLayout.getPosition() != 0) {
+                        if (tabLayoutTab.getPosition() != 0) {
 
                             if (!DataStore.isAnimated()) {
 
@@ -352,9 +368,67 @@ public class Main extends AppCompatActivity {
 
                         }
 
+                        DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
+
                     }
 
                 });
+
+                tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
+
+                if (DataStore.getSelectedTabPosition() != 0) {
+
+                    if (!DataStore.isAnimated()) {
+
+                        Animation animation = new Animation() {
+
+                            @Override
+                            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+
+                                params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+
+                                layout.setLayoutParams(params);
+
+                            }
+                        };
+
+                        animation.setDuration(200);
+                        drawerLayout.startAnimation(animation);
+
+                        DataStore.setIsAnimated(true);
+
+                    }
+
+                } else {
+
+                    if (DataStore.isAnimated()) {
+
+                        Animation animation = new Animation() {
+
+                            @Override
+                            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+
+                                params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+
+                                layout.setLayoutParams(params);
+
+                            }
+                        };
+
+                        animation.setDuration(200);
+                        drawerLayout.startAnimation(animation);
+
+                        DataStore.setIsAnimated(false);
+
+                    }
+
+                }
 
                 scrollView.setVisibility(LinearLayout.GONE);
 
@@ -362,6 +436,8 @@ public class Main extends AppCompatActivity {
                 viewPager.setVisibility(LinearLayout.VISIBLE);
 
                 navigationView.setCheckedItem(R.id.timetable);
+
+                currentView = viewToSwitchTo;
 
                 break;
 
@@ -382,6 +458,8 @@ public class Main extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.classes);
 
+                currentView = viewToSwitchTo;
+
                 break;
 
             case 3:
@@ -401,6 +479,8 @@ public class Main extends AppCompatActivity {
 
                 navigationView.setCheckedItem(R.id.homework);
 
+                currentView = viewToSwitchTo;
+
                 break;
 
             case 4:
@@ -411,14 +491,12 @@ public class Main extends AppCompatActivity {
 
         }
 
-        currentView = viewToSwitchTo;
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.toolbar_home, menu);
+        getMenuInflater().inflate(R.menu.toolbar_main, menu);
 
         return true;
 

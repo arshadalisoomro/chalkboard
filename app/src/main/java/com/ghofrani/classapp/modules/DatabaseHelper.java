@@ -188,6 +188,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public boolean checkIfClassExists(String classToCheck) {
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from "
+                + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
+                + classToCheck + "' COLLATE NOCASE", null);
+
+        boolean exists = cursor.moveToNext();
+
+        cursor.close();
+
+        return exists;
+
+    }
+
     public boolean addClass(String[] classInfo) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
