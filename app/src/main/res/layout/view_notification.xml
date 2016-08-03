@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -70,8 +72,11 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
+        android:foregroundTint="@color/primary"
+        android:tint="@color/primary"
+        android:backgroundTint="@color/primary"
         android:background="#00000000"
         android:clickable="true"
-        android:src="@drawable/homework_notification" />
+        android:src="@drawable/homework" />
 
 </RelativeLayout>

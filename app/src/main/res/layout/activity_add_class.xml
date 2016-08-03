@@ -44,7 +44,7 @@
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="2dp"
-                    android:src="@drawable/overview"
+                    android:src="@drawable/name"
                     android:tint="#757575"
                     android:translationY="1.5dp" />
 
@@ -81,7 +81,7 @@
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="2dp"
-                    android:src="@drawable/add"
+                    android:src="@drawable/teacher"
                     android:tint="#757575"
                     android:translationY="1.5dp" />
 

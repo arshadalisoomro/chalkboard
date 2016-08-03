@@ -254,7 +254,7 @@ public class Background extends Service {
 
         DataStore.setIsNextClasses(isNextClasses);
 
-        if (isNextClasses)
+        if (DataStore.isNextClasses())
             DataStore.setNextClassesLinkedList(nextClassesLinkedList);
 
         DataStore.setIsCurrentClass(isCurrentClass);
@@ -464,7 +464,7 @@ public class Background extends Service {
 
             } else {
 
-                DataStore.setIsNextClasses(false);
+                DataStore.setIsTomorrowClasses(false);
 
             }
 

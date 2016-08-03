@@ -24,7 +24,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="6dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="6dp">
@@ -42,9 +42,8 @@
                 android:id="@+id/view_class_card_homework_icon"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_alignBaseline="@id/view_class_card_title"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:translationY="-12.5dp"
                 app:mli_letter="H"
                 app:mli_letter_color="@color/text"
                 app:mli_letter_size="12"
@@ -58,6 +57,7 @@
                 android:id="@+id/view_class_card_location_teacher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_below="@id/view_class_card_title"
                 android:textSize="14sp" />
 
