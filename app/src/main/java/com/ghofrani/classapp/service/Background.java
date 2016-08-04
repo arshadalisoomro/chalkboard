@@ -246,7 +246,7 @@ public class Background extends Service {
 
                 isCurrentClass = true;
                 currentClass = standardClass;
-                DataStore.setCurrentClass(currentClass);
+                DataStore.setCurrentClass(standardClass);
 
             }
 
@@ -373,28 +373,28 @@ public class Background extends Service {
 
         } else if (DataStore.isNextClasses()) {
 
+            nextToCurrentTransition = true;
+
+            if (currentToNextTransition) {
+
+                notificationManager.cancelAll();
+
+                if (notificationHandler != null) {
+
+                    notificationHandler.removeCallbacksAndMessages(null);
+                    notificationHandler = null;
+
+                }
+
+                currentToNextTransition = false;
+
+            }
+
             DateTime currentTimeNow = new DateTime();
 
             int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.getNextClass().getEndTime().toDateTimeToday()).getMinutes();
 
             if (minutesLeft <= Integer.parseInt(sharedPreferences.getString("next_class_notification_minutes", "30"))) {
-
-                nextToCurrentTransition = true;
-
-                if (currentToNextTransition) {
-
-                    notificationManager.cancelAll();
-
-                    if (notificationHandler != null) {
-
-                        notificationHandler.removeCallbacksAndMessages(null);
-                        notificationHandler = null;
-
-                    }
-
-                    currentToNextTransition = false;
-
-                }
 
                 Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
                 PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
