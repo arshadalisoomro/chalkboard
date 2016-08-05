@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,16 @@ import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.ViewClass;
+import com.ghofrani.classapp.model.SlimClass;
+import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 import com.github.ivbaranov.mli.MaterialLetterIcon;
 
+import java.util.LinkedList;
+
 public class Classes extends Fragment {
 
-    private final View.OnClickListener cardOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener cardOnClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -49,6 +54,15 @@ public class Classes extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+
+        super.onDestroyView();
+
+        cardOnClickListener = null;
+
+    }
+
     @SuppressWarnings("ResourceType")
     private void updateUI() {
 
@@ -57,18 +71,16 @@ public class Classes extends Fragment {
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+        LinkedList<SlimClass> allClassesLinkedList = DataStore.getAllClassesLinkedList();
 
-        Cursor cursor = databaseHelper.getClasses();
+        RelativeLayout[] cardViewRelativeLayoutArray = new RelativeLayout[allClassesLinkedList.size()];
 
-        RelativeLayout[] cardViewRelativeLayoutArray = new RelativeLayout[cursor.getCount()];
+        for (int i = 1; i < (allClassesLinkedList.size() + 1); i++) {
 
-        int loopIndex = 1;
-
-        while (cursor.moveToNext()) {
+            SlimClass slimClass = allClassesLinkedList.get(i - 1);
 
             RelativeLayout classCardLayout = (RelativeLayout) layoutInflater.inflate(R.layout.view_class_card, classesClassListLayout, false);
-            classCardLayout.setId(loopIndex);
+            classCardLayout.setId(i);
 
             RelativeLayout.LayoutParams classCardLayoutLayoutParams = (RelativeLayout.LayoutParams) classCardLayout.getLayoutParams();
             classCardLayoutLayoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
@@ -77,38 +89,27 @@ public class Classes extends Fragment {
             classCardLayout.setLayoutParams(classCardLayoutLayoutParams);
 
             TextView classCardTitleTextView = (TextView) classCardLayout.findViewById(R.id.view_class_card_title);
-            classCardTitleTextView.setText(cursor.getString(1));
+            classCardTitleTextView.setText(slimClass.getName());
 
             TextView classCardLocationTeacherTextView = (TextView) classCardLayout.findViewById(R.id.view_class_card_location_teacher);
-            classCardLocationTeacherTextView.setText(cursor.getString(2) + ", " + cursor.getString(3));
+            classCardLocationTeacherTextView.setText(slimClass.getTeacher() + ", " + slimClass.getLocation());
 
             CardView classCard = (CardView) classCardLayout.findViewById(R.id.view_class_card);
             classCard.setOnClickListener(cardOnClickListener);
 
-            if ((loopIndex % 2) == 0) {
-
-                MaterialLetterIcon homeworkIcon = (MaterialLetterIcon) classCardLayout.findViewById(R.id.view_class_card_homework_icon);
-                homeworkIcon.setShapeColor(ContextCompat.getColor(getContext(), R.color.accent));
-
-            }
-
-            if (loopIndex == 1)
+            if (i == 1)
                 classCardLayoutLayoutParams.topMargin = getPixelFromDP(12);
 
-            if (loopIndex == cardViewRelativeLayoutArray.length)
+            if (i == cardViewRelativeLayoutArray.length)
                 classCardLayoutLayoutParams.bottomMargin = getPixelFromDP(12);
 
-            if (loopIndex > 1)
-                classCardLayoutLayoutParams.addRule(RelativeLayout.BELOW, loopIndex - 1);
+            if (i > 1)
+                classCardLayoutLayoutParams.addRule(RelativeLayout.BELOW, i - 1);
 
             classesClassListLayout.addView(classCardLayout);
-            cardViewRelativeLayoutArray[loopIndex - 1] = classCardLayout;
-
-            loopIndex++;
+            cardViewRelativeLayoutArray[i - 1] = classCardLayout;
 
         }
-
-        databaseHelper.close();
 
     }
 

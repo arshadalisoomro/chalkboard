@@ -31,7 +31,7 @@ import java.util.LinkedList;
 
 public class Overview extends Fragment {
 
-    private final BroadcastReceiver updateProgressBarReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver updateProgressBarBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
 
@@ -55,7 +55,7 @@ public class Overview extends Fragment {
     private LinkedList<StandardClass> nextClassesLinkedList;
     private ExpandableListView expandableListViewTomorrowClasses;
     private LinkedList<StandardClass> tomorrowClassesLinkedList;
-    private final BroadcastReceiver updateUI = new BroadcastReceiver() {
+    private BroadcastReceiver updateUIBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
 
@@ -88,8 +88,8 @@ public class Overview extends Fragment {
 
         super.onStart();
 
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateProgressBarReceiver, new IntentFilter("update_progress_bar"));
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateUI, new IntentFilter("update_UI"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateProgressBarBroadcastReceiver, new IntentFilter("update_progress_bar"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateUIBroadcastReceiver, new IntentFilter("update_UI"));
 
         updateUI();
 
@@ -100,8 +100,22 @@ public class Overview extends Fragment {
 
         super.onStop();
 
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateProgressBarReceiver);
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateUI);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateProgressBarBroadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateUIBroadcastReceiver);
+
+    }
+
+    @Override
+    public void onDestroyView() {
+
+        super.onDestroyView();
+
+        updateProgressBarBroadcastReceiver = null;
+        updateUIBroadcastReceiver = null;
+        expandableListViewNextClasses = null;
+        nextClassesLinkedList = null;
+        expandableListViewTomorrowClasses = null;
+        tomorrowClassesLinkedList = null;
 
     }
 

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -108,6 +109,8 @@ public class AddClass extends AppCompatActivity {
                                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
                             }
+
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_classes"));
 
                             setResult(0, new Intent().putExtra("switch_to_timetable", 1));
 

@@ -15,11 +15,13 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.AddHomework;
 import com.ghofrani.classapp.activity.Main;
+import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
@@ -36,7 +38,7 @@ import java.util.LinkedList;
 
 public class Background extends Service {
 
-    private static final IntentFilter backgroundIntentFilter;
+    private static IntentFilter backgroundIntentFilter;
     private static BroadcastReceiver backgroundBroadcastReceiver;
 
     static {
@@ -60,14 +62,26 @@ public class Background extends Service {
     private boolean currentToNextTransition = false;
     private boolean nextToCurrentTransition = false;
 
-    private final BroadcastReceiver updateData = new BroadcastReceiver() {
+    private BroadcastReceiver updateData = new BroadcastReceiver() {
 
         @Override
 
         public void onReceive(Context context, Intent intent) {
 
             getData();
-            getAllClasses();
+            getTimetable();
+
+        }
+
+    };
+
+    private BroadcastReceiver updateClasses = new BroadcastReceiver() {
+
+        @Override
+
+        public void onReceive(Context context, Intent intent) {
+
+            getClasses();
 
         }
 
@@ -96,12 +110,15 @@ public class Background extends Service {
         registerBroadcastReceiver();
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(updateData, new IntentFilter("update_data"));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(updateClasses, new IntentFilter("update_classes"));
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         getData();
 
-        getAllClasses();
+        getTimetable();
+
+        getClasses();
 
     }
 
@@ -111,6 +128,7 @@ public class Background extends Service {
         super.onDestroy();
 
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(updateData);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(updateClasses);
 
         if (backgroundBroadcastReceiver != null) {
 
@@ -126,6 +144,16 @@ public class Background extends Service {
         }
 
         notificationManager.cancelAll();
+
+        updateData = null;
+        updateClasses = null;
+        backgroundIntentFilter = null;
+        backgroundBroadcastReceiver = null;
+        notificationRunnable = null;
+        notificationCompatBuilder = null;
+        notificationManager = null;
+        remoteViews = null;
+        currentClass = null;
 
     }
 
@@ -162,7 +190,7 @@ public class Background extends Service {
 
                         }
 
-                        getAllClasses();
+                        getTimetable();
 
                         break;
 
@@ -177,7 +205,7 @@ public class Background extends Service {
 
                         }
 
-                        getAllClasses();
+                        getTimetable();
 
                         break;
 
@@ -192,7 +220,7 @@ public class Background extends Service {
 
                         }
 
-                        getAllClasses();
+                        getTimetable();
 
                         break;
 
@@ -476,7 +504,7 @@ public class Background extends Service {
 
     }
 
-    private void getAllClasses() {
+    private void getTimetable() {
 
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
         Cursor cursor;
@@ -499,6 +527,25 @@ public class Background extends Service {
                 DataStore.setClassesLinkedListOfDay(i, null);
 
         }
+
+        databaseHelper.close();
+
+    }
+
+    private void getClasses(){
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        Cursor cursor = databaseHelper.getClasses();
+
+        LinkedList<SlimClass> slimClassLinkedList = new LinkedList<>();
+
+        while(cursor.moveToNext()){
+
+            slimClassLinkedList.add(new SlimClass(cursor.getString(1), cursor.getString(3), cursor.getString(2)));
+
+        }
+
+        DataStore.setAllClassesLinkedList(slimClassLinkedList);
 
         databaseHelper.close();
 
