@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
 
@@ -23,6 +24,23 @@ public class ViewClass extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+
+        if (menuItem.getItemId() == android.R.id.home) {
+
+            super.onBackPressed();
+
+            return true;
+
+        } else {
+
+            return super.onOptionsItemSelected(menuItem);
+
+        }
 
     }
 
