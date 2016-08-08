@@ -25,7 +25,7 @@
 
             android:defaultValue="false"
             android:key="detailed_notification"
-            android:summary="This will show the detailed notification"
+            android:summary="This toggles between the detailed and simple notification"
             android:title="Show detailed notification" />
 
         <ListPreference

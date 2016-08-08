@@ -15,7 +15,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.ghofrani.classapp.R;
@@ -61,6 +60,8 @@ public class Background extends Service {
 
     private boolean currentToNextTransition = false;
     private boolean nextToCurrentTransition = false;
+    private boolean simpleToDetailedTransition = false;
+    private boolean detailedToSimpleTransition = false;
 
     private BroadcastReceiver updateData = new BroadcastReceiver() {
 
@@ -289,113 +290,249 @@ public class Background extends Service {
 
         if (DataStore.isCurrentClass()) {
 
-            currentToNextTransition = true;
+            if (sharedPreferences.getBoolean("detailed_notification", false)) {
 
-            if (nextToCurrentTransition) {
+                currentToNextTransition = true;
 
-                notificationManager.cancelAll();
+                if (nextToCurrentTransition) {
 
-                if (notificationHandler != null) {
+                    notificationManager.cancelAll();
 
-                    notificationHandler.removeCallbacksAndMessages(null);
-                    notificationHandler = null;
+                    if (notificationHandler != null) {
 
-                }
-
-                nextToCurrentTransition = false;
-
-            }
-
-            if (notificationHandler == null) {
-
-                Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
-                PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-                Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
-                PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-                remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
-                remoteViews.setOnClickPendingIntent(R.id.view_notification_button, addHomeworkActivityIntent);
-
-                notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setOngoing(true)
-                        .setContentIntent(addHomeActivityIntent)
-                        .setContent(remoteViews)
-                        .setPriority(Notification.PRIORITY_MAX)
-                        .setWhen(0);
-
-                notificationRunnable = new Runnable() {
-
-                    public void run() {
-
-                        DateTime currentTime = new DateTime();
-
-                        long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
-                        long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
-
-                        int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
-
-                        int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
-                        String remainingTitleText;
-
-                        if (minutesRemaining == 1)
-                            remainingTitleText = "1 min. left";
-                        else
-                            remainingTitleText = minutesRemaining + " mins. left";
-
-                        remoteViews.setTextViewText(R.id.view_notification_header, currentClass.getName() + " - " + remainingTitleText);
-
-                        if (DataStore.isNextClasses())
-                            remoteViews.setTextViewText(R.id.view_notification_text, "Next: " + DataStore.getNextClass().getName() + " at " + DataStore.getNextClass().getLocation());
-                        else
-                            remoteViews.setTextViewText(R.id.view_notification_text, "No further classes");
-
-                        String progressBarText = "";
-                        int progressBarProgress = 0;
-
-                        if (percentageValueInt >= 0 && percentageValueInt <= 100) {
-
-                            progressBarText = String.valueOf(percentageValueInt) + "%";
-                            progressBarProgress = percentageValueInt;
-
-                            remoteViews.setTextViewText(R.id.view_notification_progress_text, String.valueOf(percentageValueInt));
-                            remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, percentageValueInt, false);
-
-                        } else if (percentageValueInt < 0) {
-
-                            progressBarText = "0%";
-                            progressBarProgress = 0;
-
-                            remoteViews.setTextViewText(R.id.view_notification_progress_text, "0");
-                            remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, 0, false);
-
-                        } else if (percentageValueInt > 100) {
-
-                            progressBarText = "100%";
-                            progressBarProgress = 100;
-
-                            remoteViews.setTextViewText(R.id.view_notification_progress_text, "100");
-                            remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, 100, false);
-
-                        }
-
-                        DataStore.setProgressBarText(progressBarText);
-                        DataStore.setProgressBarProgress(progressBarProgress);
-
-                        notificationManager.notify(0, notificationCompatBuilder.build());
-
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_progress_bar"));
-
-                        notificationHandler.postDelayed(this, 5000);
+                        notificationHandler.removeCallbacksAndMessages(null);
+                        notificationHandler = null;
 
                     }
 
-                };
+                    nextToCurrentTransition = false;
 
-                notificationHandler = new Handler();
+                }
 
-                notificationHandler.post(notificationRunnable);
+                detailedToSimpleTransition = true;
+
+                if (simpleToDetailedTransition) {
+
+                    notificationManager.cancelAll();
+
+                    if (notificationHandler != null) {
+
+                        notificationHandler.removeCallbacksAndMessages(null);
+                        notificationHandler = null;
+
+                    }
+
+                    simpleToDetailedTransition = false;
+
+                }
+
+                if (notificationHandler == null) {
+
+                    Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
+                    PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
+                    PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
+                    remoteViews.setOnClickPendingIntent(R.id.view_notification_button, addHomeworkActivityIntent);
+
+                    notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setOngoing(true)
+                            .setContentIntent(addHomeActivityIntent)
+                            .setContent(remoteViews)
+                            .setPriority(Notification.PRIORITY_MAX)
+                            .setWhen(0);
+
+                    notificationRunnable = new Runnable() {
+
+                        public void run() {
+
+                            DateTime currentTime = new DateTime();
+
+                            long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+
+                            int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
+
+                            int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            String remainingTitleText;
+
+                            if (minutesRemaining == 1)
+                                remainingTitleText = "1 min. left";
+                            else
+                                remainingTitleText = minutesRemaining + " mins. left";
+
+                            remoteViews.setTextViewText(R.id.view_notification_header, currentClass.getName() + " - " + remainingTitleText);
+
+                            if (DataStore.isNextClasses())
+                                remoteViews.setTextViewText(R.id.view_notification_text, "Next: " + DataStore.getNextClass().getName() + " at " + DataStore.getNextClass().getLocation());
+                            else
+                                remoteViews.setTextViewText(R.id.view_notification_text, "No further classes");
+
+                            String progressBarText = "";
+                            int progressBarProgress = 0;
+
+                            if (percentageValueInt >= 0 && percentageValueInt <= 100) {
+
+                                progressBarText = String.valueOf(percentageValueInt) + "%";
+                                progressBarProgress = percentageValueInt;
+
+                                remoteViews.setTextViewText(R.id.view_notification_progress_text, String.valueOf(percentageValueInt));
+                                remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, percentageValueInt, false);
+
+                            } else if (percentageValueInt < 0) {
+
+                                progressBarText = "0%";
+                                progressBarProgress = 0;
+
+                                remoteViews.setTextViewText(R.id.view_notification_progress_text, "0");
+                                remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, 0, false);
+
+                            } else if (percentageValueInt > 100) {
+
+                                progressBarText = "100%";
+                                progressBarProgress = 100;
+
+                                remoteViews.setTextViewText(R.id.view_notification_progress_text, "100");
+                                remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, 100, false);
+
+                            }
+
+                            DataStore.setProgressBarText(progressBarText);
+                            DataStore.setProgressBarProgress(progressBarProgress);
+
+                            notificationManager.notify(0, notificationCompatBuilder.build());
+
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_progress_bar"));
+
+                            notificationHandler.postDelayed(this, 5000);
+
+                        }
+
+                    };
+
+                    notificationHandler = new Handler();
+
+                    notificationHandler.post(notificationRunnable);
+
+                }
+
+            } else {
+
+                currentToNextTransition = true;
+
+                if (nextToCurrentTransition) {
+
+                    notificationManager.cancelAll();
+
+                    if (notificationHandler != null) {
+
+                        notificationHandler.removeCallbacksAndMessages(null);
+                        notificationHandler = null;
+
+                    }
+
+                    nextToCurrentTransition = false;
+
+                }
+
+                simpleToDetailedTransition = true;
+
+                if (detailedToSimpleTransition) {
+
+                    notificationManager.cancelAll();
+
+                    if (notificationHandler != null) {
+
+                        notificationHandler.removeCallbacksAndMessages(null);
+                        notificationHandler = null;
+
+                    }
+
+                    detailedToSimpleTransition = false;
+
+                }
+
+                if (notificationHandler == null) {
+
+                    Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
+                    PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
+                    PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setOngoing(true)
+                            .setContentIntent(addHomeActivityIntent)
+                            .setPriority(Notification.PRIORITY_MAX)
+                            .setWhen(0);
+
+                    notificationRunnable = new Runnable() {
+
+                        public void run() {
+
+                            DateTime currentTime = new DateTime();
+
+                            long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+
+                            int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
+
+                            int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            String remainingText;
+
+                            if (minutesRemaining == 1)
+                                remainingText = "1 min. left";
+                            else
+                                remainingText = minutesRemaining + " mins. left";
+
+                            if (DataStore.isNextClasses())
+                                remainingText += ", " + DataStore.getNextClass().getName() + " next";
+
+                            notificationCompatBuilder.setContentTitle(currentClass.getName());
+                            notificationCompatBuilder.setContentText(remainingText);
+
+                            String progressBarText = "";
+                            int progressBarProgress = 0;
+
+                            if (percentageValueInt >= 0 && percentageValueInt <= 100) {
+
+                                progressBarText = String.valueOf(percentageValueInt) + "%";
+                                progressBarProgress = percentageValueInt;
+
+                            } else if (percentageValueInt < 0) {
+
+                                progressBarText = "0%";
+                                progressBarProgress = 0;
+
+                            } else if (percentageValueInt > 100) {
+
+                                progressBarText = "100%";
+                                progressBarProgress = 100;
+
+                            }
+
+                            DataStore.setProgressBarText(progressBarText);
+                            DataStore.setProgressBarProgress(progressBarProgress);
+
+                            notificationManager.notify(0, notificationCompatBuilder.build());
+
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_progress_bar"));
+
+                            notificationHandler.postDelayed(this, 5000);
+
+                        }
+
+                    };
+
+                    notificationHandler = new Handler();
+
+                    notificationHandler.post(notificationRunnable);
+
+                }
 
             }
 

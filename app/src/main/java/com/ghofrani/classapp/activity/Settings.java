@@ -1,6 +1,7 @@
 package com.ghofrani.classapp.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -33,23 +34,19 @@ public class Settings extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_data"));
-
-        super.onBackPressed();
-
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
 
-        if (menuItem.getItemId() == android.R.id.home)
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_data"));
+        if (menuItem.getItemId() == android.R.id.home) {
 
-        super.onBackPressed();
+            super.onBackPressed();
 
-        return true;
+            return true;
+
+        } else {
+
+            return onOptionsItemSelected(menuItem);
+
+        }
 
     }
 
@@ -60,13 +57,43 @@ public class Settings extends AppCompatActivity {
 
     }
 
-    public static class SettingsFragment extends PreferenceFragment {
+    public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         @Override
         public void onCreate(final Bundle savedInstanceState) {
 
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences_settings);
+
+        }
+
+        @Override
+        public void onResume() {
+
+            super.onResume();
+
+            getPreferenceScreen()
+                    .getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(this);
+
+        }
+
+        @Override
+        public void onPause() {
+
+            super.onPause();
+
+            getPreferenceScreen()
+                    .getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(this);
+
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+            if (key.equals("detailed_notification") || key.equals("next_class_notification_minutes"))
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));
 
         }
 
