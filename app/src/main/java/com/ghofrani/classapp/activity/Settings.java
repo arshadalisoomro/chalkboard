@@ -47,7 +47,9 @@ public class Settings extends AppCompatActivity {
         if (menuItem.getItemId() == android.R.id.home)
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_data"));
 
-        return super.onOptionsItemSelected(menuItem);
+        super.onBackPressed();
+
+        return true;
 
     }
 

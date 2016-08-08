@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -174,11 +175,6 @@ public class Main extends AppCompatActivity {
 
                 if (!menuItemDrawer.isChecked()) {
 
-                    new Handler().postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-
                             if (menuItemDrawer.getItemId() == R.id.settings) {
 
                                 switchToView(4);
@@ -214,10 +210,6 @@ public class Main extends AppCompatActivity {
                                 }
 
                             }
-
-                        }
-
-                    }, 250);
 
                 }
 
@@ -260,7 +252,7 @@ public class Main extends AppCompatActivity {
 
     private void switchToView(int viewToSwitchTo) {
 
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         switch (viewToSwitchTo) {
 
@@ -269,10 +261,6 @@ public class Main extends AppCompatActivity {
                 floatingActionButton.setVisibility(View.INVISIBLE);
 
                 toolbar.setTitle("Overview");
-
-                Overview overviewFragment = new Overview();
-                fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
-                fragmentTransaction.commit();
 
                 tabLayout.setVisibility(AppBarLayout.GONE);
                 viewPager.setVisibility(LinearLayout.GONE);
@@ -283,38 +271,127 @@ public class Main extends AppCompatActivity {
 
                 currentView = viewToSwitchTo;
 
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        Overview overviewFragment = new Overview();
+                        fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
+                        fragmentTransaction.commit();
+
+                    }
+
+                }, 200);
+
                 break;
 
             case 1:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
 
-                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
-
                 toolbar.setTitle("Timetable");
 
-                ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+                scrollView.setVisibility(LinearLayout.GONE);
 
-                adapter.addFragment(new Sunday(), "SUNDAY");
-                adapter.addFragment(new Monday(), "MONDAY");
-                adapter.addFragment(new Tuesday(), "TUESDAY");
-                adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                adapter.addFragment(new Thursday(), "THURSDAY");
-                adapter.addFragment(new Friday(), "FRIDAY");
-                adapter.addFragment(new Saturday(), "SATURDAY");
+                tabLayout.setVisibility(AppBarLayout.VISIBLE);
+                viewPager.setVisibility(LinearLayout.VISIBLE);
 
-                viewPager.setAdapter(adapter);
+                navigationView.setCheckedItem(R.id.timetable);
 
-                tabLayout.setupWithViewPager(viewPager);
+                currentView = viewToSwitchTo;
 
-                tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                new Handler().postDelayed(new Runnable() {
 
                     @Override
-                    public void onTabSelected(TabLayout.Tab tabLayoutTab) {
+                    public void run() {
 
-                        super.onTabSelected(tabLayoutTab);
+                        fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
 
-                        if (tabLayoutTab.getPosition() != 0) {
+                        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+                        adapter.addFragment(new Monday(), "MONDAY");
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+                        adapter.addFragment(new Friday(), "FRIDAY");
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+
+                        viewPager.setAdapter(adapter);
+
+                        tabLayout.setupWithViewPager(viewPager);
+
+                        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+                            @Override
+                            public void onTabSelected(TabLayout.Tab tabLayoutTab) {
+
+                                super.onTabSelected(tabLayoutTab);
+
+                                if (tabLayoutTab.getPosition() != 0) {
+
+                                    if (!DataStore.isAnimated()) {
+
+                                        Animation animation = new Animation() {
+
+                                            @Override
+                                            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+
+                                                params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+
+                                                layout.setLayoutParams(params);
+
+                                            }
+                                        };
+
+                                        animation.setDuration(200);
+                                        drawerLayout.startAnimation(animation);
+
+                                        DataStore.setIsAnimated(true);
+
+                                    }
+
+                                } else {
+
+                                    if (DataStore.isAnimated()) {
+
+                                        Animation animation = new Animation() {
+
+                                            @Override
+                                            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+
+                                                params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+
+                                                layout.setLayoutParams(params);
+
+                                            }
+                                        };
+
+                                        animation.setDuration(200);
+                                        drawerLayout.startAnimation(animation);
+
+                                        DataStore.setIsAnimated(false);
+
+                                    }
+
+                                }
+
+                                DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
+
+                            }
+
+                        });
+
+                        tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
+
+                        if (DataStore.getSelectedTabPosition() != 0) {
 
                             if (!DataStore.isAnimated()) {
 
@@ -368,76 +445,9 @@ public class Main extends AppCompatActivity {
 
                         }
 
-                        DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
-
                     }
 
-                });
-
-                tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
-
-                if (DataStore.getSelectedTabPosition() != 0) {
-
-                    if (!DataStore.isAnimated()) {
-
-                        Animation animation = new Animation() {
-
-                            @Override
-                            protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-
-                                params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
-
-                                layout.setLayoutParams(params);
-
-                            }
-                        };
-
-                        animation.setDuration(200);
-                        drawerLayout.startAnimation(animation);
-
-                        DataStore.setIsAnimated(true);
-
-                    }
-
-                } else {
-
-                    if (DataStore.isAnimated()) {
-
-                        Animation animation = new Animation() {
-
-                            @Override
-                            protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
-
-                                params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
-
-                                layout.setLayoutParams(params);
-
-                            }
-                        };
-
-                        animation.setDuration(200);
-                        drawerLayout.startAnimation(animation);
-
-                        DataStore.setIsAnimated(false);
-
-                    }
-
-                }
-
-                scrollView.setVisibility(LinearLayout.GONE);
-
-                tabLayout.setVisibility(AppBarLayout.VISIBLE);
-                viewPager.setVisibility(LinearLayout.VISIBLE);
-
-                navigationView.setCheckedItem(R.id.timetable);
-
-                currentView = viewToSwitchTo;
+                }, 250);
 
                 break;
 
@@ -446,10 +456,6 @@ public class Main extends AppCompatActivity {
                 floatingActionButton.setVisibility(View.VISIBLE);
 
                 toolbar.setTitle("Classes");
-
-                Classes classesFragment = new Classes();
-                fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
-                fragmentTransaction.commit();
 
                 tabLayout.setVisibility(AppBarLayout.GONE);
                 viewPager.setVisibility(LinearLayout.GONE);
@@ -460,6 +466,19 @@ public class Main extends AppCompatActivity {
 
                 currentView = viewToSwitchTo;
 
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        Classes classesFragment = new Classes();
+                        fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
+                        fragmentTransaction.commit();
+
+                    }
+
+                }, 250);
+
                 break;
 
             case 3:
@@ -467,10 +486,6 @@ public class Main extends AppCompatActivity {
                 floatingActionButton.setVisibility(View.VISIBLE);
 
                 toolbar.setTitle("Homework");
-
-                Homework homeworkFragment = new Homework();
-                fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
-                fragmentTransaction.commit();
 
                 tabLayout.setVisibility(AppBarLayout.GONE);
                 viewPager.setVisibility(LinearLayout.GONE);
@@ -481,11 +496,36 @@ public class Main extends AppCompatActivity {
 
                 currentView = viewToSwitchTo;
 
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        Homework homeworkFragment = new Homework();
+                        fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
+                        fragmentTransaction.commit();
+
+                    }
+
+                }, 250);
+
                 break;
 
             case 4:
 
-                startActivity(new Intent(this, Settings.class));
+                if (currentView == 0)
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("collapse_lists"));
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        startActivity(new Intent(getApplicationContext(), Settings.class));
+
+                    }
+
+                }, 250);
 
                 break;
 

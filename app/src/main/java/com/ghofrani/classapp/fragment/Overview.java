@@ -54,6 +54,48 @@ public class Overview extends Fragment {
     private ExpandableListView expandableListViewNextClasses;
     private LinkedList<StandardClass> nextClassesLinkedList;
     private ExpandableListView expandableListViewTomorrowClasses;
+    private BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+
+        public void onReceive(Context context, Intent intent) {
+
+            getView().post(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    if (expandableListViewNextClasses != null) {
+
+                        if (expandableListViewNextClasses.isGroupExpanded(0)) {
+
+                            expandableListViewNextClasses.collapseGroup(0);
+
+                            setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
+
+                        }
+
+                    }
+
+                    if (expandableListViewTomorrowClasses != null) {
+
+                        if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                            expandableListViewTomorrowClasses.collapseGroup(0);
+
+                            setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    };
     private LinkedList<StandardClass> tomorrowClassesLinkedList;
     private BroadcastReceiver updateUIBroadcastReceiver = new BroadcastReceiver() {
 
@@ -65,6 +107,30 @@ public class Overview extends Fragment {
 
                 @Override
                 public void run() {
+
+                    if (expandableListViewNextClasses != null) {
+
+                        if (expandableListViewNextClasses.isGroupExpanded(0)) {
+
+                            expandableListViewNextClasses.collapseGroup(0);
+
+                            setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
+
+                        }
+
+                    }
+
+                    if (expandableListViewTomorrowClasses != null) {
+
+                        if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                            expandableListViewTomorrowClasses.collapseGroup(0);
+
+                            setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
+
+                        }
+
+                    }
 
                     updateUI();
 
@@ -90,6 +156,7 @@ public class Overview extends Fragment {
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateProgressBarBroadcastReceiver, new IntentFilter("update_progress_bar"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateUIBroadcastReceiver, new IntentFilter("update_UI"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(collapseExpandableListViewsBroadcastReceiver, new IntentFilter("collapse_lists"));
 
         updateUI();
 
@@ -102,6 +169,7 @@ public class Overview extends Fragment {
 
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateProgressBarBroadcastReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateUIBroadcastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(collapseExpandableListViewsBroadcastReceiver);
 
     }
 
@@ -159,6 +227,10 @@ public class Overview extends Fragment {
 
             });
 
+        } else {
+
+            expandableListViewNextClasses = null;
+
         }
 
         if (DataStore.isTomorrowClasses() && PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("tomorrow_classes", true)) {
@@ -178,6 +250,10 @@ public class Overview extends Fragment {
                 }
 
             });
+
+        } else {
+
+            expandableListViewTomorrowClasses = null;
 
         }
 
