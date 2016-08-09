@@ -294,9 +294,6 @@ public class Main extends AppCompatActivity {
 
                 scrollView.setVisibility(LinearLayout.GONE);
 
-                tabLayout.setVisibility(AppBarLayout.VISIBLE);
-                viewPager.setVisibility(LinearLayout.VISIBLE);
-
                 navigationView.setCheckedItem(R.id.timetable);
 
                 currentView = viewToSwitchTo;
@@ -305,6 +302,9 @@ public class Main extends AppCompatActivity {
 
                     @Override
                     public void run() {
+
+                        tabLayout.setVisibility(AppBarLayout.VISIBLE);
+                        viewPager.setVisibility(LinearLayout.VISIBLE);
 
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
 

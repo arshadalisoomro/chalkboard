@@ -216,17 +216,6 @@ public class Overview extends Fragment {
 
             configureExpandableListViewNextClasses();
 
-            expandableListViewNextClasses.post(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    expandableListViewNextClasses.setIndicatorBoundsRelative(expandableListViewNextClasses.getRight() - getPixelFromDP(32), expandableListViewNextClasses.getWidth());
-
-                }
-
-            });
-
         } else {
 
             expandableListViewNextClasses = null;
@@ -238,18 +227,6 @@ public class Overview extends Fragment {
             tomorrowClassesLinkedList = DataStore.getTomorrowClassesLinkedList();
 
             configureExpandableListViewTomorrowClasses();
-
-            expandableListViewTomorrowClasses.post(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    expandableListViewTomorrowClasses.setIndicatorBoundsRelative(expandableListViewTomorrowClasses.getRight() - getPixelFromDP(32), expandableListViewTomorrowClasses.getWidth());
-
-
-                }
-
-            });
 
         } else {
 

@@ -1,13 +1,5 @@
 package com.ghofrani.classapp.model;
 
-import android.content.Context;
-
-import com.ghofrani.classapp.modules.DatabaseHelper;
-
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 public class SlimClass {
 
     private String name;
