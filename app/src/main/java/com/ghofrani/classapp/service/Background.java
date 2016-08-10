@@ -32,8 +32,10 @@ import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Background extends Service {
 
@@ -677,14 +679,17 @@ public class Background extends Service {
         Cursor cursor = databaseHelper.getClasses();
 
         LinkedList<SlimClass> slimClassLinkedList = new LinkedList<>();
+        List<String> classNamesList = new ArrayList<>();
 
         while (cursor.moveToNext()) {
 
             slimClassLinkedList.add(new SlimClass(cursor.getString(1), cursor.getString(3), cursor.getString(2)));
+            classNamesList.add(cursor.getString(1));
 
         }
 
         DataStore.setAllClassesLinkedList(slimClassLinkedList);
+        DataStore.setAllClassNamesList(classNamesList);
 
         databaseHelper.close();
 

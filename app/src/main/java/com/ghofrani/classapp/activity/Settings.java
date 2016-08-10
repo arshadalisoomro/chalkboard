@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.modules.DataStore;
 
 public class Settings extends AppCompatActivity {
 
@@ -92,7 +93,9 @@ public class Settings extends AppCompatActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-            if (key.equals("detailed_notification") || key.equals("next_class_notification_minutes"))
+            if (key.equals("detailed_notification") && DataStore.isCurrentClass())
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));
+            else if (key.equals("next_class_notification_minutes"))
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));
 
         }

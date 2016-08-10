@@ -5,6 +5,7 @@ import com.ghofrani.classapp.model.StandardClass;
 
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 
 public class DataStore {
 
@@ -27,6 +28,7 @@ public class DataStore {
     private static LinkedList<StandardClass> saturdayClasses;
 
     private static LinkedList<SlimClass> allClassesLinkedList;
+    private static List<String> allClassNamesList;
 
     private static int progressBarProgress = 0;
     private static String progressBarText = "0%";
@@ -163,6 +165,14 @@ public class DataStore {
 
     public static void setAllClassesLinkedList(LinkedList<SlimClass> update) {
         allClassesLinkedList = update;
+    }
+
+    public static List<String> getAllClassNamesList() {
+        return allClassNamesList;
+    }
+
+    public static void setAllClassNamesList(List<String> update) {
+        allClassNamesList = update;
     }
 
     public static int getProgressBarProgress() {

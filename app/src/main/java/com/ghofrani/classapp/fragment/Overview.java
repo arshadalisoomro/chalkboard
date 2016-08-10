@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.activity.ViewClass;
 import com.ghofrani.classapp.adapter.ClassList;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
@@ -424,6 +425,23 @@ public class Overview extends Fragment {
 
         });
 
+        expandableListViewNextClasses.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+
+                TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+
+                expandableListViewNextClasses.collapseGroup(0);
+                setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
+
+                return false;
+
+            }
+
+        });
+
     }
 
     private void configureExpandableListViewTomorrowClasses() {
@@ -449,6 +467,23 @@ public class Overview extends Fragment {
                 setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
 
                 return true;
+
+            }
+
+        });
+
+        expandableListViewTomorrowClasses.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+
+                TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+
+                expandableListViewTomorrowClasses.collapseGroup(0);
+                setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
+
+                return false;
 
             }
 

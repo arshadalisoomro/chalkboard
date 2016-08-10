@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="16dp">
+
+    <Spinner
+
+        android:id="@+id/dialog_add_class_into_timetable_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="26dp"
+        android:prompt="@string/spinner_prompt"
+        android:scrollbars="none" />
+
+    <TextView
+
+        android:id="@+id/dialog_add_class_into_timetable_start_time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_add_class_into_timetable_spinner"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Start time:"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/dialog_add_class_into_timetable_start_time_label"
+        android:layout_marginRight="30dp"
+        android:gravity="right"
+        android:text="12:00"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+
+    <TextView
+
+        android:id="@+id/dialog_add_class_into_timetable_end_time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_add_class_into_timetable_start_time_label"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:text="End time:"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/dialog_add_class_into_timetable_end_time_label"
+        android:layout_marginRight="30dp"
+        android:gravity="right"
+        android:text="13:00"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+
+    <Button
+
+        android:id="@+id/dialog_add_class_into_timetable_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/dialog_add_class_into_timetable_end_time_label"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="12dp"
+        android:background="#00ffffff"
+        android:text="Add" />
+
+    <Button
+
+        android:id="@+id/dialog_add_class_into_timetable_time_picker_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/dialog_add_class_into_timetable_add_button"
+        android:layout_toLeftOf="@id/dialog_add_class_into_timetable_add_button"
+        android:background="#00ffffff"
+        android:text="Edit Times" />
+
+</RelativeLayout>

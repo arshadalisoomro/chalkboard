@@ -1,15 +1,18 @@
 package com.ghofrani.classapp.fragment.timetable;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.activity.ViewClass;
 import com.ghofrani.classapp.adapter.TimetableList;
 import com.ghofrani.classapp.modules.DataStore;
 
@@ -38,6 +41,18 @@ public class Saturday extends Fragment {
 
             TimetableList listAdapter = new TimetableList(getContext(), DataStore.getClassesLinkedListOfDay(Calendar.SATURDAY));
             listView.setAdapter(listAdapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                    startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+
+                }
+
+            });
 
             setListViewHeightBasedOnChildren(listView);
 

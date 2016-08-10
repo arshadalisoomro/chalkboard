@@ -59,4 +59,5 @@ public class TimetableList extends BaseAdapter {
         return convertView;
 
     }
+
 }

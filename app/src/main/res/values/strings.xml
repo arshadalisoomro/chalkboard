@@ -7,4 +7,6 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
+    <string name="spinner_prompt">Choose your class</string>
+
 </resources>

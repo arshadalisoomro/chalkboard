@@ -148,12 +148,19 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (currentView == 1)
-                    startActivity(new Intent(getApplicationContext(), AddClassIntoTimetable.class));
-                else if (currentView == 2)
+                if (currentView == 1) {
+
+                    startActivity(new Intent(getApplicationContext(), AddClassIntoTimetable.class).putExtra("day", DataStore.getSelectedTabPosition()));
+
+                } else if (currentView == 2) {
+
                     startActivityForResult(new Intent(getApplicationContext(), AddClass.class), 0);
-                else if (currentView == 3)
+
+                } else if (currentView == 3) {
+
                     startActivity(new Intent(getApplicationContext(), AddHomework.class));
+
+                }
 
             }
 
