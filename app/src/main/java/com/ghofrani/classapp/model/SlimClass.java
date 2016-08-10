@@ -6,7 +6,7 @@ public class SlimClass {
     private String location;
     private String teacher;
 
-    public SlimClass (String name, String location, String teacher) {
+    public SlimClass(String name, String location, String teacher) {
 
         this.name = name;
         this.location = location;

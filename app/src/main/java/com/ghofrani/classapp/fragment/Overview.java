@@ -54,7 +54,7 @@ public class Overview extends Fragment {
     private ExpandableListView expandableListViewNextClasses;
     private LinkedList<StandardClass> nextClassesLinkedList;
     private ExpandableListView expandableListViewTomorrowClasses;
-    private BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
 

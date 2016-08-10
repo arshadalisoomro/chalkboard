@@ -72,11 +72,11 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
-        android:foregroundTint="@color/primary"
-        android:tint="@color/primary"
-        android:backgroundTint="@color/primary"
         android:background="#00000000"
+        android:backgroundTint="@color/primary"
         android:clickable="true"
-        android:src="@drawable/homework" />
+        android:foregroundTint="@color/primary"
+        android:src="@drawable/homework"
+        android:tint="@color/primary" />
 
 </RelativeLayout>

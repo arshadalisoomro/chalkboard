@@ -148,7 +148,9 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (currentView == 2)
+                if (currentView == 1)
+                    startActivity(new Intent(getApplicationContext(), AddClassIntoTimetable.class));
+                else if (currentView == 2)
                     startActivityForResult(new Intent(getApplicationContext(), AddClass.class), 0);
                 else if (currentView == 3)
                     startActivity(new Intent(getApplicationContext(), AddHomework.class));
@@ -175,41 +177,41 @@ public class Main extends AppCompatActivity {
 
                 if (!menuItemDrawer.isChecked()) {
 
-                            if (menuItemDrawer.getItemId() == R.id.settings) {
+                    if (menuItemDrawer.getItemId() == R.id.settings) {
 
-                                switchToView(4);
+                        switchToView(4);
 
-                            } else {
+                    } else {
 
-                                switch (menuItemDrawer.getItemId()) {
+                        switch (menuItemDrawer.getItemId()) {
 
-                                    case R.id.overview:
+                            case R.id.overview:
 
-                                        switchToView(0);
+                                switchToView(0);
 
-                                        break;
+                                break;
 
-                                    case R.id.timetable:
+                            case R.id.timetable:
 
-                                        switchToView(1);
+                                switchToView(1);
 
-                                        break;
+                                break;
 
-                                    case R.id.classes:
+                            case R.id.classes:
 
-                                        switchToView(2);
+                                switchToView(2);
 
-                                        break;
+                                break;
 
-                                    case R.id.homework:
+                            case R.id.homework:
 
-                                        switchToView(3);
+                                switchToView(3);
 
-                                        break;
+                                break;
 
-                                }
+                        }
 
-                            }
+                    }
 
                 }
 

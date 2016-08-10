@@ -460,8 +460,8 @@ public class Background extends Service {
                     Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
                     PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
-                    PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    //Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
+                    //PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
                             .setSmallIcon(R.mipmap.ic_launcher)
@@ -485,12 +485,14 @@ public class Background extends Service {
                             String remainingText;
 
                             if (minutesRemaining == 1)
-                                remainingText = "1 min. left";
+                                remainingText = "1 minute left";
                             else
-                                remainingText = minutesRemaining + " mins. left";
+                                remainingText = minutesRemaining + " minutes left";
 
                             if (DataStore.isNextClasses())
                                 remainingText += ", " + DataStore.getNextClass().getName() + " next";
+                            else
+                                remainingText += ", no further classes";
 
                             notificationCompatBuilder.setContentTitle(currentClass.getName());
                             notificationCompatBuilder.setContentText(remainingText);
@@ -669,14 +671,14 @@ public class Background extends Service {
 
     }
 
-    private void getClasses(){
+    private void getClasses() {
 
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
         Cursor cursor = databaseHelper.getClasses();
 
         LinkedList<SlimClass> slimClassLinkedList = new LinkedList<>();
 
-        while(cursor.moveToNext()){
+        while (cursor.moveToNext()) {
 
             slimClassLinkedList.add(new SlimClass(cursor.getString(1), cursor.getString(3), cursor.getString(2)));
 

@@ -30,7 +30,7 @@ public class AddClass extends AppCompatActivity {
         setContentView(R.layout.activity_add_class);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.add_class_toolbar);
-        toolbar.setTitle("Add Class");
+        toolbar.setTitle("Add New Class");
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);

@@ -68,6 +68,14 @@
 
         </activity>
 
+        <activity
+
+            android:name=".activity.AddClassIntoTimetable"
+            android:parentActivityName=".activity.Main"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <service
 
             android:name=".service.Background"
