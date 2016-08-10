@@ -1,9 +1,11 @@
 package com.ghofrani.classapp.activity;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -27,6 +29,8 @@ import java.util.List;
 
 public class AddClassIntoTimetable extends AppCompatActivity {
 
+    ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -41,6 +45,8 @@ public class AddClassIntoTimetable extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        listView = (ListView) findViewById(R.id.add_class_into_timetable_list_view);
 
     }
 
@@ -61,12 +67,7 @@ public class AddClassIntoTimetable extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-
-        ListView listView = (ListView) findViewById(R.id.add_class_into_timetable_list_view);
+    private void updateUI() {
 
         LinkedList<StandardClass> standardClassLinkedList = null;
 
@@ -134,6 +135,47 @@ public class AddClassIntoTimetable extends AppCompatActivity {
 
             });
 
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    if (!noClassIndexList.contains(position)) {
+
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(AddClassIntoTimetable.this);
+
+                        builder.setTitle("Delete class?");
+                        builder.setMessage("This class will be deleted out of the timetable.");
+
+                        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                dialog.dismiss();
+
+                            }
+
+                        });
+
+                        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                dialog.dismiss();
+
+                            }
+
+                        });
+
+                        builder.create().show();
+
+                    }
+
+                    return true;
+                }
+
+            });
+
             setListViewHeightBasedOnChildren(listView);
 
         } else {
@@ -141,6 +183,15 @@ public class AddClassIntoTimetable extends AppCompatActivity {
             listView.setVisibility(View.GONE);
 
         }
+
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        updateUI();
 
     }
 

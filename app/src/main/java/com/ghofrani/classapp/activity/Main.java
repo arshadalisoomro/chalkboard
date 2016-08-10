@@ -298,6 +298,7 @@ public class Main extends AppCompatActivity {
             case 1:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
+                floatingActionButton.setImageResource(R.drawable.edit);
 
                 toolbar.setTitle("Timetable");
 
@@ -463,6 +464,7 @@ public class Main extends AppCompatActivity {
             case 2:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
+                floatingActionButton.setImageResource(R.drawable.add);
 
                 toolbar.setTitle("Classes");
 
@@ -493,6 +495,7 @@ public class Main extends AppCompatActivity {
             case 3:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
+                floatingActionButton.setImageResource(R.drawable.add);
 
                 toolbar.setTitle("Homework");
 
