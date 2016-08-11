@@ -561,7 +561,7 @@ public class Background extends Service {
 
             DateTime currentTimeNow = new DateTime();
 
-            int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.getNextClass().getEndTime().toDateTimeToday()).getMinutes();
+            int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.getNextClass().getStartTime().toDateTimeToday()).getMinutes();
 
             if (minutesLeft <= Integer.parseInt(sharedPreferences.getString("next_class_notification_minutes", "30"))) {
 

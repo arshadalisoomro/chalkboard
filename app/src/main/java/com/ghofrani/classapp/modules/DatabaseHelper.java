@@ -188,6 +188,95 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void removeClassOutOfDay(int day, String name, String startTime) {
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        switch (day) {
+
+            case Calendar.SUNDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Sunday.TABLE_NAME + " where "
+                        + DatabaseContract.Sunday.COLUMN_CLASS + "='"
+                        + name + "' and "
+                        + DatabaseContract.Sunday.COLUMN_START_TIME + "='"
+                        + startTime + "'");
+
+                break;
+
+            case Calendar.MONDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Monday.TABLE_NAME + " where "
+                        + DatabaseContract.Monday.COLUMN_CLASS + "='"
+                        + name + "' and "
+                        + DatabaseContract.Monday.COLUMN_START_TIME + "='"
+                        + startTime + "'");
+
+                break;
+
+            case Calendar.TUESDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Tuesday.TABLE_NAME + " where "
+                        + DatabaseContract.Tuesday.COLUMN_CLASS + "='"
+                        + name + "' and "
+                        + DatabaseContract.Tuesday.COLUMN_START_TIME + "='"
+                        + startTime + "'");
+
+                break;
+
+            case Calendar.WEDNESDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Wednesday.TABLE_NAME + " where "
+                        + DatabaseContract.Wednesday.COLUMN_CLASS + "='"
+                        + name + "' and "
+                        + DatabaseContract.Wednesday.COLUMN_START_TIME + "='"
+                        + startTime + "'");
+
+                break;
+
+            case Calendar.THURSDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Thursday.TABLE_NAME + " where "
+                        + DatabaseContract.Thursday.COLUMN_CLASS + "='"
+                        + name + "' and "
+                        + DatabaseContract.Thursday.COLUMN_START_TIME + "='"
+                        + startTime + "'");
+
+                break;
+
+            case Calendar.FRIDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Friday.TABLE_NAME + " where "
+                        + DatabaseContract.Friday.COLUMN_CLASS + "='"
+                        + name + "' and "
+                        + DatabaseContract.Friday.COLUMN_START_TIME + "='"
+                        + startTime + "'");
+
+                break;
+
+            case Calendar.SATURDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Saturday.TABLE_NAME + " where "
+                        + DatabaseContract.Saturday.COLUMN_CLASS + "='"
+                        + name + "' and "
+                        + DatabaseContract.Saturday.COLUMN_START_TIME + "='"
+                        + startTime + "'");
+
+                break;
+
+        }
+
+        sqLiteDatabase.close();
+
+    }
+
     public boolean checkIfClassExists(String classToCheck) {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();

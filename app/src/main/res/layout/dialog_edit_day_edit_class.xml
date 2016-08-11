@@ -10,19 +10,19 @@
 
     <Spinner
 
-        android:id="@+id/dialog_add_class_into_timetable_spinner"
+        android:id="@+id/dialog_edit_day_edit_class_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="26dp"
+        android:layout_marginRight="21dp"
         android:prompt="@string/spinner_prompt"
         android:scrollbars="none" />
 
     <TextView
 
-        android:id="@+id/dialog_add_class_into_timetable_start_time_label"
+        android:id="@+id/dialog_edit_day_edit_class_start_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_add_class_into_timetable_spinner"
+        android:layout_below="@id/dialog_edit_day_edit_class_spinner"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
         android:text="Start time:"
@@ -34,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/dialog_add_class_into_timetable_start_time_label"
-        android:layout_marginRight="30dp"
+        android:layout_alignTop="@id/dialog_edit_day_edit_class_start_time_label"
+        android:layout_marginRight="25dp"
         android:gravity="right"
         android:text="12:00"
         android:textColor="#000000"
@@ -43,10 +43,10 @@
 
     <TextView
 
-        android:id="@+id/dialog_add_class_into_timetable_end_time_label"
+        android:id="@+id/dialog_edit_day_edit_class_end_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_add_class_into_timetable_start_time_label"
+        android:layout_below="@id/dialog_edit_day_edit_class_start_time_label"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
         android:text="End time:"
@@ -58,8 +58,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/dialog_add_class_into_timetable_end_time_label"
-        android:layout_marginRight="30dp"
+        android:layout_alignTop="@id/dialog_edit_day_edit_class_end_time_label"
+        android:layout_marginRight="25dp"
         android:gravity="right"
         android:text="13:00"
         android:textColor="#000000"
@@ -67,24 +67,25 @@
 
     <Button
 
-        android:id="@+id/dialog_add_class_into_timetable_add_button"
+        android:id="@+id/dialog_edit_day_edit_class_time_picker_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/dialog_add_class_into_timetable_end_time_label"
+        android:layout_below="@+id/dialog_edit_day_edit_class_end_time_label"
         android:layout_marginBottom="6dp"
+        android:layout_marginRight="18dp"
         android:layout_marginTop="12dp"
         android:background="#00ffffff"
-        android:text="Add" />
+        android:text="Edit Times" />
 
     <Button
 
-        android:id="@+id/dialog_add_class_into_timetable_time_picker_button"
+        android:id="@+id/dialog_edit_day_edit_class_delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/dialog_add_class_into_timetable_add_button"
-        android:layout_toLeftOf="@id/dialog_add_class_into_timetable_add_button"
+        android:layout_alignTop="@id/dialog_edit_day_edit_class_time_picker_button"
+        android:layout_toLeftOf="@id/dialog_edit_day_edit_class_time_picker_button"
         android:background="#00ffffff"
-        android:text="Edit Times" />
+        android:text="Delete" />
 
 </RelativeLayout>

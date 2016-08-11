@@ -10,7 +10,7 @@
 
     <include
 
-        android:id="@+id/add_class_into_timetable_toolbar"
+        android:id="@+id/edit_day_toolbar"
         layout="@layout/view_toolbar" />
 
     <ScrollView
@@ -35,7 +35,7 @@
 
                 <ListView
 
-                    android:id="@+id/add_class_into_timetable_list_view"
+                    android:id="@+id/edit_day_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"

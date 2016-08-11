@@ -8,17 +8,16 @@
 
     <ImageView
 
-        android:id="@+id/view_add_class_into_timetable_list_child_icon"
+        android:id="@+id/view_edit_day_list_child_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/add"
-        android:tint="@color/grey_text"
-        android:visibility="invisible" />
+        android:tint="@color/grey_text" />
 
     <TextView
 
-        android:id="@+id/view_add_class_into_timetable_list_child_text"
+        android:id="@+id/view_edit_day_list_child_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
@@ -26,16 +25,16 @@
 
     <TextView
 
-        android:id="@+id/view_add_class_into_timetable_list_child_location"
+        android:id="@+id/view_edit_day_list_child_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/view_add_class_into_timetable_list_child_text"
+        android:layout_below="@id/view_edit_day_list_child_text"
         android:layout_marginBottom="7dp"
         android:textSize="12sp" />
 
     <TextView
 
-        android:id="@+id/view_add_class_into_timetable_list_child_time"
+        android:id="@+id/view_edit_day_list_child_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

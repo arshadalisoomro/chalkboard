@@ -150,7 +150,7 @@ public class Main extends AppCompatActivity {
 
                 if (currentView == 1) {
 
-                    startActivity(new Intent(getApplicationContext(), AddClassIntoTimetable.class).putExtra("day", DataStore.getSelectedTabPosition()));
+                    startActivity(new Intent(getApplicationContext(), EditDay.class).putExtra("day", DataStore.getSelectedTabPosition()));
 
                 } else if (currentView == 2) {
 
@@ -237,10 +237,7 @@ public class Main extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
         tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-        tabLayout.setVisibility(AppBarLayout.GONE);
-
         viewPager = (ViewPager) findViewById(R.id.main_view_pager);
-        viewPager.setVisibility(LinearLayout.GONE);
 
         switchToView(extraPassed);
 
