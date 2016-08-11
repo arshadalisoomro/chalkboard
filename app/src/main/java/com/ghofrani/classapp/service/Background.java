@@ -252,10 +252,10 @@ public class Background extends Service {
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
         Cursor todayCursor = databaseHelper.getClasses(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-        LinkedList<StandardClass> nextClassesLinkedList = new LinkedList<>();
+        final LinkedList<StandardClass> nextClassesLinkedList = new LinkedList<>();
         boolean nextClassDefined = false;
 
-        LocalTime currentTime = new LocalTime().now();
+        final LocalTime currentTime = new LocalTime().now();
 
         while (todayCursor.moveToNext()) {
 
@@ -331,11 +331,11 @@ public class Background extends Service {
 
                 if (notificationHandler == null) {
 
-                    Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
-                    PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
+                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
-                    PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
+                    final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
                     remoteViews.setOnClickPendingIntent(R.id.view_notification_button, addHomeworkActivityIntent);
@@ -352,14 +352,14 @@ public class Background extends Service {
 
                         public void run() {
 
-                            DateTime currentTime = new DateTime();
+                            final DateTime currentTime = new DateTime();
 
-                            long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
-                            long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+                            final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
 
-                            int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
+                            final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
 
-                            int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            final int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
                             String remainingTitleText;
 
                             if (minutesRemaining == 1)
@@ -460,11 +460,11 @@ public class Background extends Service {
 
                 if (notificationHandler == null) {
 
-                    Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
-                    PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
+                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    //Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
-                    //PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    //final Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
+                    //final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
                             .setSmallIcon(R.mipmap.ic_launcher)
@@ -477,14 +477,14 @@ public class Background extends Service {
 
                         public void run() {
 
-                            DateTime currentTime = new DateTime();
+                            final DateTime currentTime = new DateTime();
 
-                            long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
-                            long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+                            final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
 
-                            int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
+                            final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
 
-                            int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            final int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
                             String remainingText;
 
                             if (minutesRemaining == 1)
@@ -560,14 +560,14 @@ public class Background extends Service {
 
             }
 
-            DateTime currentTimeNow = new DateTime();
+            final DateTime currentTimeNow = new DateTime();
 
-            int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.getNextClass().getStartTime().toDateTimeToday()).getMinutes();
+            final int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.getNextClass().getStartTime().toDateTimeToday()).getMinutes();
 
             if (minutesLeft <= Integer.parseInt(sharedPreferences.getString("next_class_notification_minutes", "30"))) {
 
-                Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
-                PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                final Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
+                final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext());
                 notificationCompatBuilder.setOngoing(true);
@@ -596,6 +596,8 @@ public class Background extends Service {
 
             currentToNextTransition = false;
             nextToCurrentTransition = false;
+            detailedToSimpleTransition = false;
+            simpleToDetailedTransition = false;
 
             notificationManager.cancelAll();
 
@@ -619,7 +621,7 @@ public class Background extends Service {
 
             Cursor tomorrowCursor = databaseHelper.getClasses(day);
 
-            LinkedList<StandardClass> tomorrowClassesLinkedList = new LinkedList<>();
+            final LinkedList<StandardClass> tomorrowClassesLinkedList = new LinkedList<>();
 
             while (tomorrowCursor.moveToNext()) {
 
@@ -653,7 +655,7 @@ public class Background extends Service {
 
         for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
 
-            LinkedList<StandardClass> classesLinkedList = new LinkedList<>();
+            final LinkedList<StandardClass> classesLinkedList = new LinkedList<>();
 
             cursor = databaseHelper.getClasses(i);
 
@@ -679,8 +681,8 @@ public class Background extends Service {
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
         Cursor cursor = databaseHelper.getClasses();
 
-        LinkedList<SlimClass> slimClassLinkedList = new LinkedList<>();
-        List<String> classNamesList = new ArrayList<>();
+        final LinkedList<SlimClass> slimClassLinkedList = new LinkedList<>();
+        final List<String> classNamesList = new ArrayList<>();
 
         while (cursor.moveToNext()) {
 

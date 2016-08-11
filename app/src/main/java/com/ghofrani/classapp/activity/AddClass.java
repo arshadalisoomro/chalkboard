@@ -79,7 +79,7 @@ public class AddClass extends AppCompatActivity {
 
         } else if (menuItem.getItemId() == R.id.toolbar_check_check) {
 
-            EditText inputNameEditText = (EditText) findViewById(R.id.add_class_input_name);
+            final EditText inputNameEditText = (EditText) findViewById(R.id.add_class_input_name);
 
             if (!inputNameEditText.getText().toString().isEmpty()) {
 
@@ -87,12 +87,12 @@ public class AddClass extends AppCompatActivity {
 
                 if (!databaseHelper.checkIfClassExists(inputNameEditText.getText().toString().trim())) {
 
-                    EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
-                    EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+                    final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
+                    final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
 
                     if (!inputTeacherEditText.getText().toString().isEmpty() && !inputLocationEditText.getText().toString().isEmpty()) {
 
-                        String classToAddInfo[] = new String[3];
+                        final String classToAddInfo[] = new String[3];
                         classToAddInfo[0] = inputNameEditText.getText().toString().trim();
                         classToAddInfo[1] = inputTeacherEditText.getText().toString().trim();
                         classToAddInfo[2] = inputLocationEditText.getText().toString().trim();
@@ -101,7 +101,7 @@ public class AddClass extends AppCompatActivity {
 
                             databaseHelper.close();
 
-                            View view = this.getCurrentFocus();
+                            final View view = this.getCurrentFocus();
 
                             if (view != null) {
 

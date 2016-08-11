@@ -45,15 +45,15 @@ public class TimetableList extends BaseAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_list_child, null);
 
-        StandardClass standardClass = classesLinkedList.get(position);
+        final StandardClass standardClass = classesLinkedList.get(position);
 
-        TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
+        final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
         listChildTitleTextView.setText(standardClass.getName());
 
-        TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
+        final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
         listChildTimeTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
 
-        TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
+        final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
         listChildLocationTextView.setText(standardClass.getLocation());
 
         return convertView;

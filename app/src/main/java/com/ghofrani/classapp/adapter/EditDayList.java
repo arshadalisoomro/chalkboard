@@ -16,7 +16,7 @@ import java.util.LinkedList;
 public class EditDayList extends BaseAdapter {
 
     private final LayoutInflater layoutInflater;
-    private LinkedList<StandardClass> classesLinkedList;
+    private final LinkedList<StandardClass> classesLinkedList;
 
     public EditDayList(Context context, LinkedList<StandardClass> initial) {
 
@@ -57,16 +57,16 @@ public class EditDayList extends BaseAdapter {
             if (convertView == null)
                 convertView = layoutInflater.inflate(R.layout.view_edit_day_list_child, null);
 
-            ImageView listChildIconImageView = (ImageView) convertView.findViewById(R.id.view_edit_day_list_child_icon);
+            final ImageView listChildIconImageView = (ImageView) convertView.findViewById(R.id.view_edit_day_list_child_icon);
             listChildIconImageView.setVisibility(View.VISIBLE);
 
-            TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text);
+            final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text);
             listChildTitleTextView.setVisibility(View.INVISIBLE);
 
-            TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_time);
+            final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_time);
             listChildTimeTextView.setVisibility(View.INVISIBLE);
 
-            TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_location);
+            final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_location);
             listChildLocationTextView.setVisibility(View.INVISIBLE);
 
             return convertView;
@@ -76,20 +76,20 @@ public class EditDayList extends BaseAdapter {
             if (convertView == null)
                 convertView = layoutInflater.inflate(R.layout.view_edit_day_list_child, null);
 
-            ImageView listChildIconImageView = (ImageView) convertView.findViewById(R.id.view_edit_day_list_child_icon);
+            final ImageView listChildIconImageView = (ImageView) convertView.findViewById(R.id.view_edit_day_list_child_icon);
             listChildIconImageView.setVisibility(View.INVISIBLE);
 
-            StandardClass standardClass = classesLinkedList.get(position);
+            final StandardClass standardClass = classesLinkedList.get(position);
 
-            TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text);
+            final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text);
             listChildTitleTextView.setVisibility(View.VISIBLE);
             listChildTitleTextView.setText(standardClass.getName());
 
-            TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_time);
+            final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_time);
             listChildTimeTextView.setVisibility(View.VISIBLE);
             listChildTimeTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
 
-            TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_location);
+            final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_location);
             listChildLocationTextView.setVisibility(View.VISIBLE);
             listChildLocationTextView.setText(standardClass.getLocation());
 

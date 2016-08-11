@@ -16,7 +16,7 @@ public class ViewClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_class);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
         toolbar.setTitle(getIntent().getExtras().getString("class"));
         toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);

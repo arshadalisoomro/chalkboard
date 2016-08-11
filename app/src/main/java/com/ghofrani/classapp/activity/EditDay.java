@@ -34,14 +34,15 @@ import java.util.List;
 
 public class EditDay extends AppCompatActivity {
 
-    ListView listView;
-    EditDayList listAdapter;
-    LinkedList<StandardClass> standardClassLinkedList;
-    List<String> startTimeStringForPosition;
-    List<String> endTimeStringPerPosition;
-    List<Integer> noClassIndexList;
+    private ListView listView;
+    private EditDayList listAdapter;
+    private LinkedList<StandardClass> standardClassLinkedList;
 
-    int day;
+    private List<String> startTimeStringForPosition;
+    private List<String> endTimeStringPerPosition;
+    private List<Integer> noClassIndexList;
+
+    private int day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,21 @@ public class EditDay extends AppCompatActivity {
         endTimeStringPerPosition = new ArrayList<>();
 
         updateUI();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        listView = null;
+        listAdapter = null;
+        standardClassLinkedList = null;
+
+        startTimeStringForPosition = null;
+        endTimeStringPerPosition = null;
+        noClassIndexList = null;
+
+        super.onDestroy();
 
     }
 
@@ -203,32 +219,32 @@ public class EditDay extends AppCompatActivity {
                         addDialog.setContentView(R.layout.dialog_edit_day_add_class);
                         addDialog.setTitle("Add Class");
 
-                        Spinner classSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
+                        final Spinner classNameSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
 
                         ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.getAllClassNamesList());
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        classSpinner.setAdapter(classNameSpinnerAdapter);
+                        classNameSpinner.setAdapter(classNameSpinnerAdapter);
 
-                        TextView dialogAddClassStartTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
+                        final TextView dialogAddClassStartTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
                         dialogAddClassStartTimeTextView.setText(startTimeStringForPosition.get(position));
 
-                        TextView dialogAddClassEndTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
+                        final TextView dialogAddClassEndTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
                         dialogAddClassEndTimeTextView.setText(endTimeStringPerPosition.get(position));
 
-                        Button addClassDialogChangeTimeButton = (Button) addDialog.findViewById(R.id.dialog_edit_day_add_class_time_picker_button);
+                        final Button addClassDialogChangeTimeButton = (Button) addDialog.findViewById(R.id.dialog_edit_day_add_class_time_picker_button);
                         addClassDialogChangeTimeButton.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
 
+                                final String dialogAddClassStartTimeTextViewString = dialogAddClassStartTimeTextView.getText().toString();
+                                final String dialogAddClassEndTimeTextViewString = dialogAddClassEndTimeTextView.getText().toString();
+
                                 TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
                                     @Override
                                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
-
-                                        TextView startTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
-                                        TextView endTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
 
                                         if (hourOfDay > hourOfDayEnd) {
 
@@ -244,21 +260,21 @@ public class EditDay extends AppCompatActivity {
 
                                                 if (position != 0) {
 
-                                                    if (Integer.parseInt(startTimeTextView.getText().toString().substring(0, 2)) < hourOfDay) {
+                                                    if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) < hourOfDay) {
 
                                                         String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                         String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
-                                                        startTimeTextView.setText(hourOfDayString + ":" + minuteString);
+                                                        dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
-                                                    } else if (Integer.parseInt(startTimeTextView.getText().toString().substring(0, 2)) == hourOfDay) {
+                                                    } else if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) == hourOfDay) {
 
-                                                        if (Integer.parseInt(startTimeTextView.getText().toString().substring(3)) < minute) {
+                                                        if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(3)) < minute) {
 
                                                             String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                             String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
-                                                            startTimeTextView.setText(hourOfDayString + ":" + minuteString);
+                                                            dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
                                                         } else {
 
@@ -279,27 +295,27 @@ public class EditDay extends AppCompatActivity {
                                                     String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                     String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
-                                                    startTimeTextView.setText(hourOfDayString + ":" + minuteString);
+                                                    dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
                                                 }
 
                                                 if (position != (standardClassLinkedList.size() - 1)) {
 
-                                                    if (Integer.parseInt(endTimeTextView.getText().toString().substring(0, 2)) > hourOfDayEnd) {
+                                                    if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) > hourOfDayEnd) {
 
                                                         String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                         String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                        endTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                                        dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
-                                                    } else if (Integer.parseInt(endTimeTextView.getText().toString().substring(0, 2)) == hourOfDayEnd) {
+                                                    } else if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) == hourOfDayEnd) {
 
-                                                        if (Integer.parseInt(endTimeTextView.getText().toString().substring(3)) > minute) {
+                                                        if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(3)) > minute) {
 
                                                             String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                             String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                            endTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                                            dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                                         } else {
 
@@ -318,7 +334,7 @@ public class EditDay extends AppCompatActivity {
                                                     String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                     String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                    endTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                                    dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                                 }
 
@@ -328,21 +344,21 @@ public class EditDay extends AppCompatActivity {
 
                                             if (position != 0) {
 
-                                                if (Integer.parseInt(startTimeTextView.getText().toString().substring(0, 2)) < hourOfDay) {
+                                                if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) < hourOfDay) {
 
                                                     String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                     String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
-                                                    startTimeTextView.setText(hourOfDayString + ":" + minuteString);
+                                                    dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
-                                                } else if (Integer.parseInt(startTimeTextView.getText().toString().substring(0, 2)) == hourOfDay) {
+                                                } else if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) == hourOfDay) {
 
-                                                    if (Integer.parseInt(startTimeTextView.getText().toString().substring(3)) < minute) {
+                                                    if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(3)) < minute) {
 
                                                         String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                         String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
-                                                        startTimeTextView.setText(hourOfDayString + ":" + minuteString);
+                                                        dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
                                                     } else {
 
@@ -363,27 +379,27 @@ public class EditDay extends AppCompatActivity {
                                                 String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                 String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
-                                                startTimeTextView.setText(hourOfDayString + ":" + minuteString);
+                                                dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
                                             }
 
                                             if (position != (standardClassLinkedList.size() - 1)) {
 
-                                                if (Integer.parseInt(endTimeTextView.getText().toString().substring(0, 2)) > hourOfDayEnd) {
+                                                if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) > hourOfDayEnd) {
 
                                                     String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                     String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                    endTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                                    dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
-                                                } else if (Integer.parseInt(endTimeTextView.getText().toString().substring(0, 2)) == hourOfDayEnd) {
+                                                } else if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) == hourOfDayEnd) {
 
-                                                    if (Integer.parseInt(endTimeTextView.getText().toString().substring(3)) > minute) {
+                                                    if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(3)) > minute) {
 
                                                         String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                         String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                        endTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                                        dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                                     } else {
 
@@ -402,7 +418,7 @@ public class EditDay extends AppCompatActivity {
                                                 String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                 String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                endTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                                dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                             }
 
@@ -412,13 +428,11 @@ public class EditDay extends AppCompatActivity {
 
                                 };
 
-                                TextView startTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
-
-                                TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
+                                final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
 
                                         onTimeSetListener,
-                                        Integer.parseInt(startTimeTextView.getText().toString().substring(0, 2)),
-                                        Integer.parseInt(startTimeTextView.getText().toString().substring(3)),
+                                        Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)),
+                                        Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(3)),
                                         true
 
                                 );
@@ -429,52 +443,53 @@ public class EditDay extends AppCompatActivity {
 
                         });
 
-                        Button addClassDialogAddButton = (Button) addDialog.findViewById(R.id.dialog_edit_day_add_class_add_button);
+                        final Button addClassDialogAddButton = (Button) addDialog.findViewById(R.id.dialog_edit_day_add_class_add_button);
                         addClassDialogAddButton.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
 
-                                Spinner nameSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
-                                String name = nameSpinner.getSelectedItem().toString();
+                                final Spinner classNameSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
+                                final String className = classNameSpinner.getSelectedItem().toString();
 
-                                TextView startTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
-                                String startTimeString = startTimeTextView.getText().toString().replace(":", "");
+                                final TextView classStartTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
+                                final String classStartTime = classStartTimeTextView.getText().toString().replace(":", "");
 
-                                TextView endTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
-                                String endTimeString = endTimeTextView.getText().toString().replace(":", "");
+                                final TextView classEndTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
+                                final String classEndTime = classEndTimeTextView.getText().toString().replace(":", "");
+
+                                DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
+                                LinkedList<StandardClass> currentClasses;
 
                                 if (DataStore.getClassesLinkedListOfDay(day) != null) {
 
-                                    LinkedList<StandardClass> currentClasses = (LinkedList<StandardClass>) DataStore.getClassesLinkedListOfDay(day).clone();
+                                    currentClasses = (LinkedList<StandardClass>) DataStore.getClassesLinkedListOfDay(day).clone();
 
                                     boolean inserted = false;
                                     int index = 0;
 
                                     while (!inserted) {
 
-                                        if (startTimeString.equals(currentClasses.get(index).getEndTimeString().replace(":", ""))) {
+                                        if (classStartTime.equals(currentClasses.get(index).getEndTimeString().replace(":", ""))) {
 
                                             inserted = true;
-                                            currentClasses.add(index + 1, new StandardClass(EditDay.this, name, startTimeString, endTimeString));
+                                            currentClasses.add(index + 1, new StandardClass(EditDay.this, className, classStartTime, classEndTime));
 
-                                        } else if (Integer.parseInt(startTimeString) < Integer.parseInt(currentClasses.get(index).getStartTimeString().replace(":", ""))) {
+                                        } else if (Integer.parseInt(classStartTime) < Integer.parseInt(currentClasses.get(index).getStartTimeString().replace(":", ""))) {
 
                                             inserted = true;
-                                            currentClasses.add(index, new StandardClass(EditDay.this, name, startTimeString, endTimeString));
+                                            currentClasses.add(index, new StandardClass(EditDay.this, className, classStartTime, classEndTime));
 
                                         } else if ((currentClasses.size() - index) == 1) {
 
                                             inserted = true;
-                                            currentClasses.add(new StandardClass(EditDay.this, name, startTimeString, endTimeString));
+                                            currentClasses.add(new StandardClass(EditDay.this, className, classStartTime, classEndTime));
 
                                         }
 
                                         index++;
 
                                     }
-
-                                    DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
 
                                     databaseHelper.deleteAllClassesOfDay(day);
 
@@ -484,24 +499,18 @@ public class EditDay extends AppCompatActivity {
 
                                     }
 
-                                    databaseHelper.close();
-
-                                    DataStore.setClassesLinkedListOfDay(day, currentClasses);
-
                                 } else {
 
-                                    DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
+                                    databaseHelper.insertClassIntoDay(new String[]{className, classStartTime.replace(":", ""), classEndTime.replace(":", "")}, day);
 
-                                    databaseHelper.insertClassIntoDay(new String[]{name, startTimeString.replace(":", ""), endTimeString.replace(":", "")}, day);
-
-                                    databaseHelper.close();
-
-                                    LinkedList<StandardClass> currentClasses = new LinkedList<>();
-                                    currentClasses.add(new StandardClass(EditDay.this, name, startTimeString, endTimeString));
-
-                                    DataStore.setClassesLinkedListOfDay(day, currentClasses);
+                                    currentClasses = new LinkedList<>();
+                                    currentClasses.add(new StandardClass(EditDay.this, className, classStartTime, classEndTime));
 
                                 }
+
+                                databaseHelper.close();
+
+                                DataStore.setClassesLinkedListOfDay(day, currentClasses);
 
                                 addDialog.dismiss();
 
@@ -515,13 +524,13 @@ public class EditDay extends AppCompatActivity {
 
                     } else {
 
-                        TextView startTimeTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_time);
+                        final TextView startTimeTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_time);
                         final String selectedClassStartTime = startTimeTextView.getText().toString().substring(0, 5).replace(":", "");
 
-                        TextView titleTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_text);
+                        final TextView titleTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_text);
                         final String selectedClassName = titleTextView.getText().toString();
 
-                        List<String> classNameList = DataStore.getAllClassNamesList();
+                        final List<String> classNameList = DataStore.getAllClassNamesList();
                         classNameList.remove(selectedClassName);
                         classNameList.add(0, selectedClassName);
 
@@ -529,20 +538,20 @@ public class EditDay extends AppCompatActivity {
                         editDialog.setContentView(R.layout.dialog_edit_day_edit_class);
                         editDialog.setTitle("Edit Class");
 
-                        TextView dialogEditClassStartTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_start_time);
+                        final TextView dialogEditClassStartTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_start_time);
                         dialogEditClassStartTimeTextView.setText(startTimeStringForPosition.get(position));
 
-                        TextView dialogEditClassEndTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_end_time);
+                        final TextView dialogEditClassEndTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_end_time);
                         dialogEditClassEndTimeTextView.setText(endTimeStringPerPosition.get(position));
 
-                        Spinner classSpinner = (Spinner) editDialog.findViewById(R.id.dialog_edit_day_edit_class_spinner);
+                        final Spinner classNameSpinner = (Spinner) editDialog.findViewById(R.id.dialog_edit_day_edit_class_spinner);
 
-                        ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, classNameList);
+                        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, classNameList);
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        classSpinner.setAdapter(classNameSpinnerAdapter);
+                        classNameSpinner.setAdapter(classNameSpinnerAdapter);
 
-                        Button editClassDialogDeleteButton = (Button) editDialog.findViewById(R.id.dialog_edit_day_edit_class_delete_button);
+                        final Button editClassDialogDeleteButton = (Button) editDialog.findViewById(R.id.dialog_edit_day_edit_class_delete_button);
                         editClassDialogDeleteButton.setOnClickListener(new View.OnClickListener() {
 
                             @Override
@@ -551,7 +560,7 @@ public class EditDay extends AppCompatActivity {
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
                                 databaseHelper.removeClassOutOfDay(day, selectedClassName, selectedClassStartTime);
 
-                                LinkedList<StandardClass> classesLinkedList = new LinkedList<>();
+                                final LinkedList<StandardClass> classesLinkedList = new LinkedList<>();
 
                                 Cursor cursor = databaseHelper.getClasses(day);
 

@@ -315,7 +315,7 @@ public class Main extends AppCompatActivity {
 
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
 
-                        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+                        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
                         adapter.addFragment(new Sunday(), "SUNDAY");
                         adapter.addFragment(new Monday(), "MONDAY");
@@ -340,17 +340,18 @@ public class Main extends AppCompatActivity {
 
                                     if (!DataStore.isAnimated()) {
 
-                                        Animation animation = new Animation() {
+                                        final Animation animation = new Animation() {
+
+                                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
 
                                             @Override
                                             protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                                 params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
 
-                                                layout.setLayoutParams(params);
+                                                mainTabLayoutLayout.setLayoutParams(params);
 
                                             }
                                         };
@@ -366,17 +367,18 @@ public class Main extends AppCompatActivity {
 
                                     if (DataStore.isAnimated()) {
 
-                                        Animation animation = new Animation() {
+                                        final Animation animation = new Animation() {
+
+                                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
 
                                             @Override
                                             protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                                LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                                 params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
 
-                                                layout.setLayoutParams(params);
+                                                mainTabLayoutLayout.setLayoutParams(params);
 
                                             }
                                         };
@@ -402,17 +404,18 @@ public class Main extends AppCompatActivity {
 
                             if (!DataStore.isAnimated()) {
 
-                                Animation animation = new Animation() {
+                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+
+                                final Animation animation = new Animation() {
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                        LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                         params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
 
-                                        layout.setLayoutParams(params);
+                                        mainTabLayoutLayout.setLayoutParams(params);
 
                                     }
                                 };
@@ -428,17 +431,18 @@ public class Main extends AppCompatActivity {
 
                             if (DataStore.isAnimated()) {
 
-                                Animation animation = new Animation() {
+                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+
+                                final Animation animation = new Animation() {
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                        LinearLayout layout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layout.getLayoutParams();
+                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                         params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
 
-                                        layout.setLayoutParams(params);
+                                        mainTabLayoutLayout.setLayoutParams(params);
 
                                     }
                                 };
@@ -555,6 +559,23 @@ public class Main extends AppCompatActivity {
 
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (dPtoConvert * scale + 0.5f);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        menuItemDrawer = null;
+        drawerLayout = null;
+        toolbar = null;
+        tabLayout = null;
+        viewPager = null;
+        scrollView = null;
+        navigationView = null;
+        floatingActionButton = null;
+        fragmentManager = null;
+
+        super.onDestroy();
 
     }
 

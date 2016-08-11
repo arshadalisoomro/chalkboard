@@ -14,6 +14,8 @@ import com.ghofrani.classapp.modules.DataStore;
 
 public class Classes extends Fragment {
 
+    private RecyclerView recyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -26,13 +28,23 @@ public class Classes extends Fragment {
 
         super.onStart();
 
+        recyclerView = (RecyclerView) getView().findViewById(R.id.classes_recycler_view);
+
         updateUI();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+
+        recyclerView = null;
+
+        super.onDestroyView();
 
     }
 
     private void updateUI() {
 
-        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.classes_recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
 

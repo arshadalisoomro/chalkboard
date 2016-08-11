@@ -67,7 +67,7 @@ public class ClassList extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_list_group, parent, false);
 
-        TextView listGroupTitleTextView = (TextView) convertView.findViewById(R.id.view_list_group_text);
+        final TextView listGroupTitleTextView = (TextView) convertView.findViewById(R.id.view_list_group_text);
         listGroupTitleTextView.setText(groupTitle);
 
         return convertView;
@@ -80,15 +80,15 @@ public class ClassList extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_list_child, parent, false);
 
-        StandardClass standardClass = classesLinkedList.get(childPosition);
+        final StandardClass standardClass = classesLinkedList.get(childPosition);
 
-        TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
+        final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
         listChildTitleTextView.setText(standardClass.getName());
 
-        TextView listChildSubtitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
+        final TextView listChildSubtitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
         listChildSubtitleTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
 
-        TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
+        final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
         listChildLocationTextView.setText(standardClass.getLocation());
 
         return convertView;
