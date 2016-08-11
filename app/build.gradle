@@ -28,6 +28,12 @@ android {
 
 }
 
+repositories {
+
+    jcenter()
+
+}
+
 dependencies {
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -40,5 +46,6 @@ dependencies {
     compile 'com.android.support:support-v4:23.4.0'
     compile 'net.danlew:android.joda:2.9.3.1'
     compile 'org.xdty.preference:color-picker:0.0.4'
+    compile 'com.borax12.materialdaterangepicker:library:1.7'
 
 }

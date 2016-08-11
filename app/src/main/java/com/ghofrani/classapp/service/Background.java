@@ -34,6 +34,7 @@ import org.joda.time.Minutes;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -687,6 +688,8 @@ public class Background extends Service {
             classNamesList.add(cursor.getString(1));
 
         }
+
+        Collections.reverse(classNamesList);
 
         DataStore.setAllClassesLinkedList(slimClassLinkedList);
         DataStore.setAllClassNamesList(classNamesList);

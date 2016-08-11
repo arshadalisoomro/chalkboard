@@ -277,6 +277,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void deleteAllClassesOfDay(int day) {
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        switch (day) {
+
+            case Calendar.SUNDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Sunday.TABLE_NAME);
+
+                break;
+
+            case Calendar.MONDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Monday.TABLE_NAME);
+
+                break;
+
+            case Calendar.TUESDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Tuesday.TABLE_NAME);
+
+                break;
+
+            case Calendar.WEDNESDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Wednesday.TABLE_NAME);
+
+                break;
+
+            case Calendar.THURSDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Thursday.TABLE_NAME);
+
+                break;
+
+            case Calendar.FRIDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Friday.TABLE_NAME);
+
+                break;
+
+            case Calendar.SATURDAY:
+
+                sqLiteDatabase.execSQL("delete from "
+                        + DatabaseContract.Saturday.TABLE_NAME);
+
+                break;
+
+        }
+
+        sqLiteDatabase.close();
+
+    }
+
     public boolean checkIfClassExists(String classToCheck) {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
