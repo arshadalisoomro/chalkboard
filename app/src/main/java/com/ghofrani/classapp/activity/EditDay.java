@@ -145,28 +145,58 @@ public class EditDay extends AppCompatActivity {
 
                 if (i == 0) {
 
-                    standardClassLinkedList.add(0, null);
-                    noClassIndexList.add(0);
+                    if (!standardClassLinkedList.get(0).getStartTimeString().equals("00:00")) {
 
-                    String firstStartTimeHourString = standardClassLinkedList.get(1).getStartTimeString().substring(0, 2);
-                    int firstStartTimeHourInteger = Integer.parseInt(firstStartTimeHourString) - 1;
-                    String finalFirstStartTimeHourString = (firstStartTimeHourInteger < 10) ? ("0" + String.valueOf(firstStartTimeHourInteger)) : String.valueOf(firstStartTimeHourInteger);
+                        standardClassLinkedList.add(0, null);
+                        noClassIndexList.add(0);
 
-                    startTimeStringForPosition.add(finalFirstStartTimeHourString + standardClassLinkedList.get(1).getStartTimeString().substring(2));
-                    endTimeStringPerPosition.add(standardClassLinkedList.get(1).getStartTimeString());
+                        String firstStartTimeHourString = standardClassLinkedList.get(1).getStartTimeString().substring(0, 2);
+
+                        if ((Integer.parseInt(firstStartTimeHourString) - 1) < 0) {
+
+                            startTimeStringForPosition.add("00:00");
+
+                        } else {
+
+                            int firstStartTimeHourInteger = Integer.parseInt(firstStartTimeHourString) - 1;
+                            String finalFirstStartTimeHourString = (firstStartTimeHourInteger < 10) ? ("0" + String.valueOf(firstStartTimeHourInteger)) : String.valueOf(firstStartTimeHourInteger);
+                            startTimeStringForPosition.add(finalFirstStartTimeHourString + standardClassLinkedList.get(1).getStartTimeString().substring(2));
+
+                        }
+
+                        endTimeStringPerPosition.add(standardClassLinkedList.get(1).getStartTimeString());
+
+                    } else {
+
+                        startTimeStringForPosition.add("00:00");
+                        endTimeStringPerPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
+
+                    }
 
                 } else if (i == standardClassLinkedList.size()) {
 
-                    standardClassLinkedList.add(null);
-                    noClassIndexList.add(i);
+                    if (!standardClassLinkedList.get(i - 1).getEndTimeString().equals("23:59")) {
 
-                    startTimeStringForPosition.add(standardClassLinkedList.get(i - 1).getEndTimeString());
+                        standardClassLinkedList.add(null);
+                        noClassIndexList.add(i);
 
-                    String lastStartTimeHourString = standardClassLinkedList.get(i - 1).getEndTimeString().substring(0, 2);
-                    int lastStartTimeHourInteger = Integer.parseInt(lastStartTimeHourString) + 1;
-                    String finalLastStartTimeHourString = (lastStartTimeHourInteger < 10) ? ("0" + String.valueOf(lastStartTimeHourInteger)) : String.valueOf(lastStartTimeHourInteger);
+                        startTimeStringForPosition.add(standardClassLinkedList.get(i - 1).getEndTimeString());
 
-                    endTimeStringPerPosition.add(finalLastStartTimeHourString + standardClassLinkedList.get(i - 1).getEndTimeString().substring(2));
+                        String lastStartTimeHourString = standardClassLinkedList.get(i - 1).getEndTimeString().substring(0, 2);
+
+                        if ((Integer.parseInt(lastStartTimeHourString) + 1) > 23) {
+
+                            endTimeStringPerPosition.add("23:59");
+
+                        } else {
+
+                            int lastStartTimeHourInteger = Integer.parseInt(lastStartTimeHourString) + 1;
+                            String finalLastStartTimeHourString = (lastStartTimeHourInteger < 10) ? ("0" + String.valueOf(lastStartTimeHourInteger)) : String.valueOf(lastStartTimeHourInteger);
+                            endTimeStringPerPosition.add(finalLastStartTimeHourString + standardClassLinkedList.get(i - 1).getEndTimeString().substring(2));
+
+                        }
+
+                    }
 
                     i++;
 
@@ -215,6 +245,31 @@ public class EditDay extends AppCompatActivity {
 
                     if (noClassIndexList.contains(position)) {
 
+                        final boolean noStartTimeRestrictions;
+                        final boolean noEndTimeRestrictions;
+
+                        if (standardClassLinkedList.size() == 1) {
+
+                            noStartTimeRestrictions = true;
+                            noEndTimeRestrictions = true;
+
+                        } else if (position == 0) {
+
+                            noStartTimeRestrictions = true;
+                            noEndTimeRestrictions = false;
+
+                        } else if ((position + 1) == standardClassLinkedList.size()) {
+
+                            noStartTimeRestrictions = false;
+                            noEndTimeRestrictions = true;
+
+                        } else {
+
+                            noStartTimeRestrictions = false;
+                            noEndTimeRestrictions = false;
+
+                        }
+
                         final Dialog addDialog = new Dialog(EditDay.this);
                         addDialog.setContentView(R.layout.dialog_edit_day_add_class);
                         addDialog.setTitle("Add Class");
@@ -238,9 +293,6 @@ public class EditDay extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
 
-                                final String dialogAddClassStartTimeTextViewString = dialogAddClassStartTimeTextView.getText().toString();
-                                final String dialogAddClassEndTimeTextViewString = dialogAddClassEndTimeTextView.getText().toString();
-
                                 TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
                                     @Override
@@ -249,92 +301,102 @@ public class EditDay extends AppCompatActivity {
                                         if (hourOfDay > hourOfDayEnd) {
 
                                             Toast.makeText(EditDay.this, "Your end time is before your start time!", Toast.LENGTH_LONG).show();
+                                            return;
 
                                         } else if (hourOfDay == hourOfDayEnd) {
 
                                             if (minute == minuteEnd) {
 
                                                 Toast.makeText(EditDay.this, "Your start time equals your end time!", Toast.LENGTH_LONG).show();
+                                                return;
 
                                             } else {
 
-                                                if (position != 0) {
-
-                                                    if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) < hourOfDay) {
-
-                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                        dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                    } else if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) == hourOfDay) {
-
-                                                        if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(3)) < minute) {
-
-                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                            dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                        } else {
-
-                                                            Toast.makeText(EditDay.this, "Please select a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                            return;
-
-                                                        }
-
-                                                    } else {
-
-                                                        Toast.makeText(EditDay.this, "Please select a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                        return;
-
-                                                    }
-
-                                                } else {
+                                                if (noStartTimeRestrictions) {
 
                                                     String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                     String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
                                                     dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
+                                                } else {
+
+                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeStringForPosition.get(position).substring(0, 2));
+
+                                                    if (hourOfDay < startRestrictionHourOfDay) {
+
+                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+                                                        return;
+
+                                                    } else if (hourOfDay == startRestrictionHourOfDay) {
+
+                                                        int startRestrictionMinute = Integer.parseInt(startTimeStringForPosition.get(position).substring(3));
+
+                                                        if (minute < startRestrictionMinute) {
+
+                                                            Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+                                                            return;
+
+                                                        } else {
+
+                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                            dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
+
+                                                        }
+
+                                                    } else {
+
+                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                        dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
+
+                                                    }
+
                                                 }
 
-                                                if (position != (standardClassLinkedList.size() - 1)) {
+                                                if (noEndTimeRestrictions) {
 
-                                                    if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) > hourOfDayEnd) {
+                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+                                                    dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
-                                                        dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                                } else {
 
-                                                    } else if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) == hourOfDayEnd) {
+                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeStringPerPosition.get(position).substring(0, 2));
 
-                                                        if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(3)) > minute) {
+                                                    if (hourOfDayEnd > endRestrictionHourOfDay) {
+
+                                                        Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                    } else if (hourOfDayEnd == endRestrictionHourOfDay) {
+
+                                                        int endRestrictionMinute = Integer.parseInt(endTimeStringPerPosition.get(position).substring(3));
+
+                                                        if (minuteEnd > endRestrictionMinute) {
+
+                                                            Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                        } else {
 
                                                             String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                             String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
                                                             dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
-                                                        } else {
-
-                                                            Toast.makeText(EditDay.this, "Please select an end time before the next class!", Toast.LENGTH_LONG).show();
-
                                                         }
 
                                                     } else {
 
-                                                        Toast.makeText(EditDay.this, "Please select an end time before the next class!", Toast.LENGTH_LONG).show();
+                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                        dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                                     }
-
-                                                } else {
-
-                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                    dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                                 }
 
@@ -342,83 +404,91 @@ public class EditDay extends AppCompatActivity {
 
                                         } else {
 
-                                            if (position != 0) {
-
-                                                if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) < hourOfDay) {
-
-                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                    dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                } else if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)) == hourOfDay) {
-
-                                                    if (Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(3)) < minute) {
-
-                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                        dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                    } else {
-
-                                                        Toast.makeText(EditDay.this, "Please select a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                        return;
-
-                                                    }
-
-                                                } else {
-
-                                                    Toast.makeText(EditDay.this, "Please select a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                    return;
-
-                                                }
-
-                                            } else {
+                                            if (noStartTimeRestrictions) {
 
                                                 String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                 String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
 
                                                 dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
 
+                                            } else {
+
+                                                int startRestrictionHourOfDay = Integer.parseInt(startTimeStringForPosition.get(position).substring(0, 2));
+
+                                                if (hourOfDay < startRestrictionHourOfDay) {
+
+                                                    Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+                                                    return;
+
+                                                } else if (hourOfDay == startRestrictionHourOfDay) {
+
+                                                    int startRestrictionMinute = Integer.parseInt(startTimeStringForPosition.get(position).substring(3));
+
+                                                    if (minute < startRestrictionMinute) {
+
+                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+                                                        return;
+
+                                                    } else {
+
+                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                        dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
+
+                                                    }
+
+                                                } else {
+
+                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                    dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
+
+                                                }
+
                                             }
 
-                                            if (position != (standardClassLinkedList.size() - 1)) {
+                                            if (noEndTimeRestrictions) {
 
-                                                if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) > hourOfDayEnd) {
+                                                String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
-                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+                                                dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
-                                                    dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
+                                            } else {
 
-                                                } else if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(0, 2)) == hourOfDayEnd) {
+                                                int endRestrictionHourOfDay = Integer.parseInt(endTimeStringPerPosition.get(position).substring(0, 2));
 
-                                                    if (Integer.parseInt(dialogAddClassEndTimeTextViewString.substring(3)) > minute) {
+                                                if (hourOfDayEnd > endRestrictionHourOfDay) {
+
+                                                    Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                } else if (hourOfDayEnd == endRestrictionHourOfDay) {
+
+                                                    int endRestrictionMinute = Integer.parseInt(endTimeStringPerPosition.get(position).substring(3));
+
+                                                    if (minuteEnd > endRestrictionMinute) {
+
+                                                        Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                    } else {
 
                                                         String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                         String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
 
                                                         dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
-                                                    } else {
-
-                                                        Toast.makeText(EditDay.this, "Please select an end time before the next class!", Toast.LENGTH_LONG).show();
-
                                                     }
 
                                                 } else {
 
-                                                    Toast.makeText(EditDay.this, "Please select an end time before the next class!", Toast.LENGTH_LONG).show();
+                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                    dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                                 }
-
-                                            } else {
-
-                                                String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
 
                                             }
 
@@ -431,8 +501,8 @@ public class EditDay extends AppCompatActivity {
                                 final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
 
                                         onTimeSetListener,
-                                        Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(0, 2)),
-                                        Integer.parseInt(dialogAddClassStartTimeTextViewString.substring(3)),
+                                        Integer.parseInt(startTimeStringForPosition.get(position).substring(0, 2)),
+                                        Integer.parseInt(startTimeStringForPosition.get(position).substring(3)),
                                         true
 
                                 );
