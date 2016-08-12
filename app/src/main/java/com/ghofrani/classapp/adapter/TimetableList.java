@@ -14,13 +14,22 @@ import java.util.LinkedList;
 
 public class TimetableList extends BaseAdapter {
 
-    private final LinkedList<StandardClass> classesLinkedList;
     private final LayoutInflater layoutInflater;
+    private final LinkedList<StandardClass> classesLinkedList;
 
-    public TimetableList(Context context, LinkedList<StandardClass> classesLinkedList) {
+    public TimetableList(Context context, LinkedList<StandardClass> initial) {
 
-        this.classesLinkedList = classesLinkedList;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        classesLinkedList = initial;
+
+    }
+
+    public void setClassesLinkedList(LinkedList<StandardClass> update) {
+
+        classesLinkedList.clear();
+        classesLinkedList.addAll(update);
+
+        notifyDataSetChanged();
 
     }
 

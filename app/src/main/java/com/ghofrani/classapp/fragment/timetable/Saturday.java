@@ -14,11 +14,18 @@ import android.widget.TextView;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.ViewClass;
 import com.ghofrani.classapp.adapter.TimetableList;
+import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 
 public class Saturday extends Fragment {
+
+    private ListView listView;
+    private TimetableList listAdapter;
+    private LinkedList<StandardClass> standardClassLinkedList;
+    private TextView noClassesTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -28,31 +35,67 @@ public class Saturday extends Fragment {
     }
 
     @Override
-    public void onStart() {
+    public void onResume() {
 
-        super.onStart();
+        super.onResume();
 
-        ListView listView = (ListView) getView().findViewById(R.id.saturday_list_view);
-        TextView noClassesTextView = (TextView) getView().findViewById(R.id.saturday_no_classes);
+        if (listView == null)
+            listView = (ListView) getView().findViewById(R.id.saturday_list_view);
+
+        if (noClassesTextView == null)
+            noClassesTextView = (TextView) getView().findViewById(R.id.saturday_no_classes);
+
+        if (standardClassLinkedList == null)
+            standardClassLinkedList = new LinkedList<>();
+
+        updateUI();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+
+        listView = null;
+        noClassesTextView = null;
+        standardClassLinkedList = null;
+        listAdapter = null;
+
+        super.onDestroyView();
+
+    }
+
+    private void updateUI() {
 
         if (DataStore.getClassesLinkedListOfDay(Calendar.SATURDAY) != null) {
 
             noClassesTextView.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
 
-            TimetableList listAdapter = new TimetableList(getContext(), DataStore.getClassesLinkedListOfDay(Calendar.SATURDAY));
-            listView.setAdapter(listAdapter);
+            standardClassLinkedList.clear();
+            standardClassLinkedList.addAll(DataStore.getClassesLinkedListOfDay(Calendar.SATURDAY));
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            if (listAdapter == null) {
 
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listAdapter = new TimetableList(getContext(), standardClassLinkedList);
+                listView.setAdapter(listAdapter);
 
-                    TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                    startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                }
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            });
+                        TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+
+                    }
+
+                });
+
+            } else {
+
+                listAdapter.setClassesLinkedList((LinkedList<StandardClass>) standardClassLinkedList.clone());
+
+            }
 
             setListViewHeightBasedOnChildren(listView);
 
