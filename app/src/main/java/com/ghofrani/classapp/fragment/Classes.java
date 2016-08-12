@@ -24,11 +24,12 @@ public class Classes extends Fragment {
     }
 
     @Override
-    public void onStart() {
+    public void onResume() {
 
-        super.onStart();
+        super.onResume();
 
-        recyclerView = (RecyclerView) getView().findViewById(R.id.classes_recycler_view);
+        if (recyclerView == null)
+            recyclerView = (RecyclerView) getView().findViewById(R.id.classes_recycler_view);
 
         updateUI();
 

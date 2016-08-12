@@ -32,6 +32,9 @@ import java.util.LinkedList;
 
 public class Overview extends Fragment {
 
+    private ExpandableListView expandableListViewNextClasses;
+    private ProgressBar progressBar;
+    private TextView progressTextView;
     private BroadcastReceiver updateProgressBarBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -52,7 +55,6 @@ public class Overview extends Fragment {
         }
 
     };
-    private ExpandableListView expandableListViewNextClasses;
     private LinkedList<StandardClass> nextClassesLinkedList;
     private ExpandableListView expandableListViewTomorrowClasses;
     private final BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
@@ -72,7 +74,7 @@ public class Overview extends Fragment {
 
                             expandableListViewNextClasses.collapseGroup(0);
 
-                            setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
+                            setListViewHeightBasedOnChildren(expandableListViewNextClasses, true, false);
 
                         }
 
@@ -84,7 +86,7 @@ public class Overview extends Fragment {
 
                             expandableListViewTomorrowClasses.collapseGroup(0);
 
-                            setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
+                            setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true, false);
 
                         }
 
@@ -115,7 +117,7 @@ public class Overview extends Fragment {
 
                             expandableListViewNextClasses.collapseGroup(0);
 
-                            setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
+                            setListViewHeightBasedOnChildren(expandableListViewNextClasses, true, true);
 
                         }
 
@@ -127,7 +129,7 @@ public class Overview extends Fragment {
 
                             expandableListViewTomorrowClasses.collapseGroup(0);
 
-                            setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
+                            setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true, true);
 
                         }
 
@@ -151,9 +153,9 @@ public class Overview extends Fragment {
     }
 
     @Override
-    public void onStart() {
+    public void onResume() {
 
-        super.onStart();
+        super.onResume();
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateProgressBarBroadcastReceiver, new IntentFilter("update_progress_bar"));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateUIBroadcastReceiver, new IntentFilter("update_UI"));
@@ -172,6 +174,30 @@ public class Overview extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateUIBroadcastReceiver);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(collapseExpandableListViewsBroadcastReceiver);
 
+        if (expandableListViewNextClasses != null) {
+
+            if (expandableListViewNextClasses.isGroupExpanded(0)) {
+
+                expandableListViewNextClasses.collapseGroup(0);
+
+                setListViewHeightBasedOnChildren(expandableListViewNextClasses, true, false);
+
+            }
+
+        }
+
+        if (expandableListViewTomorrowClasses != null) {
+
+            if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                expandableListViewTomorrowClasses.collapseGroup(0);
+
+                setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true, false);
+
+            }
+
+        }
+
     }
 
     @Override
@@ -185,6 +211,8 @@ public class Overview extends Fragment {
         nextClassesLinkedList = null;
         expandableListViewTomorrowClasses = null;
         tomorrowClassesLinkedList = null;
+        progressBar = null;
+        progressTextView = null;
 
     }
 
@@ -241,13 +269,16 @@ public class Overview extends Fragment {
 
     private void updateProgressBar() {
 
-        final ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
+        if (progressBar == null)
+            progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
+
+        if (progressTextView == null)
+            progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
+
         progressBar.setIndeterminate(false);
-
-        TextView progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
-        progressTextView.setText(DataStore.getProgressBarText());
-
         progressBar.setProgress(DataStore.getProgressBarProgress());
+
+        progressTextView.setText(DataStore.getProgressBarText());
 
     }
 
@@ -399,99 +430,129 @@ public class Overview extends Fragment {
 
     private void configureExpandableListViewNextClasses() {
 
-        expandableListViewNextClasses = (ExpandableListView) getView().findViewById(R.id.overview_next_classes_list);
+        if (expandableListViewNextClasses == null) {
+
+            expandableListViewNextClasses = (ExpandableListView) getView().findViewById(R.id.overview_next_classes_list);
+
+            expandableListViewNextClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+                public boolean onGroupClick(ExpandableListView expandableListViewGroupListener, View view, int groupPosition, long id) {
+
+                    expandableListViewNextClasses = expandableListViewGroupListener;
+
+                    if (!expandableListViewNextClasses.isGroupExpanded(0))
+                        expandableListViewNextClasses.expandGroup(0);
+                    else
+                        expandableListViewNextClasses.collapseGroup(0);
+
+                    setListViewHeightBasedOnChildren(expandableListViewNextClasses, true, true);
+
+                    return true;
+
+                }
+
+            });
+
+            expandableListViewNextClasses.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+
+                    TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                    startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+
+                    expandableListViewNextClasses.collapseGroup(0);
+                    setListViewHeightBasedOnChildren(expandableListViewNextClasses, true, false);
+
+                    if (expandableListViewTomorrowClasses != null) {
+
+                        if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                            expandableListViewTomorrowClasses.collapseGroup(0);
+                            setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true, false);
+
+                        }
+
+                    }
+
+                    return false;
+
+                }
+
+            });
+
+        }
 
         ClassList classListAdapter = new ClassList(getActivity(), nextClassesLinkedList, "Next classes");
         expandableListViewNextClasses.setAdapter(classListAdapter);
 
-        setListViewHeightBasedOnChildren(expandableListViewNextClasses, false);
-
-        expandableListViewNextClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
-            public boolean onGroupClick(ExpandableListView expandableListViewGroupListener, View view, int groupPosition, long id) {
-
-                expandableListViewNextClasses = expandableListViewGroupListener;
-
-                if (!expandableListViewNextClasses.isGroupExpanded(0))
-                    expandableListViewNextClasses.expandGroup(0);
-                else
-                    expandableListViewNextClasses.collapseGroup(0);
-
-                setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
-
-                return true;
-
-            }
-
-        });
-
-        expandableListViewNextClasses.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
-
-                TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
-
-                expandableListViewNextClasses.collapseGroup(0);
-                setListViewHeightBasedOnChildren(expandableListViewNextClasses, true);
-
-                return false;
-
-            }
-
-        });
+        setListViewHeightBasedOnChildren(expandableListViewNextClasses, false, false);
 
     }
 
     private void configureExpandableListViewTomorrowClasses() {
 
-        expandableListViewTomorrowClasses = (ExpandableListView) getView().findViewById(R.id.overview_tomorrow_classes_list);
+        if (expandableListViewTomorrowClasses == null) {
+
+            expandableListViewTomorrowClasses = (ExpandableListView) getView().findViewById(R.id.overview_tomorrow_classes_list);
+
+            expandableListViewTomorrowClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+                public boolean onGroupClick(ExpandableListView expandableListViewGroupListener, View view, int groupPosition, long id) {
+
+                    expandableListViewTomorrowClasses = expandableListViewGroupListener;
+
+                    if (!expandableListViewTomorrowClasses.isGroupExpanded(0))
+                        expandableListViewTomorrowClasses.expandGroup(0);
+                    else
+                        expandableListViewTomorrowClasses.collapseGroup(0);
+
+                    setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true, true);
+
+                    return true;
+
+                }
+
+            });
+
+            expandableListViewTomorrowClasses.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+
+                    TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                    startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+
+                    expandableListViewTomorrowClasses.collapseGroup(0);
+                    setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true, false);
+
+                    if (expandableListViewNextClasses != null) {
+
+                        if (expandableListViewNextClasses.isGroupExpanded(0)) {
+
+                            expandableListViewNextClasses.collapseGroup(0);
+                            setListViewHeightBasedOnChildren(expandableListViewNextClasses, true, false);
+
+                        }
+
+                    }
+
+                    return false;
+
+                }
+
+            });
+
+        }
 
         ClassList classListAdapter = new ClassList(getActivity(), tomorrowClassesLinkedList, "Tomorrow's classes");
         expandableListViewTomorrowClasses.setAdapter(classListAdapter);
 
-        setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, false);
-
-        expandableListViewTomorrowClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
-            public boolean onGroupClick(ExpandableListView expandableListViewGroupListener, View view, int groupPosition, long id) {
-
-                expandableListViewTomorrowClasses = expandableListViewGroupListener;
-
-                if (!expandableListViewTomorrowClasses.isGroupExpanded(0))
-                    expandableListViewTomorrowClasses.expandGroup(0);
-                else
-                    expandableListViewTomorrowClasses.collapseGroup(0);
-
-                setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
-
-                return true;
-
-            }
-
-        });
-
-        expandableListViewTomorrowClasses.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
-
-                TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
-
-                expandableListViewTomorrowClasses.collapseGroup(0);
-                setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, true);
-
-                return false;
-
-            }
-
-        });
+        setListViewHeightBasedOnChildren(expandableListViewTomorrowClasses, false, false);
 
     }
 
-    private void setListViewHeightBasedOnChildren(ExpandableListView listView, boolean changeParams) {
+    private void setListViewHeightBasedOnChildren(ExpandableListView listView, boolean changeParams, boolean animate) {
 
         ListAdapter listAdapter = listView.getAdapter();
 
@@ -520,21 +581,32 @@ public class Overview extends Fragment {
                 final RelativeLayout parentLayout = (RelativeLayout) listView.getParent();
                 final int listViewLayoutParamsHeight = totalHeight + getPixelFromDP(8) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
 
-                Animation expandAnimation = new Animation() {
+                if (animate) {
 
-                    @Override
-                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    Animation expandAnimation = new Animation() {
 
-                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
-                        relativeLayoutParams.height = (int) (getPixelFromDP(36) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+                        @Override
+                        protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                        parentLayout.requestLayout();
+                            FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+                            relativeLayoutParams.height = (int) (getPixelFromDP(36) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(36)));
 
-                    }
-                };
+                            parentLayout.requestLayout();
 
-                expandAnimation.setDuration(100);
-                parentLayout.startAnimation(expandAnimation);
+                        }
+                    };
+
+                    expandAnimation.setDuration(100);
+                    parentLayout.startAnimation(expandAnimation);
+
+                } else {
+
+                    FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+                    relativeLayoutParams.height = listViewLayoutParamsHeight;
+
+                    parentLayout.requestLayout();
+
+                }
 
                 listViewLayoutParams.height = listViewLayoutParamsHeight;
 
@@ -546,21 +618,32 @@ public class Overview extends Fragment {
                 final RelativeLayout parentLayout = (RelativeLayout) listView.getParent();
                 final int listViewLayoutParamsHeight = listViewLayoutParams.height;
 
-                Animation collapseAnimation = new Animation() {
+                if (animate) {
 
-                    @Override
-                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    Animation collapseAnimation = new Animation() {
 
-                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
-                        relativeLayoutParams.height = (int) (getPixelFromDP(36) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+                        @Override
+                        protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                        parentLayout.requestLayout();
+                            FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+                            relativeLayoutParams.height = (int) (getPixelFromDP(36) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(36)));
 
-                    }
-                };
+                            parentLayout.requestLayout();
 
-                collapseAnimation.setDuration(100);
-                parentLayout.startAnimation(collapseAnimation);
+                        }
+                    };
+
+                    collapseAnimation.setDuration(100);
+                    parentLayout.startAnimation(collapseAnimation);
+
+                } else {
+
+                    FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+                    relativeLayoutParams.height = getPixelFromDP(36);
+
+                    parentLayout.requestLayout();
+
+                }
 
                 listViewLayoutParams.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
 
