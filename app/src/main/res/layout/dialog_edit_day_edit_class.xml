@@ -13,6 +13,7 @@
         android:id="@+id/dialog_edit_day_edit_class_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="0.5dp"
         android:layout_marginRight="21dp"
         android:prompt="@string/spinner_prompt"
         android:scrollbars="none" />
@@ -23,9 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_edit_day_edit_class_spinner"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="8.5dp"
         android:layout_marginTop="16dp"
-        android:text="Start time:"
+        android:text="Class start time:"
         android:textColor="#000000"
         android:textSize="15sp" />
 
@@ -48,9 +49,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_edit_day_edit_class_start_time_label"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="8.5dp"
         android:layout_marginTop="4dp"
-        android:text="End time:"
+        android:text="Class end time:"
         android:textColor="#000000"
         android:textSize="15sp" />
 
@@ -69,14 +70,23 @@
 
     <Button
 
-        android:id="@+id/dialog_edit_day_edit_class_time_picker_button"
+        android:id="@+id/dialog_edit_day_edit_class_done_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/dialog_edit_day_edit_class_end_time_label"
         android:layout_marginBottom="6dp"
-        android:layout_marginRight="18dp"
         android:layout_marginTop="12dp"
+        android:background="#00ffffff"
+        android:text="Done" />
+
+    <Button
+
+        android:id="@+id/dialog_edit_day_edit_class_time_picker_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/dialog_edit_day_edit_class_done_button"
+        android:layout_toLeftOf="@+id/dialog_edit_day_edit_class_done_button"
         android:background="#00ffffff"
         android:text="Edit Times" />
 
