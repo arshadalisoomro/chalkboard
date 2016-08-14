@@ -8,15 +8,15 @@
     <color name="add_icon_grey">#9e9e9e</color>
     <color name="text">#ffffff</color>
 
-    <color name="bright_pink">#FF007F</color>
+    <color name="pink">#FF007F</color>
     <color name="red">#FF0000</color>
     <color name="orange">#FF7F00</color>
     <color name="yellow">#FFFF00</color>
-    <color name="green">#00FF00</color>
-    <color name="cyan">#00FFFF</color>
-    <color name="azure">#007FFF</color>
+    <color name="green">#00897b</color>
     <color name="blue">#0000FF</color>
     <color name="violet">#7F00FF</color>
     <color name="magenta">#FF00FF</color>
+    <color name="grey">#666666</color>
+    <color name="black">#000000</color>
 
 </resources>

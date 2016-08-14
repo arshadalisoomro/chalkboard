@@ -81,6 +81,7 @@ public final class DatabaseContract {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_TEACHER = "teacher";
         public static final String COLUMN_LOCATION = "location";
+        public static final String COLUMN_COLOR = "color";
 
     }
 

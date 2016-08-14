@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.ghofrani.classapp.R;
@@ -53,6 +54,7 @@ public class Background extends Service {
 
     }
 
+    private int progressBarId;
     private Handler notificationHandler;
     private Runnable notificationRunnable;
     private NotificationCompat.Builder notificationCompatBuilder;
@@ -71,6 +73,13 @@ public class Background extends Service {
         @Override
 
         public void onReceive(Context context, Intent intent) {
+
+            if (notificationHandler != null) {
+
+                notificationHandler.removeCallbacksAndMessages(null);
+                notificationHandler = null;
+
+            }
 
             getData();
             getTimetable();
@@ -117,11 +126,10 @@ public class Background extends Service {
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(updateClasses, new IntentFilter("update_classes"));
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        progressBarId = R.id.view_notification_progress_bar_pink;
 
         getData();
-
         getTimetable();
-
         getClasses();
 
     }
@@ -172,58 +180,55 @@ public class Background extends Service {
 
                     case Intent.ACTION_TIME_TICK:
 
-                        getData();
-
                         if (notificationHandler != null) {
 
                             notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler.post(notificationRunnable);
+                            notificationHandler = null;
 
                         }
+
+                        getData();
 
                         break;
 
                     case Intent.ACTION_TIMEZONE_CHANGED:
 
-                        getData();
-
                         if (notificationHandler != null) {
 
                             notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler.post(notificationRunnable);
+                            notificationHandler = null;
 
                         }
 
+                        getData();
                         getTimetable();
 
                         break;
 
                     case Intent.ACTION_TIME_CHANGED:
 
-                        getData();
-
                         if (notificationHandler != null) {
 
                             notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler.post(notificationRunnable);
+                            notificationHandler = null;
 
                         }
 
+                        getData();
                         getTimetable();
 
                         break;
 
                     case Intent.ACTION_DATE_CHANGED:
 
-                        getData();
-
                         if (notificationHandler != null) {
 
                             notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler.post(notificationRunnable);
+                            notificationHandler = null;
 
                         }
 
+                        getData();
                         getTimetable();
 
                         break;
@@ -293,7 +298,7 @@ public class Background extends Service {
 
         if (DataStore.isCurrentClass()) {
 
-            if (sharedPreferences.getBoolean("detailed_notification", false)) {
+            if (sharedPreferences.getBoolean("detailed_notification", true)) {
 
                 currentToNextTransition = true;
 
@@ -339,6 +344,64 @@ public class Background extends Service {
 
                     remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
                     remoteViews.setOnClickPendingIntent(R.id.view_notification_button, addHomeworkActivityIntent);
+                    remoteViews.setInt(R.id.view_notification_button, "setColorFilter", currentClass.getColor());
+
+                    remoteViews.setInt(progressBarId, "setVisibility", View.GONE);
+
+                    int pink = getResources().getColor(R.color.pink);
+                    int red = getResources().getColor(R.color.red);
+                    int orange = getResources().getColor(R.color.orange);
+                    int yellow = getResources().getColor(R.color.yellow);
+                    int green = getResources().getColor(R.color.green);
+                    int blue = getResources().getColor(R.color.blue);
+                    int violet = getResources().getColor(R.color.violet);
+                    int magenta = getResources().getColor(R.color.magenta);
+                    int grey = getResources().getColor(R.color.grey);
+                    int black = getResources().getColor(R.color.black);
+
+                    if (currentClass.getColor() == pink) {
+
+                        progressBarId = R.id.view_notification_progress_bar_pink;
+
+                    } else if (currentClass.getColor() == red) {
+
+                        progressBarId = R.id.view_notification_progress_bar_red;
+
+                    } else if (currentClass.getColor() == orange) {
+
+                        progressBarId = R.id.view_notification_progress_bar_orange;
+
+                    } else if (currentClass.getColor() == yellow) {
+
+                        progressBarId = R.id.view_notification_progress_bar_yellow;
+
+                    } else if (currentClass.getColor() == green) {
+
+                        progressBarId = R.id.view_notification_progress_bar_green;
+
+                    } else if (currentClass.getColor() == blue) {
+
+                        progressBarId = R.id.view_notification_progress_bar_blue;
+
+                    } else if (currentClass.getColor() == violet) {
+
+                        progressBarId = R.id.view_notification_progress_bar_violet;
+
+                    } else if (currentClass.getColor() == magenta) {
+
+                        progressBarId = R.id.view_notification_progress_bar_magenta;
+
+                    } else if (currentClass.getColor() == grey) {
+
+                        progressBarId = R.id.view_notification_progress_bar_grey;
+
+                    } else if (currentClass.getColor() == black) {
+
+                        progressBarId = R.id.view_notification_progress_bar_black;
+
+                    }
+
+                    remoteViews.setInt(progressBarId, "setVisibility", View.VISIBLE);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
                             .setSmallIcon(R.mipmap.ic_launcher)
@@ -383,7 +446,7 @@ public class Background extends Service {
                                 progressBarProgress = percentageValueInt;
 
                                 remoteViews.setTextViewText(R.id.view_notification_progress_text, String.valueOf(percentageValueInt));
-                                remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, percentageValueInt, false);
+                                remoteViews.setProgressBar(progressBarId, 100, percentageValueInt, false);
 
                             } else if (percentageValueInt < 0) {
 
@@ -391,7 +454,7 @@ public class Background extends Service {
                                 progressBarProgress = 0;
 
                                 remoteViews.setTextViewText(R.id.view_notification_progress_text, "0");
-                                remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, 0, false);
+                                remoteViews.setProgressBar(progressBarId, 100, 0, false);
 
                             } else if (percentageValueInt > 100) {
 
@@ -399,7 +462,7 @@ public class Background extends Service {
                                 progressBarProgress = 100;
 
                                 remoteViews.setTextViewText(R.id.view_notification_progress_text, "100");
-                                remoteViews.setProgressBar(R.id.view_notification_progress_bar, 100, 100, false);
+                                remoteViews.setProgressBar(progressBarId, 100, 100, false);
 
                             }
 
@@ -469,6 +532,7 @@ public class Background extends Service {
                     notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setOngoing(true)
+                            .setColor(currentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
                             .setPriority(Notification.PRIORITY_MAX)
                             .setWhen(0);
@@ -488,9 +552,9 @@ public class Background extends Service {
                             String remainingText;
 
                             if (minutesRemaining == 1)
-                                remainingText = "1 minute left";
+                                remainingText = "1 min. left";
                             else
-                                remainingText = minutesRemaining + " minutes left";
+                                remainingText = minutesRemaining + " mins. left";
 
                             if (DataStore.isNextClasses())
                                 remainingText += ", " + DataStore.getNextClass().getName() + " next";

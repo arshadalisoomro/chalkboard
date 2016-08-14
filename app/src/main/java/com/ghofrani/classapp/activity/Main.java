@@ -92,14 +92,14 @@ public class Main extends AppCompatActivity {
         db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.THURSDAY);
         db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.THURSDAY);
 
-        db.addClass(new String[]{"Economics", "Ms. Hiba", "250"});
-        db.addClass(new String[]{"English", "Ms. King", "58"});
-        db.addClass(new String[]{"TOK", "Ms. Keogh", "2C"});
-        db.addClass(new String[]{"Chemistry", "Ms. Moss", "255"});
-        db.addClass(new String[]{"Spanish", "Ms. Morgan", "246"});
-        db.addClass(new String[]{"Mathematics", "Mr. Nabeel", "150"});
-        db.addClass(new String[]{"Physics", "Mr. Derus", "71"});
-        db.addClass(new String[]{"Free", "Ms. Schmidt", "Library"});
+        db.addClass(new String[]{"Economics", "Ms. Hiba", "250", String.valueOf(getResources().getColor(R.color.pink))});
+        db.addClass(new String[]{"English", "Ms. King", "58", String.valueOf(getResources().getColor(R.color.red))});
+        db.addClass(new String[]{"TOK", "Ms. Keogh", "2C", String.valueOf(getResources().getColor(R.color.orange))});
+        db.addClass(new String[]{"Chemistry", "Ms. Moss", "255", String.valueOf(getResources().getColor(R.color.yellow))});
+        db.addClass(new String[]{"Spanish", "Ms. Morgan", "246", String.valueOf(getResources().getColor(R.color.green))});
+        db.addClass(new String[]{"Mathematics", "Mr. Nabeel", "150", String.valueOf(getResources().getColor(R.color.blue))});
+        db.addClass(new String[]{"Physics", "Mr. Derus", "71", String.valueOf(getResources().getColor(R.color.violet))});
+        db.addClass(new String[]{"Free", "Ms. Schmidt", "Library", String.valueOf(getResources().getColor(R.color.magenta))});
 
         db.close();
 

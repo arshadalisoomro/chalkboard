@@ -69,7 +69,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.ClassInfo.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.ClassInfo.COLUMN_NAME + " TEXT,"
             + DatabaseContract.ClassInfo.COLUMN_TEACHER + " TEXT,"
-            + DatabaseContract.ClassInfo.COLUMN_LOCATION + " TEXT)";
+            + DatabaseContract.ClassInfo.COLUMN_LOCATION + " TEXT,"
+            + DatabaseContract.ClassInfo.COLUMN_COLOR + " INTEGER)";
 
     public DatabaseHelper(Context context) {
 
@@ -366,6 +367,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DatabaseContract.ClassInfo.COLUMN_NAME, classInfo[0]);
         contentValues.put(DatabaseContract.ClassInfo.COLUMN_TEACHER, classInfo[1]);
         contentValues.put(DatabaseContract.ClassInfo.COLUMN_LOCATION, classInfo[2]);
+        contentValues.put(DatabaseContract.ClassInfo.COLUMN_COLOR, classInfo[3]);
 
         result = sqLiteDatabase.insert(DatabaseContract.ClassInfo.TABLE_NAME, null, contentValues);
 
@@ -432,6 +434,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.close();
 
             return null;
+
+        }
+
+    }
+
+    public int getClassColor(String className) {
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from "
+                + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
+                + className + "'", null);
+
+        if (cursor.moveToNext()) {
+
+            String resultString = cursor.getString(4);
+
+            cursor.close();
+
+            sqLiteDatabase.close();
+
+            return Integer.parseInt(resultString);
+
+        } else {
+
+            cursor.close();
+
+            sqLiteDatabase.close();
+
+            return 0;
 
         }
 

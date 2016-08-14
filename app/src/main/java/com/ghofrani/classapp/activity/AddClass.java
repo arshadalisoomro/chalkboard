@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -92,10 +93,13 @@ public class AddClass extends AppCompatActivity {
 
                     if (!inputTeacherEditText.getText().toString().isEmpty() && !inputLocationEditText.getText().toString().isEmpty()) {
 
-                        final String classToAddInfo[] = new String[3];
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                        final String classToAddInfo[] = new String[4];
                         classToAddInfo[0] = inputNameEditText.getText().toString().trim();
                         classToAddInfo[1] = inputTeacherEditText.getText().toString().trim();
                         classToAddInfo[2] = inputLocationEditText.getText().toString().trim();
+                        classToAddInfo[3] = String.valueOf(sharedPreferences.getInt("add_class_color", getResources().getColor(R.color.green)));
 
                         if (databaseHelper.addClass(classToAddInfo)) {
 

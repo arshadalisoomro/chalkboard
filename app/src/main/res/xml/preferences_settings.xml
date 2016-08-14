@@ -23,7 +23,7 @@
 
         <CheckBoxPreference
 
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="detailed_notification"
             android:summary="This toggles between the detailed and simple notification"
             android:title="Show detailed notification" />

@@ -17,6 +17,7 @@ public class StandardClass {
     private String endTimeString;
     private String location;
     private String teacher;
+    private int color;
 
     public StandardClass(Context context, String name, String startTime, String endTime) {
 
@@ -33,6 +34,7 @@ public class StandardClass {
 
         this.location = databaseHelper.getClassLocation(name);
         this.teacher = databaseHelper.getClassTeacher(name);
+        this.color = databaseHelper.getClassColor(name);
 
         databaseHelper.close();
 
@@ -92,6 +94,14 @@ public class StandardClass {
 
     public void setTeacher(String teacher) {
         this.teacher = teacher;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
 }

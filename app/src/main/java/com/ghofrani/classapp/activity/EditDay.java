@@ -244,32 +244,32 @@ public class EditDay extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                    final boolean noStartTimeRestrictions;
-                    final boolean noEndTimeRestrictions;
-
-                    if (standardClassLinkedList.size() == 1) {
-
-                        noStartTimeRestrictions = true;
-                        noEndTimeRestrictions = true;
-
-                    } else if (position == 0) {
-
-                        noStartTimeRestrictions = true;
-                        noEndTimeRestrictions = false;
-
-                    } else if ((position + 1) == standardClassLinkedList.size()) {
-
-                        noStartTimeRestrictions = false;
-                        noEndTimeRestrictions = true;
-
-                    } else {
-
-                        noStartTimeRestrictions = false;
-                        noEndTimeRestrictions = false;
-
-                    }
-
                     if (noClassIndexList.contains(position)) {
+
+                        final boolean noStartTimeRestrictions;
+                        final boolean noEndTimeRestrictions;
+
+                        if (standardClassLinkedList.size() == 1) {
+
+                            noStartTimeRestrictions = true;
+                            noEndTimeRestrictions = true;
+
+                        } else if (position == 0) {
+
+                            noStartTimeRestrictions = true;
+                            noEndTimeRestrictions = false;
+
+                        } else if ((position + 1) == standardClassLinkedList.size()) {
+
+                            noStartTimeRestrictions = false;
+                            noEndTimeRestrictions = true;
+
+                        } else {
+
+                            noStartTimeRestrictions = false;
+                            noEndTimeRestrictions = false;
+
+                        }
 
                         final Dialog addDialog = new Dialog(EditDay.this);
                         addDialog.setContentView(R.layout.dialog_edit_day_add_class);
@@ -600,6 +600,31 @@ public class EditDay extends AppCompatActivity {
                         addDialog.getWindow().setAttributes(layoutParams);
 
                     } else {
+
+                        final boolean noStartTimeRestrictions;
+                        final boolean noEndTimeRestrictions;
+
+                        if (standardClassLinkedList.size() == 1) {
+
+                            noStartTimeRestrictions = true;
+                            noEndTimeRestrictions = true;
+
+                        } else if (position == 0) {
+
+                            noStartTimeRestrictions = true;
+                            noEndTimeRestrictions = false;
+
+                        } else if ((position + 1) == standardClassLinkedList.size()) {
+
+                            noStartTimeRestrictions = false;
+                            noEndTimeRestrictions = true;
+
+                        } else {
+
+                            noStartTimeRestrictions = false;
+                            noEndTimeRestrictions = false;
+
+                        }
 
                         final TextView startTimeTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_time);
                         final String selectedClassStartTime = startTimeTextView.getText().toString().substring(0, 5).replace(":", "");
