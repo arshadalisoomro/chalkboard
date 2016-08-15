@@ -93,7 +93,7 @@ public class Settings extends AppCompatActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-            if (key.equals("detailed_notification") && DataStore.isCurrentClass())
+            if (key.equals("detailed_notification") && DataStore.isCurrentClass() || key.equals("flip_colors") && DataStore.isCurrentClass())
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));
             else if (key.equals("next_class_notification_minutes"))
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));

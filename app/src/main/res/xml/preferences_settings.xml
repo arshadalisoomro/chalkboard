@@ -28,6 +28,13 @@
             android:summary="This toggles between the detailed and simple notification"
             android:title="Show detailed notification" />
 
+        <CheckBoxPreference
+
+            android:defaultValue="false"
+            android:key="flip_colors"
+            android:summary="This sets the class color as the notification background"
+            android:title="Flip notification colors" />
+
         <ListPreference
 
             android:defaultValue="30"

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -278,7 +277,6 @@ public class Overview extends Fragment {
 
         progressBar.setIndeterminate(false);
         progressBar.setProgress(DataStore.getProgressBarProgress());
-        progressBar.setProgressTintList(ColorStateList.valueOf(DataStore.getCurrentClass().getColor()));
 
         progressTextView.setText(DataStore.getProgressBarText());
 

@@ -3,6 +3,7 @@
 <RelativeLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_notification_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,6 +14,18 @@
         android:layout_height="54dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp">
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_white"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background_white"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_white"
+            android:visibility="gone" />
 
         <ProgressBar
 
@@ -141,7 +154,18 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="#000000"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <TextView
+
+            android:id="@+id/view_notification_progress_text_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -160,7 +184,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+
+            android:id="@+id/view_notification_header_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <TextView
 
@@ -169,7 +203,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/view_notification_header"
             android:textColor="#616161"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
+
+            android:id="@+id/view_notification_text_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view_notification_header_white"
+            android:textColor="#e0ffffff"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -180,7 +225,7 @@
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="10dp"
         android:background="#00000000"
         android:clickable="true"
         android:src="@drawable/homework"

@@ -45,7 +45,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
     public void onBindViewHolder(ClassViewHolder classViewHolder, int position) {
 
         classViewHolder.titleTextView.setText(slimClassLinkedList.get(position).getName());
-        classViewHolder.teacherLocationTextView.setText(slimClassLinkedList.get(position).getTeacher() + ", " + slimClassLinkedList.get(position).getLocation());
+        classViewHolder.teacherLocationTextView.setText(slimClassLinkedList.get(position).getTeacher() + " • " + slimClassLinkedList.get(position).getLocation());
 
         classViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
 

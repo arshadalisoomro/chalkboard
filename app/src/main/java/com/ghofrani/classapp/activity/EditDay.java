@@ -40,7 +40,7 @@ public class EditDay extends AppCompatActivity {
     private LinkedList<StandardClass> standardClassLinkedList;
 
     private List<String> startTimeStringForPosition;
-    private List<String> endTimeStringPerPosition;
+    private List<String> endTimeStringForPosition;
     private List<Integer> noClassIndexList;
 
     private int day;
@@ -93,7 +93,7 @@ public class EditDay extends AppCompatActivity {
 
         noClassIndexList = new ArrayList<>();
         startTimeStringForPosition = new ArrayList<>();
-        endTimeStringPerPosition = new ArrayList<>();
+        endTimeStringForPosition = new ArrayList<>();
 
         updateUI();
 
@@ -107,7 +107,7 @@ public class EditDay extends AppCompatActivity {
         standardClassLinkedList = null;
 
         startTimeStringForPosition = null;
-        endTimeStringPerPosition = null;
+        endTimeStringForPosition = null;
         noClassIndexList = null;
 
         super.onDestroy();
@@ -135,7 +135,7 @@ public class EditDay extends AppCompatActivity {
 
         noClassIndexList.clear();
         startTimeStringForPosition.clear();
-        endTimeStringPerPosition.clear();
+        endTimeStringForPosition.clear();
 
         if (DataStore.getClassesLinkedListOfDay(day) != null) {
 
@@ -165,12 +165,12 @@ public class EditDay extends AppCompatActivity {
 
                         }
 
-                        endTimeStringPerPosition.add(standardClassLinkedList.get(1).getStartTimeString());
+                        endTimeStringForPosition.add(standardClassLinkedList.get(1).getStartTimeString());
 
                     } else {
 
                         startTimeStringForPosition.add("00:00");
-                        endTimeStringPerPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
+                        endTimeStringForPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
 
                     }
 
@@ -187,13 +187,13 @@ public class EditDay extends AppCompatActivity {
 
                         if ((Integer.parseInt(lastStartTimeHourString) + 1) > 23) {
 
-                            endTimeStringPerPosition.add("23:59");
+                            endTimeStringForPosition.add("23:59");
 
                         } else {
 
                             int lastStartTimeHourInteger = Integer.parseInt(lastStartTimeHourString) + 1;
                             String finalLastStartTimeHourString = (lastStartTimeHourInteger < 10) ? ("0" + String.valueOf(lastStartTimeHourInteger)) : String.valueOf(lastStartTimeHourInteger);
-                            endTimeStringPerPosition.add(finalLastStartTimeHourString + standardClassLinkedList.get(i - 1).getEndTimeString().substring(2));
+                            endTimeStringForPosition.add(finalLastStartTimeHourString + standardClassLinkedList.get(i - 1).getEndTimeString().substring(2));
 
                         }
 
@@ -204,20 +204,20 @@ public class EditDay extends AppCompatActivity {
                 } else if (i > 1 && !standardClassLinkedList.get(i).getStartTimeString().equals(standardClassLinkedList.get(i - 1).getEndTimeString())) {
 
                     startTimeStringForPosition.add(i, standardClassLinkedList.get(i).getStartTimeString());
-                    endTimeStringPerPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
+                    endTimeStringForPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
 
                     standardClassLinkedList.add(i, null);
                     noClassIndexList.add(i);
 
                     startTimeStringForPosition.add(i, standardClassLinkedList.get(i - 1).getEndTimeString());
-                    endTimeStringPerPosition.add(i, standardClassLinkedList.get(i + 1).getStartTimeString());
+                    endTimeStringForPosition.add(i, standardClassLinkedList.get(i + 1).getStartTimeString());
 
                     i++;
 
                 } else {
 
                     startTimeStringForPosition.add(i, standardClassLinkedList.get(i).getStartTimeString());
-                    endTimeStringPerPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
+                    endTimeStringForPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
 
                 }
 
@@ -230,7 +230,7 @@ public class EditDay extends AppCompatActivity {
 
             noClassIndexList.add(0);
             startTimeStringForPosition.add("08:00");
-            endTimeStringPerPosition.add("09:00");
+            endTimeStringForPosition.add("09:00");
 
         }
 
@@ -246,28 +246,28 @@ public class EditDay extends AppCompatActivity {
 
                     if (noClassIndexList.contains(position)) {
 
-                        final boolean noStartTimeRestrictions;
-                        final boolean noEndTimeRestrictions;
+                        final String startTimeRestriction;
+                        final String endTimeRestriction;
 
                         if (standardClassLinkedList.size() == 1) {
 
-                            noStartTimeRestrictions = true;
-                            noEndTimeRestrictions = true;
+                            startTimeRestriction = "";
+                            endTimeRestriction = "";
 
                         } else if (position == 0) {
 
-                            noStartTimeRestrictions = true;
-                            noEndTimeRestrictions = false;
+                            startTimeRestriction = "";
+                            endTimeRestriction = endTimeStringForPosition.get(position);
 
                         } else if ((position + 1) == standardClassLinkedList.size()) {
 
-                            noStartTimeRestrictions = false;
-                            noEndTimeRestrictions = true;
+                            startTimeRestriction = startTimeStringForPosition.get(position);
+                            endTimeRestriction = "";
 
                         } else {
 
-                            noStartTimeRestrictions = false;
-                            noEndTimeRestrictions = false;
+                            startTimeRestriction = startTimeStringForPosition.get(position);
+                            endTimeRestriction = endTimeStringForPosition.get(position);
 
                         }
 
@@ -286,7 +286,7 @@ public class EditDay extends AppCompatActivity {
                         dialogAddClassStartTimeTextView.setText(startTimeStringForPosition.get(position));
 
                         final TextView dialogAddClassEndTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
-                        dialogAddClassEndTimeTextView.setText(endTimeStringPerPosition.get(position));
+                        dialogAddClassEndTimeTextView.setText(endTimeStringForPosition.get(position));
 
                         final Button addClassDialogChangeTimeButton = (Button) addDialog.findViewById(R.id.dialog_edit_day_add_class_time_picker_button);
                         addClassDialogChangeTimeButton.setOnClickListener(new View.OnClickListener() {
@@ -313,7 +313,7 @@ public class EditDay extends AppCompatActivity {
 
                                             } else {
 
-                                                if (noStartTimeRestrictions) {
+                                                if (startTimeRestriction.isEmpty()) {
 
                                                     String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                     String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
@@ -322,7 +322,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else {
 
-                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeStringForPosition.get(position).substring(0, 2));
+                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
 
                                                     if (hourOfDay < startRestrictionHourOfDay) {
 
@@ -331,7 +331,7 @@ public class EditDay extends AppCompatActivity {
 
                                                     } else if (hourOfDay == startRestrictionHourOfDay) {
 
-                                                        int startRestrictionMinute = Integer.parseInt(startTimeStringForPosition.get(position).substring(3));
+                                                        int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
 
                                                         if (minute < startRestrictionMinute) {
 
@@ -358,7 +358,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 }
 
-                                                if (noEndTimeRestrictions) {
+                                                if (endTimeRestriction.isEmpty()) {
 
                                                     String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                     String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
@@ -367,7 +367,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else {
 
-                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeStringPerPosition.get(position).substring(0, 2));
+                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
 
                                                     if (hourOfDayEnd > endRestrictionHourOfDay) {
 
@@ -375,7 +375,7 @@ public class EditDay extends AppCompatActivity {
 
                                                     } else if (hourOfDayEnd == endRestrictionHourOfDay) {
 
-                                                        int endRestrictionMinute = Integer.parseInt(endTimeStringPerPosition.get(position).substring(3));
+                                                        int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
 
                                                         if (minuteEnd > endRestrictionMinute) {
 
@@ -405,7 +405,7 @@ public class EditDay extends AppCompatActivity {
 
                                         } else {
 
-                                            if (noStartTimeRestrictions) {
+                                            if (startTimeRestriction.isEmpty()) {
 
                                                 String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                 String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
@@ -414,7 +414,7 @@ public class EditDay extends AppCompatActivity {
 
                                             } else {
 
-                                                int startRestrictionHourOfDay = Integer.parseInt(startTimeStringForPosition.get(position).substring(0, 2));
+                                                int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
 
                                                 if (hourOfDay < startRestrictionHourOfDay) {
 
@@ -423,7 +423,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else if (hourOfDay == startRestrictionHourOfDay) {
 
-                                                    int startRestrictionMinute = Integer.parseInt(startTimeStringForPosition.get(position).substring(3));
+                                                    int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
 
                                                     if (minute < startRestrictionMinute) {
 
@@ -450,7 +450,7 @@ public class EditDay extends AppCompatActivity {
 
                                             }
 
-                                            if (noEndTimeRestrictions) {
+                                            if (endTimeRestriction.isEmpty()) {
 
                                                 String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                 String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
@@ -459,7 +459,7 @@ public class EditDay extends AppCompatActivity {
 
                                             } else {
 
-                                                int endRestrictionHourOfDay = Integer.parseInt(endTimeStringPerPosition.get(position).substring(0, 2));
+                                                int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
 
                                                 if (hourOfDayEnd > endRestrictionHourOfDay) {
 
@@ -467,7 +467,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else if (hourOfDayEnd == endRestrictionHourOfDay) {
 
-                                                    int endRestrictionMinute = Integer.parseInt(endTimeStringPerPosition.get(position).substring(3));
+                                                    int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
 
                                                     if (minuteEnd > endRestrictionMinute) {
 
@@ -601,28 +601,113 @@ public class EditDay extends AppCompatActivity {
 
                     } else {
 
-                        final boolean noStartTimeRestrictions;
-                        final boolean noEndTimeRestrictions;
+                        final String startTimeRestriction;
+                        final String endTimeRestriction;
 
                         if (standardClassLinkedList.size() == 1) {
 
-                            noStartTimeRestrictions = true;
-                            noEndTimeRestrictions = true;
+                            startTimeRestriction = "";
+                            endTimeRestriction = "";
 
                         } else if (position == 0) {
 
-                            noStartTimeRestrictions = true;
-                            noEndTimeRestrictions = false;
+                            startTimeRestriction = "";
+
+                            if (noClassIndexList.contains(position + 1)) {
+
+                                if ((position + 1) == standardClassLinkedList.size()) {
+
+                                    endTimeRestriction = "";
+
+                                } else {
+
+                                    endTimeRestriction = endTimeStringForPosition.get(position + 1);
+
+                                }
+
+                            } else {
+
+                                endTimeRestriction = endTimeStringForPosition.get(position);
+
+                            }
+
+                        } else if (position == 1 && noClassIndexList.contains(0)) {
+
+                            startTimeRestriction = "";
+
+                            if (noClassIndexList.contains(position + 1)) {
+
+                                if (position + 1 == standardClassLinkedList.size()) {
+
+                                    endTimeRestriction = "";
+
+                                } else {
+
+                                    endTimeRestriction = endTimeStringForPosition.get(position + 1);
+
+                                }
+
+                            } else {
+
+                                endTimeRestriction = endTimeStringForPosition.get(position);
+
+                            }
 
                         } else if ((position + 1) == standardClassLinkedList.size()) {
 
-                            noStartTimeRestrictions = false;
-                            noEndTimeRestrictions = true;
+                            if (noClassIndexList.contains(position - 1)) {
+
+                                if ((position - 1) == 0) {
+
+                                    startTimeRestriction = "";
+
+                                } else {
+
+                                    startTimeRestriction = startTimeStringForPosition.get(position - 1);
+
+                                }
+
+                            } else {
+
+                                startTimeRestriction = startTimeStringForPosition.get(position);
+
+                            }
+
+                            endTimeRestriction = "";
+
+                        } else if ((position + 2) == standardClassLinkedList.size() && noClassIndexList.contains(position + 1)) {
+
+                            if (noClassIndexList.contains(position - 1)) {
+
+                                if ((position - 1) == 0) {
+
+                                    startTimeRestriction = "";
+
+                                } else {
+
+                                    startTimeRestriction = startTimeStringForPosition.get(position - 1);
+
+                                }
+
+                            } else {
+
+                                startTimeRestriction = startTimeStringForPosition.get(position);
+
+                            }
+
+                            endTimeRestriction = "";
 
                         } else {
 
-                            noStartTimeRestrictions = false;
-                            noEndTimeRestrictions = false;
+                            if (noClassIndexList.contains(position - 1))
+                                startTimeRestriction = startTimeStringForPosition.get(position - 1);
+                            else
+                                startTimeRestriction = startTimeStringForPosition.get(position);
+
+                            if (noClassIndexList.contains(position + 1))
+                                endTimeRestriction = endTimeStringForPosition.get(position + 1);
+                            else
+                                endTimeRestriction = endTimeStringForPosition.get(position);
 
                         }
 
@@ -644,7 +729,7 @@ public class EditDay extends AppCompatActivity {
                         dialogEditClassStartTimeTextView.setText(startTimeStringForPosition.get(position));
 
                         final TextView dialogEditClassEndTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_end_time);
-                        dialogEditClassEndTimeTextView.setText(endTimeStringPerPosition.get(position));
+                        dialogEditClassEndTimeTextView.setText(endTimeStringForPosition.get(position));
 
                         final Spinner classNameSpinner = (Spinner) editDialog.findViewById(R.id.dialog_edit_day_edit_class_spinner);
 
@@ -712,7 +797,7 @@ public class EditDay extends AppCompatActivity {
 
                                             } else {
 
-                                                if (noStartTimeRestrictions) {
+                                                if (startTimeRestriction.isEmpty()) {
 
                                                     String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                     String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
@@ -721,7 +806,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else {
 
-                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeStringForPosition.get(position).substring(0, 2));
+                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
 
                                                     if (hourOfDay < startRestrictionHourOfDay) {
 
@@ -730,7 +815,7 @@ public class EditDay extends AppCompatActivity {
 
                                                     } else if (hourOfDay == startRestrictionHourOfDay) {
 
-                                                        int startRestrictionMinute = Integer.parseInt(startTimeStringForPosition.get(position).substring(3));
+                                                        int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
 
                                                         if (minute < startRestrictionMinute) {
 
@@ -757,7 +842,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 }
 
-                                                if (noEndTimeRestrictions) {
+                                                if (endTimeRestriction.isEmpty()) {
 
                                                     String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                     String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
@@ -766,7 +851,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else {
 
-                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeStringPerPosition.get(position).substring(0, 2));
+                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
 
                                                     if (hourOfDayEnd > endRestrictionHourOfDay) {
 
@@ -774,7 +859,7 @@ public class EditDay extends AppCompatActivity {
 
                                                     } else if (hourOfDayEnd == endRestrictionHourOfDay) {
 
-                                                        int endRestrictionMinute = Integer.parseInt(endTimeStringPerPosition.get(position).substring(3));
+                                                        int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
 
                                                         if (minuteEnd > endRestrictionMinute) {
 
@@ -804,7 +889,7 @@ public class EditDay extends AppCompatActivity {
 
                                         } else {
 
-                                            if (noStartTimeRestrictions) {
+                                            if (startTimeRestriction.isEmpty()) {
 
                                                 String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
                                                 String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
@@ -813,7 +898,7 @@ public class EditDay extends AppCompatActivity {
 
                                             } else {
 
-                                                int startRestrictionHourOfDay = Integer.parseInt(startTimeStringForPosition.get(position).substring(0, 2));
+                                                int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
 
                                                 if (hourOfDay < startRestrictionHourOfDay) {
 
@@ -822,7 +907,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else if (hourOfDay == startRestrictionHourOfDay) {
 
-                                                    int startRestrictionMinute = Integer.parseInt(startTimeStringForPosition.get(position).substring(3));
+                                                    int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
 
                                                     if (minute < startRestrictionMinute) {
 
@@ -849,7 +934,7 @@ public class EditDay extends AppCompatActivity {
 
                                             }
 
-                                            if (noEndTimeRestrictions) {
+                                            if (endTimeRestriction.isEmpty()) {
 
                                                 String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
                                                 String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
@@ -858,7 +943,7 @@ public class EditDay extends AppCompatActivity {
 
                                             } else {
 
-                                                int endRestrictionHourOfDay = Integer.parseInt(endTimeStringPerPosition.get(position).substring(0, 2));
+                                                int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
 
                                                 if (hourOfDayEnd > endRestrictionHourOfDay) {
 
@@ -866,7 +951,7 @@ public class EditDay extends AppCompatActivity {
 
                                                 } else if (hourOfDayEnd == endRestrictionHourOfDay) {
 
-                                                    int endRestrictionMinute = Integer.parseInt(endTimeStringPerPosition.get(position).substring(3));
+                                                    int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
 
                                                     if (minuteEnd > endRestrictionMinute) {
 
