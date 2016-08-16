@@ -95,7 +95,7 @@ public class Settings extends AppCompatActivity {
 
             if (key.equals("detailed_notification") && DataStore.isCurrentClass() || key.equals("flip_colors") && DataStore.isCurrentClass())
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));
-            else if (key.equals("next_class_notification_minutes"))
+            else if (key.equals("next_class_notification_minutes") && DataStore.isNextClasses())
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));
 
         }

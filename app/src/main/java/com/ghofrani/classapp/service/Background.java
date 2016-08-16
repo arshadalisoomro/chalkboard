@@ -320,7 +320,7 @@ public class Background extends Service {
 
         DataStore.setIsNextClasses(isNextClasses);
 
-        if (DataStore.isNextClasses())
+        if (isNextClasses)
             DataStore.setNextClassesLinkedList(nextClassesLinkedList);
 
         DataStore.setIsCurrentClass(isCurrentClass);
@@ -682,6 +682,7 @@ public class Background extends Service {
                 notificationCompatBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 notificationCompatBuilder.setContentIntent(addHomeActivityIntent);
                 notificationCompatBuilder.setWhen(0);
+                notificationCompatBuilder.setColor(DataStore.getNextClass().getColor());
                 notificationCompatBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
                 notificationCompatBuilder.setPriority(Notification.PRIORITY_MAX);
 
@@ -697,6 +698,10 @@ public class Background extends Service {
                     notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.getNextClass().getLocation());
 
                 notificationManager.notify(1, notificationCompatBuilder.build());
+
+            } else {
+
+                notificationManager.cancelAll();
 
             }
 
