@@ -38,9 +38,11 @@ import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
 import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.modules.DatabaseHelper;
 import com.ghofrani.classapp.service.Background;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Main extends AppCompatActivity implements DrawerLayout.DrawerListener {
@@ -64,47 +66,47 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-
         DatabaseHelper db = new DatabaseHelper(this);
 
-        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.SUNDAY);
-        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.SUNDAY);
-        db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.SUNDAY);
-        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.SUNDAY);
+        if (!db.checkIfClassExists("English")) {
 
-        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.MONDAY);
-        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.MONDAY);
-        db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.MONDAY);
-        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.MONDAY);
+            db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.SUNDAY);
+            db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.SUNDAY);
+            db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.SUNDAY);
+            db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.SUNDAY);
 
-        db.insertClassIntoDay(new String[]{"Physics", "0820", "0920"}, Calendar.TUESDAY);
-        db.insertClassIntoDay(new String[]{"Free", "0920", "1020"}, Calendar.TUESDAY);
-        db.insertClassIntoDay(new String[]{"Chemistry", "1100", "1200"}, Calendar.TUESDAY);
-        db.insertClassIntoDay(new String[]{"Mathematics", "1200", "1300"}, Calendar.TUESDAY);
+            db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.MONDAY);
+            db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.MONDAY);
+            db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.MONDAY);
+            db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.MONDAY);
 
-        db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.WEDNESDAY);
-        db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.WEDNESDAY);
-        db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.WEDNESDAY);
-        db.insertClassIntoDay(new String[]{"Chemistry", "1200", "1300"}, Calendar.WEDNESDAY);
+            db.insertClassIntoDay(new String[]{"Physics", "0820", "0920"}, Calendar.TUESDAY);
+            db.insertClassIntoDay(new String[]{"Free", "0920", "1020"}, Calendar.TUESDAY);
+            db.insertClassIntoDay(new String[]{"Chemistry", "1100", "1200"}, Calendar.TUESDAY);
+            db.insertClassIntoDay(new String[]{"Mathematics", "1200", "1300"}, Calendar.TUESDAY);
 
-        db.insertClassIntoDay(new String[]{"Chemistry", "0820", "0920"}, Calendar.THURSDAY);
-        db.insertClassIntoDay(new String[]{"TOK", "0920", "1020"}, Calendar.THURSDAY);
-        db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.THURSDAY);
-        db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.THURSDAY);
+            db.insertClassIntoDay(new String[]{"English", "0820", "0920"}, Calendar.WEDNESDAY);
+            db.insertClassIntoDay(new String[]{"Economics", "0920", "1020"}, Calendar.WEDNESDAY);
+            db.insertClassIntoDay(new String[]{"Physics", "1100", "1200"}, Calendar.WEDNESDAY);
+            db.insertClassIntoDay(new String[]{"Chemistry", "1200", "1300"}, Calendar.WEDNESDAY);
 
-        db.addClass(new String[]{"Economics", "Ms. Hiba", "250", String.valueOf(getResources().getColor(R.color.pink))});
-        db.addClass(new String[]{"English", "Ms. King", "58", String.valueOf(getResources().getColor(R.color.red))});
-        db.addClass(new String[]{"TOK", "Ms. Keogh", "2C", String.valueOf(getResources().getColor(R.color.orange))});
-        db.addClass(new String[]{"Chemistry", "Ms. Moss", "255", String.valueOf(getResources().getColor(R.color.yellow))});
-        db.addClass(new String[]{"Spanish", "Ms. Morgan", "246", String.valueOf(getResources().getColor(R.color.green))});
-        db.addClass(new String[]{"Mathematics", "Mr. Nabeel", "150", String.valueOf(getResources().getColor(R.color.blue))});
-        db.addClass(new String[]{"Physics", "Mr. Derus", "71", String.valueOf(getResources().getColor(R.color.violet))});
-        db.addClass(new String[]{"Free", "Ms. Schmidt", "Library", String.valueOf(getResources().getColor(R.color.magenta))});
+            db.insertClassIntoDay(new String[]{"Chemistry", "0820", "0920"}, Calendar.THURSDAY);
+            db.insertClassIntoDay(new String[]{"TOK", "0920", "1020"}, Calendar.THURSDAY);
+            db.insertClassIntoDay(new String[]{"Mathematics", "1100", "1200"}, Calendar.THURSDAY);
+            db.insertClassIntoDay(new String[]{"Spanish", "1200", "1300"}, Calendar.THURSDAY);
+
+            db.addClass(new String[]{"Economics", "Ms. Hiba", "250", String.valueOf(getResources().getColor(R.color.pink))});
+            db.addClass(new String[]{"English", "Ms. King", "58", String.valueOf(getResources().getColor(R.color.red))});
+            db.addClass(new String[]{"TOK", "Ms. Keogh", "2C", String.valueOf(getResources().getColor(R.color.orange))});
+            db.addClass(new String[]{"Chemistry", "Ms. Moss", "255", String.valueOf(getResources().getColor(R.color.yellow))});
+            db.addClass(new String[]{"Spanish", "Ms. Morgan", "246", String.valueOf(getResources().getColor(R.color.green))});
+            db.addClass(new String[]{"Mathematics", "Mr. Nabeel", "150", String.valueOf(getResources().getColor(R.color.blue))});
+            db.addClass(new String[]{"Physics", "Mr. Derus", "71", String.valueOf(getResources().getColor(R.color.violet))});
+            db.addClass(new String[]{"Free", "Ms. Schmidt", "Library", String.valueOf(getResources().getColor(R.color.magenta))});
+
+        }
 
         db.close();
-
-        */
 
         startService(new Intent(getApplicationContext(), Background.class));
 
