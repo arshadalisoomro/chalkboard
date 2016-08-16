@@ -302,14 +302,12 @@ public class EditDay extends AppCompatActivity {
                                         if (hourOfDay > hourOfDayEnd) {
 
                                             Toast.makeText(EditDay.this, "Your end time is before your start time!", Toast.LENGTH_LONG).show();
-                                            return;
 
                                         } else if (hourOfDay == hourOfDayEnd) {
 
                                             if (minute == minuteEnd) {
 
                                                 Toast.makeText(EditDay.this, "Your start time equals your end time!", Toast.LENGTH_LONG).show();
-                                                return;
 
                                             } else {
 
@@ -786,14 +784,12 @@ public class EditDay extends AppCompatActivity {
                                         if (hourOfDay > hourOfDayEnd) {
 
                                             Toast.makeText(EditDay.this, "Your end time is before your start time!", Toast.LENGTH_LONG).show();
-                                            return;
 
                                         } else if (hourOfDay == hourOfDayEnd) {
 
                                             if (minute == minuteEnd) {
 
                                                 Toast.makeText(EditDay.this, "Your start time equals your end time!", Toast.LENGTH_LONG).show();
-                                                return;
 
                                             } else {
 

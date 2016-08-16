@@ -3,7 +3,6 @@ package com.ghofrani.classapp.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -44,7 +43,7 @@ import com.ghofrani.classapp.service.Background;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main extends AppCompatActivity {
+public class Main extends AppCompatActivity implements DrawerLayout.DrawerListener {
 
     private MenuItem menuItemDrawer;
     private DrawerLayout drawerLayout;
@@ -56,6 +55,8 @@ public class Main extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
     private FragmentManager fragmentManager;
     private int currentView;
+    private boolean operateOnDrawerClosed;
+    private int drawerViewToSwitchTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,9 +185,14 @@ public class Main extends AppCompatActivity {
 
                 if (!menuItemDrawer.isChecked()) {
 
+                    operateOnDrawerClosed = true;
+
                     if (menuItemDrawer.getItemId() == R.id.settings) {
 
-                        switchToView(4);
+                        if (currentView == 0)
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("collapse_lists"));
+
+                        drawerViewToSwitchTo = 4;
 
                     } else {
 
@@ -194,25 +200,73 @@ public class Main extends AppCompatActivity {
 
                             case R.id.overview:
 
-                                switchToView(0);
+                                floatingActionButton.setVisibility(View.INVISIBLE);
+
+                                toolbar.setTitle("Overview");
+
+                                tabLayout.setVisibility(AppBarLayout.GONE);
+                                viewPager.setVisibility(LinearLayout.GONE);
+
+                                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                                navigationView.setCheckedItem(R.id.overview);
+
+                                currentView = 0;
+                                drawerViewToSwitchTo = 0;
 
                                 break;
 
                             case R.id.timetable:
 
-                                switchToView(1);
+                                floatingActionButton.setVisibility(View.VISIBLE);
+                                floatingActionButton.setImageResource(R.drawable.edit);
+
+                                toolbar.setTitle("Timetable");
+
+                                scrollView.setVisibility(LinearLayout.GONE);
+
+                                navigationView.setCheckedItem(R.id.timetable);
+
+                                currentView = 1;
+                                drawerViewToSwitchTo = 1;
 
                                 break;
 
                             case R.id.classes:
 
-                                switchToView(2);
+                                floatingActionButton.setVisibility(View.VISIBLE);
+                                floatingActionButton.setImageResource(R.drawable.add);
+
+                                toolbar.setTitle("Classes");
+
+                                tabLayout.setVisibility(AppBarLayout.GONE);
+                                viewPager.setVisibility(LinearLayout.GONE);
+
+                                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                                navigationView.setCheckedItem(R.id.classes);
+
+                                currentView = 2;
+                                drawerViewToSwitchTo = 2;
 
                                 break;
 
                             case R.id.homework:
 
-                                switchToView(3);
+                                floatingActionButton.setVisibility(View.VISIBLE);
+                                floatingActionButton.setImageResource(R.drawable.add);
+
+                                toolbar.setTitle("Homework");
+
+                                tabLayout.setVisibility(AppBarLayout.GONE);
+                                viewPager.setVisibility(LinearLayout.GONE);
+
+                                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                                navigationView.setCheckedItem(R.id.homework);
+
+                                currentView = 3;
+                                drawerViewToSwitchTo = 3;
 
                                 break;
 
@@ -232,6 +286,7 @@ public class Main extends AppCompatActivity {
 
         final ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
+        drawerLayout.addDrawerListener(this);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
         actionBarDrawerToggle.syncState();
@@ -241,6 +296,211 @@ public class Main extends AppCompatActivity {
 
         switchToView(extraPassed);
 
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+
+        if (operateOnDrawerClosed) {
+
+            final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            switch (drawerViewToSwitchTo) {
+
+                case 0:
+
+                    Overview overviewFragment = new Overview();
+                    fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
+                    fragmentTransaction.commit();
+
+                    break;
+
+                case 1:
+
+                    tabLayout.setVisibility(AppBarLayout.VISIBLE);
+                    viewPager.setVisibility(LinearLayout.VISIBLE);
+
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
+
+                    final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+                    adapter.addFragment(new Sunday(), "SUNDAY");
+                    adapter.addFragment(new Monday(), "MONDAY");
+                    adapter.addFragment(new Tuesday(), "TUESDAY");
+                    adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                    adapter.addFragment(new Thursday(), "THURSDAY");
+                    adapter.addFragment(new Friday(), "FRIDAY");
+                    adapter.addFragment(new Saturday(), "SATURDAY");
+
+                    viewPager.setAdapter(adapter);
+
+                    tabLayout.setupWithViewPager(viewPager);
+
+                    tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+                        @Override
+                        public void onTabSelected(TabLayout.Tab tabLayoutTab) {
+
+                            super.onTabSelected(tabLayoutTab);
+
+                            if (tabLayoutTab.getPosition() != 0) {
+
+                                if (!DataStore.isAnimated()) {
+
+                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                    final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
+                                    final Animation animation = new Animation() {
+
+                                        @Override
+                                        protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                            params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+
+                                            mainTabLayoutLayout.setLayoutParams(params);
+
+                                        }
+                                    };
+
+                                    animation.setDuration(200);
+                                    drawerLayout.startAnimation(animation);
+
+                                    DataStore.setIsAnimated(true);
+
+                                }
+
+                            } else {
+
+                                if (DataStore.isAnimated()) {
+
+                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                    final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
+                                    final Animation animation = new Animation() {
+
+                                        @Override
+                                        protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                            params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+
+                                            mainTabLayoutLayout.setLayoutParams(params);
+
+                                        }
+                                    };
+
+                                    animation.setDuration(200);
+                                    drawerLayout.startAnimation(animation);
+
+                                    DataStore.setIsAnimated(false);
+
+                                }
+
+                            }
+
+                            DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
+
+                        }
+
+                    });
+
+                    tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
+
+                    if (DataStore.getSelectedTabPosition() != 0) {
+
+                        if (!DataStore.isAnimated()) {
+
+                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                            final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
+                            final Animation animation = new Animation() {
+
+                                @Override
+                                protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                    params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+
+                                    mainTabLayoutLayout.setLayoutParams(params);
+
+                                }
+                            };
+
+                            animation.setDuration(200);
+                            drawerLayout.startAnimation(animation);
+
+                            DataStore.setIsAnimated(true);
+
+                        }
+
+                    } else {
+
+                        if (DataStore.isAnimated()) {
+
+                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                            final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
+                            final Animation animation = new Animation() {
+
+                                @Override
+                                protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                    params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+
+                                    mainTabLayoutLayout.setLayoutParams(params);
+
+                                }
+                            };
+
+                            animation.setDuration(200);
+                            drawerLayout.startAnimation(animation);
+
+                            DataStore.setIsAnimated(false);
+
+                        }
+
+                    }
+
+                    break;
+
+                case 2:
+
+                    Classes classesFragment = new Classes();
+                    fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
+                    fragmentTransaction.commit();
+
+                    break;
+
+                case 3:
+
+                    Homework homeworkFragment = new Homework();
+                    fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
+                    fragmentTransaction.commit();
+
+                    break;
+
+                case 4:
+
+                    startActivity(new Intent(getApplicationContext(), Settings.class));
+
+                    break;
+
+            }
+
+            operateOnDrawerClosed = false;
+
+        }
+
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
     }
 
     @Override
@@ -254,6 +514,7 @@ public class Main extends AppCompatActivity {
             Toast.makeText(this, "Add your class into the timetable!", Toast.LENGTH_LONG).show();
 
         }
+
     }
 
     private void switchToView(int viewToSwitchTo) {
@@ -277,18 +538,9 @@ public class Main extends AppCompatActivity {
 
                 currentView = viewToSwitchTo;
 
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        Overview overviewFragment = new Overview();
-                        fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
-                        fragmentTransaction.commit();
-
-                    }
-
-                }, 200);
+                Overview overviewFragment = new Overview();
+                fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
+                fragmentTransaction.commit();
 
                 break;
 
@@ -305,100 +557,33 @@ public class Main extends AppCompatActivity {
 
                 currentView = viewToSwitchTo;
 
-                new Handler().postDelayed(new Runnable() {
+                tabLayout.setVisibility(AppBarLayout.VISIBLE);
+                viewPager.setVisibility(LinearLayout.VISIBLE);
+
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
+
+                final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+                adapter.addFragment(new Sunday(), "SUNDAY");
+                adapter.addFragment(new Monday(), "MONDAY");
+                adapter.addFragment(new Tuesday(), "TUESDAY");
+                adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                adapter.addFragment(new Thursday(), "THURSDAY");
+                adapter.addFragment(new Friday(), "FRIDAY");
+                adapter.addFragment(new Saturday(), "SATURDAY");
+
+                viewPager.setAdapter(adapter);
+
+                tabLayout.setupWithViewPager(viewPager);
+
+                tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
                     @Override
-                    public void run() {
+                    public void onTabSelected(TabLayout.Tab tabLayoutTab) {
 
-                        tabLayout.setVisibility(AppBarLayout.VISIBLE);
-                        viewPager.setVisibility(LinearLayout.VISIBLE);
+                        super.onTabSelected(tabLayoutTab);
 
-                        fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
-
-                        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-                        adapter.addFragment(new Monday(), "MONDAY");
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-                        adapter.addFragment(new Friday(), "FRIDAY");
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-
-                        viewPager.setAdapter(adapter);
-
-                        tabLayout.setupWithViewPager(viewPager);
-
-                        tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-
-                            @Override
-                            public void onTabSelected(TabLayout.Tab tabLayoutTab) {
-
-                                super.onTabSelected(tabLayoutTab);
-
-                                if (tabLayoutTab.getPosition() != 0) {
-
-                                    if (!DataStore.isAnimated()) {
-
-                                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                                        final Animation animation = new Animation() {
-
-                                            @Override
-                                            protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                                params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
-
-                                                mainTabLayoutLayout.setLayoutParams(params);
-
-                                            }
-                                        };
-
-                                        animation.setDuration(200);
-                                        drawerLayout.startAnimation(animation);
-
-                                        DataStore.setIsAnimated(true);
-
-                                    }
-
-                                } else {
-
-                                    if (DataStore.isAnimated()) {
-
-                                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                                        final Animation animation = new Animation() {
-
-                                            @Override
-                                            protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                                params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
-
-                                                mainTabLayoutLayout.setLayoutParams(params);
-
-                                            }
-                                        };
-
-                                        animation.setDuration(200);
-                                        drawerLayout.startAnimation(animation);
-
-                                        DataStore.setIsAnimated(false);
-
-                                    }
-
-                                }
-
-                                DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
-
-                            }
-
-                        });
-
-                        tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
-
-                        if (DataStore.getSelectedTabPosition() != 0) {
+                        if (tabLayoutTab.getPosition() != 0) {
 
                             if (!DataStore.isAnimated()) {
 
@@ -452,9 +637,67 @@ public class Main extends AppCompatActivity {
 
                         }
 
+                        DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
+
                     }
 
-                }, 250);
+                });
+
+                tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
+
+                if (DataStore.getSelectedTabPosition() != 0) {
+
+                    if (!DataStore.isAnimated()) {
+
+                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
+                        final Animation animation = new Animation() {
+
+                            @Override
+                            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+
+                                mainTabLayoutLayout.setLayoutParams(params);
+
+                            }
+                        };
+
+                        animation.setDuration(200);
+                        drawerLayout.startAnimation(animation);
+
+                        DataStore.setIsAnimated(true);
+
+                    }
+
+                } else {
+
+                    if (DataStore.isAnimated()) {
+
+                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
+                        final Animation animation = new Animation() {
+
+                            @Override
+                            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+                                params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+
+                                mainTabLayoutLayout.setLayoutParams(params);
+
+                            }
+                        };
+
+                        animation.setDuration(200);
+                        drawerLayout.startAnimation(animation);
+
+                        DataStore.setIsAnimated(false);
+
+                    }
+
+                }
 
                 break;
 
@@ -474,18 +717,9 @@ public class Main extends AppCompatActivity {
 
                 currentView = viewToSwitchTo;
 
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        Classes classesFragment = new Classes();
-                        fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
-                        fragmentTransaction.commit();
-
-                    }
-
-                }, 250);
+                Classes classesFragment = new Classes();
+                fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
+                fragmentTransaction.commit();
 
                 break;
 
@@ -505,18 +739,9 @@ public class Main extends AppCompatActivity {
 
                 currentView = viewToSwitchTo;
 
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        Homework homeworkFragment = new Homework();
-                        fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
-                        fragmentTransaction.commit();
-
-                    }
-
-                }, 250);
+                Homework homeworkFragment = new Homework();
+                fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
+                fragmentTransaction.commit();
 
                 break;
 
@@ -525,16 +750,7 @@ public class Main extends AppCompatActivity {
                 if (currentView == 0)
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("collapse_lists"));
 
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        startActivity(new Intent(getApplicationContext(), Settings.class));
-
-                    }
-
-                }, 250);
+                startActivity(new Intent(getApplicationContext(), Settings.class));
 
                 break;
 
