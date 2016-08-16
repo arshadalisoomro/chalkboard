@@ -87,8 +87,8 @@
                         style="@android:style/Widget.Material.ProgressBar.Horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
+                        android:layout_marginLeft="0.75dp"
+                        android:layout_marginRight="0.75dp"
                         android:progressTint="@color/primary">
 
                     </ProgressBar>

@@ -580,12 +580,11 @@ public class Overview extends Fragment {
 
                 final RelativeLayout parentLayout = (RelativeLayout) listView.getParent();
                 final int listViewLayoutParamsHeight = totalHeight + getPixelFromDP(8) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+                final FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
 
                 if (animate) {
 
                     Animation expandAnimation = new Animation() {
-
-                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
 
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -602,7 +601,6 @@ public class Overview extends Fragment {
 
                 } else {
 
-                    FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
                     relativeLayoutParams.height = listViewLayoutParamsHeight;
 
                     parentLayout.requestLayout();
@@ -618,12 +616,11 @@ public class Overview extends Fragment {
 
                 final RelativeLayout parentLayout = (RelativeLayout) listView.getParent();
                 final int listViewLayoutParamsHeight = listViewLayoutParams.height;
+                final FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
 
                 if (animate) {
 
                     Animation collapseAnimation = new Animation() {
-
-                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
 
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -640,7 +637,6 @@ public class Overview extends Fragment {
 
                 } else {
 
-                    FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
                     relativeLayoutParams.height = getPixelFromDP(36);
 
                     parentLayout.requestLayout();

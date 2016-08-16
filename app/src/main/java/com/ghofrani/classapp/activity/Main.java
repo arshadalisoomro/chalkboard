@@ -340,11 +340,10 @@ public class Main extends AppCompatActivity {
 
                                     if (!DataStore.isAnimated()) {
 
+                                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
                                         final Animation animation = new Animation() {
-
-                                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-
-                                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                             @Override
                                             protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -367,11 +366,10 @@ public class Main extends AppCompatActivity {
 
                                     if (DataStore.isAnimated()) {
 
+                                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
                                         final Animation animation = new Animation() {
-
-                                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-
-                                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                             @Override
                                             protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -404,11 +402,10 @@ public class Main extends AppCompatActivity {
 
                             if (!DataStore.isAnimated()) {
 
+                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
                                 final Animation animation = new Animation() {
-
-                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-
-                                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -431,11 +428,10 @@ public class Main extends AppCompatActivity {
 
                             if (DataStore.isAnimated()) {
 
+                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+                                final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
                                 final Animation animation = new Animation() {
-
-                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-
-                                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
