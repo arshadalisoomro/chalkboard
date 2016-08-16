@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
@@ -19,11 +20,25 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
 
     private final LinkedList<SlimClass> slimClassLinkedList;
     private final Context context;
+    View.OnClickListener onClickListener;
 
-    public AllClassesList(LinkedList<SlimClass> slimClassLinkedList, Context context) {
+    public AllClassesList(LinkedList<SlimClass> slimClassLinkedList, Context contextInput) {
 
         this.slimClassLinkedList = slimClassLinkedList;
-        this.context = context;
+        this.context = contextInput;
+
+        onClickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
+
+                context.startActivity(new Intent(context, ViewClass.class).putExtra("class", titleTextView.getText()));
+
+            }
+
+        };
 
     }
 
@@ -46,19 +61,8 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
 
         classViewHolder.titleTextView.setText(slimClassLinkedList.get(position).getName());
         classViewHolder.teacherLocationTextView.setText(slimClassLinkedList.get(position).getTeacher() + " • " + slimClassLinkedList.get(position).getLocation());
-
-        classViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
-
-                context.startActivity(new Intent(context, ViewClass.class).putExtra("class", titleTextView.getText()));
-
-            }
-
-        });
+        classViewHolder.colorIndicatorImageView.setColorFilter(slimClassLinkedList.get(position).getColor());
+        classViewHolder.cardView.setOnClickListener(onClickListener);
 
     }
 
@@ -67,6 +71,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
         final CardView cardView;
         final TextView titleTextView;
         final TextView teacherLocationTextView;
+        final ImageView colorIndicatorImageView;
 
         ClassViewHolder(View itemView) {
 
@@ -75,6 +80,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             cardView = (CardView) itemView.findViewById(R.id.view_class_card);
             titleTextView = (TextView) itemView.findViewById(R.id.view_class_card_title);
             teacherLocationTextView = (TextView) itemView.findViewById(R.id.view_class_card_teacher_location);
+            colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_class_color_indicator);
 
         }
 

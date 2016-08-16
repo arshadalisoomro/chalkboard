@@ -301,6 +301,27 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     }
 
     @Override
+    public void onTrimMemory(int level) {
+
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
+
+            menuItemDrawer = null;
+            drawerLayout = null;
+            toolbar = null;
+            tabLayout = null;
+            viewPager = null;
+            scrollView = null;
+            navigationView = null;
+            floatingActionButton = null;
+            fragmentManager = null;
+
+        }
+
+        super.onTrimMemory(level);
+
+    }
+
+    @Override
     public void onDrawerOpened(View drawerView) {
     }
 
@@ -773,23 +794,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (dPtoConvert * scale + 0.5f);
-
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        menuItemDrawer = null;
-        drawerLayout = null;
-        toolbar = null;
-        tabLayout = null;
-        viewPager = null;
-        scrollView = null;
-        navigationView = null;
-        floatingActionButton = null;
-        fragmentManager = null;
-
-        super.onDestroy();
 
     }
 

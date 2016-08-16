@@ -799,7 +799,7 @@ public class Background extends Service {
 
         while (cursor.moveToNext()) {
 
-            slimClassLinkedList.add(new SlimClass(cursor.getString(1), cursor.getString(3), cursor.getString(2)));
+            slimClassLinkedList.add(new SlimClass(getApplicationContext(), cursor.getString(1), cursor.getString(3), cursor.getString(2)));
             classNamesList.add(cursor.getString(1));
 
         }

@@ -100,17 +100,21 @@ public class EditDay extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onTrimMemory(int level) {
 
-        listView = null;
-        listAdapter = null;
-        standardClassLinkedList = null;
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
 
-        startTimeStringForPosition = null;
-        endTimeStringForPosition = null;
-        noClassIndexList = null;
+            listView = null;
+            listAdapter = null;
+            standardClassLinkedList = null;
 
-        super.onDestroy();
+            startTimeStringForPosition = null;
+            endTimeStringForPosition = null;
+            noClassIndexList = null;
+
+        }
+
+        super.onTrimMemory(level);
 
     }
 
