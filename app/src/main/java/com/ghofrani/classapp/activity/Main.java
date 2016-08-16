@@ -344,10 +344,10 @@ public class Main extends AppCompatActivity {
 
                                             final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
 
+                                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
                                             @Override
                                             protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                                 params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
 
@@ -371,10 +371,10 @@ public class Main extends AppCompatActivity {
 
                                             final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
 
+                                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+
                                             @Override
                                             protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                                 params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
 
@@ -404,14 +404,14 @@ public class Main extends AppCompatActivity {
 
                             if (!DataStore.isAnimated()) {
 
-                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-
                                 final Animation animation = new Animation() {
+
+                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+
+                                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                         params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
 
@@ -431,14 +431,14 @@ public class Main extends AppCompatActivity {
 
                             if (DataStore.isAnimated()) {
 
-                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-
                                 final Animation animation = new Animation() {
+
+                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
+
+                                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
 
                                         params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
 

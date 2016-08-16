@@ -585,10 +585,11 @@ public class Overview extends Fragment {
 
                     Animation expandAnimation = new Animation() {
 
+                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                            FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
                             relativeLayoutParams.height = (int) (getPixelFromDP(36) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(36)));
 
                             parentLayout.requestLayout();
@@ -622,10 +623,11 @@ public class Overview extends Fragment {
 
                     Animation collapseAnimation = new Animation() {
 
+                        FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
+
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                            FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
                             relativeLayoutParams.height = (int) (getPixelFromDP(36) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(36)));
 
                             parentLayout.requestLayout();

@@ -212,7 +212,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/view_notification_header_white"
-            android:textColor="#e0ffffff"
+            android:textColor="#d0ffffff"
             android:textSize="14sp"
             android:visibility="gone" />
 
@@ -225,7 +225,7 @@
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="8dp"
         android:background="#00000000"
         android:clickable="true"
         android:src="@drawable/homework"
