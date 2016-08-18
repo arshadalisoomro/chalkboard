@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,7 +16,6 @@ import com.ghofrani.classapp.adapter.TimetableList;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
 
-import java.util.Calendar;
 import java.util.LinkedList;
 
 public class Tuesday extends Fragment {
@@ -66,13 +64,13 @@ public class Tuesday extends Fragment {
 
     private void updateUI() {
 
-        if (DataStore.getClassesLinkedListOfDay(Calendar.TUESDAY) != null) {
+        if (DataStore.tuesdayClasses != null) {
 
             noClassesTextView.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
 
             standardClassLinkedList.clear();
-            standardClassLinkedList.addAll(DataStore.getClassesLinkedListOfDay(Calendar.TUESDAY));
+            standardClassLinkedList.addAll(DataStore.tuesdayClasses);
 
             if (listAdapter == null) {
 
@@ -97,7 +95,7 @@ public class Tuesday extends Fragment {
 
             }
 
-            setListViewHeightBasedOnChildren(listView);
+            setListViewHeightBasedOnChildren();
 
         } else {
 
@@ -108,9 +106,7 @@ public class Tuesday extends Fragment {
 
     }
 
-    private void setListViewHeightBasedOnChildren(ListView listView) {
-
-        ListAdapter listAdapter = listView.getAdapter();
+    private void setListViewHeightBasedOnChildren() {
 
         if (listAdapter == null)
             return;

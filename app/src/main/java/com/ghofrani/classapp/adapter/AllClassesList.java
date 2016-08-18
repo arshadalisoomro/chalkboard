@@ -20,7 +20,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
 
     private final LinkedList<SlimClass> slimClassLinkedList;
     private final Context context;
-    View.OnClickListener onClickListener;
+    private final View.OnClickListener onClickListener;
 
     public AllClassesList(LinkedList<SlimClass> slimClassLinkedList, Context contextInput) {
 

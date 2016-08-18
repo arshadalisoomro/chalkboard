@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -86,14 +85,29 @@ public class EditDay extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        listView = (ListView) findViewById(R.id.edit_day_list_view);
-        standardClassLinkedList = new LinkedList<>();
-
         day = getIntent().getIntExtra("day", 0) + 1;
 
-        noClassIndexList = new ArrayList<>();
-        startTimeStringForPosition = new ArrayList<>();
-        endTimeStringForPosition = new ArrayList<>();
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        if (listView == null)
+            listView = (ListView) findViewById(R.id.edit_day_list_view);
+
+        if (standardClassLinkedList == null)
+            standardClassLinkedList = new LinkedList<>();
+
+        if (noClassIndexList == null)
+            noClassIndexList = new ArrayList<>();
+
+        if (startTimeStringForPosition == null)
+            startTimeStringForPosition = new ArrayList<>();
+
+        if (endTimeStringForPosition == null)
+            endTimeStringForPosition = new ArrayList<>();
 
         updateUI();
 
@@ -135,16 +149,106 @@ public class EditDay extends AppCompatActivity {
 
     }
 
+    private void setClassesLinkedListOfDay(int day, LinkedList<StandardClass> standardClassLinkedList) {
+
+        switch (day) {
+
+            case 1:
+
+                DataStore.sundayClasses = standardClassLinkedList;
+
+                break;
+
+            case 2:
+
+                DataStore.mondayClasses = standardClassLinkedList;
+
+                break;
+
+            case 3:
+
+                DataStore.tuesdayClasses = standardClassLinkedList;
+
+                break;
+
+            case 4:
+
+                DataStore.wednesdayClasses = standardClassLinkedList;
+
+                break;
+
+            case 5:
+
+                DataStore.thursdayClasses = standardClassLinkedList;
+
+                break;
+
+            case 6:
+
+                DataStore.fridayClasses = standardClassLinkedList;
+
+                break;
+
+            case 7:
+
+                DataStore.saturdayClasses = standardClassLinkedList;
+
+                break;
+
+        }
+
+    }
+
+    private LinkedList<StandardClass> getClassesLinkedListOfDay(int day) {
+
+        switch (day) {
+
+            case 1:
+
+                return DataStore.sundayClasses;
+
+            case 2:
+
+                return DataStore.mondayClasses;
+
+            case 3:
+
+                return DataStore.tuesdayClasses;
+
+            case 4:
+
+                return DataStore.wednesdayClasses;
+
+            case 5:
+
+                return DataStore.thursdayClasses;
+
+            case 6:
+
+                return DataStore.fridayClasses;
+
+            case 7:
+
+                return DataStore.saturdayClasses;
+
+            default:
+
+                return new LinkedList<>();
+
+        }
+
+    }
+
     private void updateUI() {
 
         noClassIndexList.clear();
         startTimeStringForPosition.clear();
         endTimeStringForPosition.clear();
 
-        if (DataStore.getClassesLinkedListOfDay(day) != null) {
+        if (getClassesLinkedListOfDay(day) != null) {
 
             standardClassLinkedList.clear();
-            standardClassLinkedList.addAll(DataStore.getClassesLinkedListOfDay(day));
+            standardClassLinkedList.addAll(getClassesLinkedListOfDay(day));
 
             for (int i = 0; i <= standardClassLinkedList.size(); i++) {
 
@@ -281,7 +385,7 @@ public class EditDay extends AppCompatActivity {
 
                         final Spinner classNameSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
 
-                        ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.getAllClassNamesList());
+                        ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.allClassNamesList);
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);
@@ -534,9 +638,9 @@ public class EditDay extends AppCompatActivity {
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
                                 LinkedList<StandardClass> currentClasses;
 
-                                if (DataStore.getClassesLinkedListOfDay(day) != null) {
+                                if (getClassesLinkedListOfDay(day) != null) {
 
-                                    currentClasses = (LinkedList<StandardClass>) DataStore.getClassesLinkedListOfDay(day).clone();
+                                    currentClasses = getClassesLinkedListOfDay(day);
 
                                     boolean inserted = false;
                                     int index = 0;
@@ -583,7 +687,7 @@ public class EditDay extends AppCompatActivity {
 
                                 databaseHelper.close();
 
-                                DataStore.setClassesLinkedListOfDay(day, currentClasses);
+                                setClassesLinkedListOfDay(day, currentClasses);
 
                                 addDialog.dismiss();
 
@@ -719,7 +823,7 @@ public class EditDay extends AppCompatActivity {
                         final TextView titleTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_text);
                         final String selectedClassName = titleTextView.getText().toString();
 
-                        final List<String> classNameList = DataStore.getAllClassNamesList();
+                        final List<String> classNameList = DataStore.allClassNamesList;
                         classNameList.remove(selectedClassName);
                         classNameList.add(0, selectedClassName);
 
@@ -755,14 +859,14 @@ public class EditDay extends AppCompatActivity {
 
                                 while (cursor.moveToNext()) {
 
-                                    classesLinkedList.add(new StandardClass(getApplicationContext(), cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+                                    classesLinkedList.add(new StandardClass(EditDay.this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
 
                                 }
 
                                 if (!classesLinkedList.isEmpty())
-                                    DataStore.setClassesLinkedListOfDay(day, classesLinkedList);
+                                    setClassesLinkedListOfDay(day, classesLinkedList);
                                 else
-                                    DataStore.setClassesLinkedListOfDay(day, null);
+                                    setClassesLinkedListOfDay(day, null);
 
                                 databaseHelper.close();
 
@@ -1014,16 +1118,20 @@ public class EditDay extends AppCompatActivity {
                                 final String classEndTime = classEndTimeTextView.getText().toString().replace(":", "");
 
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
-                                LinkedList<StandardClass> currentClasses;
-
-                                currentClasses = (LinkedList<StandardClass>) DataStore.getClassesLinkedListOfDay(day).clone();
+                                LinkedList<StandardClass> currentClasses = getClassesLinkedListOfDay(day);
 
                                 boolean inserted = false;
                                 int index = 0;
 
                                 while (!inserted) {
 
-                                    if (classStartTime.equals(currentClasses.get(index).getEndTimeString().replace(":", ""))) {
+                                    if (classStartTime.equals(currentClasses.get(index).getStartTimeString().replace(":", ""))) {
+
+                                        inserted = true;
+                                        currentClasses.remove(index);
+                                        currentClasses.add(index, new StandardClass(EditDay.this, className, classStartTime, classEndTime));
+
+                                    } else if (classStartTime.equals(currentClasses.get(index).getEndTimeString().replace(":", ""))) {
 
                                         inserted = true;
                                         currentClasses.remove(index + 1);
@@ -1057,7 +1165,7 @@ public class EditDay extends AppCompatActivity {
 
                                 databaseHelper.close();
 
-                                DataStore.setClassesLinkedListOfDay(day, currentClasses);
+                                setClassesLinkedListOfDay(day, currentClasses);
 
                                 editDialog.dismiss();
 
@@ -1087,7 +1195,7 @@ public class EditDay extends AppCompatActivity {
 
         }
 
-        setListViewHeightBasedOnChildren(listView);
+        setListViewHeightBasedOnChildren();
 
     }
 
@@ -1096,7 +1204,7 @@ public class EditDay extends AppCompatActivity {
 
         super.onStop();
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_data"));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_data"));
 
     }
 
@@ -1107,9 +1215,7 @@ public class EditDay extends AppCompatActivity {
 
     }
 
-    private void setListViewHeightBasedOnChildren(ListView listView) {
-
-        ListAdapter listAdapter = listView.getAdapter();
+    private void setListViewHeightBasedOnChildren() {
 
         if (listAdapter == null)
             return;

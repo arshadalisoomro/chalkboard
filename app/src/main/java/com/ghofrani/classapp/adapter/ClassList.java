@@ -26,6 +26,15 @@ public class ClassList extends BaseExpandableListAdapter {
 
     }
 
+    public void updateLinkedList(LinkedList<StandardClass> update) {
+
+        classesLinkedList.clear();
+        classesLinkedList.addAll(update);
+
+        notifyDataSetChanged();
+
+    }
+
     @Override
     public int getGroupCount() {
         return 1;

@@ -93,7 +93,7 @@ public class AddClass extends AppCompatActivity {
 
                     if (!inputTeacherEditText.getText().toString().isEmpty() && !inputLocationEditText.getText().toString().isEmpty()) {
 
-                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                         final String classToAddInfo[] = new String[4];
                         classToAddInfo[0] = inputNameEditText.getText().toString().trim();
@@ -114,7 +114,7 @@ public class AddClass extends AppCompatActivity {
 
                             }
 
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_classes"));
+                            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
 
                             setResult(0, new Intent().putExtra("switch_to_timetable", 1));
 

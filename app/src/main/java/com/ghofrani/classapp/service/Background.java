@@ -55,6 +55,8 @@ public class Background extends Service {
 
     }
 
+    private SharedPreferences sharedPreferences;
+    private DatabaseHelper databaseHelper;
     private int progressBarId;
     private int progressTextId;
     private int headerId;
@@ -137,8 +139,8 @@ public class Background extends Service {
 
         registerBroadcastReceiver();
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(updateData, new IntentFilter("update_data"));
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(updateClasses, new IntentFilter("update_classes"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateData, new IntentFilter("update_data"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateClasses, new IntentFilter("update_classes"));
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         progressBarId = R.id.view_notification_progress_bar_pink;
@@ -168,12 +170,12 @@ public class Background extends Service {
 
         super.onDestroy();
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(updateData);
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(updateClasses);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(updateData);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(updateClasses);
 
         if (backgroundBroadcastReceiver != null) {
 
-            getApplicationContext().unregisterReceiver(backgroundBroadcastReceiver);
+            unregisterReceiver(backgroundBroadcastReceiver);
 
         }
 
@@ -272,7 +274,7 @@ public class Background extends Service {
 
         };
 
-        getApplicationContext().registerReceiver(backgroundBroadcastReceiver, backgroundIntentFilter);
+        registerReceiver(backgroundBroadcastReceiver, backgroundIntentFilter);
 
     }
 
@@ -281,9 +283,12 @@ public class Background extends Service {
         boolean isCurrentClass = false;
         boolean isNextClasses = false;
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (sharedPreferences == null)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        if (databaseHelper == null)
+            databaseHelper = new DatabaseHelper(this);
+
         Cursor todayCursor = databaseHelper.getClasses(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
         final LinkedList<StandardClass> nextClassesLinkedList = new LinkedList<>();
@@ -291,19 +296,21 @@ public class Background extends Service {
 
         final LocalTime currentTime = new LocalTime().now();
 
+        StandardClass standardClass;
+
         while (todayCursor.moveToNext()) {
 
-            StandardClass standardClass = new StandardClass(getApplicationContext(), todayCursor.getString(1), todayCursor.getString(2), todayCursor.getString(3));
+            standardClass = new StandardClass(this, todayCursor.getString(1), todayCursor.getString(2), todayCursor.getString(3));
 
             if (standardClass.getStartTime().isAfter(currentTime)) {
 
                 nextClassesLinkedList.add(standardClass);
                 isNextClasses = true;
-                DataStore.setIsNextClasses(true);
+                DataStore.isNextClasses = true;
 
                 if (!nextClassDefined) {
 
-                    DataStore.setNextClass(standardClass);
+                    DataStore.nextClass = standardClass;
                     nextClassDefined = true;
 
                 }
@@ -312,20 +319,20 @@ public class Background extends Service {
 
                 isCurrentClass = true;
                 currentClass = standardClass;
-                DataStore.setCurrentClass(standardClass);
+                DataStore.currentClass = standardClass;
 
             }
 
         }
 
-        DataStore.setIsNextClasses(isNextClasses);
+        DataStore.isNextClasses = isNextClasses;
 
         if (isNextClasses)
-            DataStore.setNextClassesLinkedList(nextClassesLinkedList);
+            DataStore.nextClassesLinkedList = nextClassesLinkedList;
 
-        DataStore.setIsCurrentClass(isCurrentClass);
+        DataStore.isCurrentClass = isCurrentClass;
 
-        if (DataStore.isCurrentClass()) {
+        if (isCurrentClass) {
 
             if (sharedPreferences.getBoolean("detailed_notification", true)) {
 
@@ -365,13 +372,15 @@ public class Background extends Service {
 
                 if (notificationHandler == null) {
 
-                    final Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
-                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent homeActivityIntent = new Intent(this, Main.class);
+                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    final Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
-                    final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent homeworkActivityIntent = new Intent(this, AddHomework.class).putExtra("origin_notification", true);
+                    final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
+                    if (remoteViews == null)
+                        remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
+
                     remoteViews.setOnClickPendingIntent(R.id.view_notification_button, addHomeworkActivityIntent);
 
                     remoteViews.setInt(progressBarId, "setVisibility", View.GONE);
@@ -447,7 +456,7 @@ public class Background extends Service {
                     remoteViews.setInt(progressTextId, "setVisibility", View.VISIBLE);
                     remoteViews.setInt(headerId, "setVisibility", View.VISIBLE);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    notificationCompatBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setOngoing(true)
                             .setContentIntent(addHomeActivityIntent)
@@ -476,8 +485,8 @@ public class Background extends Service {
 
                             remoteViews.setTextViewText(headerId, currentClass.getName() + " • " + remainingTitleText);
 
-                            if (DataStore.isNextClasses())
-                                remoteViews.setTextViewText(textId, "Next: " + DataStore.getNextClass().getName() + " at " + DataStore.getNextClass().getLocation());
+                            if (DataStore.isNextClasses)
+                                remoteViews.setTextViewText(textId, "Next: " + DataStore.nextClass.getName() + " at " + DataStore.nextClass.getLocation());
                             else
                                 remoteViews.setTextViewText(textId, "No further classes");
 
@@ -510,12 +519,12 @@ public class Background extends Service {
 
                             }
 
-                            DataStore.setProgressBarText(progressBarText);
-                            DataStore.setProgressBarProgress(progressBarProgress);
+                            DataStore.progressBarText = progressBarText;
+                            DataStore.progressBarProgress = progressBarProgress;
 
                             notificationManager.notify(0, notificationCompatBuilder.build());
 
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_progress_bar"));
+                            LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
 
                             notificationHandler.postDelayed(this, 5000);
 
@@ -567,13 +576,13 @@ public class Background extends Service {
 
                 if (notificationHandler == null) {
 
-                    final Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
-                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent homeActivityIntent = new Intent(this, Main.class);
+                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    //final Intent homeworkActivityIntent = new Intent(getApplicationContext(), AddHomework.class).putExtra("origin_notification", true);
-                    //final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    //final Intent homeworkActivityIntent = new Intent(this, AddHomework.class).putExtra("origin_notification", true);
+                    //final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    notificationCompatBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setOngoing(true)
                             .setColor(currentClass.getColor())
@@ -600,8 +609,8 @@ public class Background extends Service {
                             else
                                 remainingText = minutesRemaining + " mins. left";
 
-                            if (DataStore.isNextClasses())
-                                remainingText += " • Next: " + DataStore.getNextClass().getName();
+                            if (DataStore.isNextClasses)
+                                remainingText += " • Next: " + DataStore.nextClass.getName();
                             else
                                 remainingText += " • No further classes";
 
@@ -628,12 +637,12 @@ public class Background extends Service {
 
                             }
 
-                            DataStore.setProgressBarText(progressBarText);
-                            DataStore.setProgressBarProgress(progressBarProgress);
+                            DataStore.progressBarText = progressBarText;
+                            DataStore.progressBarProgress = progressBarProgress;
 
                             notificationManager.notify(0, notificationCompatBuilder.build());
 
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_progress_bar"));
+                            LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
 
                             notificationHandler.postDelayed(this, 5000);
 
@@ -649,7 +658,7 @@ public class Background extends Service {
 
             }
 
-        } else if (DataStore.isNextClasses()) {
+        } else if (DataStore.isNextClasses) {
 
             nextToCurrentTransition = true;
 
@@ -670,32 +679,32 @@ public class Background extends Service {
 
             final DateTime currentTimeNow = new DateTime();
 
-            final int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.getNextClass().getStartTime().toDateTimeToday()).getMinutes();
+            final int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.nextClass.getStartTime().toDateTimeToday()).getMinutes();
 
             if (minutesLeft <= Integer.parseInt(sharedPreferences.getString("next_class_notification_minutes", "30"))) {
 
-                final Intent homeActivityIntent = new Intent(getApplicationContext(), Main.class);
-                final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                final Intent homeActivityIntent = new Intent(this, Main.class);
+                final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                notificationCompatBuilder = new NotificationCompat.Builder(getApplicationContext());
-                notificationCompatBuilder.setOngoing(true);
-                notificationCompatBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                notificationCompatBuilder.setContentIntent(addHomeActivityIntent);
-                notificationCompatBuilder.setWhen(0);
-                notificationCompatBuilder.setColor(DataStore.getNextClass().getColor());
-                notificationCompatBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
-                notificationCompatBuilder.setPriority(Notification.PRIORITY_MAX);
+                notificationCompatBuilder = new NotificationCompat.Builder(this)
+                        .setOngoing(true)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentIntent(addHomeActivityIntent)
+                        .setWhen(0)
+                        .setColor(DataStore.nextClass.getColor())
+                        .setVisibility(Notification.VISIBILITY_PUBLIC)
+                        .setPriority(Notification.PRIORITY_MAX);
 
-                notificationCompatBuilder.setContentTitle("Next: " + DataStore.getNextClass().getName());
+                notificationCompatBuilder.setContentTitle("Next: " + DataStore.nextClass.getName());
 
                 if (minutesLeft >= 60)
-                    notificationCompatBuilder.setContentText("In 60 minutes at " + DataStore.getNextClass().getLocation());
+                    notificationCompatBuilder.setContentText("In 60 minutes at " + DataStore.nextClass.getLocation());
                 else if (minutesLeft <= 0)
-                    notificationCompatBuilder.setContentText("In 0 minutes at " + DataStore.getNextClass().getLocation());
+                    notificationCompatBuilder.setContentText("In 0 minutes at " + DataStore.nextClass.getLocation());
                 else if (minutesLeft == 1)
-                    notificationCompatBuilder.setContentText("In 1 minute at " + DataStore.getNextClass().getLocation());
+                    notificationCompatBuilder.setContentText("In 1 minute at " + DataStore.nextClass.getLocation());
                 else
-                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.getNextClass().getLocation());
+                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.nextClass.getLocation());
 
                 notificationManager.notify(1, notificationCompatBuilder.build());
 
@@ -738,18 +747,18 @@ public class Background extends Service {
 
             while (tomorrowCursor.moveToNext()) {
 
-                tomorrowClassesLinkedList.add(new StandardClass(getApplicationContext(), tomorrowCursor.getString(1), tomorrowCursor.getString(2), tomorrowCursor.getString(3)));
+                tomorrowClassesLinkedList.add(new StandardClass(this, tomorrowCursor.getString(1), tomorrowCursor.getString(2), tomorrowCursor.getString(3)));
 
             }
 
             if (!tomorrowClassesLinkedList.isEmpty()) {
 
-                DataStore.setIsTomorrowClasses(true);
-                DataStore.setTomorrowClassesLinkedList(tomorrowClassesLinkedList);
+                DataStore.isTomorrowClasses = true;
+                DataStore.tomorrowClassesLinkedList = tomorrowClassesLinkedList;
 
             } else {
 
-                DataStore.setIsTomorrowClasses(false);
+                DataStore.isTomorrowClasses = false;
 
             }
 
@@ -757,13 +766,63 @@ public class Background extends Service {
 
         databaseHelper.close();
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("update_UI"));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_UI"));
+
+    }
+
+    private void setClassesLinkedListOfDay(int day, LinkedList<StandardClass> standardClassLinkedList) {
+
+        switch (day) {
+
+            case 1:
+
+                DataStore.sundayClasses = standardClassLinkedList;
+
+                break;
+
+            case 2:
+
+                DataStore.mondayClasses = standardClassLinkedList;
+
+                break;
+
+            case 3:
+
+                DataStore.tuesdayClasses = standardClassLinkedList;
+
+                break;
+
+            case 4:
+
+                DataStore.wednesdayClasses = standardClassLinkedList;
+
+                break;
+
+            case 5:
+
+                DataStore.thursdayClasses = standardClassLinkedList;
+
+                break;
+
+            case 6:
+
+                DataStore.fridayClasses = standardClassLinkedList;
+
+                break;
+
+            case 7:
+
+                DataStore.saturdayClasses = standardClassLinkedList;
+
+                break;
+
+        }
 
     }
 
     private void getTimetable() {
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
         Cursor cursor;
 
         for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
@@ -774,14 +833,14 @@ public class Background extends Service {
 
             while (cursor.moveToNext()) {
 
-                classesLinkedList.add(new StandardClass(getApplicationContext(), cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+                classesLinkedList.add(new StandardClass(this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
 
             }
 
             if (!classesLinkedList.isEmpty())
-                DataStore.setClassesLinkedListOfDay(i, classesLinkedList);
+                setClassesLinkedListOfDay(i, classesLinkedList);
             else
-                DataStore.setClassesLinkedListOfDay(i, null);
+                setClassesLinkedListOfDay(i, null);
 
         }
 
@@ -791,7 +850,7 @@ public class Background extends Service {
 
     private void getClasses() {
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
         Cursor cursor = databaseHelper.getClasses();
 
         final LinkedList<SlimClass> slimClassLinkedList = new LinkedList<>();
@@ -799,15 +858,15 @@ public class Background extends Service {
 
         while (cursor.moveToNext()) {
 
-            slimClassLinkedList.add(new SlimClass(getApplicationContext(), cursor.getString(1), cursor.getString(3), cursor.getString(2)));
+            slimClassLinkedList.add(new SlimClass(this, cursor.getString(1), cursor.getString(3), cursor.getString(2)));
             classNamesList.add(cursor.getString(1));
 
         }
 
         Collections.reverse(classNamesList);
 
-        DataStore.setAllClassesLinkedList(slimClassLinkedList);
-        DataStore.setAllClassNamesList(classNamesList);
+        DataStore.allClassesLinkedList = slimClassLinkedList;
+        DataStore.allClassNamesList = classNamesList;
 
         databaseHelper.close();
 

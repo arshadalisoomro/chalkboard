@@ -17,10 +17,10 @@ public class TimetableList extends BaseAdapter {
     private final LayoutInflater layoutInflater;
     private final LinkedList<StandardClass> classesLinkedList;
 
-    public TimetableList(Context context, LinkedList<StandardClass> initial) {
+    public TimetableList(Context context, LinkedList<StandardClass> classesLinkedList) {
 
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        classesLinkedList = initial;
+        this.classesLinkedList = classesLinkedList;
 
     }
 

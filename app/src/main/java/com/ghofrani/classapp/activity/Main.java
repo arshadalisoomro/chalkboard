@@ -47,16 +47,14 @@ import java.util.List;
 
 public class Main extends AppCompatActivity implements DrawerLayout.DrawerListener {
 
-    private MenuItem menuItemDrawer;
+    private FloatingActionButton floatingActionButton;
     private DrawerLayout drawerLayout;
+    private ScrollView scrollView;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ScrollView scrollView;
     private NavigationView navigationView;
-    private FloatingActionButton floatingActionButton;
-    private FragmentManager fragmentManager;
-    private int currentView;
+    private int currentView = 0;
     private boolean operateOnDrawerClosed;
     private int drawerViewToSwitchTo;
 
@@ -108,73 +106,28 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         db.close();
 
-        startService(new Intent(getApplicationContext(), Background.class));
-
-        final int extraPassed = getIntent().hasExtra("fragment") ? getIntent().getExtras().getInt("fragment") : 0;
+        startService(new Intent(this, Background.class));
 
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-
-        switch (extraPassed) {
-
-            case 0:
-
-                toolbar.setTitle("Overview");
-
-                break;
-
-            case 1:
-
-                toolbar.setTitle("Timetable");
-
-                break;
-
-            case 2:
-
-                toolbar.setTitle("Classes");
-
-                break;
-
-            case 3:
-
-                toolbar.setTitle("Homework");
-
-                break;
-
-        }
-
+        toolbar.setTitle("Overview");
         setSupportActionBar(toolbar);
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 
-            @Override
-            public void onClick(View v) {
+        final ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
-                if (currentView == 1) {
+        drawerLayout.addDrawerListener(this);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
-                    startActivity(new Intent(getApplicationContext(), EditDay.class).putExtra("day", DataStore.getSelectedTabPosition()));
-
-                } else if (currentView == 2) {
-
-                    startActivityForResult(new Intent(getApplicationContext(), AddClass.class), 0);
-
-                } else if (currentView == 3) {
-
-                    startActivity(new Intent(getApplicationContext(), AddHomework.class));
-
-                }
-
-            }
-
-        });
+        actionBarDrawerToggle.syncState();
 
         scrollView = (ScrollView) findViewById(R.id.main_scroll_view);
 
-        fragmentManager = getSupportFragmentManager();
+        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        viewPager = (ViewPager) findViewById(R.id.main_view_pager);
 
         navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
-
         navigationView.setCheckedItem(R.id.overview);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
@@ -183,22 +136,20 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 drawerLayout.closeDrawers();
 
-                menuItemDrawer = menuItem;
-
-                if (!menuItemDrawer.isChecked()) {
+                if (!menuItem.isChecked()) {
 
                     operateOnDrawerClosed = true;
 
-                    if (menuItemDrawer.getItemId() == R.id.settings) {
+                    if (menuItem.getItemId() == R.id.settings) {
 
                         if (currentView == 0)
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("collapse_lists"));
+                            LocalBroadcastManager.getInstance(Main.this).sendBroadcast(new Intent("collapse_lists"));
 
                         drawerViewToSwitchTo = 4;
 
                     } else {
 
-                        switch (menuItemDrawer.getItemId()) {
+                        switch (menuItem.getItemId()) {
 
                             case R.id.overview:
 
@@ -284,19 +235,59 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         });
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
 
-        final ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
+            @Override
+            public void onClick(View v) {
 
-        drawerLayout.addDrawerListener(this);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+                if (currentView == 1) {
 
-        actionBarDrawerToggle.syncState();
+                    startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataStore.selectedTabPosition));
 
-        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-        viewPager = (ViewPager) findViewById(R.id.main_view_pager);
+                } else if (currentView == 2) {
 
-        switchToView(extraPassed);
+                    startActivityForResult(new Intent(Main.this, AddClass.class), 0);
+
+                } else if (currentView == 3) {
+
+                    startActivity(new Intent(Main.this, AddHomework.class));
+
+                }
+
+            }
+
+        });
+
+        switchToView((getIntent().hasExtra("fragment") ? getIntent().getIntExtra("fragment", 0) : 0));
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        if (toolbar == null)
+            toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+
+        if (floatingActionButton == null)
+            floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
+
+        if (scrollView == null)
+            scrollView = (ScrollView) findViewById(R.id.main_scroll_view);
+
+        if (navigationView == null)
+            navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+
+        if (drawerLayout == null)
+            drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+
+        if (tabLayout == null)
+            tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+
+        if (viewPager == null)
+            viewPager = (ViewPager) findViewById(R.id.main_view_pager);
 
     }
 
@@ -305,7 +296,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         if (level == TRIM_MEMORY_UI_HIDDEN) {
 
-            menuItemDrawer = null;
             drawerLayout = null;
             toolbar = null;
             tabLayout = null;
@@ -313,7 +303,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             scrollView = null;
             navigationView = null;
             floatingActionButton = null;
-            fragmentManager = null;
 
         }
 
@@ -330,7 +319,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         if (operateOnDrawerClosed) {
 
-            final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
             switch (drawerViewToSwitchTo) {
 
@@ -347,7 +336,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                     tabLayout.setVisibility(AppBarLayout.VISIBLE);
                     viewPager.setVisibility(LinearLayout.VISIBLE);
 
-                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
+                    fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.main_scroll_view)).commit();
 
                     final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -372,7 +361,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                             if (tabLayoutTab.getPosition() != 0) {
 
-                                if (!DataStore.isAnimated()) {
+                                if (!DataStore.isAnimated) {
 
                                     final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                     final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -392,13 +381,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                     animation.setDuration(200);
                                     drawerLayout.startAnimation(animation);
 
-                                    DataStore.setIsAnimated(true);
+                                    DataStore.isAnimated = true;
 
                                 }
 
                             } else {
 
-                                if (DataStore.isAnimated()) {
+                                if (DataStore.isAnimated) {
 
                                     final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                     final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -418,23 +407,23 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                     animation.setDuration(200);
                                     drawerLayout.startAnimation(animation);
 
-                                    DataStore.setIsAnimated(false);
+                                    DataStore.isAnimated = false;
 
                                 }
 
                             }
 
-                            DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
+                            DataStore.selectedTabPosition = tabLayoutTab.getPosition();
 
                         }
 
                     });
 
-                    tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
+                    tabLayout.getTabAt(DataStore.selectedTabPosition).select();
 
-                    if (DataStore.getSelectedTabPosition() != 0) {
+                    if (DataStore.selectedTabPosition != 0) {
 
-                        if (!DataStore.isAnimated()) {
+                        if (!DataStore.isAnimated) {
 
                             final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                             final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -454,13 +443,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             animation.setDuration(200);
                             drawerLayout.startAnimation(animation);
 
-                            DataStore.setIsAnimated(true);
+                            DataStore.isAnimated = true;
 
                         }
 
                     } else {
 
-                        if (DataStore.isAnimated()) {
+                        if (DataStore.isAnimated) {
 
                             final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                             final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -480,7 +469,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             animation.setDuration(200);
                             drawerLayout.startAnimation(animation);
 
-                            DataStore.setIsAnimated(false);
+                            DataStore.isAnimated = false;
 
                         }
 
@@ -506,7 +495,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 case 4:
 
-                    startActivity(new Intent(getApplicationContext(), Settings.class));
+                    startActivity(new Intent(this, Settings.class));
 
                     break;
 
@@ -542,7 +531,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
     private void switchToView(int viewToSwitchTo) {
 
-        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         switch (viewToSwitchTo) {
 
@@ -583,7 +572,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                 tabLayout.setVisibility(AppBarLayout.VISIBLE);
                 viewPager.setVisibility(LinearLayout.VISIBLE);
 
-                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.main_scroll_view)).commit();
+                fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.main_scroll_view)).commit();
 
                 final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -608,7 +597,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                         if (tabLayoutTab.getPosition() != 0) {
 
-                            if (!DataStore.isAnimated()) {
+                            if (!DataStore.isAnimated) {
 
                                 final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                 final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -628,13 +617,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                 animation.setDuration(200);
                                 drawerLayout.startAnimation(animation);
 
-                                DataStore.setIsAnimated(true);
+                                DataStore.isAnimated = true;
 
                             }
 
                         } else {
 
-                            if (DataStore.isAnimated()) {
+                            if (DataStore.isAnimated) {
 
                                 final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                 final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -654,23 +643,23 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                 animation.setDuration(200);
                                 drawerLayout.startAnimation(animation);
 
-                                DataStore.setIsAnimated(false);
+                                DataStore.isAnimated = false;
 
                             }
 
                         }
 
-                        DataStore.setSelectedTabPosition(tabLayoutTab.getPosition());
+                        DataStore.selectedTabPosition = tabLayoutTab.getPosition();
 
                     }
 
                 });
 
-                tabLayout.getTabAt(DataStore.getSelectedTabPosition()).select();
+                tabLayout.getTabAt(DataStore.selectedTabPosition).select();
 
-                if (DataStore.getSelectedTabPosition() != 0) {
+                if (DataStore.selectedTabPosition != 0) {
 
-                    if (!DataStore.isAnimated()) {
+                    if (!DataStore.isAnimated) {
 
                         final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                         final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -690,13 +679,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                         animation.setDuration(200);
                         drawerLayout.startAnimation(animation);
 
-                        DataStore.setIsAnimated(true);
+                        DataStore.isAnimated = true;
 
                     }
 
                 } else {
 
-                    if (DataStore.isAnimated()) {
+                    if (DataStore.isAnimated) {
 
                         final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                         final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -716,7 +705,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                         animation.setDuration(200);
                         drawerLayout.startAnimation(animation);
 
-                        DataStore.setIsAnimated(false);
+                        DataStore.isAnimated = false;
 
                     }
 
@@ -771,9 +760,9 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             case 4:
 
                 if (currentView == 0)
-                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("collapse_lists"));
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("collapse_lists"));
 
-                startActivity(new Intent(getApplicationContext(), Settings.class));
+                startActivity(new Intent(this, Settings.class));
 
                 break;
 

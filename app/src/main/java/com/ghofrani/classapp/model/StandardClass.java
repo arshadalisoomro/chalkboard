@@ -44,64 +44,32 @@ public class StandardClass {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public LocalTime getStartTime() {
         return startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
     }
 
     public String getStartTimeString() {
         return startTimeString;
     }
 
-    public void setStartTimeString(String startTimeString) {
-        this.startTimeString = startTimeString;
-    }
-
     public LocalTime getEndTime() {
         return endTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
     }
 
     public String getEndTimeString() {
         return endTimeString;
     }
 
-    public void setEndTimeString(String endTimeString) {
-        this.endTimeString = endTimeString;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(String teacher) {
-        this.teacher = teacher;
-    }
-
     public int getColor() {
         return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
 }

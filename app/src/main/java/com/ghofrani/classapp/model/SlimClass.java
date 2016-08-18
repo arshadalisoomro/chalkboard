@@ -6,7 +6,6 @@ import com.ghofrani.classapp.modules.DatabaseHelper;
 
 public class SlimClass {
 
-    private Context context;
     private String name;
     private String location;
     private String teacher;
@@ -14,7 +13,6 @@ public class SlimClass {
 
     public SlimClass(Context context, String name, String location, String teacher) {
 
-        this.context = context;
         this.name = name;
         this.location = location;
         this.teacher = teacher;
@@ -31,32 +29,16 @@ public class SlimClass {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(String teacher) {
-        this.teacher = teacher;
-    }
-
     public int getColor() {
         return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
 }

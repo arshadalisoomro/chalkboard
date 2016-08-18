@@ -54,7 +54,7 @@ public class AddHomework extends AppCompatActivity {
                     if (originNotification) {
 
                         finish();
-                        startActivity(new Intent(getApplicationContext(), Main.class).putExtra("fragment", 3));
+                        startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
 
                     } else {
 
@@ -105,7 +105,7 @@ public class AddHomework extends AppCompatActivity {
                 if (originNotification) {
 
                     finish();
-                    startActivity(new Intent(getApplicationContext(), Main.class).putExtra("fragment", 3));
+                    startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
 
                 } else {
 
