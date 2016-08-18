@@ -10,14 +10,14 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class StandardClass {
 
-    private String name;
-    private LocalTime startTime;
-    private String startTimeString;
-    private LocalTime endTime;
-    private String endTimeString;
-    private String location;
-    private String teacher;
-    private int color;
+    private final String name;
+    private final LocalTime startTime;
+    private final String startTimeString;
+    private final LocalTime endTime;
+    private final String endTimeString;
+    private final String location;
+    private final String teacher;
+    private final int color;
 
     public StandardClass(Context context, String name, String startTime, String endTime) {
 

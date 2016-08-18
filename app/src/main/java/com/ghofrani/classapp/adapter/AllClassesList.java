@@ -14,17 +14,17 @@ import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.ViewClass;
 import com.ghofrani.classapp.model.SlimClass;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassViewHolder> {
 
-    private final LinkedList<SlimClass> slimClassLinkedList;
+    private final ArrayList<SlimClass> slimClassArrayList;
     private final Context context;
     private final View.OnClickListener onClickListener;
 
-    public AllClassesList(LinkedList<SlimClass> slimClassLinkedList, Context contextInput) {
+    public AllClassesList(ArrayList<SlimClass> slimClassArrayList, Context contextInput) {
 
-        this.slimClassLinkedList = slimClassLinkedList;
+        this.slimClassArrayList = slimClassArrayList;
         this.context = contextInput;
 
         onClickListener = new View.OnClickListener() {
@@ -45,7 +45,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
     @Override
     public int getItemCount() {
 
-        return slimClassLinkedList.size();
+        return slimClassArrayList.size();
 
     }
 
@@ -59,9 +59,9 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
     @Override
     public void onBindViewHolder(ClassViewHolder classViewHolder, int position) {
 
-        classViewHolder.titleTextView.setText(slimClassLinkedList.get(position).getName());
-        classViewHolder.teacherLocationTextView.setText(slimClassLinkedList.get(position).getTeacher() + " • " + slimClassLinkedList.get(position).getLocation());
-        classViewHolder.colorIndicatorImageView.setColorFilter(slimClassLinkedList.get(position).getColor());
+        classViewHolder.titleTextView.setText(slimClassArrayList.get(position).getName());
+        classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getTeacher() + " • " + slimClassArrayList.get(position).getLocation());
+        classViewHolder.colorIndicatorImageView.setColorFilter(slimClassArrayList.get(position).getColor());
         classViewHolder.cardView.setOnClickListener(onClickListener);
 
     }

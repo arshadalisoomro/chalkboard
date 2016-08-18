@@ -16,13 +16,13 @@ import com.ghofrani.classapp.adapter.TimetableList;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class Thursday extends Fragment {
 
     private ListView listView;
     private TimetableList listAdapter;
-    private LinkedList<StandardClass> standardClassLinkedList;
+    private ArrayList<StandardClass> standardClassArrayList;
     private TextView noClassesTextView;
 
     @Override
@@ -43,8 +43,8 @@ public class Thursday extends Fragment {
         if (noClassesTextView == null)
             noClassesTextView = (TextView) getView().findViewById(R.id.thursday_no_classes);
 
-        if (standardClassLinkedList == null)
-            standardClassLinkedList = new LinkedList<>();
+        if (standardClassArrayList == null)
+            standardClassArrayList = new ArrayList<>();
 
         updateUI();
 
@@ -55,7 +55,7 @@ public class Thursday extends Fragment {
 
         listView = null;
         noClassesTextView = null;
-        standardClassLinkedList = null;
+        standardClassArrayList = null;
         listAdapter = null;
 
         super.onDestroyView();
@@ -69,12 +69,11 @@ public class Thursday extends Fragment {
             noClassesTextView.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
 
-            standardClassLinkedList.clear();
-            standardClassLinkedList.addAll(DataStore.thursdayClasses);
+            standardClassArrayList = DataStore.thursdayClasses;
 
             if (listAdapter == null) {
 
-                listAdapter = new TimetableList(getContext(), standardClassLinkedList);
+                listAdapter = new TimetableList(getContext(), standardClassArrayList);
                 listView.setAdapter(listAdapter);
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -91,7 +90,7 @@ public class Thursday extends Fragment {
 
             } else {
 
-                listAdapter.setClassesLinkedList((LinkedList<StandardClass>) standardClassLinkedList.clone());
+                listAdapter.setClassesArrayList((ArrayList<StandardClass>) standardClassArrayList.clone());
 
             }
 

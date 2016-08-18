@@ -37,8 +37,6 @@ import org.joda.time.Minutes;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Background extends Service {
 
@@ -56,7 +54,6 @@ public class Background extends Service {
     }
 
     private SharedPreferences sharedPreferences;
-    private DatabaseHelper databaseHelper;
     private int progressBarId;
     private int progressTextId;
     private int headerId;
@@ -90,13 +87,6 @@ public class Background extends Service {
         @Override
 
         public void onReceive(Context context, Intent intent) {
-
-            if (notificationHandler != null) {
-
-                notificationHandler.removeCallbacksAndMessages(null);
-                notificationHandler = null;
-
-            }
 
             getData();
             getTimetable();
@@ -211,25 +201,11 @@ public class Background extends Service {
 
                     case Intent.ACTION_TIME_TICK:
 
-                        if (notificationHandler != null) {
-
-                            notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler = null;
-
-                        }
-
                         getData();
 
                         break;
 
                     case Intent.ACTION_TIMEZONE_CHANGED:
-
-                        if (notificationHandler != null) {
-
-                            notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler = null;
-
-                        }
 
                         getData();
                         getTimetable();
@@ -238,26 +214,12 @@ public class Background extends Service {
 
                     case Intent.ACTION_TIME_CHANGED:
 
-                        if (notificationHandler != null) {
-
-                            notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler = null;
-
-                        }
-
                         getData();
                         getTimetable();
 
                         break;
 
                     case Intent.ACTION_DATE_CHANGED:
-
-                        if (notificationHandler != null) {
-
-                            notificationHandler.removeCallbacksAndMessages(null);
-                            notificationHandler = null;
-
-                        }
 
                         getData();
                         getTimetable();
@@ -280,31 +242,35 @@ public class Background extends Service {
 
     private void getData() {
 
+        if (notificationHandler != null) {
+
+            notificationHandler.removeCallbacksAndMessages(null);
+            notificationHandler = null;
+
+        }
+
         boolean isCurrentClass = false;
         boolean isNextClasses = false;
 
         if (sharedPreferences == null)
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (databaseHelper == null)
-            databaseHelper = new DatabaseHelper(this);
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
         Cursor todayCursor = databaseHelper.getClasses(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-        final LinkedList<StandardClass> nextClassesLinkedList = new LinkedList<>();
+        final ArrayList<StandardClass> nextClassesArrayList = new ArrayList<>();
         boolean nextClassDefined = false;
 
         final LocalTime currentTime = new LocalTime().now();
 
-        StandardClass standardClass;
-
         while (todayCursor.moveToNext()) {
 
-            standardClass = new StandardClass(this, todayCursor.getString(1), todayCursor.getString(2), todayCursor.getString(3));
+            StandardClass standardClass = new StandardClass(this, todayCursor.getString(1), todayCursor.getString(2), todayCursor.getString(3));
 
             if (standardClass.getStartTime().isAfter(currentTime)) {
 
-                nextClassesLinkedList.add(standardClass);
+                nextClassesArrayList.add(standardClass);
                 isNextClasses = true;
                 DataStore.isNextClasses = true;
 
@@ -328,7 +294,7 @@ public class Background extends Service {
         DataStore.isNextClasses = isNextClasses;
 
         if (isNextClasses)
-            DataStore.nextClassesLinkedList = nextClassesLinkedList;
+            DataStore.nextClassesArrayList = nextClassesArrayList;
 
         DataStore.isCurrentClass = isCurrentClass;
 
@@ -743,18 +709,18 @@ public class Background extends Service {
 
             Cursor tomorrowCursor = databaseHelper.getClasses(day);
 
-            final LinkedList<StandardClass> tomorrowClassesLinkedList = new LinkedList<>();
+            final ArrayList<StandardClass> tomorrowClassesArrayList = new ArrayList<>();
 
             while (tomorrowCursor.moveToNext()) {
 
-                tomorrowClassesLinkedList.add(new StandardClass(this, tomorrowCursor.getString(1), tomorrowCursor.getString(2), tomorrowCursor.getString(3)));
+                tomorrowClassesArrayList.add(new StandardClass(this, tomorrowCursor.getString(1), tomorrowCursor.getString(2), tomorrowCursor.getString(3)));
 
             }
 
-            if (!tomorrowClassesLinkedList.isEmpty()) {
+            if (!tomorrowClassesArrayList.isEmpty()) {
 
                 DataStore.isTomorrowClasses = true;
-                DataStore.tomorrowClassesLinkedList = tomorrowClassesLinkedList;
+                DataStore.tomorrowClassesArrayList = tomorrowClassesArrayList;
 
             } else {
 
@@ -770,49 +736,49 @@ public class Background extends Service {
 
     }
 
-    private void setClassesLinkedListOfDay(int day, LinkedList<StandardClass> standardClassLinkedList) {
+    private void setClassesArrayListOfDay(int day, ArrayList<StandardClass> standardClassArrayList) {
 
         switch (day) {
 
             case 1:
 
-                DataStore.sundayClasses = standardClassLinkedList;
+                DataStore.sundayClasses = standardClassArrayList;
 
                 break;
 
             case 2:
 
-                DataStore.mondayClasses = standardClassLinkedList;
+                DataStore.mondayClasses = standardClassArrayList;
 
                 break;
 
             case 3:
 
-                DataStore.tuesdayClasses = standardClassLinkedList;
+                DataStore.tuesdayClasses = standardClassArrayList;
 
                 break;
 
             case 4:
 
-                DataStore.wednesdayClasses = standardClassLinkedList;
+                DataStore.wednesdayClasses = standardClassArrayList;
 
                 break;
 
             case 5:
 
-                DataStore.thursdayClasses = standardClassLinkedList;
+                DataStore.thursdayClasses = standardClassArrayList;
 
                 break;
 
             case 6:
 
-                DataStore.fridayClasses = standardClassLinkedList;
+                DataStore.fridayClasses = standardClassArrayList;
 
                 break;
 
             case 7:
 
-                DataStore.saturdayClasses = standardClassLinkedList;
+                DataStore.saturdayClasses = standardClassArrayList;
 
                 break;
 
@@ -827,20 +793,20 @@ public class Background extends Service {
 
         for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
 
-            final LinkedList<StandardClass> classesLinkedList = new LinkedList<>();
+            final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
 
             cursor = databaseHelper.getClasses(i);
 
             while (cursor.moveToNext()) {
 
-                classesLinkedList.add(new StandardClass(this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+                classesArrayList.add(new StandardClass(this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
 
             }
 
-            if (!classesLinkedList.isEmpty())
-                setClassesLinkedListOfDay(i, classesLinkedList);
+            if (!classesArrayList.isEmpty())
+                setClassesArrayListOfDay(i, classesArrayList);
             else
-                setClassesLinkedListOfDay(i, null);
+                setClassesArrayListOfDay(i, null);
 
         }
 
@@ -853,20 +819,20 @@ public class Background extends Service {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
         Cursor cursor = databaseHelper.getClasses();
 
-        final LinkedList<SlimClass> slimClassLinkedList = new LinkedList<>();
-        final List<String> classNamesList = new ArrayList<>();
+        final ArrayList<SlimClass> slimClassArrayList = new ArrayList<>();
+        final ArrayList<String> classNamesArrayList = new ArrayList<>();
 
         while (cursor.moveToNext()) {
 
-            slimClassLinkedList.add(new SlimClass(this, cursor.getString(1), cursor.getString(3), cursor.getString(2)));
-            classNamesList.add(cursor.getString(1));
+            slimClassArrayList.add(new SlimClass(this, cursor.getString(1), cursor.getString(3), cursor.getString(2)));
+            classNamesArrayList.add(cursor.getString(1));
 
         }
 
-        Collections.reverse(classNamesList);
+        Collections.reverse(classNamesArrayList);
 
-        DataStore.allClassesLinkedList = slimClassLinkedList;
-        DataStore.allClassNamesList = classNamesList;
+        DataStore.allClassesArrayList = slimClassArrayList;
+        DataStore.allClassNamesArrayList = classNamesArrayList;
 
         databaseHelper.close();
 

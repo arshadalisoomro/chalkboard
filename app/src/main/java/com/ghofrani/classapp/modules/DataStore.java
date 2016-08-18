@@ -3,8 +3,7 @@ package com.ghofrani.classapp.modules;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 public class DataStore {
 
@@ -13,21 +12,21 @@ public class DataStore {
 
     public static boolean isNextClasses;
     public static StandardClass nextClass;
-    public static LinkedList<StandardClass> nextClassesLinkedList;
+    public static ArrayList<StandardClass> nextClassesArrayList;
 
     public static boolean isTomorrowClasses;
-    public static LinkedList<StandardClass> tomorrowClassesLinkedList;
+    public static ArrayList<StandardClass> tomorrowClassesArrayList;
 
-    public static LinkedList<StandardClass> sundayClasses;
-    public static LinkedList<StandardClass> mondayClasses;
-    public static LinkedList<StandardClass> tuesdayClasses;
-    public static LinkedList<StandardClass> wednesdayClasses;
-    public static LinkedList<StandardClass> thursdayClasses;
-    public static LinkedList<StandardClass> fridayClasses;
-    public static LinkedList<StandardClass> saturdayClasses;
+    public static ArrayList<StandardClass> sundayClasses;
+    public static ArrayList<StandardClass> mondayClasses;
+    public static ArrayList<StandardClass> tuesdayClasses;
+    public static ArrayList<StandardClass> wednesdayClasses;
+    public static ArrayList<StandardClass> thursdayClasses;
+    public static ArrayList<StandardClass> fridayClasses;
+    public static ArrayList<StandardClass> saturdayClasses;
 
-    public static LinkedList<SlimClass> allClassesLinkedList;
-    public static List<String> allClassNamesList;
+    public static ArrayList<SlimClass> allClassesArrayList;
+    public static ArrayList<String> allClassNamesArrayList;
 
     public static int progressBarProgress = 0;
     public static String progressBarText = "0%";

@@ -11,34 +11,34 @@ import android.widget.TextView;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.StandardClass;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class EditDayList extends BaseAdapter {
 
     private final LayoutInflater layoutInflater;
-    private final LinkedList<StandardClass> classesLinkedList;
+    private final ArrayList<StandardClass> classesArrayList;
 
-    public EditDayList(Context context, LinkedList<StandardClass> classesLinkedList) {
+    public EditDayList(Context context, ArrayList<StandardClass> classesArrayList) {
 
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.classesLinkedList = classesLinkedList;
+        this.classesArrayList = classesArrayList;
 
     }
 
     @Override
     public int getCount() {
-        return classesLinkedList.size();
+        return classesArrayList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return classesLinkedList.get(position);
+        return classesArrayList.get(position);
     }
 
-    public void setClassesLinkedList(LinkedList<StandardClass> update) {
+    public void setClassesArrayList(ArrayList<StandardClass> update) {
 
-        classesLinkedList.clear();
-        classesLinkedList.addAll(update);
+        classesArrayList.clear();
+        classesArrayList.addAll(update);
 
         notifyDataSetChanged();
 
@@ -52,7 +52,7 @@ public class EditDayList extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (classesLinkedList.get(position) == null) {
+        if (classesArrayList.get(position) == null) {
 
             if (convertView == null)
                 convertView = layoutInflater.inflate(R.layout.view_edit_day_list_child, null);
@@ -79,7 +79,7 @@ public class EditDayList extends BaseAdapter {
             final ImageView listChildIconImageView = (ImageView) convertView.findViewById(R.id.view_edit_day_list_child_icon);
             listChildIconImageView.setVisibility(View.INVISIBLE);
 
-            final StandardClass standardClass = classesLinkedList.get(position);
+            final StandardClass standardClass = classesArrayList.get(position);
 
             final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text);
             listChildTitleTextView.setVisibility(View.VISIBLE);

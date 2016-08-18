@@ -29,14 +29,13 @@ import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class EditDay extends AppCompatActivity {
 
     private ListView listView;
     private EditDayList listAdapter;
-    private LinkedList<StandardClass> standardClassLinkedList;
+    private ArrayList<StandardClass> standardClassArrayList;
 
     private List<String> startTimeStringForPosition;
     private List<String> endTimeStringForPosition;
@@ -97,8 +96,8 @@ public class EditDay extends AppCompatActivity {
         if (listView == null)
             listView = (ListView) findViewById(R.id.edit_day_list_view);
 
-        if (standardClassLinkedList == null)
-            standardClassLinkedList = new LinkedList<>();
+        if (standardClassArrayList == null)
+            standardClassArrayList = new ArrayList<>();
 
         if (noClassIndexList == null)
             noClassIndexList = new ArrayList<>();
@@ -120,7 +119,7 @@ public class EditDay extends AppCompatActivity {
 
             listView = null;
             listAdapter = null;
-            standardClassLinkedList = null;
+            standardClassArrayList = null;
 
             startTimeStringForPosition = null;
             endTimeStringForPosition = null;
@@ -149,49 +148,49 @@ public class EditDay extends AppCompatActivity {
 
     }
 
-    private void setClassesLinkedListOfDay(int day, LinkedList<StandardClass> standardClassLinkedList) {
+    private void setClassesArrayListOfDay(int day, ArrayList<StandardClass> standardClassArrayList) {
 
         switch (day) {
 
             case 1:
 
-                DataStore.sundayClasses = standardClassLinkedList;
+                DataStore.sundayClasses = standardClassArrayList;
 
                 break;
 
             case 2:
 
-                DataStore.mondayClasses = standardClassLinkedList;
+                DataStore.mondayClasses = standardClassArrayList;
 
                 break;
 
             case 3:
 
-                DataStore.tuesdayClasses = standardClassLinkedList;
+                DataStore.tuesdayClasses = standardClassArrayList;
 
                 break;
 
             case 4:
 
-                DataStore.wednesdayClasses = standardClassLinkedList;
+                DataStore.wednesdayClasses = standardClassArrayList;
 
                 break;
 
             case 5:
 
-                DataStore.thursdayClasses = standardClassLinkedList;
+                DataStore.thursdayClasses = standardClassArrayList;
 
                 break;
 
             case 6:
 
-                DataStore.fridayClasses = standardClassLinkedList;
+                DataStore.fridayClasses = standardClassArrayList;
 
                 break;
 
             case 7:
 
-                DataStore.saturdayClasses = standardClassLinkedList;
+                DataStore.saturdayClasses = standardClassArrayList;
 
                 break;
 
@@ -199,7 +198,7 @@ public class EditDay extends AppCompatActivity {
 
     }
 
-    private LinkedList<StandardClass> getClassesLinkedListOfDay(int day) {
+    private ArrayList<StandardClass> getClassesArrayListOfDay(int day) {
 
         switch (day) {
 
@@ -233,7 +232,7 @@ public class EditDay extends AppCompatActivity {
 
             default:
 
-                return new LinkedList<>();
+                return new ArrayList<>();
 
         }
 
@@ -245,21 +244,21 @@ public class EditDay extends AppCompatActivity {
         startTimeStringForPosition.clear();
         endTimeStringForPosition.clear();
 
-        if (getClassesLinkedListOfDay(day) != null) {
+        if (getClassesArrayListOfDay(day) != null) {
 
-            standardClassLinkedList.clear();
-            standardClassLinkedList.addAll(getClassesLinkedListOfDay(day));
+            standardClassArrayList.clear();
+            standardClassArrayList.addAll(getClassesArrayListOfDay(day));
 
-            for (int i = 0; i <= standardClassLinkedList.size(); i++) {
+            for (int i = 0; i <= standardClassArrayList.size(); i++) {
 
                 if (i == 0) {
 
-                    if (!standardClassLinkedList.get(0).getStartTimeString().equals("00:00")) {
+                    if (!standardClassArrayList.get(0).getStartTimeString().equals("00:00")) {
 
-                        standardClassLinkedList.add(0, null);
+                        standardClassArrayList.add(0, null);
                         noClassIndexList.add(0);
 
-                        String firstStartTimeHourString = standardClassLinkedList.get(1).getStartTimeString().substring(0, 2);
+                        String firstStartTimeHourString = standardClassArrayList.get(1).getStartTimeString().substring(0, 2);
 
                         if ((Integer.parseInt(firstStartTimeHourString) - 1) < 0) {
 
@@ -269,29 +268,29 @@ public class EditDay extends AppCompatActivity {
 
                             int firstStartTimeHourInteger = Integer.parseInt(firstStartTimeHourString) - 1;
                             String finalFirstStartTimeHourString = (firstStartTimeHourInteger < 10) ? ("0" + String.valueOf(firstStartTimeHourInteger)) : String.valueOf(firstStartTimeHourInteger);
-                            startTimeStringForPosition.add(finalFirstStartTimeHourString + standardClassLinkedList.get(1).getStartTimeString().substring(2));
+                            startTimeStringForPosition.add(finalFirstStartTimeHourString + standardClassArrayList.get(1).getStartTimeString().substring(2));
 
                         }
 
-                        endTimeStringForPosition.add(standardClassLinkedList.get(1).getStartTimeString());
+                        endTimeStringForPosition.add(standardClassArrayList.get(1).getStartTimeString());
 
                     } else {
 
                         startTimeStringForPosition.add("00:00");
-                        endTimeStringForPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
+                        endTimeStringForPosition.add(i, standardClassArrayList.get(i).getEndTimeString());
 
                     }
 
-                } else if (i == standardClassLinkedList.size()) {
+                } else if (i == standardClassArrayList.size()) {
 
-                    if (!standardClassLinkedList.get(i - 1).getEndTimeString().equals("23:59")) {
+                    if (!standardClassArrayList.get(i - 1).getEndTimeString().equals("23:59")) {
 
-                        standardClassLinkedList.add(null);
+                        standardClassArrayList.add(null);
                         noClassIndexList.add(i);
 
-                        startTimeStringForPosition.add(standardClassLinkedList.get(i - 1).getEndTimeString());
+                        startTimeStringForPosition.add(standardClassArrayList.get(i - 1).getEndTimeString());
 
-                        String lastStartTimeHourString = standardClassLinkedList.get(i - 1).getEndTimeString().substring(0, 2);
+                        String lastStartTimeHourString = standardClassArrayList.get(i - 1).getEndTimeString().substring(0, 2);
 
                         if ((Integer.parseInt(lastStartTimeHourString) + 1) > 23) {
 
@@ -301,7 +300,7 @@ public class EditDay extends AppCompatActivity {
 
                             int lastStartTimeHourInteger = Integer.parseInt(lastStartTimeHourString) + 1;
                             String finalLastStartTimeHourString = (lastStartTimeHourInteger < 10) ? ("0" + String.valueOf(lastStartTimeHourInteger)) : String.valueOf(lastStartTimeHourInteger);
-                            endTimeStringForPosition.add(finalLastStartTimeHourString + standardClassLinkedList.get(i - 1).getEndTimeString().substring(2));
+                            endTimeStringForPosition.add(finalLastStartTimeHourString + standardClassArrayList.get(i - 1).getEndTimeString().substring(2));
 
                         }
 
@@ -309,23 +308,23 @@ public class EditDay extends AppCompatActivity {
 
                     i++;
 
-                } else if (i > 1 && !standardClassLinkedList.get(i).getStartTimeString().equals(standardClassLinkedList.get(i - 1).getEndTimeString())) {
+                } else if (i > 1 && !standardClassArrayList.get(i).getStartTimeString().equals(standardClassArrayList.get(i - 1).getEndTimeString())) {
 
-                    startTimeStringForPosition.add(i, standardClassLinkedList.get(i).getStartTimeString());
-                    endTimeStringForPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
+                    startTimeStringForPosition.add(i, standardClassArrayList.get(i).getStartTimeString());
+                    endTimeStringForPosition.add(i, standardClassArrayList.get(i).getEndTimeString());
 
-                    standardClassLinkedList.add(i, null);
+                    standardClassArrayList.add(i, null);
                     noClassIndexList.add(i);
 
-                    startTimeStringForPosition.add(i, standardClassLinkedList.get(i - 1).getEndTimeString());
-                    endTimeStringForPosition.add(i, standardClassLinkedList.get(i + 1).getStartTimeString());
+                    startTimeStringForPosition.add(i, standardClassArrayList.get(i - 1).getEndTimeString());
+                    endTimeStringForPosition.add(i, standardClassArrayList.get(i + 1).getStartTimeString());
 
                     i++;
 
                 } else {
 
-                    startTimeStringForPosition.add(i, standardClassLinkedList.get(i).getStartTimeString());
-                    endTimeStringForPosition.add(i, standardClassLinkedList.get(i).getEndTimeString());
+                    startTimeStringForPosition.add(i, standardClassArrayList.get(i).getStartTimeString());
+                    endTimeStringForPosition.add(i, standardClassArrayList.get(i).getEndTimeString());
 
                 }
 
@@ -333,8 +332,8 @@ public class EditDay extends AppCompatActivity {
 
         } else {
 
-            standardClassLinkedList = new LinkedList<>();
-            standardClassLinkedList.add(null);
+            standardClassArrayList = new ArrayList<>();
+            standardClassArrayList.add(null);
 
             noClassIndexList.add(0);
             startTimeStringForPosition.add("08:00");
@@ -344,7 +343,7 @@ public class EditDay extends AppCompatActivity {
 
         if (listAdapter == null) {
 
-            listAdapter = new EditDayList(this, standardClassLinkedList);
+            listAdapter = new EditDayList(this, standardClassArrayList);
             listView.setAdapter(listAdapter);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -357,7 +356,7 @@ public class EditDay extends AppCompatActivity {
                         final String startTimeRestriction;
                         final String endTimeRestriction;
 
-                        if (standardClassLinkedList.size() == 1) {
+                        if (standardClassArrayList.size() == 1) {
 
                             startTimeRestriction = "";
                             endTimeRestriction = "";
@@ -367,7 +366,7 @@ public class EditDay extends AppCompatActivity {
                             startTimeRestriction = "";
                             endTimeRestriction = endTimeStringForPosition.get(position);
 
-                        } else if ((position + 1) == standardClassLinkedList.size()) {
+                        } else if ((position + 1) == standardClassArrayList.size()) {
 
                             startTimeRestriction = startTimeStringForPosition.get(position);
                             endTimeRestriction = "";
@@ -385,7 +384,7 @@ public class EditDay extends AppCompatActivity {
 
                         final Spinner classNameSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
 
-                        ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.allClassNamesList);
+                        ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.allClassNamesArrayList);
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);
@@ -636,11 +635,11 @@ public class EditDay extends AppCompatActivity {
                                 final String classEndTime = classEndTimeTextView.getText().toString().replace(":", "");
 
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
-                                LinkedList<StandardClass> currentClasses;
+                                ArrayList<StandardClass> currentClasses;
 
-                                if (getClassesLinkedListOfDay(day) != null) {
+                                if (getClassesArrayListOfDay(day) != null) {
 
-                                    currentClasses = getClassesLinkedListOfDay(day);
+                                    currentClasses = getClassesArrayListOfDay(day);
 
                                     boolean inserted = false;
                                     int index = 0;
@@ -680,14 +679,14 @@ public class EditDay extends AppCompatActivity {
 
                                     databaseHelper.insertClassIntoDay(new String[]{className, classStartTime.replace(":", ""), classEndTime.replace(":", "")}, day);
 
-                                    currentClasses = new LinkedList<>();
+                                    currentClasses = new ArrayList<>();
                                     currentClasses.add(new StandardClass(EditDay.this, className, classStartTime, classEndTime));
 
                                 }
 
                                 databaseHelper.close();
 
-                                setClassesLinkedListOfDay(day, currentClasses);
+                                setClassesArrayListOfDay(day, currentClasses);
 
                                 addDialog.dismiss();
 
@@ -710,7 +709,7 @@ public class EditDay extends AppCompatActivity {
                         final String startTimeRestriction;
                         final String endTimeRestriction;
 
-                        if (standardClassLinkedList.size() == 1) {
+                        if (standardClassArrayList.size() == 1) {
 
                             startTimeRestriction = "";
                             endTimeRestriction = "";
@@ -721,7 +720,7 @@ public class EditDay extends AppCompatActivity {
 
                             if (noClassIndexList.contains(position + 1)) {
 
-                                if ((position + 1) == standardClassLinkedList.size()) {
+                                if ((position + 1) == standardClassArrayList.size()) {
 
                                     endTimeRestriction = "";
 
@@ -743,7 +742,7 @@ public class EditDay extends AppCompatActivity {
 
                             if (noClassIndexList.contains(position + 1)) {
 
-                                if (position + 1 == standardClassLinkedList.size()) {
+                                if (position + 1 == standardClassArrayList.size()) {
 
                                     endTimeRestriction = "";
 
@@ -759,7 +758,7 @@ public class EditDay extends AppCompatActivity {
 
                             }
 
-                        } else if ((position + 1) == standardClassLinkedList.size()) {
+                        } else if ((position + 1) == standardClassArrayList.size()) {
 
                             if (noClassIndexList.contains(position - 1)) {
 
@@ -781,7 +780,7 @@ public class EditDay extends AppCompatActivity {
 
                             endTimeRestriction = "";
 
-                        } else if ((position + 2) == standardClassLinkedList.size() && noClassIndexList.contains(position + 1)) {
+                        } else if ((position + 2) == standardClassArrayList.size() && noClassIndexList.contains(position + 1)) {
 
                             if (noClassIndexList.contains(position - 1)) {
 
@@ -823,7 +822,7 @@ public class EditDay extends AppCompatActivity {
                         final TextView titleTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_text);
                         final String selectedClassName = titleTextView.getText().toString();
 
-                        final List<String> classNameList = DataStore.allClassNamesList;
+                        final List<String> classNameList = DataStore.allClassNamesArrayList;
                         classNameList.remove(selectedClassName);
                         classNameList.add(0, selectedClassName);
 
@@ -853,20 +852,20 @@ public class EditDay extends AppCompatActivity {
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
                                 databaseHelper.removeClassOutOfDay(day, selectedClassName, selectedClassStartTime);
 
-                                final LinkedList<StandardClass> classesLinkedList = new LinkedList<>();
+                                final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
 
                                 Cursor cursor = databaseHelper.getClasses(day);
 
                                 while (cursor.moveToNext()) {
 
-                                    classesLinkedList.add(new StandardClass(EditDay.this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+                                    classesArrayList.add(new StandardClass(EditDay.this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
 
                                 }
 
-                                if (!classesLinkedList.isEmpty())
-                                    setClassesLinkedListOfDay(day, classesLinkedList);
+                                if (!classesArrayList.isEmpty())
+                                    setClassesArrayListOfDay(day, classesArrayList);
                                 else
-                                    setClassesLinkedListOfDay(day, null);
+                                    setClassesArrayListOfDay(day, null);
 
                                 databaseHelper.close();
 
@@ -1118,7 +1117,7 @@ public class EditDay extends AppCompatActivity {
                                 final String classEndTime = classEndTimeTextView.getText().toString().replace(":", "");
 
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
-                                LinkedList<StandardClass> currentClasses = getClassesLinkedListOfDay(day);
+                                ArrayList<StandardClass> currentClasses = getClassesArrayListOfDay(day);
 
                                 boolean inserted = false;
                                 int index = 0;
@@ -1146,7 +1145,7 @@ public class EditDay extends AppCompatActivity {
                                     } else if ((currentClasses.size() - index) == 1) {
 
                                         inserted = true;
-                                        currentClasses.removeLast();
+                                        currentClasses.remove(currentClasses.size() - 1);
                                         currentClasses.add(new StandardClass(EditDay.this, className, classStartTime, classEndTime));
 
                                     }
@@ -1165,7 +1164,7 @@ public class EditDay extends AppCompatActivity {
 
                                 databaseHelper.close();
 
-                                setClassesLinkedListOfDay(day, currentClasses);
+                                setClassesArrayListOfDay(day, currentClasses);
 
                                 editDialog.dismiss();
 
@@ -1191,7 +1190,7 @@ public class EditDay extends AppCompatActivity {
 
         } else {
 
-            listAdapter.setClassesLinkedList((LinkedList<StandardClass>) standardClassLinkedList.clone());
+            listAdapter.setClassesArrayList((ArrayList<StandardClass>) standardClassArrayList.clone());
 
         }
 

@@ -6,10 +6,10 @@ import com.ghofrani.classapp.modules.DatabaseHelper;
 
 public class SlimClass {
 
-    private String name;
-    private String location;
-    private String teacher;
-    private int color;
+    private final String name;
+    private final String location;
+    private final String teacher;
+    private final int color;
 
     public SlimClass(Context context, String name, String location, String teacher) {
 

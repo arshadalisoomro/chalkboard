@@ -52,7 +52,7 @@ public class Classes extends Fragment {
 
     private void updateUI() {
 
-        if (!DataStore.allClassesLinkedList.isEmpty()) {
+        if (!DataStore.allClassesArrayList.isEmpty()) {
 
             noClassesCardView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -63,7 +63,7 @@ public class Classes extends Fragment {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
 
-            AllClassesList allClassesListAdapter = new AllClassesList(DataStore.allClassesLinkedList, getContext());
+            AllClassesList allClassesListAdapter = new AllClassesList(DataStore.allClassesArrayList, getContext());
             recyclerView.setAdapter(allClassesListAdapter);
 
         } else {

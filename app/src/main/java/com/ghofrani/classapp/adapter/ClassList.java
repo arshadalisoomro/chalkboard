@@ -10,26 +10,26 @@ import android.widget.TextView;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.StandardClass;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class ClassList extends BaseExpandableListAdapter {
 
-    private final LinkedList<StandardClass> classesLinkedList;
+    private final ArrayList<StandardClass> classesArrayList;
     private final String groupTitle;
     private final LayoutInflater layoutInflater;
 
-    public ClassList(Context context, LinkedList<StandardClass> classesLinkedList, String groupTitle) {
+    public ClassList(Context context, ArrayList<StandardClass> classesArrayList, String groupTitle) {
 
-        this.classesLinkedList = classesLinkedList;
+        this.classesArrayList = classesArrayList;
         this.groupTitle = groupTitle;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
-    public void updateLinkedList(LinkedList<StandardClass> update) {
+    public void updateLinkedList(ArrayList<StandardClass> update) {
 
-        classesLinkedList.clear();
-        classesLinkedList.addAll(update);
+        classesArrayList.clear();
+        classesArrayList.addAll(update);
 
         notifyDataSetChanged();
 
@@ -42,17 +42,17 @@ public class ClassList extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return classesLinkedList.size();
+        return classesArrayList.size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return classesLinkedList.get(groupPosition);
+        return classesArrayList.get(groupPosition);
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return classesLinkedList.get(childPosition);
+        return classesArrayList.get(childPosition);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ClassList extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_list_child, parent, false);
 
-        final StandardClass standardClass = classesLinkedList.get(childPosition);
+        final StandardClass standardClass = classesArrayList.get(childPosition);
 
         final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
         listChildTitleTextView.setText(standardClass.getName());

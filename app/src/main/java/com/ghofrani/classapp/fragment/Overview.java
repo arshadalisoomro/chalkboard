@@ -28,7 +28,7 @@ import com.ghofrani.classapp.adapter.ClassList;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class Overview extends Fragment {
 
@@ -57,7 +57,7 @@ public class Overview extends Fragment {
         }
 
     };
-    private LinkedList<StandardClass> nextClassesLinkedList;
+    private ArrayList<StandardClass> nextClassesArrayList;
     private ExpandableListView expandableListViewTomorrowClasses;
     private final BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
 
@@ -101,7 +101,7 @@ public class Overview extends Fragment {
         }
 
     };
-    private LinkedList<StandardClass> tomorrowClassesLinkedList;
+    private ArrayList<StandardClass> tomorrowClassesArrayList;
     private BroadcastReceiver updateUIBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -210,10 +210,10 @@ public class Overview extends Fragment {
         updateProgressBarBroadcastReceiver = null;
         updateUIBroadcastReceiver = null;
         expandableListViewNextClasses = null;
-        nextClassesLinkedList = null;
+        nextClassesArrayList = null;
         classListAdapterNext = null;
         expandableListViewTomorrowClasses = null;
-        tomorrowClassesLinkedList = null;
+        tomorrowClassesArrayList = null;
         classListAdapterTomorrow = null;
         progressBar = null;
         progressTextView = null;
@@ -245,7 +245,7 @@ public class Overview extends Fragment {
 
         if (DataStore.isNextClasses) {
 
-            nextClassesLinkedList = DataStore.nextClassesLinkedList;
+            nextClassesArrayList = DataStore.nextClassesArrayList;
 
             configureExpandableListViewNextClasses();
 
@@ -257,7 +257,7 @@ public class Overview extends Fragment {
 
         if (DataStore.isTomorrowClasses && PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
 
-            tomorrowClassesLinkedList = DataStore.tomorrowClassesLinkedList;
+            tomorrowClassesArrayList = DataStore.tomorrowClassesArrayList;
 
             configureExpandableListViewTomorrowClasses();
 
@@ -489,12 +489,12 @@ public class Overview extends Fragment {
 
         if (classListAdapterNext == null) {
 
-            classListAdapterNext = new ClassList(getContext(), nextClassesLinkedList, "Next classes");
+            classListAdapterNext = new ClassList(getContext(), nextClassesArrayList, "Next classes");
             expandableListViewNextClasses.setAdapter(classListAdapterNext);
 
         } else {
 
-            classListAdapterNext.updateLinkedList((LinkedList<StandardClass>) nextClassesLinkedList.clone());
+            classListAdapterNext.updateLinkedList((ArrayList<StandardClass>) nextClassesArrayList.clone());
 
         }
 
@@ -559,12 +559,12 @@ public class Overview extends Fragment {
 
         if (classListAdapterTomorrow == null) {
 
-            classListAdapterTomorrow = new ClassList(getContext(), tomorrowClassesLinkedList, "Tomorrow's classes");
+            classListAdapterTomorrow = new ClassList(getContext(), tomorrowClassesArrayList, "Tomorrow's classes");
             expandableListViewTomorrowClasses.setAdapter(classListAdapterTomorrow);
 
         } else {
 
-            classListAdapterTomorrow.updateLinkedList((LinkedList<StandardClass>) tomorrowClassesLinkedList.clone());
+            classListAdapterTomorrow.updateLinkedList((ArrayList<StandardClass>) tomorrowClassesArrayList.clone());
 
         }
 
@@ -784,7 +784,7 @@ public class Overview extends Fragment {
 
         } else {
 
-            if (!expandableListViewNextClasses.isGroupExpanded(0))
+            if (!expandableListViewTomorrowClasses.isGroupExpanded(0))
                 listViewLayoutParams.height = totalHeight + (expandableListViewTomorrowClasses.getDividerHeight() * (listAdapter.getCount() - 1));
             else
                 listViewLayoutParams.height = totalHeight + getPixelFromDP(8) + (expandableListViewTomorrowClasses.getDividerHeight() * (listAdapter.getCount() - 1));

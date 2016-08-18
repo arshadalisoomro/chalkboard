@@ -10,24 +10,24 @@ import android.widget.TextView;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.StandardClass;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class TimetableList extends BaseAdapter {
 
     private final LayoutInflater layoutInflater;
-    private final LinkedList<StandardClass> classesLinkedList;
+    private final ArrayList<StandardClass> classesArrayList;
 
-    public TimetableList(Context context, LinkedList<StandardClass> classesLinkedList) {
+    public TimetableList(Context context, ArrayList<StandardClass> classesArrayList) {
 
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.classesLinkedList = classesLinkedList;
+        this.classesArrayList = classesArrayList;
 
     }
 
-    public void setClassesLinkedList(LinkedList<StandardClass> update) {
+    public void setClassesArrayList(ArrayList<StandardClass> update) {
 
-        classesLinkedList.clear();
-        classesLinkedList.addAll(update);
+        classesArrayList.clear();
+        classesArrayList.addAll(update);
 
         notifyDataSetChanged();
 
@@ -35,12 +35,12 @@ public class TimetableList extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return classesLinkedList.size();
+        return classesArrayList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return classesLinkedList.get(position);
+        return classesArrayList.get(position);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TimetableList extends BaseAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_list_child, null);
 
-        final StandardClass standardClass = classesLinkedList.get(position);
+        final StandardClass standardClass = classesArrayList.get(position);
 
         final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
         listChildTitleTextView.setText(standardClass.getName());
