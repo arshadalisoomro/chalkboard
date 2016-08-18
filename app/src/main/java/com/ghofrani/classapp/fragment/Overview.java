@@ -33,6 +33,7 @@ import java.util.ArrayList;
 public class Overview extends Fragment {
 
     private ClassList classListAdapterTomorrow;
+    private boolean firstStart = true;
     private ClassList classListAdapterNext;
     private ExpandableListView expandableListViewNextClasses;
     private ProgressBar progressBar;
@@ -199,6 +200,8 @@ public class Overview extends Fragment {
             }
 
         }
+
+        firstStart = false;
 
     }
 
@@ -498,7 +501,25 @@ public class Overview extends Fragment {
 
         }
 
-        setListViewHeightBasedOnChildrenNext(false, false);
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_next_classes", true) && firstStart) {
+
+            expandableListViewNextClasses.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    expandableListViewNextClasses.expandGroup(0);
+                    setListViewHeightBasedOnChildrenNext(true, true);
+
+                }
+
+            }, 100);
+
+        } else {
+
+            setListViewHeightBasedOnChildrenNext(false, false);
+
+        }
 
     }
 
@@ -568,7 +589,25 @@ public class Overview extends Fragment {
 
         }
 
-        setListViewHeightBasedOnChildrenTomorrow(false, false);
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_tomorrow_classes", false) && firstStart) {
+
+            expandableListViewTomorrowClasses.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    expandableListViewTomorrowClasses.expandGroup(0);
+                    setListViewHeightBasedOnChildrenTomorrow(true, true);
+
+                }
+
+            }, 100);
+
+        } else {
+
+            setListViewHeightBasedOnChildrenTomorrow(false, false);
+
+        }
 
     }
 

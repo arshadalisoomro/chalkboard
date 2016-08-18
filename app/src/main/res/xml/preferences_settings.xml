@@ -11,9 +11,24 @@
         <CheckBoxPreference
 
             android:defaultValue="true"
+            android:key="expand_next_classes"
+            android:summary="This will expand next classes immediately"
+            android:title="Expand next classes" />
+
+        <CheckBoxPreference
+
+            android:defaultValue="true"
             android:key="tomorrow_classes"
             android:summary="This will show tomorrow's classes on the overview screen"
             android:title="Show tomorrow's classes" />
+
+        <CheckBoxPreference
+
+            android:defaultValue="false"
+            android:dependency="tomorrow_classes"
+            android:key="expand_tomorrow_classes"
+            android:summary="This will expand tomorrow's classes immediately"
+            android:title="Expand tomorrow's classes" />
 
     </PreferenceCategory>
 
