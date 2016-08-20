@@ -243,10 +243,6 @@ public class Background extends Service {
 
                         break;
 
-                    default:
-
-                        break;
-
                 }
 
             }

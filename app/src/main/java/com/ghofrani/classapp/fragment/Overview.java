@@ -230,7 +230,7 @@ public class Overview extends Fragment {
             currentClassTitleTextView.setText(currentClass.getName());
 
             TextView currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_location_teacher);
-            String locationTeacher = currentClass.getTeacher() + ", " + currentClass.getLocation();
+            String locationTeacher = currentClass.getTeacher() + " • " + currentClass.getLocation();
             currentClassLocationTeacherTextView.setText(locationTeacher);
 
             TextView currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
@@ -428,11 +428,11 @@ public class Overview extends Fragment {
 
                     if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
 
-                        noClassesText.setText("No more classes today or tomorrow.");
+                        noClassesText.setText("No further classes today or tomorrow.");
 
                     } else {
 
-                        noClassesText.setText("No more classes today.");
+                        noClassesText.setText("No further classes today.");
 
                     }
 
