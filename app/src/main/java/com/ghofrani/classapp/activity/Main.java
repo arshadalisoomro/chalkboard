@@ -56,6 +56,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     private int currentView = 0;
     private boolean operateOnDrawerClosed;
     private int drawerViewToSwitchTo;
+    private boolean floatingActionButtonContrast = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,36 +96,39 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         int colorAccent = PreferenceManager.getDefaultSharedPreferences(this).getInt("accent_color", ContextCompat.getColor(this, R.color.deep_orange_accent));
 
-        if (colorAccent == ContextCompat.getColor(this, R.color.red_accent))
+        if (colorAccent == ContextCompat.getColor(this, R.color.red_accent)) {
             getTheme().applyStyle(R.style.accent_red, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.pink_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.pink_accent)) {
             getTheme().applyStyle(R.style.accent_pink, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.purple_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.purple_accent)) {
             getTheme().applyStyle(R.style.accent_purple, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.deep_purple_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.deep_purple_accent)) {
             getTheme().applyStyle(R.style.accent_deep_purple, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.indigo_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.indigo_accent)) {
             getTheme().applyStyle(R.style.accent_indigo, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.blue_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.blue_accent)) {
             getTheme().applyStyle(R.style.accent_blue, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.light_blue_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.light_blue_accent)) {
             getTheme().applyStyle(R.style.accent_light_blue, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.cyan_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.cyan_accent)) {
             getTheme().applyStyle(R.style.accent_cyan, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.teal_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.teal_accent)) {
             getTheme().applyStyle(R.style.accent_teal, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.green_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.green_accent)) {
             getTheme().applyStyle(R.style.accent_green, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.lime_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.lime_accent)) {
             getTheme().applyStyle(R.style.accent_lime, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.yellow_accent))
+            floatingActionButtonContrast = true;
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.yellow_accent)) {
             getTheme().applyStyle(R.style.accent_yellow, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.amber_accent))
+            floatingActionButtonContrast = true;
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.amber_accent)) {
             getTheme().applyStyle(R.style.accent_amber, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.orange_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.orange_accent)) {
             getTheme().applyStyle(R.style.accent_orange, true);
-        else if (colorAccent == ContextCompat.getColor(this, R.color.deep_orange_accent))
+        } else if (colorAccent == ContextCompat.getColor(this, R.color.deep_orange_accent)) {
             getTheme().applyStyle(R.style.accent_deep_orange, true);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -195,7 +199,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             case R.id.timetable:
 
                                 floatingActionButton.setVisibility(View.VISIBLE);
-                                floatingActionButton.setImageResource(R.drawable.edit);
+
+                                if (floatingActionButtonContrast)
+                                    floatingActionButton.setImageResource(R.drawable.edit_black);
+                                else
+                                    floatingActionButton.setImageResource(R.drawable.edit_white);
 
                                 toolbar.setTitle("Timetable");
 
@@ -211,7 +219,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             case R.id.classes:
 
                                 floatingActionButton.setVisibility(View.VISIBLE);
-                                floatingActionButton.setImageResource(R.drawable.add);
+
+                                if (floatingActionButtonContrast)
+                                    floatingActionButton.setImageResource(R.drawable.add_black);
+                                else
+                                    floatingActionButton.setImageResource(R.drawable.add_white);
 
                                 toolbar.setTitle("Classes");
 
@@ -230,7 +242,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             case R.id.homework:
 
                                 floatingActionButton.setVisibility(View.VISIBLE);
-                                floatingActionButton.setImageResource(R.drawable.add);
+
+                                if (floatingActionButtonContrast)
+                                    floatingActionButton.setImageResource(R.drawable.add_black);
+                                else
+                                    floatingActionButton.setImageResource(R.drawable.add_white);
 
                                 toolbar.setTitle("Homework");
 
@@ -606,7 +622,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             case 1:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
-                floatingActionButton.setImageResource(R.drawable.edit);
+
+                if (floatingActionButtonContrast)
+                    floatingActionButton.setImageResource(R.drawable.edit_black);
+                else
+                    floatingActionButton.setImageResource(R.drawable.edit_white);
 
                 toolbar.setTitle("Timetable");
 
@@ -763,7 +783,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             case 2:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
-                floatingActionButton.setImageResource(R.drawable.add);
+
+                if (floatingActionButtonContrast)
+                    floatingActionButton.setImageResource(R.drawable.add_black);
+                else
+                    floatingActionButton.setImageResource(R.drawable.add_white);
 
                 toolbar.setTitle("Classes");
 
@@ -785,7 +809,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             case 3:
 
                 floatingActionButton.setVisibility(View.VISIBLE);
-                floatingActionButton.setImageResource(R.drawable.add);
+
+                if (floatingActionButtonContrast)
+                    floatingActionButton.setImageResource(R.drawable.add_black);
+                else
+                    floatingActionButton.setImageResource(R.drawable.add_white);
 
                 toolbar.setTitle("Homework");
 

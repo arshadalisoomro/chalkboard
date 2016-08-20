@@ -61,6 +61,7 @@ public class Background extends Service {
     private int textId;
     private Handler handler;
     private Runnable notificationRunnable;
+    private Runnable noNotificationRunnable;
     private NotificationCompat.Builder notificationCompatBuilder;
     private NotificationManager notificationManager;
     private RemoteViews remoteViews;
@@ -85,6 +86,7 @@ public class Background extends Service {
     private int blueGrey;
 
     private StandardClass currentClass;
+    private DatabaseHelper databaseHelper;
 
     private boolean currentToNextTransition = false;
     private boolean nextToCurrentTransition = false;
@@ -193,6 +195,8 @@ public class Background extends Service {
 
         }
 
+        databaseHelper.close();
+
         notificationManager.cancelAll();
 
         updateData = null;
@@ -200,10 +204,12 @@ public class Background extends Service {
         backgroundIntentFilter = null;
         backgroundBroadcastReceiver = null;
         notificationRunnable = null;
+        noNotificationRunnable = null;
         notificationCompatBuilder = null;
         notificationManager = null;
         remoteViews = null;
         currentClass = null;
+        databaseHelper = null;
 
     }
 
@@ -268,7 +274,8 @@ public class Background extends Service {
         if (sharedPreferences == null)
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        if (databaseHelper == null)
+            databaseHelper = new DatabaseHelper(this);
 
         Cursor todayCursor = databaseHelper.getClasses(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
@@ -656,48 +663,52 @@ public class Background extends Service {
 
                 notificationManager.cancelAll();
 
-                Runnable noNotificationRunnable = new Runnable() {
+                if (noNotificationRunnable == null) {
 
-                    @Override
-                    public void run() {
+                    noNotificationRunnable = new Runnable() {
 
-                        final DateTime currentTime = new DateTime();
+                        @Override
+                        public void run() {
 
-                        final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
-                        final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+                            final DateTime currentTime = new DateTime();
 
-                        final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
+                            final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
 
-                        String progressBarText = "";
-                        int progressBarProgress = 0;
+                            final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
 
-                        if (percentageValueInt >= 0 && percentageValueInt <= 100) {
+                            String progressBarText = "";
+                            int progressBarProgress = 0;
 
-                            progressBarText = String.valueOf(percentageValueInt) + "%";
-                            progressBarProgress = percentageValueInt;
+                            if (percentageValueInt >= 0 && percentageValueInt <= 100) {
 
-                        } else if (percentageValueInt < 0) {
+                                progressBarText = String.valueOf(percentageValueInt) + "%";
+                                progressBarProgress = percentageValueInt;
 
-                            progressBarText = "0%";
-                            progressBarProgress = 0;
+                            } else if (percentageValueInt < 0) {
 
-                        } else if (percentageValueInt > 100) {
+                                progressBarText = "0%";
+                                progressBarProgress = 0;
 
-                            progressBarText = "100%";
-                            progressBarProgress = 100;
+                            } else if (percentageValueInt > 100) {
+
+                                progressBarText = "100%";
+                                progressBarProgress = 100;
+
+                            }
+
+                            DataStore.progressBarText = progressBarText;
+                            DataStore.progressBarProgress = progressBarProgress;
+
+                            LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
+
+                            handler.postDelayed(this, 15000);
 
                         }
 
-                        DataStore.progressBarText = progressBarText;
-                        DataStore.progressBarProgress = progressBarProgress;
+                    };
 
-                        LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
-
-                        handler.postDelayed(this, 15000);
-
-                    }
-
-                };
+                }
 
                 handler = new Handler();
 
@@ -796,8 +807,6 @@ public class Background extends Service {
 
         }
 
-        databaseHelper.close();
-
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_UI"));
 
     }
@@ -876,13 +885,13 @@ public class Background extends Service {
 
         }
 
-        databaseHelper.close();
-
     }
 
     private void getClasses() {
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        if (databaseHelper == null)
+            databaseHelper = new DatabaseHelper(this);
+
         Cursor cursor = databaseHelper.getClasses();
 
         final ArrayList<SlimClass> slimClassArrayList = new ArrayList<>();
@@ -899,8 +908,6 @@ public class Background extends Service {
 
         DataStore.allClassesArrayList = slimClassArrayList;
         DataStore.allClassNamesArrayList = classNamesArrayList;
-
-        databaseHelper.close();
 
     }
 

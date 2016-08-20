@@ -5,6 +5,13 @@
     <style name="app_theme" parent="Theme.AppCompat.Light.NoActionBar">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:dialogTheme">@style/dialog_theme</item>
+
+    </style>
+
+    <style name="dialog_theme" parent="@style/Theme.AppCompat.Light.Dialog">
+
+        <item name="android:windowNoTitle">false</item>
 
     </style>
 
