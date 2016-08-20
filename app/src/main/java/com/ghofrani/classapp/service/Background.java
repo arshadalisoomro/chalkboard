@@ -358,13 +358,28 @@ public class Background extends Service {
 
                     if (sharedPreferences.getBoolean("flip_colors", false)) {
 
-                        remoteViews.setInt(R.id.view_notification_button, "setColorFilter", Color.WHITE);
                         remoteViews.setInt(R.id.view_notification_layout, "setBackgroundColor", currentClass.getColor());
 
-                        progressBarId = R.id.view_notification_progress_bar_white;
-                        textId = R.id.view_notification_text_white;
-                        progressTextId = R.id.view_notification_progress_text_white;
-                        headerId = R.id.view_notification_header_white;
+                        if (currentClass.getColor() == lime || currentClass.getColor() == yellow || currentClass.getColor() == amber) {
+
+                            remoteViews.setInt(R.id.view_notification_button, "setColorFilter", Color.BLACK);
+
+                            progressBarId = R.id.view_notification_progress_bar_black_contrast;
+                            textId = R.id.view_notification_text_black;
+                            progressTextId = R.id.view_notification_progress_text;
+                            headerId = R.id.view_notification_header_black;
+
+                        } else {
+
+                            remoteViews.setInt(R.id.view_notification_button, "setColorFilter", Color.WHITE);
+
+                            progressBarId = R.id.view_notification_progress_bar_white;
+                            textId = R.id.view_notification_text_white;
+                            progressTextId = R.id.view_notification_progress_text_white;
+                            headerId = R.id.view_notification_header_white;
+
+                        }
+
 
                     } else {
 
