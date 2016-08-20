@@ -29,18 +29,6 @@
 
         <ProgressBar
 
-            android:id="@+id/view_notification_progress_bar_pink"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:background="@drawable/circular_progress_bar_background"
-            android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar_pink"
-            android:visibility="gone" />
-
-        <ProgressBar
-
             android:id="@+id/view_notification_progress_bar_red"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
@@ -53,38 +41,50 @@
 
         <ProgressBar
 
-            android:id="@+id/view_notification_progress_bar_orange"
+            android:id="@+id/view_notification_progress_bar_pink"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@drawable/circular_progress_bar_background"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar_orange"
+            android:progressDrawable="@drawable/circular_progress_bar_pink"
             android:visibility="gone" />
 
         <ProgressBar
 
-            android:id="@+id/view_notification_progress_bar_yellow"
+            android:id="@+id/view_notification_progress_bar_purple"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@drawable/circular_progress_bar_background"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar_yellow"
+            android:progressDrawable="@drawable/circular_progress_bar_purple"
             android:visibility="gone" />
 
         <ProgressBar
 
-            android:id="@+id/view_notification_progress_bar_green"
+            android:id="@+id/view_notification_progress_bar_deep_purple"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@drawable/circular_progress_bar_background"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar_green"
+            android:progressDrawable="@drawable/circular_progress_bar_deep_purple"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_indigo"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_indigo"
             android:visibility="gone" />
 
         <ProgressBar
@@ -101,38 +101,122 @@
 
         <ProgressBar
 
-            android:id="@+id/view_notification_progress_bar_violet"
+            android:id="@+id/view_notification_progress_bar_light_blue"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@drawable/circular_progress_bar_background"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar_violet"
+            android:progressDrawable="@drawable/circular_progress_bar_light_blue"
             android:visibility="gone" />
 
         <ProgressBar
 
-            android:id="@+id/view_notification_progress_bar_magenta"
+            android:id="@+id/view_notification_progress_bar_cyan"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@drawable/circular_progress_bar_background"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar_magenta"
+            android:progressDrawable="@drawable/circular_progress_bar_cyan"
             android:visibility="gone" />
 
         <ProgressBar
 
-            android:id="@+id/view_notification_progress_bar_grey"
+            android:id="@+id/view_notification_progress_bar_teal"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@drawable/circular_progress_bar_background"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar_grey"
+            android:progressDrawable="@drawable/circular_progress_bar_teal"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_green"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_green"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_light_green"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_light_green"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_lime"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_lime"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_yellow"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_yellow"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_amber"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_amber"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_orange"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_orange"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_deep_orange"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_deep_orange"
             android:visibility="gone" />
 
         <ProgressBar
@@ -145,6 +229,18 @@
             android:background="@drawable/circular_progress_bar_background"
             android:indeterminate="false"
             android:progressDrawable="@drawable/circular_progress_bar_black"
+            android:visibility="gone" />
+
+        <ProgressBar
+
+            android:id="@+id/view_notification_progress_bar_blue_grey"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circular_progress_bar_background"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar_blue_grey"
             android:visibility="gone" />
 
         <TextView
@@ -238,7 +334,6 @@
         android:layout_marginRight="8dp"
         android:background="#00000000"
         android:clickable="true"
-        android:src="@drawable/homework"
-        android:tint="@color/primary" />
+        android:src="@drawable/homework" />
 
 </RelativeLayout>

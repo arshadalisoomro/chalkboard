@@ -95,7 +95,7 @@ public class ClassList extends BaseExpandableListAdapter {
         listChildTitleTextView.setText(standardClass.getName());
 
         final TextView listChildSubtitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
-        listChildSubtitleTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
+        listChildSubtitleTextView.setText(standardClass.getStartTimeString(true) + " - " + standardClass.getEndTimeString(true));
 
         final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
         listChildLocationTextView.setText(standardClass.getLocation());

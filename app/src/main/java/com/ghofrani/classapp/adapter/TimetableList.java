@@ -60,7 +60,7 @@ public class TimetableList extends BaseAdapter {
         listChildTitleTextView.setText(standardClass.getName());
 
         final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
-        listChildTimeTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
+        listChildTimeTextView.setText(standardClass.getStartTimeString(true) + " - " + standardClass.getEndTimeString(true));
 
         final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
         listChildLocationTextView.setText(standardClass.getLocation());

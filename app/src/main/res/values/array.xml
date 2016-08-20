@@ -24,19 +24,67 @@
 
     </string-array>
 
+    <array name="primary_colors">
+
+        <item>@color/red</item>
+        <item>@color/pink</item>
+        <item>@color/purple</item>
+        <item>@color/deep_purple</item>
+        <item>@color/indigo</item>
+        <item>@color/blue</item>
+        <item>@color/light_blue</item>
+        <item>@color/cyan</item>
+        <item>@color/teal</item>
+        <item>@color/green</item>
+        <item>@color/light_green</item>
+        <item>@color/lime</item>
+        <item>@color/orange</item>
+        <item>@color/deep_orange</item>
+        <item>@color/blue_grey</item>
+
+    </array>
+
     <array name="add_class_colors">
 
-        <item>@color/pink</item>
         <item>@color/red</item>
-        <item>@color/orange</item>
-        <item>@color/yellow</item>
-        <item>@color/green</item>
+        <item>@color/pink</item>
+        <item>@color/purple</item>
+        <item>@color/deep_purple</item>
+        <item>@color/indigo</item>
         <item>@color/blue</item>
-        <item>@color/violet</item>
-        <item>@color/magenta</item>
-        <item>@color/grey</item>
+        <item>@color/light_blue</item>
+        <item>@color/cyan</item>
+        <item>@color/teal</item>
+        <item>@color/green</item>
+        <item>@color/light_green</item>
+        <item>@color/lime</item>
+        <item>@color/yellow</item>
+        <item>@color/amber</item>
+        <item>@color/orange</item>
+        <item>@color/deep_orange</item>
         <item>@color/black</item>
-        s
+        <item>@color/blue_grey</item>
+
+    </array>
+
+    <array name="accent_colors">
+
+        <item>@color/red_accent</item>
+        <item>@color/pink_accent</item>
+        <item>@color/purple_accent</item>
+        <item>@color/deep_purple_accent</item>
+        <item>@color/indigo_accent</item>
+        <item>@color/blue_accent</item>
+        <item>@color/light_blue_accent</item>
+        <item>@color/cyan_accent</item>
+        <item>@color/teal_accent</item>
+        <item>@color/green_accent</item>
+        <item>@color/lime_accent</item>
+        <item>@color/yellow_accent</item>
+        <item>@color/amber_accent</item>
+        <item>@color/orange_accent</item>
+        <item>@color/deep_orange_accent</item>
+
     </array>
 
 </resources>

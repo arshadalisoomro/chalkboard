@@ -87,7 +87,7 @@ public class EditDayList extends BaseAdapter {
 
             final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_time);
             listChildTimeTextView.setVisibility(View.VISIBLE);
-            listChildTimeTextView.setText(standardClass.getStartTimeString() + " - " + standardClass.getEndTimeString());
+            listChildTimeTextView.setText(standardClass.getStartTimeString(true) + " - " + standardClass.getEndTimeString(true));
 
             final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_location);
             listChildLocationTextView.setVisibility(View.VISIBLE);

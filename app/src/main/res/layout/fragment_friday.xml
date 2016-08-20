@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="No classes to show."
+                android:text="No classes on this day."
                 android:textSize="15sp"
                 android:visibility="gone" />
 

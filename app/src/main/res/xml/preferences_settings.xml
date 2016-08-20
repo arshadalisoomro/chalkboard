@@ -2,7 +2,41 @@
 
 <PreferenceScreen
 
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+
+        android:title="General">
+
+        <org.xdty.preference.ColorPreference
+
+            android:defaultValue="@color/teal"
+            android:key="primary_color"
+            android:summary="The primary theme color, defaults to teal"
+            android:title="Primary color"
+            tools:colors="@array/primary_colors"
+            tools:columns="5"
+            tools:dialogTitle="Choose a color" />
+
+        <org.xdty.preference.ColorPreference
+
+            android:defaultValue="@color/deep_orange_accent"
+            android:key="accent_color"
+            android:summary="The accent theme color, defaults to orange"
+            android:title="Accent color"
+            tools:colors="@array/accent_colors"
+            tools:columns="5"
+            tools:dialogTitle="Choose a color" />
+
+        <CheckBoxPreference
+
+            android:defaultValue="true"
+            android:key="24_hour_time"
+            android:summary="Uses 24-hour format instead of AM/PM format"
+            android:title="Use 24-hour format" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory
 
@@ -12,14 +46,14 @@
 
             android:defaultValue="true"
             android:key="expand_next_classes"
-            android:summary="This will expand next classes immediately"
+            android:summary="Expand next classes upon arrival on the home screen"
             android:title="Expand next classes" />
 
         <CheckBoxPreference
 
             android:defaultValue="true"
             android:key="tomorrow_classes"
-            android:summary="This will show tomorrow's classes on the overview screen"
+            android:summary="Show tomorrow's classes on the home screen"
             android:title="Show tomorrow's classes" />
 
         <CheckBoxPreference
@@ -27,7 +61,7 @@
             android:defaultValue="false"
             android:dependency="tomorrow_classes"
             android:key="expand_tomorrow_classes"
-            android:summary="This will expand tomorrow's classes immediately"
+            android:summary="Expand tomorrow's classes upon arrival on the home screen"
             android:title="Expand tomorrow's classes" />
 
     </PreferenceCategory>
@@ -39,8 +73,16 @@
         <CheckBoxPreference
 
             android:defaultValue="true"
+            android:key="class_notification"
+            android:summary="Show a notification throughout the current class"
+            android:title="Enable current class notification" />
+
+        <CheckBoxPreference
+
+            android:defaultValue="true"
+            android:dependency="class_notification"
             android:key="detailed_notification"
-            android:summary="This toggles between the detailed and simple notification"
+            android:summary="Shows a notification with percentage progress"
             android:title="Show detailed notification" />
 
         <CheckBoxPreference
@@ -48,7 +90,7 @@
             android:defaultValue="false"
             android:dependency="detailed_notification"
             android:key="flip_colors"
-            android:summary="This sets the class color as the notification background"
+            android:summary="Set the class color as the notification background"
             android:title="Flip notification colors" />
 
         <ListPreference

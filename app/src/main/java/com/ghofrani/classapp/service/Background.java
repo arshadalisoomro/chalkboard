@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -58,22 +59,31 @@ public class Background extends Service {
     private int progressTextId;
     private int headerId;
     private int textId;
-    private Handler notificationHandler;
+    private Handler handler;
     private Runnable notificationRunnable;
+    private Runnable noNotificationRunnable;
     private NotificationCompat.Builder notificationCompatBuilder;
     private NotificationManager notificationManager;
     private RemoteViews remoteViews;
 
-    private int pink;
     private int red;
-    private int orange;
-    private int yellow;
-    private int green;
+    private int pink;
+    private int purple;
+    private int deepPurple;
+    private int indigo;
     private int blue;
-    private int violet;
-    private int magenta;
-    private int grey;
+    private int lightBlue;
+    private int cyan;
+    private int teal;
+    private int green;
+    private int lightGreen;
+    private int lime;
+    private int yellow;
+    private int amber;
+    private int orange;
+    private int deepOrange;
     private int black;
+    private int blueGrey;
 
     private StandardClass currentClass;
 
@@ -133,21 +143,29 @@ public class Background extends Service {
         LocalBroadcastManager.getInstance(this).registerReceiver(updateClasses, new IntentFilter("update_classes"));
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        progressBarId = R.id.view_notification_progress_bar_pink;
+        progressBarId = R.id.view_notification_progress_bar_red;
         textId = R.id.view_notification_text;
         headerId = R.id.view_notification_header;
         progressTextId = R.id.view_notification_progress_text;
 
-        pink = getResources().getColor(R.color.pink);
-        red = getResources().getColor(R.color.red);
-        orange = getResources().getColor(R.color.orange);
-        yellow = getResources().getColor(R.color.yellow);
-        green = getResources().getColor(R.color.green);
-        blue = getResources().getColor(R.color.blue);
-        violet = getResources().getColor(R.color.violet);
-        magenta = getResources().getColor(R.color.magenta);
-        grey = getResources().getColor(R.color.grey);
-        black = getResources().getColor(R.color.black);
+        red = ContextCompat.getColor(this, R.color.red);
+        pink = ContextCompat.getColor(this, R.color.pink);
+        purple = ContextCompat.getColor(this, R.color.purple);
+        deepPurple = ContextCompat.getColor(this, R.color.deep_purple);
+        indigo = ContextCompat.getColor(this, R.color.indigo);
+        blue = ContextCompat.getColor(this, R.color.blue);
+        lightBlue = ContextCompat.getColor(this, R.color.light_blue);
+        cyan = ContextCompat.getColor(this, R.color.cyan);
+        teal = ContextCompat.getColor(this, R.color.teal);
+        green = ContextCompat.getColor(this, R.color.green);
+        lightGreen = ContextCompat.getColor(this, R.color.light_green);
+        lime = ContextCompat.getColor(this, R.color.lime);
+        yellow = ContextCompat.getColor(this, R.color.yellow);
+        amber = ContextCompat.getColor(this, R.color.amber);
+        orange = ContextCompat.getColor(this, R.color.orange);
+        deepOrange = ContextCompat.getColor(this, R.color.deep_orange);
+        black = ContextCompat.getColor(this, R.color.black);
+        blueGrey = ContextCompat.getColor(this, R.color.blue_grey);
 
         getData();
         getTimetable();
@@ -169,10 +187,10 @@ public class Background extends Service {
 
         }
 
-        if (notificationHandler != null) {
+        if (handler != null) {
 
-            notificationHandler.removeCallbacksAndMessages(null);
-            notificationHandler = null;
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
 
         }
 
@@ -242,10 +260,10 @@ public class Background extends Service {
 
     private void getData() {
 
-        if (notificationHandler != null) {
+        if (handler != null) {
 
-            notificationHandler.removeCallbacksAndMessages(null);
-            notificationHandler = null;
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
 
         }
 
@@ -300,43 +318,27 @@ public class Background extends Service {
 
         if (isCurrentClass) {
 
-            if (sharedPreferences.getBoolean("detailed_notification", true)) {
+            if (sharedPreferences.getBoolean("class_notification", true)) {
 
-                currentToNextTransition = true;
+                if (sharedPreferences.getBoolean("detailed_notification", true)) {
 
-                if (nextToCurrentTransition) {
+                    currentToNextTransition = true;
 
-                    notificationManager.cancelAll();
+                    if (nextToCurrentTransition) {
 
-                    if (notificationHandler != null) {
-
-                        notificationHandler.removeCallbacksAndMessages(null);
-                        notificationHandler = null;
+                        notificationManager.cancelAll();
+                        nextToCurrentTransition = false;
 
                     }
 
-                    nextToCurrentTransition = false;
+                    detailedToSimpleTransition = true;
 
-                }
+                    if (simpleToDetailedTransition) {
 
-                detailedToSimpleTransition = true;
-
-                if (simpleToDetailedTransition) {
-
-                    notificationManager.cancelAll();
-
-                    if (notificationHandler != null) {
-
-                        notificationHandler.removeCallbacksAndMessages(null);
-                        notificationHandler = null;
+                        notificationManager.cancelAll();
+                        simpleToDetailedTransition = false;
 
                     }
-
-                    simpleToDetailedTransition = false;
-
-                }
-
-                if (notificationHandler == null) {
 
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -369,45 +371,77 @@ public class Background extends Service {
                         remoteViews.setInt(R.id.view_notification_button, "setColorFilter", currentClass.getColor());
                         remoteViews.setInt(R.id.view_notification_layout, "setBackgroundColor", Color.TRANSPARENT);
 
-                        if (currentClass.getColor() == pink) {
-
-                            progressBarId = R.id.view_notification_progress_bar_pink;
-
-                        } else if (currentClass.getColor() == red) {
+                        if (currentClass.getColor() == red) {
 
                             progressBarId = R.id.view_notification_progress_bar_red;
 
-                        } else if (currentClass.getColor() == orange) {
+                        } else if (currentClass.getColor() == pink) {
 
-                            progressBarId = R.id.view_notification_progress_bar_orange;
+                            progressBarId = R.id.view_notification_progress_bar_pink;
 
-                        } else if (currentClass.getColor() == yellow) {
+                        } else if (currentClass.getColor() == purple) {
 
-                            progressBarId = R.id.view_notification_progress_bar_yellow;
+                            progressBarId = R.id.view_notification_progress_bar_purple;
 
-                        } else if (currentClass.getColor() == green) {
+                        } else if (currentClass.getColor() == deepPurple) {
 
-                            progressBarId = R.id.view_notification_progress_bar_green;
+                            progressBarId = R.id.view_notification_progress_bar_deep_purple;
+
+                        } else if (currentClass.getColor() == indigo) {
+
+                            progressBarId = R.id.view_notification_progress_bar_indigo;
 
                         } else if (currentClass.getColor() == blue) {
 
                             progressBarId = R.id.view_notification_progress_bar_blue;
 
-                        } else if (currentClass.getColor() == violet) {
+                        } else if (currentClass.getColor() == lightBlue) {
 
-                            progressBarId = R.id.view_notification_progress_bar_violet;
+                            progressBarId = R.id.view_notification_progress_bar_light_blue;
 
-                        } else if (currentClass.getColor() == magenta) {
+                        } else if (currentClass.getColor() == cyan) {
 
-                            progressBarId = R.id.view_notification_progress_bar_magenta;
+                            progressBarId = R.id.view_notification_progress_bar_cyan;
 
-                        } else if (currentClass.getColor() == grey) {
+                        } else if (currentClass.getColor() == teal) {
 
-                            progressBarId = R.id.view_notification_progress_bar_grey;
+                            progressBarId = R.id.view_notification_progress_bar_teal;
+
+                        } else if (currentClass.getColor() == green) {
+
+                            progressBarId = R.id.view_notification_progress_bar_green;
+
+                        } else if (currentClass.getColor() == lightGreen) {
+
+                            progressBarId = R.id.view_notification_progress_bar_light_green;
+
+                        } else if (currentClass.getColor() == lime) {
+
+                            progressBarId = R.id.view_notification_progress_bar_lime;
+
+                        } else if (currentClass.getColor() == yellow) {
+
+                            progressBarId = R.id.view_notification_progress_bar_yellow;
+
+                        } else if (currentClass.getColor() == amber) {
+
+                            progressBarId = R.id.view_notification_progress_bar_amber;
+
+                        } else if (currentClass.getColor() == orange) {
+
+                            progressBarId = R.id.view_notification_progress_bar_orange;
+
+                        } else if (currentClass.getColor() == deepOrange) {
+
+                            progressBarId = R.id.view_notification_progress_bar_deep_orange;
 
                         } else if (currentClass.getColor() == black) {
 
                             progressBarId = R.id.view_notification_progress_bar_black;
+
+                        } else if (currentClass.getColor() == blueGrey) {
+
+                            progressBarId = R.id.view_notification_progress_bar_blue_grey;
 
                         }
 
@@ -415,7 +449,7 @@ public class Background extends Service {
                         progressTextId = R.id.view_notification_progress_text;
                         headerId = R.id.view_notification_header;
 
-                    }
+                        }
 
                     remoteViews.setInt(progressBarId, "setVisibility", View.VISIBLE);
                     remoteViews.setInt(textId, "setVisibility", View.VISIBLE);
@@ -492,55 +526,35 @@ public class Background extends Service {
 
                             LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
 
-                            notificationHandler.postDelayed(this, 5000);
+                            handler.postDelayed(this, 15000);
 
-                        }
+                            }
 
                     };
 
-                    notificationHandler = new Handler();
+                    handler = new Handler();
 
-                    notificationHandler.post(notificationRunnable);
+                    handler.post(notificationRunnable);
 
-                }
+                } else {
 
-            } else {
+                    currentToNextTransition = true;
 
-                currentToNextTransition = true;
+                    if (nextToCurrentTransition) {
 
-                if (nextToCurrentTransition) {
-
-                    notificationManager.cancelAll();
-
-                    if (notificationHandler != null) {
-
-                        notificationHandler.removeCallbacksAndMessages(null);
-                        notificationHandler = null;
+                        notificationManager.cancelAll();
+                        nextToCurrentTransition = false;
 
                     }
 
-                    nextToCurrentTransition = false;
+                    simpleToDetailedTransition = true;
 
-                }
+                    if (detailedToSimpleTransition) {
 
-                simpleToDetailedTransition = true;
-
-                if (detailedToSimpleTransition) {
-
-                    notificationManager.cancelAll();
-
-                    if (notificationHandler != null) {
-
-                        notificationHandler.removeCallbacksAndMessages(null);
-                        notificationHandler = null;
+                        notificationManager.cancelAll();
+                        detailedToSimpleTransition = false;
 
                     }
-
-                    detailedToSimpleTransition = false;
-
-                }
-
-                if (notificationHandler == null) {
 
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -610,17 +624,74 @@ public class Background extends Service {
 
                             LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
 
-                            notificationHandler.postDelayed(this, 5000);
+                            handler.postDelayed(this, 15000);
 
                         }
 
                     };
 
-                    notificationHandler = new Handler();
+                    handler = new Handler();
 
-                    notificationHandler.post(notificationRunnable);
+                    handler.post(notificationRunnable);
 
                 }
+
+            } else {
+
+                detailedToSimpleTransition = false;
+                simpleToDetailedTransition = false;
+
+                currentToNextTransition = true;
+                nextToCurrentTransition = false;
+
+                notificationManager.cancelAll();
+
+                noNotificationRunnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        final DateTime currentTime = new DateTime();
+
+                        final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                        final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+
+                        final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
+
+                        String progressBarText = "";
+                        int progressBarProgress = 0;
+
+                        if (percentageValueInt >= 0 && percentageValueInt <= 100) {
+
+                            progressBarText = String.valueOf(percentageValueInt) + "%";
+                            progressBarProgress = percentageValueInt;
+
+                        } else if (percentageValueInt < 0) {
+
+                            progressBarText = "0%";
+                            progressBarProgress = 0;
+
+                        } else if (percentageValueInt > 100) {
+
+                            progressBarText = "100%";
+                            progressBarProgress = 100;
+
+                        }
+
+                        DataStore.progressBarText = progressBarText;
+                        DataStore.progressBarProgress = progressBarProgress;
+
+                        LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
+
+                        handler.postDelayed(this, 15000);
+
+                    }
+
+                };
+
+                handler = new Handler();
+
+                handler.post(noNotificationRunnable);
 
             }
 
@@ -631,14 +702,6 @@ public class Background extends Service {
             if (currentToNextTransition) {
 
                 notificationManager.cancelAll();
-
-                if (notificationHandler != null) {
-
-                    notificationHandler.removeCallbacksAndMessages(null);
-                    notificationHandler = null;
-
-                }
-
                 currentToNextTransition = false;
 
             }
@@ -688,13 +751,6 @@ public class Background extends Service {
             simpleToDetailedTransition = false;
 
             notificationManager.cancelAll();
-
-            if (notificationHandler != null) {
-
-                notificationHandler.removeCallbacksAndMessages(null);
-                notificationHandler = null;
-
-            }
 
         }
 

@@ -15,8 +15,8 @@
         <gradient
 
             android:angle="0"
-            android:endColor="@color/violet"
-            android:startColor="@color/violet"
+            android:endColor="@color/purple"
+            android:startColor="@color/purple"
             android:type="sweep"
             android:useLevel="false" />
 

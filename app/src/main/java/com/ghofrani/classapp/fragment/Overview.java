@@ -33,7 +33,6 @@ import java.util.ArrayList;
 public class Overview extends Fragment {
 
     private ClassList classListAdapterTomorrow;
-    private boolean firstStart = true;
     private ClassList classListAdapterNext;
     private ExpandableListView expandableListViewNextClasses;
     private ProgressBar progressBar;
@@ -201,8 +200,6 @@ public class Overview extends Fragment {
 
         }
 
-        firstStart = false;
-
     }
 
     @Override
@@ -237,10 +234,10 @@ public class Overview extends Fragment {
             currentClassLocationTeacherTextView.setText(locationTeacher);
 
             TextView currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
-            currentClassStartTimeTextView.setText(currentClass.getStartTimeString());
+            currentClassStartTimeTextView.setText(currentClass.getStartTimeString(true));
 
             TextView currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
-            currentClassEndTimeTextView.setText(currentClass.getEndTimeString());
+            currentClassEndTimeTextView.setText(currentClass.getEndTimeString(true));
 
             updateProgressBar();
 
@@ -427,6 +424,18 @@ public class Overview extends Fragment {
                     CardView noClasses = (CardView) getView().findViewById(R.id.overview_no_classes_card);
                     noClasses.setVisibility(View.VISIBLE);
 
+                    TextView noClassesText = (TextView) getView().findViewById(R.id.overview_no_classes_card_text);
+
+                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
+
+                        noClassesText.setText("No more classes today or tomorrow.");
+
+                    } else {
+
+                        noClassesText.setText("No more classes today.");
+
+                    }
+
                 }
 
             }
@@ -501,7 +510,7 @@ public class Overview extends Fragment {
 
         }
 
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_next_classes", true) && firstStart) {
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_next_classes", true)) {
 
             expandableListViewNextClasses.postDelayed(new Runnable() {
 
@@ -589,7 +598,7 @@ public class Overview extends Fragment {
 
         }
 
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_tomorrow_classes", false) && firstStart) {
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_tomorrow_classes", false)) {
 
             expandableListViewTomorrowClasses.postDelayed(new Runnable() {
 

@@ -34,4 +34,6 @@ public class DataStore {
     public static boolean isAnimated = false;
     public static int selectedTabPosition = 0;
 
+    public static boolean recreate = false;
+
 }
