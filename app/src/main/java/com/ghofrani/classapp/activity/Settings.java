@@ -17,8 +17,6 @@ import com.ghofrani.classapp.modules.DataStore;
 
 public class Settings extends AppCompatActivity {
 
-    private boolean resultSet = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

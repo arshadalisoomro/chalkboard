@@ -156,14 +156,12 @@ public class EditDay extends AppCompatActivity {
 
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setElevation(getPixelFromDP(4));
+
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         day = getIntent().getIntExtra("day", 0) + 1;
-
-        dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
-        dateTimeFormatter24Hour = DateTimeFormat.forPattern("HH:mm");
-        dateTimeFormatter24HourNoColon = DateTimeFormat.forPattern("HHmm");
 
     }
 
@@ -187,6 +185,15 @@ public class EditDay extends AppCompatActivity {
         if (endTimeStringForPosition == null)
             endTimeStringForPosition = new ArrayList<>();
 
+        if (dateTimeFormatterAMPM == null)
+            dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
+
+        if (dateTimeFormatter24Hour == null)
+            dateTimeFormatter24Hour = DateTimeFormat.forPattern("HH:mm");
+
+        if (dateTimeFormatter24HourNoColon == null)
+            dateTimeFormatter24HourNoColon = DateTimeFormat.forPattern("HHmm");
+
         updateUI();
 
     }
@@ -203,6 +210,10 @@ public class EditDay extends AppCompatActivity {
             startTimeStringForPosition = null;
             endTimeStringForPosition = null;
             noClassIndexList = null;
+
+            dateTimeFormatterAMPM = null;
+            dateTimeFormatter24Hour = null;
+            dateTimeFormatter24HourNoColon = null;
 
         }
 

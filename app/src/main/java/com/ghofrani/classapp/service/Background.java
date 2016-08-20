@@ -61,7 +61,6 @@ public class Background extends Service {
     private int textId;
     private Handler handler;
     private Runnable notificationRunnable;
-    private Runnable noNotificationRunnable;
     private NotificationCompat.Builder notificationCompatBuilder;
     private NotificationManager notificationManager;
     private RemoteViews remoteViews;
@@ -464,7 +463,7 @@ public class Background extends Service {
                         progressTextId = R.id.view_notification_progress_text;
                         headerId = R.id.view_notification_header;
 
-                        }
+                    }
 
                     remoteViews.setInt(progressBarId, "setVisibility", View.VISIBLE);
                     remoteViews.setInt(textId, "setVisibility", View.VISIBLE);
@@ -543,7 +542,7 @@ public class Background extends Service {
 
                             handler.postDelayed(this, 15000);
 
-                            }
+                        }
 
                     };
 
@@ -661,7 +660,7 @@ public class Background extends Service {
 
                 notificationManager.cancelAll();
 
-                noNotificationRunnable = new Runnable() {
+                Runnable noNotificationRunnable = new Runnable() {
 
                     @Override
                     public void run() {
