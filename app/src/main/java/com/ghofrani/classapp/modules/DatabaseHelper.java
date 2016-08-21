@@ -13,7 +13,7 @@ import java.util.Calendar;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "database.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String CREATE_SUNDAY = "create table "
             + DatabaseContract.Sunday.TABLE_NAME + " ("
@@ -72,10 +72,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.ClassInfo.COLUMN_LOCATION + " TEXT,"
             + DatabaseContract.ClassInfo.COLUMN_COLOR + " INTEGER)";
 
+    private static final String CREATE_HOMEWORK = "create table "
+            + DatabaseContract.Homework.TABLE_NAME + " ("
+            + DatabaseContract.Homework.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + DatabaseContract.Homework.COLUMN_NAME + " TEXT,"
+            + DatabaseContract.Homework.COLUMN_CLASS + " TEXT,"
+            + DatabaseContract.Homework.COLUMN_DUE + " INTEGER,"
+            + DatabaseContract.Homework.COLUMN_DATE + " TEXT,"
+            + DatabaseContract.Homework.COLUMN_DAY + " INTEGER,"
+            + DatabaseContract.Homework.COLUMN_TIME + " TEXT)";
+
     public DatabaseHelper(Context context) {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-
 
     }
 
@@ -90,11 +99,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_FRIDAY);
         db.execSQL(CREATE_SATURDAY);
         db.execSQL(CREATE_CLASSINFO);
+        db.execSQL(CREATE_HOMEWORK);
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        if (oldVersion == 1 && newVersion == 2) {
+
+            db.execSQL(CREATE_HOMEWORK);
+
+        }
+
     }
 
     public boolean insertClassIntoDay(String[] classToInsert, int day) {

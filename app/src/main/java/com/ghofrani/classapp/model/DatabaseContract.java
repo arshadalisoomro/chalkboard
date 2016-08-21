@@ -85,4 +85,17 @@ public final class DatabaseContract {
 
     }
 
+    public static abstract class Homework implements BaseColumns {
+
+        public static final String TABLE_NAME = "homework";
+        public static final String COLUMN_ID = "homeworkid";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_CLASS = "class";
+        public static final String COLUMN_DUE = "due";
+        public static final String COLUMN_DATE = "date";
+        public static final String COLUMN_DAY = "day";
+        public static final String COLUMN_TIME = "time";
+
+    }
+
 }
