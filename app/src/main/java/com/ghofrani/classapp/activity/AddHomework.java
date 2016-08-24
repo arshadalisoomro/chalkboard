@@ -13,15 +13,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.modules.DataStore;
 
+import java.util.ArrayList;
+
 public class AddHomework extends AppCompatActivity {
 
     private boolean originNotification = false;
     private Spinner classNameSpinner;
+    private RadioButton nextClassRadioButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,23 +112,62 @@ public class AddHomework extends AppCompatActivity {
 
     }
 
-    public void onRadioButtonClicked(View view) {
-
-
-    }
-
     @Override
     protected void onResume() {
 
         super.onResume();
 
-        if (classNameSpinner == null)
+        if (classNameSpinner == null) {
+
             classNameSpinner = (Spinner) findViewById(R.id.add_homework_class_spinner);
 
-        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, DataStore.allClassNamesArrayList);
+            ArrayList<String> allClassNamesArrayList;
 
-        classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        classNameSpinner.setAdapter(classNameSpinnerAdapter);
+            if (DataStore.isCurrentClass) {
+
+                allClassNamesArrayList = DataStore.allClassNamesArrayList;
+                allClassNamesArrayList.remove(DataStore.currentClass.getName());
+                allClassNamesArrayList.add(0, DataStore.currentClass.getName());
+
+            } else {
+
+                allClassNamesArrayList = DataStore.allClassNamesArrayList;
+
+            }
+
+            final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, allClassNamesArrayList);
+
+            classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            classNameSpinner.setAdapter(classNameSpinnerAdapter);
+
+        }
+
+        if (nextClassRadioButton == null) {
+
+            nextClassRadioButton = (RadioButton) findViewById(R.id.radio_next);
+            nextClassRadioButton.setChecked(true);
+
+        }
+
+    }
+
+    public void onRadioButtonClicked(View view) {
+
+        //TODO: Launch dialogs.
+
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
+
+            classNameSpinner = null;
+            nextClassRadioButton = null;
+
+        }
+
+        super.onTrimMemory(level);
 
     }
 
