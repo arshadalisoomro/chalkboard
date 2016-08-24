@@ -62,6 +62,14 @@
 
         <activity
 
+            android:name=".activity.ViewHomework"
+            android:parentActivityName=".activity.Main"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity
+
             android:name=".activity.AddClass"
             android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">

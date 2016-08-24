@@ -29,8 +29,8 @@
             <RelativeLayout
 
                 android:id="@+id/add_class_name_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:layout_marginTop="12dp"
                 android:paddingBottom="4dp"
                 android:paddingLeft="16dp"
@@ -46,7 +46,7 @@
                     android:layout_marginLeft="2dp"
                     android:src="@drawable/name"
                     android:tint="#757575"
-                    android:translationY="1.5dp" />
+                    android:translationY="-1dp" />
 
                 <EditText
 
@@ -66,8 +66,8 @@
             <RelativeLayout
 
                 android:id="@+id/add_class_teacher_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:layout_below="@id/add_class_name_layout"
                 android:paddingBottom="4dp"
                 android:paddingLeft="16dp"
@@ -83,7 +83,7 @@
                     android:layout_marginLeft="2dp"
                     android:src="@drawable/teacher"
                     android:tint="#757575"
-                    android:translationY="1.5dp" />
+                    android:translationY="-1dp" />
 
                 <EditText
 
@@ -103,8 +103,8 @@
             <RelativeLayout
 
                 android:id="@+id/add_class_location_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:layout_below="@id/add_class_teacher_layout"
                 android:layout_marginBottom="6dp"
                 android:paddingBottom="4dp"
@@ -121,7 +121,7 @@
                     android:layout_marginLeft="2dp"
                     android:src="@drawable/location"
                     android:tint="#757575"
-                    android:translationY="1.5dp" />
+                    android:translationY="-1dp" />
 
                 <EditText
 

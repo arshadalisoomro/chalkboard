@@ -1,5 +1,6 @@
 package com.ghofrani.classapp.modules;
 
+import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 
@@ -27,6 +28,13 @@ public class DataStore {
 
     public static ArrayList<SlimClass> allClassesArrayList;
     public static ArrayList<String> allClassNamesArrayList;
+
+    public static ArrayList<Homework> todayHomeworkArrayList;
+    public static ArrayList<Homework> tomorrowHomeworkArrayList;
+    public static ArrayList<Homework> thisWeekHomeworkArrayList;
+    public static ArrayList<Homework> nextWeekHomeworkArrayList;
+    public static ArrayList<Homework> thisMonthHomeworkArrayList;
+    public static ArrayList<Homework> beyondThisMonthHomeworkArrayList;
 
     public static int progressBarProgress = 0;
     public static String progressBarText = "0%";

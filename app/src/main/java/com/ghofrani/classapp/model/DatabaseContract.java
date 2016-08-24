@@ -91,10 +91,8 @@ public final class DatabaseContract {
         public static final String COLUMN_ID = "homeworkid";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_CLASS = "class";
-        public static final String COLUMN_DUE = "due";
-        public static final String COLUMN_DATE = "date";
-        public static final String COLUMN_DAY = "day";
-        public static final String COLUMN_TIME = "time";
+        public static final String COLUMN_DATE_TIME = "datetime";
+        public static final String COLUMN_ATTACH = "attach";
 
     }
 

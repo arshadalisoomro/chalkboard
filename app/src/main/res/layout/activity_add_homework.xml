@@ -17,10 +17,142 @@
 
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:fillViewport="true"
         android:scrollbars="none">
+
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+
+                android:id="@+id/add_homework_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp">
+
+                <ImageView
+
+                    android:id="@+id/add_homework_name_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/name"
+                    android:tint="#757575"
+                    android:translationY="-1dp" />
+
+                <EditText
+
+                    android:id="@+id/add_homework_input_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="28dp"
+                    android:layout_toRightOf="@id/add_homework_name_icon"
+                    android:hint="Name"
+                    android:inputType="textCapWords"
+                    android:singleLine="true"
+                    android:textSize="17sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+
+                android:id="@+id/add_homework_class_layout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@id/add_homework_name_layout"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp">
+
+                <ImageView
+
+                    android:id="@+id/add_homework_class_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/classes"
+                    android:tint="#757575"
+                    android:translationY="1dp" />
+
+                <Spinner
+
+                    android:id="@+id/add_homework_class_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="26.5dp"
+                    android:layout_toRightOf="@id/add_homework_class_icon"
+                    android:prompt="@string/spinner_prompt"
+                    android:scrollbars="none" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+
+                android:id="@+id/add_homework_time_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_homework_class_layout"
+                android:layout_marginLeft="0.5dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="16dp"
+                android:paddingTop="12dp">
+
+                <RadioGroup
+
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+
+                        android:id="@+id/radio_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:onClick="onRadioButtonClicked"
+                        android:paddingLeft="26.5dp"
+                        android:text="Next lesson"
+                        android:textSize="17sp" />
+
+                    <RadioButton
+
+                        android:id="@+id/radio_specific"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:onClick="onRadioButtonClicked"
+                        android:paddingLeft="26.5dp"
+                        android:text="Specific lesson"
+                        android:textSize="17sp" />
+
+                    <RadioButton
+
+                        android:id="@+id/radio_custom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onRadioButtonClicked"
+                        android:paddingLeft="26.5dp"
+                        android:text="Custom time"
+                        android:textSize="17sp" />
+
+                </RadioGroup>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
     </ScrollView>
 

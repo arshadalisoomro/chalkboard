@@ -77,10 +77,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.Homework.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.Homework.COLUMN_NAME + " TEXT,"
             + DatabaseContract.Homework.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Homework.COLUMN_DUE + " INTEGER,"
-            + DatabaseContract.Homework.COLUMN_DATE + " TEXT,"
-            + DatabaseContract.Homework.COLUMN_DAY + " INTEGER,"
-            + DatabaseContract.Homework.COLUMN_TIME + " TEXT)";
+            + DatabaseContract.Homework.COLUMN_DATE_TIME + " TEXT,"
+            + DatabaseContract.Homework.COLUMN_ATTACH + " BOOLEAN)";
 
     public DatabaseHelper(Context context) {
 
@@ -546,6 +544,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return cursor;
+
+    }
+
+    public Cursor getHomework() {
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Homework.TABLE_NAME + " order by rowid", null);
 
     }
 

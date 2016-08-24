@@ -7,21 +7,45 @@
     android:layout_height="match_parent"
     android:scrollbars="none">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
 
-        android:id="@+id/homework_no_homework_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:paddingBottom="12dp">
 
-        <TextView
+        <android.support.v7.widget.CardView
 
-            android:layout_width="wrap_content"
+            android:id="@+id/homework_no_homework_card"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="No classes to show."
-            android:textSize="15sp" />
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone">
 
-    </android.support.v7.widget.CardView>
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="No homework to show."
+                android:textSize="15sp" />
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.RecyclerView
+
+            android:id="@+id/homework_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:clipToPadding="false" />
+
+    </LinearLayout>
 
 </ScrollView>

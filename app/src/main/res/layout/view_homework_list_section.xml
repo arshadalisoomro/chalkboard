@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_homework_list_section_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:background="@android:color/transparent"
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:singleLine="true"
+    android:textColor="#757575"
+    android:textSize="15sp"
+    android:textStyle="bold" />

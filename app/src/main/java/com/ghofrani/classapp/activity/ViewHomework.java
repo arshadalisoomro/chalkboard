@@ -1,30 +1,19 @@
 package com.ghofrani.classapp.activity;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.modules.DataStore;
 
-public class AddHomework extends AppCompatActivity {
-
-    private boolean originNotification = false;
-    private Spinner classNameSpinner;
+public class ViewHomework extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
 
         int colorPrimary = PreferenceManager.getDefaultSharedPreferences(this).getInt("primary_color", ContextCompat.getColor(this, R.color.teal));
 
@@ -93,38 +82,16 @@ public class AddHomework extends AppCompatActivity {
             getTheme().applyStyle(R.style.accent_deep_orange, true);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_homework);
+        setContentView(R.layout.activity_view_homework);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_homework_toolbar);
-        toolbar.setTitle("Add Homework");
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.view_homework_toolbar);
+        toolbar.setTitle(getIntent().getExtras().getString("homework"));
+        toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (getIntent().hasExtra("origin_notification"))
-            originNotification = true;
-
-    }
-
-    public void onRadioButtonClicked(View view) {
-
-
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
-        if (classNameSpinner == null)
-            classNameSpinner = (Spinner) findViewById(R.id.add_homework_class_spinner);
-
-        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, DataStore.allClassNamesArrayList);
-
-        classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        classNameSpinner.setAdapter(classNameSpinnerAdapter);
 
     }
 
@@ -133,43 +100,7 @@ public class AddHomework extends AppCompatActivity {
 
         if (menuItem.getItemId() == android.R.id.home) {
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setTitle("Discard changes?");
-            builder.setMessage("This homework will be deleted.");
-
-            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int id) {
-
-                    dialog.dismiss();
-
-                    if (originNotification) {
-
-                        finish();
-                        startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
-
-                    } else {
-
-                        callSuperOnBackPressed();
-
-                    }
-
-                }
-
-            });
-
-            builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int id) {
-
-                    dialog.dismiss();
-
-                }
-
-            });
-
-            builder.create().show();
+            super.onBackPressed();
 
             return true;
 
@@ -181,61 +112,10 @@ public class AddHomework extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
+    private int getPixelFromDP(float dPtoConvert) {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("Discard changes?");
-        builder.setMessage("This homework will be deleted.");
-
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int id) {
-
-                dialog.dismiss();
-
-                if (originNotification) {
-
-                    finish();
-                    startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
-
-                } else {
-
-                    callSuperOnBackPressed();
-
-                }
-
-            }
-
-        });
-
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int id) {
-
-                dialog.dismiss();
-
-            }
-
-        });
-
-        builder.create().show();
-
-    }
-
-    private void callSuperOnBackPressed() {
-
-        super.onBackPressed();
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.toolbar_check, menu);
-
-        return true;
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dPtoConvert * scale + 0.5f);
 
     }
 

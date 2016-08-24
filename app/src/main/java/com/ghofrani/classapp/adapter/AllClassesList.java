@@ -42,6 +42,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
 
     }
 
+
     @Override
     public int getItemCount() {
 

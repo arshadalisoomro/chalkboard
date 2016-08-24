@@ -23,6 +23,7 @@ import android.widget.RemoteViews;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.AddHomework;
 import com.ghofrani.classapp.activity.Main;
+import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
@@ -32,6 +33,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 
@@ -310,6 +312,8 @@ public class Background extends Service {
             }
 
         }
+
+        todayCursor.close();
 
         DataStore.isNextClasses = isNextClasses;
 
@@ -794,6 +798,8 @@ public class Background extends Service {
 
             }
 
+            tomorrowCursor.close();
+
             if (!tomorrowClassesArrayList.isEmpty()) {
 
                 DataStore.isTomorrowClasses = true;
@@ -806,6 +812,108 @@ public class Background extends Service {
             }
 
         }
+
+        Cursor homeworkCursor = databaseHelper.getHomework();
+
+        final ArrayList<Homework> todayHomeworkArrayList = new ArrayList<>();
+        final ArrayList<Homework> tomorrowHomeworkArrayList = new ArrayList<>();
+        final ArrayList<Homework> thisWeekHomeworkArrayList = new ArrayList<>();
+        final ArrayList<Homework> nextWeekHomeworkArrayList = new ArrayList<>();
+        final ArrayList<Homework> thisMonthHomeworkArrayList = new ArrayList<>();
+        final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
+
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime tomorrow = today.plusDays(1);
+
+        boolean thisWeekEnabled = true;
+        Interval thisWeek;
+        Interval nextWeek;
+
+        switch (today.getDayOfWeek()) {
+
+            case 5:
+
+                thisWeekEnabled = false;
+                thisWeek = new Interval(today.toDateTime(), today.toDateTime());
+                nextWeek = new Interval(today.plusDays(2).withTime(0, 0, 0, 0).toDateTime(), today.plusDays(9).withTime(0, 0, 0, 0).toDateTime());
+
+                break;
+
+            case 6:
+
+                thisWeekEnabled = false;
+                thisWeek = new Interval(today.toDateTime(), today.toDateTime());
+                nextWeek = new Interval(today.plusDays(1).withTime(0, 0, 0, 0).toDateTime(), today.plusDays(8).withTime(0, 0, 0, 0).toDateTime());
+
+                break;
+
+            default:
+
+                thisWeek = new Interval(tomorrow.plusDays(1).withTime(0, 0, 0, 0).toDateTime(), tomorrow.plusDays(7 - tomorrow.getDayOfWeek()).withTime(0, 0, 0, 0).toDateTime());
+                nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7).withTimeAtStartOfDay().toDateTime());
+
+        }
+
+        boolean thisMonthEnabled = false;
+        Interval thisMonth = new Interval(today.toDateTime(), today.toDateTime());
+
+        if (nextWeek.getEnd().getMonthOfYear() == today.getMonthOfYear()) {
+
+            if (today.dayOfMonth().withMaximumValue().getDayOfMonth() > nextWeek.getEnd().getDayOfMonth() - 1) {
+
+                thisMonthEnabled = true;
+                thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue().toDateTime());
+
+            }
+
+        }
+
+        while (homeworkCursor.moveToNext()) {
+
+            Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), homeworkCursor.getString(3), homeworkCursor.getInt(4));
+
+            if (today.toLocalDate().equals(homework.getLocalDate())) {
+
+                todayHomeworkArrayList.add(homework);
+
+            } else if (tomorrow.toLocalDate().equals(homework.getLocalDate())) {
+
+                tomorrowHomeworkArrayList.add(homework);
+
+            } else if (thisWeek.contains(homework.getDateTime()) && thisWeekEnabled) {
+
+                thisWeekHomeworkArrayList.add(homework);
+
+            } else if (nextWeek.contains(homework.getDateTime())) {
+
+                nextWeekHomeworkArrayList.add(homework);
+
+            } else if (thisMonth.contains(homework.getDateTime()) && thisMonthEnabled) {
+
+                thisMonthHomeworkArrayList.add(homework);
+
+            } else {
+
+                beyondThisMonthHomeworkArrayList.add(homework);
+
+            }
+
+        }
+
+        homeworkCursor.close();
+
+        todayHomeworkArrayList.add(new Homework("Title 1", "Subject 1", new LocalDateTime().now().toString(), 0));
+        tomorrowHomeworkArrayList.add(new Homework("Title 2", "Subject 2", new LocalDateTime().now().toString(), 0));
+        tomorrowHomeworkArrayList.add(new Homework("Title asgags2", "Subject 2", new LocalDateTime().now().toString(), 0));
+        thisWeekHomeworkArrayList.add(new Homework("Title 3", "Subject 3", new LocalDateTime().now().toString(), 0));
+        beyondThisMonthHomeworkArrayList.add(new Homework("Title 4", "Subject 4", new LocalDateTime().now().toString(), 0));
+
+        DataStore.todayHomeworkArrayList = todayHomeworkArrayList;
+        DataStore.tomorrowHomeworkArrayList = tomorrowHomeworkArrayList;
+        DataStore.thisWeekHomeworkArrayList = thisWeekHomeworkArrayList;
+        DataStore.nextWeekHomeworkArrayList = nextWeekHomeworkArrayList;
+        DataStore.thisMonthHomeworkArrayList = thisMonthHomeworkArrayList;
+        DataStore.beyondThisMonthHomeworkArrayList = beyondThisMonthHomeworkArrayList;
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_UI"));
 
