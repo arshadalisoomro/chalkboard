@@ -110,8 +110,10 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             getTheme().applyStyle(R.style.accent_blue, true);
         } else if (colorAccent == ContextCompat.getColor(this, R.color.light_blue_accent)) {
             getTheme().applyStyle(R.style.accent_light_blue, true);
+            floatingActionButtonContrast = true;
         } else if (colorAccent == ContextCompat.getColor(this, R.color.cyan_accent)) {
             getTheme().applyStyle(R.style.accent_cyan, true);
+            floatingActionButtonContrast = true;
         } else if (colorAccent == ContextCompat.getColor(this, R.color.teal_accent)) {
             getTheme().applyStyle(R.style.accent_teal, true);
         } else if (colorAccent == ContextCompat.getColor(this, R.color.green_accent)) {
@@ -132,6 +134,20 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+        for(int i = 0; i <= 60; i++){
+
+            databaseHelper.insertHomework(new com.ghofrani.classapp.model.Homework("Today + " + String.valueOf(i), "Test", new LocalDateTime().now().plusDays(i).toString(), 0));
+
+        }
+
+        databaseHelper.close();
+
+        */
 
         startService(new Intent(this, Background.class));
 
@@ -290,7 +306,15 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 } else if (currentView == 3) {
 
-                    startActivity(new Intent(Main.this, AddHomework.class));
+                    if (DataStore.allClassNamesArrayList.isEmpty()) {
+
+                        Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
+
+                    } else {
+
+                        startActivity(new Intent(Main.this, AddHomework.class));
+
+                    }
 
                 }
 

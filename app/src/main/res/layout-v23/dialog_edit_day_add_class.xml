@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingLeft="15dp"
-    android:paddingRight="24dp"
+    android:paddingRight="11dp"
     android:paddingTop="8dp">
 
     <Spinner
@@ -14,7 +14,6 @@
         android:id="@+id/dialog_edit_day_add_class_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="2dp"
         android:prompt="@string/spinner_prompt"
         android:scrollbars="none" />
 
@@ -37,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/dialog_edit_day_add_class_start_time_label"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="18dp"
         android:gravity="right"
         android:textColor="#000000"
         android:textSize="15sp" />
@@ -61,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/dialog_edit_day_add_class_end_time_label"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="18dp"
         android:gravity="right"
         android:textColor="#000000"
         android:textSize="15sp" />

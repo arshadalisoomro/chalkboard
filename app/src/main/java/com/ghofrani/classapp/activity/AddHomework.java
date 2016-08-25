@@ -1,12 +1,11 @@
 package com.ghofrani.classapp.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.modules.DataStore;
 
@@ -153,7 +154,28 @@ public class AddHomework extends AppCompatActivity {
 
     public void onRadioButtonClicked(View view) {
 
-        //TODO: Launch dialogs.
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch (view.getId()) {
+
+            case R.id.radio_specific:
+
+                if (checked) {
+
+
+                }
+
+                break;
+
+            case R.id.radio_custom:
+
+                if (checked) {
+
+                }
+
+                break;
+
+        }
 
     }
 
@@ -176,16 +198,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (menuItem.getItemId() == android.R.id.home) {
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
 
-            builder.setTitle("Discard changes?");
-            builder.setMessage("This homework will be deleted.");
+            materialDialogBuilder.title("Discard changes?");
+            materialDialogBuilder.content("This homework will be deleted.");
+            materialDialogBuilder.positiveText("YES");
+            materialDialogBuilder.positiveColorRes(R.color.black);
+            materialDialogBuilder.negativeText("CANCEL");
+            materialDialogBuilder.negativeColorRes(R.color.black);
 
-            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            materialDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
 
-                public void onClick(DialogInterface dialog, int id) {
+                @Override
+                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
 
-                    dialog.dismiss();
+                    materialDialog.dismiss();
 
                     if (originNotification) {
 
@@ -202,17 +229,18 @@ public class AddHomework extends AppCompatActivity {
 
             });
 
-            builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            materialDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
 
-                public void onClick(DialogInterface dialog, int id) {
+                @Override
+                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
 
-                    dialog.dismiss();
+                    materialDialog.dismiss();
 
                 }
 
             });
 
-            builder.create().show();
+            materialDialogBuilder.show();
 
             return true;
 
@@ -227,16 +255,21 @@ public class AddHomework extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
 
-        builder.setTitle("Discard changes?");
-        builder.setMessage("This homework will be deleted.");
+        materialDialogBuilder.title("Discard changes?");
+        materialDialogBuilder.content("This homework will be deleted.");
+        materialDialogBuilder.positiveText("YES");
+        materialDialogBuilder.positiveColorRes(R.color.black);
+        materialDialogBuilder.negativeText("CANCEL");
+        materialDialogBuilder.negativeColorRes(R.color.black);
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        materialDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
 
-            public void onClick(DialogInterface dialog, int id) {
+            @Override
+            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
 
-                dialog.dismiss();
+                materialDialog.dismiss();
 
                 if (originNotification) {
 
@@ -253,17 +286,18 @@ public class AddHomework extends AppCompatActivity {
 
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        materialDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
 
-            public void onClick(DialogInterface dialog, int id) {
+            @Override
+            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
 
-                dialog.dismiss();
+                materialDialog.dismiss();
 
             }
 
         });
 
-        builder.create().show();
+        materialDialogBuilder.show();
 
     }
 

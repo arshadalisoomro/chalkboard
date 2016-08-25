@@ -902,12 +902,6 @@ public class Background extends Service {
 
         homeworkCursor.close();
 
-        todayHomeworkArrayList.add(new Homework("Title 1", "Subject 1", new LocalDateTime().now().toString(), 0));
-        tomorrowHomeworkArrayList.add(new Homework("Title 2", "Subject 2", new LocalDateTime().now().toString(), 0));
-        tomorrowHomeworkArrayList.add(new Homework("Title asgags2", "Subject 2", new LocalDateTime().now().toString(), 0));
-        thisWeekHomeworkArrayList.add(new Homework("Title 3", "Subject 3", new LocalDateTime().now().toString(), 0));
-        beyondThisMonthHomeworkArrayList.add(new Homework("Title 4", "Subject 4", new LocalDateTime().now().toString(), 0));
-
         DataStore.todayHomeworkArrayList = todayHomeworkArrayList;
         DataStore.tomorrowHomeworkArrayList = tomorrowHomeworkArrayList;
         DataStore.thisWeekHomeworkArrayList = thisWeekHomeworkArrayList;

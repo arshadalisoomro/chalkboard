@@ -1,11 +1,11 @@
 package com.ghofrani.classapp.activity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,15 +13,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.borax12.materialdaterangepicker.time.RadialPickerLayout;
 import com.borax12.materialdaterangepicker.time.TimePickerDialog;
 import com.ghofrani.classapp.R;
@@ -39,19 +39,20 @@ import java.util.List;
 
 public class EditDay extends AppCompatActivity {
 
+    String startTimeTextAdd;
+    String endTimeTextAdd;
+    String startTimeTextEdit;
+    String endTimeTextEdit;
     private ListView listView;
     private EditDayList listAdapter;
     private ArrayList<StandardClass> standardClassArrayList;
-
     private List<String> startTimeStringForPosition;
     private List<String> endTimeStringForPosition;
     private List<Integer> noClassIndexList;
-
     private DateTimeFormatter dateTimeFormatterAMPM;
     private DateTimeFormatter dateTimeFormatter24Hour;
     private DateTimeFormatter dateTimeFormatter24HourNoColon;
     private boolean is24Hour;
-
     private int day;
 
     @Override
@@ -472,399 +473,28 @@ public class EditDay extends AppCompatActivity {
 
                             }
 
-                            final Dialog addDialog = new Dialog(EditDay.this);
-                            addDialog.setContentView(R.layout.dialog_edit_day_add_class);
-                            addDialog.setTitle("Add Class");
+                            final MaterialDialog.Builder materialDialogBuilderAdd = new MaterialDialog.Builder(EditDay.this);
 
-                            final Spinner classNameSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
+                            materialDialogBuilderAdd.title("Add Class");
+                            materialDialogBuilderAdd.customView(R.layout.dialog_edit_day_add_class, false);
+                            materialDialogBuilderAdd.positiveText("Done");
+                            materialDialogBuilderAdd.positiveColorRes(R.color.black);
+                            materialDialogBuilderAdd.negativeText("Edit Times");
+                            materialDialogBuilderAdd.negativeColorRes(R.color.black);
+                            materialDialogBuilderAdd.autoDismiss(false);
 
-                            final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.allClassNamesArrayList);
+                            final MaterialDialog materialDialogAdd = materialDialogBuilderAdd.show();
 
-                            classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            classNameSpinner.setAdapter(classNameSpinnerAdapter);
-
-                            final TextView dialogAddClassStartTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
-                            final TextView dialogAddClassEndTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
-
-                            if (is24Hour) {
-
-                                dialogAddClassStartTimeTextView.setText(startTimeStringForPosition.get(position));
-                                dialogAddClassEndTimeTextView.setText(endTimeStringForPosition.get(position));
-
-                            } else {
-
-                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(startTimeStringForPosition.get(position));
-                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(endTimeStringForPosition.get(position));
-
-                                dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-                                dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                            }
-
-                            final Button addClassDialogChangeTimeButton = (Button) addDialog.findViewById(R.id.dialog_edit_day_add_class_time_picker_button);
-                            addClassDialogChangeTimeButton.setOnClickListener(new View.OnClickListener() {
+                            materialDialogBuilderAdd.onPositive(new MaterialDialog.SingleButtonCallback() {
 
                                 @Override
-                                public void onClick(View v) {
+                                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
 
-                                    TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-
-                                        @Override
-                                        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
-
-                                            if (hourOfDay > hourOfDayEnd) {
-
-                                                Toast.makeText(EditDay.this, "Your end time is before your start time!", Toast.LENGTH_LONG).show();
-
-                                            } else if (hourOfDay == hourOfDayEnd) {
-
-                                                if (minute == minuteEnd) {
-
-                                                    Toast.makeText(EditDay.this, "Your start time equals your end time!", Toast.LENGTH_LONG).show();
-
-                                                } else {
-
-                                                    if (startTimeRestriction.isEmpty()) {
-
-                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                        if (is24Hour) {
-
-                                                            dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                        } else {
-
-                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                            dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                        }
-
-                                                    } else {
-
-                                                        int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
-
-                                                        if (hourOfDay < startRestrictionHourOfDay) {
-
-                                                            Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                            return;
-
-                                                        } else if (hourOfDay == startRestrictionHourOfDay) {
-
-                                                            int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
-
-                                                            if (minute < startRestrictionMinute) {
-
-                                                                Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                                return;
-
-                                                            } else {
-
-                                                                String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                                String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                                if (is24Hour) {
-
-                                                                    dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                                } else {
-
-                                                                    final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                                    dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                                }
-
-                                                            }
-
-                                                        } else {
-
-                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                            if (is24Hour) {
-
-                                                                dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                            } else {
-
-                                                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                                dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                            }
-
-                                                        }
-
-                                                    }
-
-                                                    if (endTimeRestriction.isEmpty()) {
-
-                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                        if (is24Hour) {
-
-                                                            dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                        } else {
-
-                                                            final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                            dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                        }
-
-                                                    } else {
-
-                                                        int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
-
-                                                        if (hourOfDayEnd > endRestrictionHourOfDay) {
-
-                                                            Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                        } else if (hourOfDayEnd == endRestrictionHourOfDay) {
-
-                                                            int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
-
-                                                            if (minuteEnd > endRestrictionMinute) {
-
-                                                                Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                            } else {
-
-                                                                String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                                String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                                if (is24Hour) {
-
-                                                                    dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                                } else {
-
-                                                                    final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                                    dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                                }
-
-                                                            }
-
-                                                        } else {
-
-                                                            String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                            String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                            if (is24Hour) {
-
-                                                                dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                            } else {
-
-                                                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                                dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                            }
-
-                                                        }
-
-                                                    }
-
-                                                }
-
-                                            } else {
-
-                                                if (startTimeRestriction.isEmpty()) {
-
-                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                    if (is24Hour) {
-
-                                                        dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                    } else {
-
-                                                        final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                        dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                    }
-
-                                                } else {
-
-                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
-
-                                                    if (hourOfDay < startRestrictionHourOfDay) {
-
-                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                        return;
-
-                                                    } else if (hourOfDay == startRestrictionHourOfDay) {
-
-                                                        int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
-
-                                                        if (minute < startRestrictionMinute) {
-
-                                                            Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                            return;
-
-                                                        } else {
-
-                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                            if (is24Hour) {
-
-                                                                dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                            } else {
-
-                                                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                                dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                            }
-
-                                                        }
-
-                                                    } else {
-
-                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                        if (is24Hour) {
-
-                                                            dialogAddClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                        } else {
-
-                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                            dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                        }
-
-                                                    }
-
-                                                }
-
-                                                if (endTimeRestriction.isEmpty()) {
-
-                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                    if (is24Hour) {
-
-                                                        dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                    } else {
-
-                                                        final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                        dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                    }
-
-                                                } else {
-
-                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
-
-                                                    if (hourOfDayEnd > endRestrictionHourOfDay) {
-
-                                                        Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                    } else if (hourOfDayEnd == endRestrictionHourOfDay) {
-
-                                                        int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
-
-                                                        if (minuteEnd > endRestrictionMinute) {
-
-                                                            Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                        } else {
-
-                                                            String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                            String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                            if (is24Hour) {
-
-                                                                dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                            } else {
-
-                                                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                                dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                            }
-
-                                                        }
-
-                                                    } else {
-
-                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                        if (is24Hour) {
-
-                                                            dialogAddClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                        } else {
-
-                                                            final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                            dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                        }
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    };
-
-                                    if (is24Hour) {
-
-                                        String[] splitStartTimeString = dialogAddClassStartTimeTextView.getText().toString().split(":");
-
-                                        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
-
-                                                onTimeSetListener,
-                                                Integer.parseInt(splitStartTimeString[0]),
-                                                Integer.parseInt(splitStartTimeString[1].substring(0, 2)),
-                                                true
-
-                                        );
-
-                                        timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
-
-                                    } else {
-
-                                        String startTimeString = dateTimeFormatter24Hour.print(dateTimeFormatterAMPM.parseLocalTime(dialogAddClassStartTimeTextView.getText().toString()));
-
-                                        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
-
-                                                onTimeSetListener,
-                                                Integer.parseInt(startTimeString.substring(0, 2)),
-                                                Integer.parseInt(startTimeString.substring(3)),
-                                                false
-
-                                        );
-
-                                        timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
-
-                                    }
-
-                                }
-
-                            });
-
-                            final Button addClassDialogAddButton = (Button) addDialog.findViewById(R.id.dialog_edit_day_add_class_add_button);
-                            addClassDialogAddButton.setOnClickListener(new View.OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-
-                                    final Spinner classNameSpinner = (Spinner) addDialog.findViewById(R.id.dialog_edit_day_add_class_spinner);
+                                    final Spinner classNameSpinner = (Spinner) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_spinner);
                                     final String className = classNameSpinner.getSelectedItem().toString();
 
-                                    final TextView classStartTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_start_time);
-                                    final TextView classEndTimeTextView = (TextView) addDialog.findViewById(R.id.dialog_edit_day_add_class_end_time);
+                                    final TextView classStartTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
+                                    final TextView classEndTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
 
                                     String classStartTime;
                                     String classEndTime;
@@ -935,7 +565,7 @@ public class EditDay extends AppCompatActivity {
 
                                     setClassesArrayListOfDay(day, currentClasses);
 
-                                    addDialog.dismiss();
+                                    materialDialog.dismiss();
 
                                     updateUI();
 
@@ -943,13 +573,406 @@ public class EditDay extends AppCompatActivity {
 
                             });
 
-                            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-                            layoutParams.copyFrom(addDialog.getWindow().getAttributes());
-                            layoutParams.width = getPixelFromDP(336);
-                            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            materialDialogBuilderAdd.onNegative(new MaterialDialog.SingleButtonCallback() {
 
-                            addDialog.show();
-                            addDialog.getWindow().setAttributes(layoutParams);
+                                @Override
+                                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
+
+                                    startTimeTextAdd = "";
+                                    endTimeTextAdd = "";
+
+                                    final TextView dialogAddClassStartTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
+                                    final TextView dialogAddClassEndTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
+
+                                    TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+
+                                        @Override
+                                        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
+
+                                            if (hourOfDay > hourOfDayEnd) {
+
+                                                Toast.makeText(EditDay.this, "Your end time is before your start time!", Toast.LENGTH_LONG).show();
+
+                                            } else if (hourOfDay == hourOfDayEnd) {
+
+                                                if (minute == minuteEnd) {
+
+                                                    Toast.makeText(EditDay.this, "Your start time equals your end time!", Toast.LENGTH_LONG).show();
+
+                                                } else {
+
+                                                    if (startTimeRestriction.isEmpty()) {
+
+                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                        if (is24Hour) {
+
+                                                            startTimeTextAdd = hourOfDayString + ":" + minuteString;
+
+                                                        } else {
+
+                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                            startTimeTextAdd = dateTimeFormatterAMPM.print(startTime);
+
+                                                        }
+
+                                                    } else {
+
+                                                        int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
+
+                                                        if (hourOfDay < startRestrictionHourOfDay) {
+
+                                                            Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                        } else if (hourOfDay == startRestrictionHourOfDay) {
+
+                                                            int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
+
+                                                            if (minute < startRestrictionMinute) {
+
+                                                                Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                            } else {
+
+                                                                String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                                String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                                if (is24Hour) {
+
+                                                                    startTimeTextAdd = hourOfDayString + ":" + minuteString;
+
+                                                                } else {
+
+                                                                    final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                                    startTimeTextAdd = dateTimeFormatterAMPM.print(startTime);
+
+                                                                }
+
+                                                            }
+
+                                                        } else {
+
+                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                            if (is24Hour) {
+
+                                                                startTimeTextAdd = hourOfDayString + ":" + minuteString;
+
+                                                            } else {
+
+                                                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                                startTimeTextAdd = dateTimeFormatterAMPM.print(startTime);
+
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                    if (!startTimeTextAdd.isEmpty()) {
+
+                                                        if (endTimeRestriction.isEmpty()) {
+
+                                                            String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                            String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                            if (is24Hour) {
+
+                                                                endTimeTextAdd = hourOfDayEndString + ":" + minuteEndString;
+
+                                                            } else {
+
+                                                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                endTimeTextAdd = dateTimeFormatterAMPM.print(endTime);
+
+                                                            }
+
+                                                        } else {
+
+                                                            int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
+
+                                                            if (hourOfDayEnd > endRestrictionHourOfDay) {
+
+                                                                Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                            } else if (hourOfDayEnd == endRestrictionHourOfDay) {
+
+                                                                int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
+
+                                                                if (minuteEnd > endRestrictionMinute) {
+
+                                                                    Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                                } else {
+
+                                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                                    if (is24Hour) {
+
+                                                                        endTimeTextAdd = hourOfDayEndString + ":" + minuteEndString;
+
+                                                                    } else {
+
+                                                                        final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                        endTimeTextAdd = dateTimeFormatterAMPM.print(endTime);
+
+                                                                    }
+
+                                                                }
+
+                                                            } else {
+
+                                                                String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                                String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                                if (is24Hour) {
+
+                                                                    endTimeTextAdd = hourOfDayEndString + ":" + minuteEndString;
+
+                                                                } else {
+
+                                                                    final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                    endTimeTextAdd = dateTimeFormatterAMPM.print(endTime);
+
+                                                                }
+
+                                                            }
+
+                                                        }
+
+                                                        if (!endTimeTextAdd.isEmpty()) {
+
+                                                            dialogAddClassStartTimeTextView.setText(startTimeTextAdd);
+                                                            dialogAddClassEndTimeTextView.setText(endTimeTextAdd);
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            } else {
+
+                                                if (startTimeRestriction.isEmpty()) {
+
+                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                    if (is24Hour) {
+
+                                                        startTimeTextAdd = hourOfDayString + ":" + minuteString;
+
+                                                    } else {
+
+                                                        final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                        startTimeTextAdd = dateTimeFormatterAMPM.print(startTime);
+
+                                                    }
+
+                                                } else {
+
+                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
+
+                                                    if (hourOfDay < startRestrictionHourOfDay) {
+
+                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                    } else if (hourOfDay == startRestrictionHourOfDay) {
+
+                                                        int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
+
+                                                        if (minute < startRestrictionMinute) {
+
+                                                            Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                        } else {
+
+                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                            if (is24Hour) {
+
+                                                                startTimeTextAdd = hourOfDayString + ":" + minuteString;
+
+                                                            } else {
+
+                                                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                                startTimeTextAdd = dateTimeFormatterAMPM.print(startTime);
+
+                                                            }
+
+                                                        }
+
+                                                    } else {
+
+                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                        if (is24Hour) {
+
+                                                            startTimeTextAdd = hourOfDayString + ":" + minuteString;
+
+                                                        } else {
+
+                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                            startTimeTextAdd = dateTimeFormatterAMPM.print(startTime);
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                                if (!startTimeTextAdd.isEmpty()) {
+
+                                                    if (endTimeRestriction.isEmpty()) {
+
+                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                        if (is24Hour) {
+
+                                                            endTimeTextAdd = hourOfDayEndString + ":" + minuteEndString;
+
+                                                        } else {
+
+                                                            final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                            endTimeTextAdd = dateTimeFormatterAMPM.print(endTime);
+
+                                                        }
+
+                                                    } else {
+
+                                                        int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
+
+                                                        if (hourOfDayEnd > endRestrictionHourOfDay) {
+
+                                                            Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                        } else if (hourOfDayEnd == endRestrictionHourOfDay) {
+
+                                                            int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
+
+                                                            if (minuteEnd > endRestrictionMinute) {
+
+                                                                Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                            } else {
+
+                                                                String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                                String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                                if (is24Hour) {
+
+                                                                    endTimeTextAdd = hourOfDayEndString + ":" + minuteEndString;
+
+                                                                } else {
+
+                                                                    final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                    endTimeTextAdd = dateTimeFormatterAMPM.print(endTime);
+
+                                                                }
+
+                                                            }
+
+                                                        } else {
+
+                                                            String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                            String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                            if (is24Hour) {
+
+                                                                endTimeTextAdd = hourOfDayEndString + ":" + minuteEndString;
+
+                                                            } else {
+
+                                                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                endTimeTextAdd = dateTimeFormatterAMPM.print(endTime);
+
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                    if (!endTimeTextAdd.isEmpty()) {
+
+                                                        dialogAddClassStartTimeTextView.setText(startTimeTextAdd);
+                                                        dialogAddClassEndTimeTextView.setText(endTimeTextAdd);
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    };
+
+                                    if (is24Hour) {
+
+                                        String[] splitStartTimeString = dialogAddClassStartTimeTextView.getText().toString().split(":");
+
+                                        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
+
+                                                onTimeSetListener,
+                                                Integer.parseInt(splitStartTimeString[0]),
+                                                Integer.parseInt(splitStartTimeString[1].substring(0, 2)),
+                                                true
+
+                                        );
+
+                                        timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
+
+                                    } else {
+
+                                        String startTimeString = dateTimeFormatter24Hour.print(dateTimeFormatterAMPM.parseLocalTime(dialogAddClassStartTimeTextView.getText().toString()));
+
+                                        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
+
+                                                onTimeSetListener,
+                                                Integer.parseInt(startTimeString.substring(0, 2)),
+                                                Integer.parseInt(startTimeString.substring(3)),
+                                                false
+
+                                        );
+
+                                        timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
+
+                                    }
+
+                                }
+
+                            });
+
+                            final Spinner classNameSpinner = (Spinner) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_spinner);
+
+                            final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.allClassNamesArrayList);
+
+                            classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            classNameSpinner.setAdapter(classNameSpinnerAdapter);
+
+                            final TextView dialogAddClassStartTimeTextView = (TextView) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
+                            final TextView dialogAddClassEndTimeTextView = (TextView) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
+
+                            if (is24Hour) {
+
+                                dialogAddClassStartTimeTextView.setText(startTimeStringForPosition.get(position));
+                                dialogAddClassEndTimeTextView.setText(endTimeStringForPosition.get(position));
+
+                            } else {
+
+                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(startTimeStringForPosition.get(position));
+                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(endTimeStringForPosition.get(position));
+
+                                dialogAddClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
+                                dialogAddClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
+
+                            }
 
                         } else {
 
@@ -1090,12 +1113,22 @@ public class EditDay extends AppCompatActivity {
                         classNameList.remove(selectedClassName);
                         classNameList.add(0, selectedClassName);
 
-                        final Dialog editDialog = new Dialog(EditDay.this);
-                        editDialog.setContentView(R.layout.dialog_edit_day_edit_class);
-                        editDialog.setTitle("Edit Class");
+                        final MaterialDialog.Builder materialDialogBuilderEditClass = new MaterialDialog.Builder(EditDay.this);
 
-                        final TextView dialogEditClassStartTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_start_time);
-                        final TextView dialogEditClassEndTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_end_time);
+                        materialDialogBuilderEditClass.title("Edit Class");
+                        materialDialogBuilderEditClass.customView(R.layout.dialog_edit_day_edit_class, false);
+                        materialDialogBuilderEditClass.positiveText("Done");
+                        materialDialogBuilderEditClass.positiveColorRes(R.color.black);
+                        materialDialogBuilderEditClass.negativeText("Edit Times");
+                        materialDialogBuilderEditClass.negativeColorRes(R.color.black);
+                        materialDialogBuilderEditClass.neutralText("Delete");
+                        materialDialogBuilderEditClass.neutralColorRes(R.color.black);
+                        materialDialogBuilderEditClass.autoDismiss(false);
+
+                        final MaterialDialog materialDialogEditClass = materialDialogBuilderEditClass.show();
+
+                        final TextView dialogEditClassStartTimeTextView = (TextView) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_start_time);
+                        final TextView dialogEditClassEndTimeTextView = (TextView) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_end_time);
 
                         if (is24Hour) {
 
@@ -1112,411 +1145,23 @@ public class EditDay extends AppCompatActivity {
 
                         }
 
-                        final Spinner classNameSpinner = (Spinner) editDialog.findViewById(R.id.dialog_edit_day_edit_class_spinner);
+                        final Spinner classNameSpinner = (Spinner) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_spinner);
 
                         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, classNameList);
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);
 
-                        final Button editClassDialogDeleteButton = (Button) editDialog.findViewById(R.id.dialog_edit_day_edit_class_delete_button);
-                        editClassDialogDeleteButton.setOnClickListener(new View.OnClickListener() {
+                        materialDialogBuilderEditClass.onPositive(new MaterialDialog.SingleButtonCallback() {
 
                             @Override
-                            public void onClick(View v) {
+                            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
 
-                                DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
-                                databaseHelper.removeClassOutOfDay(day, selectedClassName, selectedClassStartTime);
-
-                                final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
-
-                                Cursor cursor = databaseHelper.getClasses(day);
-
-                                while (cursor.moveToNext()) {
-
-                                    classesArrayList.add(new StandardClass(EditDay.this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
-
-                                }
-
-                                if (!classesArrayList.isEmpty())
-                                    setClassesArrayListOfDay(day, classesArrayList);
-                                else
-                                    setClassesArrayListOfDay(day, null);
-
-                                databaseHelper.close();
-
-                                editDialog.dismiss();
-
-                                updateUI();
-
-                            }
-
-                        });
-
-                        final Button editClassDialogChangeTimeButton = (Button) editDialog.findViewById(R.id.dialog_edit_day_edit_class_time_picker_button);
-                        editClassDialogChangeTimeButton.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View view) {
-
-                                TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-
-                                    @Override
-                                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
-
-                                        if (hourOfDay > hourOfDayEnd) {
-
-                                            Toast.makeText(EditDay.this, "Your end time is before your start time!", Toast.LENGTH_LONG).show();
-
-                                        } else if (hourOfDay == hourOfDayEnd) {
-
-                                            if (minute == minuteEnd) {
-
-                                                Toast.makeText(EditDay.this, "Your start time equals your end time!", Toast.LENGTH_LONG).show();
-
-                                            } else {
-
-                                                if (startTimeRestriction.isEmpty()) {
-
-                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                    if (is24Hour) {
-
-                                                        dialogEditClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                    } else {
-
-                                                        final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                        dialogEditClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                    }
-
-                                                } else {
-
-                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
-
-                                                    if (hourOfDay < startRestrictionHourOfDay) {
-
-                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                        return;
-
-                                                    } else if (hourOfDay == startRestrictionHourOfDay) {
-
-                                                        int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
-
-                                                        if (minute < startRestrictionMinute) {
-
-                                                            Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                            return;
-
-                                                        } else {
-
-                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                            if (is24Hour) {
-
-                                                                dialogEditClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                            } else {
-
-                                                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                                dialogEditClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                            }
-
-                                                        }
-
-                                                    } else {
-
-                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                        if (is24Hour) {
-
-                                                            dialogEditClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                        } else {
-
-                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                            dialogEditClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                        }
-
-                                                    }
-
-                                                }
-
-                                                if (endTimeRestriction.isEmpty()) {
-
-                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                    if (is24Hour) {
-
-                                                        dialogEditClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                    } else {
-
-                                                        final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                        dialogEditClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                    }
-
-                                                } else {
-
-                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
-
-                                                    if (hourOfDayEnd > endRestrictionHourOfDay) {
-
-                                                        Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                    } else if (hourOfDayEnd == endRestrictionHourOfDay) {
-
-                                                        int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
-
-                                                        if (minuteEnd > endRestrictionMinute) {
-
-                                                            Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                        } else {
-
-                                                            String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                            String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                            if (is24Hour) {
-
-                                                                dialogEditClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                            } else {
-
-                                                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                                dialogEditClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                            }
-
-                                                        }
-
-                                                    } else {
-
-                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                        if (is24Hour) {
-
-                                                            dialogEditClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                        } else {
-
-                                                            final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                            dialogEditClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                        }
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        } else {
-
-                                            if (startTimeRestriction.isEmpty()) {
-
-                                                String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                if (is24Hour) {
-
-                                                    dialogEditClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                } else {
-
-                                                    final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                    dialogEditClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                }
-
-                                            } else {
-
-                                                int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
-
-                                                if (hourOfDay < startRestrictionHourOfDay) {
-
-                                                    Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                    return;
-
-                                                } else if (hourOfDay == startRestrictionHourOfDay) {
-
-                                                    int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
-
-                                                    if (minute < startRestrictionMinute) {
-
-                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
-                                                        return;
-
-                                                    } else {
-
-                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                        if (is24Hour) {
-
-                                                            dialogEditClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                        } else {
-
-                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                            dialogEditClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                        }
-
-                                                    }
-
-                                                } else {
-
-                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
-                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
-
-                                                    if (is24Hour) {
-
-                                                        dialogEditClassStartTimeTextView.setText(hourOfDayString + ":" + minuteString);
-
-                                                    } else {
-
-                                                        final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
-                                                        dialogEditClassStartTimeTextView.setText(dateTimeFormatterAMPM.print(startTime));
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                            if (endTimeRestriction.isEmpty()) {
-
-                                                String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                if (is24Hour) {
-
-                                                    dialogEditClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                } else {
-
-                                                    final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                    dialogEditClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                }
-
-                                            } else {
-
-                                                int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
-
-                                                if (hourOfDayEnd > endRestrictionHourOfDay) {
-
-                                                    Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                } else if (hourOfDayEnd == endRestrictionHourOfDay) {
-
-                                                    int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
-
-                                                    if (minuteEnd > endRestrictionMinute) {
-
-                                                        Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
-
-                                                    } else {
-
-                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                        if (is24Hour) {
-
-                                                            dialogEditClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                        } else {
-
-                                                            final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                            dialogEditClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                        }
-
-                                                    }
-
-                                                } else {
-
-                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
-                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
-
-                                                    if (is24Hour) {
-
-                                                        dialogEditClassEndTimeTextView.setText(hourOfDayEndString + ":" + minuteEndString);
-
-                                                    } else {
-
-                                                        final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
-                                                        dialogEditClassEndTimeTextView.setText(dateTimeFormatterAMPM.print(endTime));
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                };
-
-                                if (is24Hour) {
-
-                                    String[] splitStartTimeString = dialogEditClassStartTimeTextView.getText().toString().split(":");
-
-                                    final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
-
-                                            onTimeSetListener,
-                                            Integer.parseInt(splitStartTimeString[0]),
-                                            Integer.parseInt(splitStartTimeString[1].substring(0, 2)),
-                                            true
-
-                                    );
-
-                                    timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
-
-                                } else {
-
-                                    String startTimeString = dateTimeFormatter24HourNoColon.print(dateTimeFormatterAMPM.parseLocalTime(dialogEditClassStartTimeTextView.getText().toString()));
-
-                                    final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
-
-                                            onTimeSetListener,
-                                            Integer.parseInt(startTimeString.substring(0, 2)),
-                                            Integer.parseInt(startTimeString.substring(3)),
-                                            false
-
-                                    );
-
-                                    timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
-
-                                }
-
-                            }
-
-                        });
-
-                        final Button editClassDialogDoneButton = (Button) editDialog.findViewById(R.id.dialog_edit_day_edit_class_done_button);
-                        editClassDialogDoneButton.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View view) {
-
-                                final Spinner classNameSpinner = (Spinner) editDialog.findViewById(R.id.dialog_edit_day_edit_class_spinner);
+                                final Spinner classNameSpinner = (Spinner) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_spinner);
                                 String className = classNameSpinner.getSelectedItem().toString();
 
-                                final TextView classStartTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_start_time);
-                                final TextView classEndTimeTextView = (TextView) editDialog.findViewById(R.id.dialog_edit_day_edit_class_end_time);
+                                final TextView classStartTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_start_time);
+                                final TextView classEndTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_end_time);
 
                                 String classStartTime;
                                 String classEndTime;
@@ -1583,7 +1228,7 @@ public class EditDay extends AppCompatActivity {
 
                                 setClassesArrayListOfDay(day, currentClasses);
 
-                                editDialog.dismiss();
+                                materialDialog.dismiss();
 
                                 updateUI();
 
@@ -1591,13 +1236,411 @@ public class EditDay extends AppCompatActivity {
 
                         });
 
-                        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-                        layoutParams.copyFrom(editDialog.getWindow().getAttributes());
-                        layoutParams.width = getPixelFromDP(336);
-                        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                        materialDialogBuilderEditClass.onNegative(new MaterialDialog.SingleButtonCallback() {
 
-                        editDialog.show();
-                        editDialog.getWindow().setAttributes(layoutParams);
+                            @Override
+                            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
+
+                                startTimeTextEdit = "";
+                                endTimeTextEdit = "";
+
+                                TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+
+                                    @Override
+                                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
+
+                                        if (hourOfDay > hourOfDayEnd) {
+
+                                            Toast.makeText(EditDay.this, "Your end time is before your start time!", Toast.LENGTH_LONG).show();
+
+                                        } else if (hourOfDay == hourOfDayEnd) {
+
+                                            if (minute == minuteEnd) {
+
+                                                Toast.makeText(EditDay.this, "Your start time equals your end time!", Toast.LENGTH_LONG).show();
+
+                                            } else {
+
+                                                if (startTimeRestriction.isEmpty()) {
+
+                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                    if (is24Hour) {
+
+                                                        startTimeTextEdit = hourOfDayString + ":" + minuteString;
+
+                                                    } else {
+
+                                                        final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                        startTimeTextEdit = dateTimeFormatterAMPM.print(startTime);
+
+                                                    }
+
+                                                } else {
+
+                                                    int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
+
+                                                    if (hourOfDay < startRestrictionHourOfDay) {
+
+                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                    } else if (hourOfDay == startRestrictionHourOfDay) {
+
+                                                        int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
+
+                                                        if (minute < startRestrictionMinute) {
+
+                                                            Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                        } else {
+
+                                                            String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                            String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                            if (is24Hour) {
+
+                                                                startTimeTextEdit = hourOfDayString + ":" + minuteString;
+
+                                                            } else {
+
+                                                                final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                                startTimeTextEdit = dateTimeFormatterAMPM.print(startTime);
+
+                                                            }
+
+                                                        }
+
+                                                    } else {
+
+                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                        if (is24Hour) {
+
+                                                            startTimeTextEdit = hourOfDayString + ":" + minuteString;
+
+                                                        } else {
+
+                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                            startTimeTextEdit = dateTimeFormatterAMPM.print(startTime);
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                                if (!startTimeTextEdit.isEmpty()) {
+
+                                                    if (endTimeRestriction.isEmpty()) {
+
+                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                        if (is24Hour) {
+
+                                                            endTimeTextEdit = hourOfDayEndString + ":" + minuteEndString;
+
+                                                        } else {
+
+                                                            final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                            endTimeTextEdit = dateTimeFormatterAMPM.print(endTime);
+
+                                                        }
+
+                                                    } else {
+
+                                                        int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
+
+                                                        if (hourOfDayEnd > endRestrictionHourOfDay) {
+
+                                                            Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                        } else if (hourOfDayEnd == endRestrictionHourOfDay) {
+
+                                                            int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
+
+                                                            if (minuteEnd > endRestrictionMinute) {
+
+                                                                Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                            } else {
+
+                                                                String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                                String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                                if (is24Hour) {
+
+                                                                    endTimeTextEdit = hourOfDayEndString + ":" + minuteEndString;
+
+                                                                } else {
+
+                                                                    final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                    endTimeTextEdit = dateTimeFormatterAMPM.print(endTime);
+
+                                                                }
+
+                                                            }
+
+                                                        } else {
+
+                                                            String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                            String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                            if (is24Hour) {
+
+                                                                endTimeTextEdit = hourOfDayEndString + ":" + minuteEndString;
+
+                                                            } else {
+
+                                                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                endTimeTextEdit = dateTimeFormatterAMPM.print(endTime);
+
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                    if (!endTimeTextEdit.isEmpty()) {
+
+                                                        dialogEditClassStartTimeTextView.setText(startTimeTextEdit);
+                                                        dialogEditClassEndTimeTextView.setText(endTimeTextEdit);
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        } else {
+
+                                            if (startTimeRestriction.isEmpty()) {
+
+                                                String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                if (is24Hour) {
+
+                                                    startTimeTextEdit = hourOfDayString + ":" + minuteString;
+
+                                                } else {
+
+                                                    final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                    startTimeTextEdit = dateTimeFormatterAMPM.print(startTime);
+
+                                                }
+
+                                            } else {
+
+                                                int startRestrictionHourOfDay = Integer.parseInt(startTimeRestriction.substring(0, 2));
+
+                                                if (hourOfDay < startRestrictionHourOfDay) {
+
+                                                    Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                } else if (hourOfDay == startRestrictionHourOfDay) {
+
+                                                    int startRestrictionMinute = Integer.parseInt(startTimeRestriction.substring(3));
+
+                                                    if (minute < startRestrictionMinute) {
+
+                                                        Toast.makeText(EditDay.this, "Choose a start time after the previous class!", Toast.LENGTH_LONG).show();
+
+                                                    } else {
+
+                                                        String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                        String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                        if (is24Hour) {
+
+                                                            startTimeTextEdit = hourOfDayString + ":" + minuteString;
+
+                                                        } else {
+
+                                                            final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                            startTimeTextEdit = dateTimeFormatterAMPM.print(startTime);
+
+                                                        }
+
+                                                    }
+
+                                                } else {
+
+                                                    String hourOfDayString = (hourOfDay < 10) ? ("0" + String.valueOf(hourOfDay)) : String.valueOf(hourOfDay);
+                                                    String minuteString = (minute < 10) ? ("0" + String.valueOf(minute)) : String.valueOf(minute);
+
+                                                    if (is24Hour) {
+
+                                                        startTimeTextEdit = hourOfDayString + ":" + minuteString;
+
+                                                    } else {
+
+                                                        final LocalTime startTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayString + ":" + minuteString);
+                                                        startTimeTextEdit = dateTimeFormatterAMPM.print(startTime);
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                            if (!startTimeTextEdit.isEmpty()) {
+
+                                                if (endTimeRestriction.isEmpty()) {
+
+                                                    String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                    String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                    if (is24Hour) {
+
+                                                        endTimeTextEdit = hourOfDayEndString + ":" + minuteEndString;
+
+                                                    } else {
+
+                                                        final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                        endTimeTextEdit = dateTimeFormatterAMPM.print(endTime);
+
+                                                    }
+
+                                                } else {
+
+                                                    int endRestrictionHourOfDay = Integer.parseInt(endTimeRestriction.substring(0, 2));
+
+                                                    if (hourOfDayEnd > endRestrictionHourOfDay) {
+
+                                                        Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                    } else if (hourOfDayEnd == endRestrictionHourOfDay) {
+
+                                                        int endRestrictionMinute = Integer.parseInt(endTimeRestriction.substring(3));
+
+                                                        if (minuteEnd > endRestrictionMinute) {
+
+                                                            Toast.makeText(EditDay.this, "Choose an end time before the next class!", Toast.LENGTH_LONG).show();
+
+                                                        } else {
+
+                                                            String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                            String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                            if (is24Hour) {
+
+                                                                endTimeTextEdit = hourOfDayEndString + ":" + minuteEndString;
+
+                                                            } else {
+
+                                                                final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                                endTimeTextEdit = dateTimeFormatterAMPM.print(endTime);
+
+                                                            }
+
+                                                        }
+
+                                                    } else {
+
+                                                        String hourOfDayEndString = (hourOfDayEnd < 10) ? ("0" + String.valueOf(hourOfDayEnd)) : String.valueOf(hourOfDayEnd);
+                                                        String minuteEndString = (minuteEnd < 10) ? ("0" + String.valueOf(minuteEnd)) : String.valueOf(minuteEnd);
+
+                                                        if (is24Hour) {
+
+                                                            endTimeTextEdit = hourOfDayEndString + ":" + minuteEndString;
+
+                                                        } else {
+
+                                                            final LocalTime endTime = dateTimeFormatter24Hour.parseLocalTime(hourOfDayEndString + ":" + minuteEndString);
+                                                            endTimeTextEdit = dateTimeFormatterAMPM.print(endTime);
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                                if (!endTimeTextEdit.isEmpty()) {
+
+                                                    dialogEditClassStartTimeTextView.setText(startTimeTextEdit);
+                                                    dialogEditClassEndTimeTextView.setText(endTimeTextEdit);
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                };
+
+                                if (is24Hour) {
+
+                                    String[] splitStartTimeString = dialogEditClassStartTimeTextView.getText().toString().split(":");
+
+                                    final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
+
+                                            onTimeSetListener,
+                                            Integer.parseInt(splitStartTimeString[0]),
+                                            Integer.parseInt(splitStartTimeString[1].substring(0, 2)),
+                                            true
+
+                                    );
+
+                                    timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
+
+                                } else {
+
+                                    String startTimeString = dateTimeFormatter24HourNoColon.print(dateTimeFormatterAMPM.parseLocalTime(dialogEditClassStartTimeTextView.getText().toString()));
+
+                                    final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
+
+                                            onTimeSetListener,
+                                            Integer.parseInt(startTimeString.substring(0, 2)),
+                                            Integer.parseInt(startTimeString.substring(3)),
+                                            false
+
+                                    );
+
+                                    timePickerDialog.show(getFragmentManager(), "time_picker_dialog");
+
+                                }
+
+                            }
+
+                        });
+
+                        materialDialogBuilderEditClass.onNeutral(new MaterialDialog.SingleButtonCallback() {
+
+                            @Override
+                            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
+
+                                DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
+                                databaseHelper.removeClassOutOfDay(day, selectedClassName, selectedClassStartTime);
+
+                                final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
+
+                                Cursor cursor = databaseHelper.getClasses(day);
+
+                                while (cursor.moveToNext()) {
+
+                                    classesArrayList.add(new StandardClass(EditDay.this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+
+                                }
+
+                                if (!classesArrayList.isEmpty())
+                                    setClassesArrayListOfDay(day, classesArrayList);
+                                else
+                                    setClassesArrayListOfDay(day, null);
+
+                                databaseHelper.close();
+
+                                materialDialog.dismiss();
+
+                                updateUI();
+
+                            }
+
+                        });
 
                     }
 

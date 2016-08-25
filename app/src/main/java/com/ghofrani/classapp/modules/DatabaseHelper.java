@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.ghofrani.classapp.model.DatabaseContract;
+import com.ghofrani.classapp.model.Homework;
 
 import java.util.Calendar;
 
@@ -544,6 +545,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return cursor;
+
+    }
+
+    public boolean insertHomework(Homework homework) {
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
+        long result;
+
+        contentValues.put(DatabaseContract.Homework.COLUMN_NAME, homework.getName());
+        contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homework.getClassName());
+        contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homework.getLocalDateTime().toString());
+        contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homework.isAttach() ? 1 : 0);
+
+        result = sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
+
+        sqLiteDatabase.close();
+
+        return result != -1;
 
     }
 

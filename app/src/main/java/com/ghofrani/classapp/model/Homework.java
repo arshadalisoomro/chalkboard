@@ -36,6 +36,10 @@ public class Homework {
         return localDateTime.toLocalDate();
     }
 
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
     public boolean isAttach() {
         return attach;
     }
