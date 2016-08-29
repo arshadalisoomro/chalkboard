@@ -37,7 +37,8 @@
             android:id="@+id/overview_current_class_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_margin="16dp"
+            android:visibility="gone">
 
             <RelativeLayout
 
@@ -50,16 +51,15 @@
                     android:id="@+id/overview_current_class_card_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:paddingTop="6dp">
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="14dp">
 
                     <TextView
 
                         android:id="@+id/overview_current_class_card_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:textSize="18sp" />
 
                     <TextView
@@ -76,7 +76,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_gravity="center_vertical"
+                        android:layout_centerVertical="true"
                         android:src="@drawable/color_indicator_class" />
 
                 </RelativeLayout>
@@ -86,10 +86,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/overview_current_class_card_header"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="6dp">
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="6dp">
 
                     <ProgressBar
 
@@ -141,7 +141,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/overview_current_class_card"
-            android:layout_margin="16dp">
+            android:layout_margin="16dp"
+            android:visibility="gone">
 
             <RelativeLayout
 
@@ -176,7 +177,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/overview_next_classes_card"
-            android:layout_margin="16dp">
+            android:layout_margin="16dp"
+            android:visibility="gone">
 
             <RelativeLayout
 
