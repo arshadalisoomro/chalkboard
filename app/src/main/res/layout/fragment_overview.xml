@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp">
+                    android:paddingTop="6dp">
 
                     <TextView
 
@@ -69,6 +69,15 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/overview_current_class_card_title"
                         android:textSize="14sp" />
+
+                    <ImageView
+
+                        android:id="@+id/overview_current_class_card_class_color_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/color_indicator_class" />
 
                 </RelativeLayout>
 

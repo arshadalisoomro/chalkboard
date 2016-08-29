@@ -1,22 +1,22 @@
 package com.ghofrani.classapp.model;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
 public class Homework {
 
     private final String name;
     private final String className;
-    private final LocalDateTime localDateTime;
+    private final DateTime dateTime;
     private final boolean attach;
+    private final int color;
 
-    public Homework(String name, String className, String localDateTime, int attach) {
+    public Homework(String name, String className, DateTime dateTime, int attach, int color) {
 
         this.name = name;
         this.className = className;
-        this.localDateTime = LocalDateTime.parse(localDateTime);
+        this.dateTime = dateTime;
         this.attach = attach == 1;
+        this.color = color;
 
     }
 
@@ -29,19 +29,15 @@ public class Homework {
     }
 
     public DateTime getDateTime() {
-        return localDateTime.toDateTime();
-    }
-
-    public LocalDate getLocalDate() {
-        return localDateTime.toLocalDate();
-    }
-
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+        return dateTime;
     }
 
     public boolean isAttach() {
         return attach;
+    }
+
+    public int getColor() {
+        return color;
     }
 
 }

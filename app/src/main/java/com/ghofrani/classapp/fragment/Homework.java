@@ -1,7 +1,11 @@
 package com.ghofrani.classapp.fragment;
 
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -113,6 +117,7 @@ public class Homework extends Fragment {
             sectionedAdapter.setSections(sections.toArray(sectionArray));
 
             recyclerView.setAdapter(sectionedAdapter);
+            recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
 
         } else {
 
@@ -130,6 +135,42 @@ public class Homework extends Fragment {
         noHomeworkCardView = null;
 
         super.onDestroyView();
+
+    }
+
+    public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
+
+        private Drawable dividerDrawable;
+
+        public SimpleDividerItemDecoration(Context context) {
+
+            dividerDrawable = ContextCompat.getDrawable(context, R.drawable.line_divider);
+
+        }
+
+        @Override
+        public void onDrawOver(Canvas c, RecyclerView parentView, RecyclerView.State recyclerViewState) {
+
+            int left = parentView.getPaddingLeft();
+            int right = parentView.getWidth() - parentView.getPaddingRight();
+
+            int childCount = parentView.getChildCount();
+
+            for (int i = 0; i < childCount; i++) {
+
+                View childView = parentView.getChildAt(i);
+
+                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
+
+                int top = childView.getBottom() + layoutParams.bottomMargin;
+                int bottom = top + dividerDrawable.getIntrinsicHeight();
+
+                dividerDrawable.setBounds(left, top, right, bottom);
+                dividerDrawable.draw(c);
+
+            }
+
+        }
 
     }
 

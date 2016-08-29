@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
@@ -238,6 +239,9 @@ public class Overview extends Fragment {
 
             TextView currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
             currentClassEndTimeTextView.setText(currentClass.getEndTimeString(true));
+
+            ImageView currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
+            currentClassColorIndicator.setColorFilter(currentClass.getColor());
 
             updateProgressBar();
 

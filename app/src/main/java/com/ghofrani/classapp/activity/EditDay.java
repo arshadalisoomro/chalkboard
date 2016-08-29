@@ -446,8 +446,6 @@ public class EditDay extends AppCompatActivity {
 
                     if (noClassIndexList.contains(position)) {
 
-                        if (!DataStore.allClassNamesArrayList.isEmpty()) {
-
                             final String startTimeRestriction;
                             final String endTimeRestriction;
 
@@ -974,12 +972,6 @@ public class EditDay extends AppCompatActivity {
 
                             }
 
-                        } else {
-
-                            Toast.makeText(EditDay.this, "Add classes first!", Toast.LENGTH_LONG).show();
-
-                        }
-
                     } else {
 
                         final String startTimeRestriction;
@@ -996,7 +988,7 @@ public class EditDay extends AppCompatActivity {
 
                             if (noClassIndexList.contains(position + 1)) {
 
-                                if ((position + 1) == standardClassArrayList.size()) {
+                                if ((position + 2) == standardClassArrayList.size()) {
 
                                     endTimeRestriction = "";
 
@@ -1018,7 +1010,7 @@ public class EditDay extends AppCompatActivity {
 
                             if (noClassIndexList.contains(position + 1)) {
 
-                                if (position + 1 == standardClassArrayList.size()) {
+                                if (position + 2 == standardClassArrayList.size()) {
 
                                     endTimeRestriction = "";
 

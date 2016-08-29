@@ -1,9 +1,5 @@
 package com.ghofrani.classapp.model;
 
-import android.content.Context;
-
-import com.ghofrani.classapp.modules.DatabaseHelper;
-
 public class SlimClass {
 
     private final String name;
@@ -11,17 +7,12 @@ public class SlimClass {
     private final String teacher;
     private final int color;
 
-    public SlimClass(Context context, String name, String location, String teacher) {
+    public SlimClass(String name, String location, String teacher, int color) {
 
         this.name = name;
         this.location = location;
         this.teacher = teacher;
-
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
-
-        this.color = databaseHelper.getClassColor(name);
-
-        databaseHelper.close();
+        this.color = color;
 
     }
 

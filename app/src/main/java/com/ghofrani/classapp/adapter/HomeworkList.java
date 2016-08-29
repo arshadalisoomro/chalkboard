@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +66,8 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         homeworkViewHolder.relativeLayout.setOnClickListener(onClickListener);
         homeworkViewHolder.titleTextView.setText(homeworkArrayList.get(position).getName());
+        homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getDateTime().toString());
+        homeworkViewHolder.colorIndicatorImageView.setColorFilter(homeworkArrayList.get(position).getColor());
 
     }
 
@@ -72,13 +75,17 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         final RelativeLayout relativeLayout;
         final TextView titleTextView;
+        final TextView subtitleTextView;
+        final ImageView colorIndicatorImageView;
 
         HomeworkViewHolder(View itemView) {
 
             super(itemView);
 
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.view_homework_list_item_linear_layout);
-            titleTextView = (TextView) itemView.findViewById(R.id.view_homework_list_item_text_view);
+            titleTextView = (TextView) itemView.findViewById(R.id.view_homework_list_item_name);
+            subtitleTextView = (TextView) itemView.findViewById(R.id.view_homework_list_item_due);
+            colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_homework_list_item_color_indicator);
 
         }
 

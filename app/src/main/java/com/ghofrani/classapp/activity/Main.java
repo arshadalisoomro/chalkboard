@@ -135,20 +135,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
-
-        for(int i = 0; i <= 60; i++){
-
-            databaseHelper.insertHomework(new com.ghofrani.classapp.model.Homework("Today + " + String.valueOf(i), "Test", new LocalDateTime().now().plusDays(i).toString(), 0));
-
-        }
-
-        databaseHelper.close();
-
-        */
-
         startService(new Intent(this, Background.class));
 
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -196,7 +182,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                             case R.id.overview:
 
-                                floatingActionButton.setVisibility(View.INVISIBLE);
+                                if (floatingActionButton.isShown())
+                                    floatingActionButton.hide();
 
                                 toolbar.setTitle("Overview");
 
@@ -214,7 +201,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                             case R.id.timetable:
 
-                                floatingActionButton.setVisibility(View.VISIBLE);
+                                if (!floatingActionButton.isShown())
+                                    floatingActionButton.show();
 
                                 if (floatingActionButtonContrast)
                                     floatingActionButton.setImageResource(R.drawable.edit_black);
@@ -234,7 +222,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                             case R.id.classes:
 
-                                floatingActionButton.setVisibility(View.VISIBLE);
+                                if (!floatingActionButton.isShown())
+                                    floatingActionButton.show();
 
                                 if (floatingActionButtonContrast)
                                     floatingActionButton.setImageResource(R.drawable.add_black);
@@ -257,7 +246,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                             case R.id.homework:
 
-                                floatingActionButton.setVisibility(View.VISIBLE);
+                                if (!floatingActionButton.isShown())
+                                    floatingActionButton.show();
 
                                 if (floatingActionButtonContrast)
                                     floatingActionButton.setImageResource(R.drawable.add_black);
@@ -298,7 +288,10 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 if (currentView == 1) {
 
-                    startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataStore.selectedTabPosition));
+                    if (!DataStore.allClassNamesArrayList.isEmpty())
+                        startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataStore.selectedTabPosition));
+                    else
+                        Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
 
                 } else if (currentView == 2) {
 
@@ -306,15 +299,10 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 } else if (currentView == 3) {
 
-                    if (DataStore.allClassNamesArrayList.isEmpty()) {
-
+                    if (DataStore.allClassNamesArrayList.isEmpty())
                         Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
-
-                    } else {
-
+                    else
                         startActivity(new Intent(Main.this, AddHomework.class));
-
-                    }
 
                 }
 
@@ -624,7 +612,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case 0:
 
-                floatingActionButton.setVisibility(View.INVISIBLE);
+                if (floatingActionButton.isShown())
+                    floatingActionButton.hide();
 
                 toolbar.setTitle("Overview");
 
@@ -645,7 +634,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case 1:
 
-                floatingActionButton.setVisibility(View.VISIBLE);
+                if (!floatingActionButton.isShown())
+                    floatingActionButton.show();
 
                 if (floatingActionButtonContrast)
                     floatingActionButton.setImageResource(R.drawable.edit_black);
@@ -806,7 +796,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case 2:
 
-                floatingActionButton.setVisibility(View.VISIBLE);
+                if (!floatingActionButton.isShown())
+                    floatingActionButton.show();
 
                 if (floatingActionButtonContrast)
                     floatingActionButton.setImageResource(R.drawable.add_black);
@@ -832,7 +823,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case 3:
 
-                floatingActionButton.setVisibility(View.VISIBLE);
+                if (!floatingActionButton.isShown())
+                    floatingActionButton.show();
 
                 if (floatingActionButtonContrast)
                     floatingActionButton.setImageResource(R.drawable.add_black);

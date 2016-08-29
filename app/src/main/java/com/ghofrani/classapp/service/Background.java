@@ -32,8 +32,9 @@ import com.ghofrani.classapp.modules.DatabaseHelper;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 
@@ -822,8 +823,8 @@ public class Background extends Service {
         final ArrayList<Homework> thisMonthHomeworkArrayList = new ArrayList<>();
         final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
 
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime tomorrow = today.plusDays(1);
+        DateTime today = DateTime.now();
+        DateTime tomorrow = today.plusDays(1);
 
         boolean thisWeekEnabled = true;
         Interval thisWeek;
@@ -831,52 +832,54 @@ public class Background extends Service {
 
         switch (today.getDayOfWeek()) {
 
-            case 5:
+            case DateTimeConstants.FRIDAY:
 
                 thisWeekEnabled = false;
-                thisWeek = new Interval(today.toDateTime(), today.toDateTime());
-                nextWeek = new Interval(today.plusDays(2).withTime(0, 0, 0, 0).toDateTime(), today.plusDays(9).withTime(0, 0, 0, 0).toDateTime());
+                thisWeek = new Interval(today, today);
+                nextWeek = new Interval(today.plusDays(2).withTime(0, 0, 0, 0), today.plusDays(9).withTime(0, 0, 0, 0));
 
                 break;
 
-            case 6:
+            case DateTimeConstants.SATURDAY:
 
                 thisWeekEnabled = false;
-                thisWeek = new Interval(today.toDateTime(), today.toDateTime());
-                nextWeek = new Interval(today.plusDays(1).withTime(0, 0, 0, 0).toDateTime(), today.plusDays(8).withTime(0, 0, 0, 0).toDateTime());
+                thisWeek = new Interval(today, today);
+                nextWeek = new Interval(today.plusDays(1).withTime(0, 0, 0, 0), today.plusDays(8).withTime(0, 0, 0, 0));
 
                 break;
 
             default:
 
-                thisWeek = new Interval(tomorrow.plusDays(1).withTime(0, 0, 0, 0).toDateTime(), tomorrow.plusDays(7 - tomorrow.getDayOfWeek()).withTime(0, 0, 0, 0).toDateTime());
-                nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7).withTimeAtStartOfDay().toDateTime());
+                thisWeek = new Interval(tomorrow.plusDays(1).withTime(0, 0, 0, 0), tomorrow.plusDays(DateTimeConstants.SUNDAY - tomorrow.getDayOfWeek()).withTime(0, 0, 0, 0));
+                nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7).withTimeAtStartOfDay());
 
         }
 
         boolean thisMonthEnabled = false;
-        Interval thisMonth = new Interval(today.toDateTime(), today.toDateTime());
+        Interval thisMonth = new Interval(today, today);
 
         if (nextWeek.getEnd().getMonthOfYear() == today.getMonthOfYear()) {
 
             if (today.dayOfMonth().withMaximumValue().getDayOfMonth() > nextWeek.getEnd().getDayOfMonth() - 1) {
 
                 thisMonthEnabled = true;
-                thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue().toDateTime());
+                thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue());
 
             }
 
         }
 
+        DateTimeZone dateTimeZone = DateTimeZone.getDefault();
+
         while (homeworkCursor.moveToNext()) {
 
-            Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), homeworkCursor.getString(3), homeworkCursor.getInt(4));
+            Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4), databaseHelper.getClassColor(homeworkCursor.getString(2)));
 
-            if (today.toLocalDate().equals(homework.getLocalDate())) {
+            if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
                 todayHomeworkArrayList.add(homework);
 
-            } else if (tomorrow.toLocalDate().equals(homework.getLocalDate())) {
+            } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
                 tomorrowHomeworkArrayList.add(homework);
 
@@ -1001,7 +1004,7 @@ public class Background extends Service {
 
         while (cursor.moveToNext()) {
 
-            slimClassArrayList.add(new SlimClass(this, cursor.getString(1), cursor.getString(3), cursor.getString(2)));
+            slimClassArrayList.add(new SlimClass(cursor.getString(1), cursor.getString(3), cursor.getString(2), databaseHelper.getClassColor(cursor.getString(1))));
             classNamesArrayList.add(cursor.getString(1));
 
         }

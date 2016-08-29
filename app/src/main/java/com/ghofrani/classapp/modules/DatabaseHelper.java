@@ -558,7 +558,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(DatabaseContract.Homework.COLUMN_NAME, homework.getName());
         contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homework.getClassName());
-        contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homework.getLocalDateTime().toString());
+        contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homework.getDateTime().toString());
         contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homework.isAttach() ? 1 : 0);
 
         result = sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
