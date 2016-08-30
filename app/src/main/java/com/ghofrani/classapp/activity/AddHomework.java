@@ -8,10 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -19,6 +21,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.modules.DataStore;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 
@@ -154,26 +158,42 @@ public class AddHomework extends AppCompatActivity {
 
     public void onRadioButtonClicked(View view) {
 
-        boolean checked = ((RadioButton) view).isChecked();
+        if (((RadioButton) view).isChecked()) {
 
-        switch (view.getId()) {
+            switch (view.getId()) {
 
-            case R.id.radio_specific:
+                case R.id.radio_next:
 
-                if (checked) {
+                    break;
 
+                case R.id.radio_specific:
 
-                }
+                    break;
 
-                break;
+                case R.id.radio_custom:
 
-            case R.id.radio_custom:
+                    android.app.DatePickerDialog.OnDateSetListener onDateSetListener = new android.app.DatePickerDialog.OnDateSetListener() {
 
-                if (checked) {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
 
-                }
+                            DateTime pickedDateTime = new DateTime();
+                            pickedDateTime = pickedDateTime.withYear(year);
+                            pickedDateTime = pickedDateTime.withMonthOfYear(monthOfYear + 1);
+                            pickedDateTime = pickedDateTime.withDayOfMonth(dayOfMonth);
 
-                break;
+                            Log.d("DATEPICKER", pickedDateTime.toString());
+
+                        }
+
+                    };
+
+                    DateTime tomorrow = new DateTime().plusDays(1);
+                    new android.app.DatePickerDialog(this, onDateSetListener, tomorrow.getYear(), tomorrow.getMonthOfYear() - 1, tomorrow.getDayOfMonth()).show();
+
+                    break;
+
+            }
 
         }
 

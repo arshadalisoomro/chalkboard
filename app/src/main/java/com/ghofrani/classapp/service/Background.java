@@ -968,7 +968,9 @@ public class Background extends Service {
 
     private void getTimetable() {
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        if (databaseHelper == null)
+            databaseHelper = new DatabaseHelper(this);
+
         Cursor cursor;
 
         for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
