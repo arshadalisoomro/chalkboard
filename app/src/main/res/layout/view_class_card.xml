@@ -23,17 +23,16 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="6dp">
+            android:layout_marginTop="14dp">
 
             <TextView
 
                 android:id="@+id/view_class_card_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:textSize="18sp" />
 
             <TextView
@@ -42,7 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/view_class_card_title"
-                android:layout_marginBottom="10dp"
                 android:textSize="14sp" />
 
             <ImageView
@@ -52,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/color_indicator_class" />
+                android:src="@drawable/color_indicator_class_card"
+                android:translationY="0.5dp" />
 
         </RelativeLayout>
 

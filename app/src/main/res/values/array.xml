@@ -10,6 +10,8 @@
         <item>30 minutes</item>
         <item>45 minutes</item>
         <item>1 hour</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
 
     </string-array>
 
@@ -21,6 +23,8 @@
         <item>30</item>
         <item>45</item>
         <item>60</item>
+        <item>120</item>
+        <item>180</item>
 
     </string-array>
 
