@@ -10,12 +10,12 @@ public class Homework {
     private final boolean attach;
     private final int color;
 
-    public Homework(String name, String className, DateTime dateTime, int attach, int color) {
+    public Homework(String name, String className, DateTime dateTime, boolean attach, int color) {
 
         this.name = name;
         this.className = className;
         this.dateTime = dateTime;
-        this.attach = attach == 1;
+        this.attach = attach;
         this.color = color;
 
     }

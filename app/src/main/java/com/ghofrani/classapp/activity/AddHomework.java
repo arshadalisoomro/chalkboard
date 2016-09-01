@@ -1,28 +1,38 @@
 package com.ghofrani.classapp.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.modules.DatabaseHelper;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
 
@@ -31,6 +41,10 @@ public class AddHomework extends AppCompatActivity {
     private boolean originNotification = false;
     private Spinner classNameSpinner;
     private RadioButton nextClassRadioButton;
+    private RadioButton specificClassRadioButton;
+    private RadioButton customTimeRadioButton;
+    private MutableDateTime pickedDateTime;
+    private TextView homeworkNameTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +136,19 @@ public class AddHomework extends AppCompatActivity {
 
         super.onResume();
 
+        if (pickedDateTime == null) {
+
+            DateTime tomorrow = new DateTime().plusDays(1);
+
+            pickedDateTime = new MutableDateTime();
+
+            pickedDateTime.setYear(tomorrow.getYear());
+            pickedDateTime.setMonthOfYear(tomorrow.getMonthOfYear());
+            pickedDateTime.setDayOfMonth(tomorrow.getDayOfMonth());
+            pickedDateTime.setTime(0, 0, 0, 0);
+
+        }
+
         if (classNameSpinner == null) {
 
             classNameSpinner = (Spinner) findViewById(R.id.add_homework_class_spinner);
@@ -145,14 +172,155 @@ public class AddHomework extends AppCompatActivity {
             classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             classNameSpinner.setAdapter(classNameSpinnerAdapter);
 
+            classNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                    if (isClassInTimetable(adapterView.getSelectedItem().toString())) {
+
+                        nextClassRadioButton.setEnabled(true);
+                        specificClassRadioButton.setEnabled(true);
+
+                    } else {
+
+                        nextClassRadioButton.setEnabled(false);
+                        specificClassRadioButton.setEnabled(false);
+
+                    }
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+
+            });
+
         }
 
-        if (nextClassRadioButton == null) {
-
+        if (nextClassRadioButton == null)
             nextClassRadioButton = (RadioButton) findViewById(R.id.radio_next);
-            nextClassRadioButton.setChecked(true);
+
+        if (specificClassRadioButton == null)
+            specificClassRadioButton = (RadioButton) findViewById(R.id.radio_specific);
+
+        if (customTimeRadioButton == null)
+            customTimeRadioButton = (RadioButton) findViewById(R.id.radio_custom);
+
+        if (homeworkNameTextView == null)
+            homeworkNameTextView = (TextView) findViewById(R.id.add_homework_input_name);
+
+    }
+
+    private boolean isClassInTimetable(String className) {
+
+        int i = 0;
+
+        if (DataStore.sundayClasses != null) {
+
+            while (i < DataStore.sundayClasses.size()) {
+
+                if (className.equals(DataStore.sundayClasses.get(i).getName()))
+                    return true;
+
+                i++;
+
+            }
+
+            i = 0;
 
         }
+
+        if (DataStore.mondayClasses != null) {
+
+            while (i < DataStore.mondayClasses.size()) {
+
+                if (className.equals(DataStore.mondayClasses.get(i).getName()))
+                    return true;
+
+                i++;
+
+            }
+
+            i = 0;
+
+        }
+
+        if (DataStore.tuesdayClasses != null) {
+
+            while (i < DataStore.tuesdayClasses.size()) {
+
+                if (className.equals(DataStore.tuesdayClasses.get(i).getName()))
+                    return true;
+
+                i++;
+
+            }
+
+            i = 0;
+
+        }
+
+        if (DataStore.wednesdayClasses != null) {
+
+            while (i < DataStore.wednesdayClasses.size()) {
+
+                if (className.equals(DataStore.wednesdayClasses.get(i).getName()))
+                    return true;
+
+                i++;
+
+            }
+
+            i = 0;
+
+        }
+
+        if (DataStore.thursdayClasses != null) {
+
+            while (i < DataStore.thursdayClasses.size()) {
+
+                if (className.equals(DataStore.thursdayClasses.get(i).getName()))
+                    return true;
+
+                i++;
+
+            }
+
+            i = 0;
+
+        }
+
+        if (DataStore.fridayClasses != null) {
+
+            while (i < DataStore.fridayClasses.size()) {
+
+                if (className.equals(DataStore.fridayClasses.get(i).getName()))
+                    return true;
+
+                i++;
+
+            }
+
+            i = 0;
+
+        }
+
+        if (DataStore.saturdayClasses != null) {
+
+            while (i < DataStore.saturdayClasses.size()) {
+
+                if (className.equals(DataStore.saturdayClasses.get(i).getName()))
+                    return true;
+
+                i++;
+
+            }
+
+        }
+
+        return false;
 
     }
 
@@ -162,34 +330,80 @@ public class AddHomework extends AppCompatActivity {
 
             switch (view.getId()) {
 
-                case R.id.radio_next:
-
-                    break;
-
-                case R.id.radio_specific:
-
-                    break;
-
                 case R.id.radio_custom:
 
-                    android.app.DatePickerDialog.OnDateSetListener onDateSetListener = new android.app.DatePickerDialog.OnDateSetListener() {
+                    final View currentFocus = this.getCurrentFocus();
+
+                    if (currentFocus != null) {
+
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+
+                    }
+
+                    new Handler().postDelayed(new Runnable() {
 
                         @Override
-                        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        public void run() {
 
-                            DateTime pickedDateTime = new DateTime();
-                            pickedDateTime = pickedDateTime.withYear(year);
-                            pickedDateTime = pickedDateTime.withMonthOfYear(monthOfYear + 1);
-                            pickedDateTime = pickedDateTime.withDayOfMonth(dayOfMonth);
+                            android.app.DatePickerDialog.OnDateSetListener onDateSetListener = new android.app.DatePickerDialog.OnDateSetListener() {
 
-                            Log.d("DATEPICKER", pickedDateTime.toString());
+                                @Override
+                                public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+
+                                    pickedDateTime.setYear(year);
+                                    pickedDateTime.setMonthOfYear(monthOfYear + 1);
+                                    pickedDateTime.setDayOfMonth(dayOfMonth);
+                                    pickedDateTime.setTime(0, 0, 0, 0);
+
+                                    final DateTime now = DateTime.now();
+
+                                    if (!pickedDateTime.isBefore(now.withTimeAtStartOfDay())) {
+
+                                        android.app.TimePickerDialog.OnTimeSetListener onTimeSetListener = new android.app.TimePickerDialog.OnTimeSetListener() {
+
+                                            @Override
+                                            public void onTimeSet(TimePicker datePicker, int hourOfDay, int minuteOfHour) {
+
+                                                pickedDateTime.setTime(hourOfDay, minuteOfHour, 0, 0);
+
+                                                if (pickedDateTime.isBefore(now.withTime(now.getHourOfDay(), now.getMinuteOfHour(), 0, 0))) {
+
+                                                    Toast.makeText(AddHomework.this, "Choose a time after now!", Toast.LENGTH_LONG).show();
+
+                                                    pickedDateTime.setYear(now.plusDays(1).getYear());
+                                                    pickedDateTime.setMonthOfYear(now.plusDays(1).getMonthOfYear());
+                                                    pickedDateTime.setDayOfMonth(now.plusDays(1).getDayOfMonth());
+                                                    pickedDateTime.setTime(0, 0, 0, 0);
+
+                                                }
+
+                                            }
+
+                                        };
+
+                                        new android.app.TimePickerDialog(AddHomework.this, onTimeSetListener, now.plusHours(1).getHourOfDay(), now.plusHours(1).getMinuteOfHour(), true).show();
+
+                                    } else {
+
+                                        pickedDateTime.setYear(now.plusDays(1).getYear());
+                                        pickedDateTime.setMonthOfYear(now.plusDays(1).getMonthOfYear());
+                                        pickedDateTime.setDayOfMonth(now.plusDays(1).getDayOfMonth());
+                                        pickedDateTime.setTime(0, 0, 0, 0);
+
+                                        Toast.makeText(AddHomework.this, "Choose a day after yesterday!", Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                }
+
+                            };
+
+                            new android.app.DatePickerDialog(AddHomework.this, onDateSetListener, pickedDateTime.getYear(), pickedDateTime.getMonthOfYear() - 1, pickedDateTime.getDayOfMonth()).show();
 
                         }
 
-                    };
-
-                    DateTime tomorrow = new DateTime().plusDays(1);
-                    new android.app.DatePickerDialog(this, onDateSetListener, tomorrow.getYear(), tomorrow.getMonthOfYear() - 1, tomorrow.getDayOfMonth()).show();
+                    }, 150);
 
                     break;
 
@@ -206,6 +420,10 @@ public class AddHomework extends AppCompatActivity {
 
             classNameSpinner = null;
             nextClassRadioButton = null;
+            specificClassRadioButton = null;
+            customTimeRadioButton = null;
+            pickedDateTime = null;
+            homeworkNameTextView = null;
 
         }
 
@@ -241,7 +459,7 @@ public class AddHomework extends AppCompatActivity {
 
                     } else {
 
-                        callSuperOnBackPressed();
+                        AddHomework.super.onBackPressed();
 
                     }
 
@@ -261,6 +479,49 @@ public class AddHomework extends AppCompatActivity {
             });
 
             materialDialogBuilder.show();
+
+            return true;
+
+        } else if (menuItem.getItemId() == R.id.toolbar_check_check) {
+
+            if (!homeworkNameTextView.getText().toString().isEmpty()) {
+
+                DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+                if (nextClassRadioButton.isChecked()) {
+
+                    //databaseHelper.addHomework(new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), databaseHelper.getNextDateTimeOfClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString())));
+
+                } else if (specificClassRadioButton.isChecked()) {
+
+                    //databaseHelper.addHomework(new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString())));
+
+                } else if (customTimeRadioButton.isChecked()) {
+
+                    databaseHelper.addHomework(new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString())));
+
+                }
+
+                databaseHelper.close();
+
+                final View currentFocus = this.getCurrentFocus();
+
+                if (currentFocus != null) {
+
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+
+                }
+
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_data"));
+
+                finish();
+
+            } else {
+
+                Toast.makeText(this, "Please add a name!", Toast.LENGTH_LONG).show();
+
+            }
 
             return true;
 
@@ -298,7 +559,7 @@ public class AddHomework extends AppCompatActivity {
 
                 } else {
 
-                    callSuperOnBackPressed();
+                    AddHomework.super.onBackPressed();
 
                 }
 
@@ -318,12 +579,6 @@ public class AddHomework extends AppCompatActivity {
         });
 
         materialDialogBuilder.show();
-
-    }
-
-    private void callSuperOnBackPressed() {
-
-        super.onBackPressed();
 
     }
 

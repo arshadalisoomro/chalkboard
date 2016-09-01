@@ -38,6 +38,11 @@ public class Overview extends Fragment {
     private ExpandableListView expandableListViewNextClasses;
     private ProgressBar progressBar;
     private TextView progressTextView;
+    private TextView currentClassTitleTextView;
+    private TextView currentClassLocationTeacherTextView;
+    private TextView currentClassStartTimeTextView;
+    private TextView currentClassEndTimeTextView;
+    private ImageView currentClassColorIndicator;
     private BroadcastReceiver updateProgressBarBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -171,8 +176,6 @@ public class Overview extends Fragment {
     @Override
     public void onStop() {
 
-        super.onStop();
-
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(updateProgressBarBroadcastReceiver);
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(updateUIBroadcastReceiver);
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(collapseExpandableListViewsBroadcastReceiver);
@@ -201,12 +204,12 @@ public class Overview extends Fragment {
 
         }
 
+        super.onStop();
+
     }
 
     @Override
     public void onDestroyView() {
-
-        super.onDestroyView();
 
         updateProgressBarBroadcastReceiver = null;
         updateUIBroadcastReceiver = null;
@@ -218,6 +221,13 @@ public class Overview extends Fragment {
         classListAdapterTomorrow = null;
         progressBar = null;
         progressTextView = null;
+        currentClassTitleTextView = null;
+        currentClassLocationTeacherTextView = null;
+        currentClassStartTimeTextView = null;
+        currentClassEndTimeTextView = null;
+        currentClassColorIndicator = null;
+
+        super.onDestroyView();
 
     }
 
@@ -227,20 +237,29 @@ public class Overview extends Fragment {
 
             StandardClass currentClass = DataStore.currentClass;
 
-            TextView currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
+            if (currentClassTitleTextView == null)
+                currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
+
             currentClassTitleTextView.setText(currentClass.getName());
 
-            TextView currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_location_teacher);
-            String locationTeacher = currentClass.getTeacher() + " • " + currentClass.getLocation();
-            currentClassLocationTeacherTextView.setText(locationTeacher);
+            if (currentClassLocationTeacherTextView == null)
+                currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_location_teacher);
 
-            TextView currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
+            currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + currentClass.getLocation());
+
+            if (currentClassStartTimeTextView == null)
+                currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
+
             currentClassStartTimeTextView.setText(currentClass.getStartTimeString(true));
 
-            TextView currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
+            if (currentClassEndTimeTextView == null)
+                currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
+
             currentClassEndTimeTextView.setText(currentClass.getEndTimeString(true));
 
-            ImageView currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
+            if (currentClassColorIndicator == null)
+                currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
+
             currentClassColorIndicator.setColorFilter(currentClass.getColor());
 
             updateProgressBar();

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.Homework;
@@ -38,8 +37,6 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
                 context.startActivity(new Intent(context, ViewHomework.class).putExtra("homework", titleTextView.getText()));
 
                 */
-
-                Toast.makeText(context, "CLICKED!", Toast.LENGTH_SHORT);
 
             }
 

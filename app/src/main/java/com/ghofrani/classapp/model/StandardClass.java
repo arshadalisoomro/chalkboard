@@ -1,12 +1,6 @@
 package com.ghofrani.classapp.model;
 
-import android.content.Context;
-import android.preference.PreferenceManager;
-
-import com.ghofrani.classapp.modules.DatabaseHelper;
-
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class StandardClass {
@@ -23,31 +17,23 @@ public class StandardClass {
     private final boolean is24Hour;
     private final int color;
 
-    public StandardClass(Context context, String name, String startTime, String endTime) {
+    public StandardClass(String name, LocalTime startTime, LocalTime endTime, boolean is24Hour, DateTimeFormatter formatter, String location, String teacher, int color) {
 
         this.name = name;
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("HHmm");
-        DateTimeFormatter formatterAMPM = DateTimeFormat.forPattern("h:mm a");
-
-        this.startTime = formatter.parseLocalTime(startTime);
-        this.endTime = formatter.parseLocalTime(endTime);
+        this.startTime = startTime;
+        this.endTime = endTime;
 
         this.startTimeString = this.startTime.toString().substring(0, 5);
         this.endTimeString = this.endTime.toString().substring(0, 5);
 
-        this.startTimeStringAMPM = formatterAMPM.print(this.startTime);
-        this.endTimeStringAMPM = formatterAMPM.print(this.endTime);
+        this.startTimeStringAMPM = formatter.print(startTime);
+        this.endTimeStringAMPM = formatter.print(endTime);
 
-        this.is24Hour = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("24_hour_time", true);
-
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
-
-        this.location = databaseHelper.getClassLocation(name);
-        this.teacher = databaseHelper.getClassTeacher(name);
-        this.color = databaseHelper.getClassColor(name);
-
-        databaseHelper.close();
+        this.is24Hour = is24Hour;
+        this.location = location;
+        this.teacher = teacher;
+        this.color = color;
 
     }
 

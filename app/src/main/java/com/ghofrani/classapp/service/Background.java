@@ -37,6 +37,8 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,6 +90,8 @@ public class Background extends Service {
     private int black;
     private int blueGrey;
 
+    private DateTimeFormatter dateTimeFormatterAMPM;
+
     private StandardClass currentClass;
     private DatabaseHelper databaseHelper;
 
@@ -95,6 +99,7 @@ public class Background extends Service {
     private boolean nextToCurrentTransition = false;
     private boolean simpleToDetailedTransition = false;
     private boolean detailedToSimpleTransition = false;
+    private boolean is24Hour;
 
     private BroadcastReceiver updateData = new BroadcastReceiver() {
 
@@ -171,6 +176,8 @@ public class Background extends Service {
         black = ContextCompat.getColor(this, R.color.black);
         blueGrey = ContextCompat.getColor(this, R.color.blue_grey);
 
+        dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
+
         getData();
         getTimetable();
         getClasses();
@@ -179,8 +186,6 @@ public class Background extends Service {
 
     @Override
     public void onDestroy() {
-
-        super.onDestroy();
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(updateData);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(updateClasses);
@@ -213,6 +218,9 @@ public class Background extends Service {
         remoteViews = null;
         currentClass = null;
         databaseHelper = null;
+        dateTimeFormatterAMPM = null;
+
+        super.onDestroy();
 
     }
 
@@ -280,16 +288,25 @@ public class Background extends Service {
         if (databaseHelper == null)
             databaseHelper = new DatabaseHelper(this);
 
-        Cursor todayCursor = databaseHelper.getClasses(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        Cursor todayCursor = databaseHelper.getClassesCursor(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
         final ArrayList<StandardClass> nextClassesArrayList = new ArrayList<>();
         boolean nextClassDefined = false;
+
+        is24Hour = sharedPreferences.getBoolean("24_hour_time", true);
 
         final LocalTime currentTime = new LocalTime().now();
 
         while (todayCursor.moveToNext()) {
 
-            StandardClass standardClass = new StandardClass(this, todayCursor.getString(1), todayCursor.getString(2), todayCursor.getString(3));
+            StandardClass standardClass = new StandardClass(todayCursor.getString(1),
+                    LocalTime.parse(todayCursor.getString(2)),
+                    LocalTime.parse(todayCursor.getString(3)),
+                    is24Hour,
+                    dateTimeFormatterAMPM,
+                    databaseHelper.getClassLocation(todayCursor.getString(1)),
+                    databaseHelper.getClassTeacher(todayCursor.getString(1)),
+                    databaseHelper.getClassColor(todayCursor.getString(1)));
 
             if (standardClass.getStartTime().isAfter(currentTime)) {
 
@@ -789,13 +806,20 @@ public class Background extends Service {
             else
                 day = 1;
 
-            Cursor tomorrowCursor = databaseHelper.getClasses(day);
+            Cursor tomorrowCursor = databaseHelper.getClassesCursor(day);
 
             final ArrayList<StandardClass> tomorrowClassesArrayList = new ArrayList<>();
 
             while (tomorrowCursor.moveToNext()) {
 
-                tomorrowClassesArrayList.add(new StandardClass(this, tomorrowCursor.getString(1), tomorrowCursor.getString(2), tomorrowCursor.getString(3)));
+                tomorrowClassesArrayList.add(new StandardClass(tomorrowCursor.getString(1),
+                        LocalTime.parse(tomorrowCursor.getString(2)),
+                        LocalTime.parse(tomorrowCursor.getString(3)),
+                        is24Hour,
+                        dateTimeFormatterAMPM,
+                        databaseHelper.getClassLocation(tomorrowCursor.getString(1)),
+                        databaseHelper.getClassTeacher(tomorrowCursor.getString(1)),
+                        databaseHelper.getClassColor(tomorrowCursor.getString(1))));
 
             }
 
@@ -814,7 +838,7 @@ public class Background extends Service {
 
         }
 
-        Cursor homeworkCursor = databaseHelper.getHomework();
+        Cursor homeworkCursor = databaseHelper.getHomeworkCursor();
 
         final ArrayList<Homework> todayHomeworkArrayList = new ArrayList<>();
         final ArrayList<Homework> tomorrowHomeworkArrayList = new ArrayList<>();
@@ -873,7 +897,7 @@ public class Background extends Service {
 
         while (homeworkCursor.moveToNext()) {
 
-            Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4), databaseHelper.getClassColor(homeworkCursor.getString(2)));
+            Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)));
 
             if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
@@ -971,17 +995,24 @@ public class Background extends Service {
         if (databaseHelper == null)
             databaseHelper = new DatabaseHelper(this);
 
-        Cursor cursor;
+        Cursor timetableCursor;
 
         for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
 
             final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
 
-            cursor = databaseHelper.getClasses(i);
+            timetableCursor = databaseHelper.getClassesCursor(i);
 
-            while (cursor.moveToNext()) {
+            while (timetableCursor.moveToNext()) {
 
-                classesArrayList.add(new StandardClass(this, cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+                classesArrayList.add(new StandardClass(timetableCursor.getString(1),
+                        LocalTime.parse(timetableCursor.getString(2)),
+                        LocalTime.parse(timetableCursor.getString(3)),
+                        is24Hour,
+                        dateTimeFormatterAMPM,
+                        databaseHelper.getClassLocation(timetableCursor.getString(1)),
+                        databaseHelper.getClassTeacher(timetableCursor.getString(1)),
+                        databaseHelper.getClassColor(timetableCursor.getString(1))));
 
             }
 
@@ -999,15 +1030,15 @@ public class Background extends Service {
         if (databaseHelper == null)
             databaseHelper = new DatabaseHelper(this);
 
-        Cursor cursor = databaseHelper.getClasses();
+        Cursor classesCursor = databaseHelper.getClassesCursor();
 
         final ArrayList<SlimClass> slimClassArrayList = new ArrayList<>();
         final ArrayList<String> classNamesArrayList = new ArrayList<>();
 
-        while (cursor.moveToNext()) {
+        while (classesCursor.moveToNext()) {
 
-            slimClassArrayList.add(new SlimClass(cursor.getString(1), cursor.getString(3), cursor.getString(2), databaseHelper.getClassColor(cursor.getString(1))));
-            classNamesArrayList.add(cursor.getString(1));
+            slimClassArrayList.add(new SlimClass(classesCursor.getString(1), classesCursor.getString(2), classesCursor.getString(3), databaseHelper.getClassColor(classesCursor.getString(1))));
+            classNamesArrayList.add(classesCursor.getString(1));
 
         }
 

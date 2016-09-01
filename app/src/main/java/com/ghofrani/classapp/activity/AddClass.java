@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
 public class AddClass extends AppCompatActivity {
@@ -131,7 +132,7 @@ public class AddClass extends AppCompatActivity {
 
                     materialDialog.dismiss();
 
-                    callSuperOnBackPressed();
+                    AddClass.super.onBackPressed();
 
                 }
 
@@ -167,44 +168,31 @@ public class AddClass extends AppCompatActivity {
 
                     if (!inputTeacherEditText.getText().toString().isEmpty() && !inputLocationEditText.getText().toString().isEmpty()) {
 
-                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-                        final String classToAddInfo[] = new String[4];
-                        classToAddInfo[0] = inputNameEditText.getText().toString().trim();
-                        classToAddInfo[1] = inputTeacherEditText.getText().toString().trim();
-                        classToAddInfo[2] = inputLocationEditText.getText().toString().trim();
-                        classToAddInfo[3] = String.valueOf(sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal)));
+                        databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
+                                inputLocationEditText.getText().toString().trim(),
+                                inputTeacherEditText.getText().toString().trim(),
+                                sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
 
-                        if (databaseHelper.addClass(classToAddInfo)) {
+                        databaseHelper.close();
 
-                            databaseHelper.close();
+                        final View currentFocus = this.getCurrentFocus();
 
-                            final View view = this.getCurrentFocus();
+                        if (currentFocus != null) {
 
-                            if (view != null) {
-
-                                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
-                            }
-
-                            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
-
-                            setResult(0, new Intent().putExtra("switch_to_timetable", 1).putExtra("class", "AddClass"));
-
-                            finish();
-
-                            return true;
-
-                        } else {
-
-                            databaseHelper.close();
-
-                            Toast.makeText(this, "Error, try again!", Toast.LENGTH_LONG).show();
-
-                            return true;
+                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                         }
+
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
+
+                        setResult(0, new Intent().putExtra("switch_to_timetable", 1).putExtra("class", "AddClass"));
+
+                        finish();
+
+                        return true;
 
                     } else {
 
@@ -259,7 +247,9 @@ public class AddClass extends AppCompatActivity {
 
                 materialDialog.dismiss();
 
-                callSuperOnBackPressed();
+                setResult(1, new Intent());
+
+                AddClass.super.onBackPressed();
 
             }
 
@@ -277,14 +267,6 @@ public class AddClass extends AppCompatActivity {
         });
 
         materialDialogBuilder.show();
-
-    }
-
-    private void callSuperOnBackPressed() {
-
-        setResult(1, new Intent());
-
-        super.onBackPressed();
 
     }
 

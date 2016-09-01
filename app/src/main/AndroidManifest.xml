@@ -10,10 +10,6 @@
 
         android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-permission
-
-        android:name="android.permission.VIBRATE" />
-
     <application
 
         android:allowBackup="true"
@@ -79,7 +75,6 @@
         <activity
 
             android:name=".activity.EditDay"
-            android:hardwareAccelerated="true"
             android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">
 
@@ -89,7 +84,7 @@
 
             android:name=".service.Background"
             android:icon="@mipmap/ic_launcher"
-            android:label="TimeService">
+            android:label="BackgroundService">
 
         </service>
 

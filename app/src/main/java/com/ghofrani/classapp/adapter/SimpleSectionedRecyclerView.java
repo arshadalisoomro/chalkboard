@@ -135,23 +135,6 @@ public class SimpleSectionedRecyclerView extends RecyclerView.Adapter<RecyclerVi
 
     }
 
-    public int positionToSectionedPosition(int position) {
-
-        int offset = 0;
-
-        for (int i = 0; i < sectionsSparseArray.size(); i++) {
-
-            if (sectionsSparseArray.valueAt(i).firstPosition > position)
-                break;
-
-            ++offset;
-
-        }
-
-        return position + offset;
-
-    }
-
     public int sectionedPositionToPosition(int sectionedPosition) {
 
         if (isSectionHeaderPosition(sectionedPosition))
