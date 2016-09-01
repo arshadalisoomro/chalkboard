@@ -88,7 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/overview_current_class_card_header"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="13dp">
 
                     <ProgressBar
 

@@ -93,6 +93,7 @@ public final class DatabaseContract {
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_DATE_TIME = "datetime";
         public static final String COLUMN_ATTACH = "attach";
+        public static final String COLUMN_PRIORITY = "priority";
 
     }
 

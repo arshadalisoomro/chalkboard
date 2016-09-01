@@ -113,7 +113,7 @@ public class Homework extends Fragment {
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due after this month"));
 
             SimpleSectionedRecyclerView.Section[] sectionArray = new SimpleSectionedRecyclerView.Section[sections.size()];
-            SimpleSectionedRecyclerView sectionedAdapter = new SimpleSectionedRecyclerView(getContext(), R.layout.view_homework_list_section, R.id.view_homework_list_section_text_view, new HomeworkList(homeworkArrayList, getContext()));
+            SimpleSectionedRecyclerView sectionedAdapter = new SimpleSectionedRecyclerView(getContext(), R.layout.view_homework_list_section, R.id.view_homework_list_section_text_view, new HomeworkList(getContext(), homeworkArrayList));
             sectionedAdapter.setSections(sections.toArray(sectionArray));
 
             recyclerView.setAdapter(sectionedAdapter);
@@ -140,7 +140,7 @@ public class Homework extends Fragment {
 
     public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
 
-        private Drawable dividerDrawable;
+        private final Drawable dividerDrawable;
 
         public SimpleDividerItemDecoration(Context context) {
 

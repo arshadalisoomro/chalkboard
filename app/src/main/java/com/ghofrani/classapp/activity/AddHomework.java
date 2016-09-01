@@ -14,9 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -55,6 +57,7 @@ public class AddHomework extends AppCompatActivity {
     private ArrayList<StandardClass> listItemClasses;
     private ArrayList<String> listItemTitles;
     private ArrayList<Integer> daySwitches;
+    private CheckBox priorityCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,6 +241,12 @@ public class AddHomework extends AppCompatActivity {
 
         if (homeworkNameTextView == null)
             homeworkNameTextView = (TextView) findViewById(R.id.add_homework_input_name);
+
+        if (priorityCheckBox == null)
+            priorityCheckBox = (CheckBox) findViewById(R.id.add_homework_high_priority_check_box);
+
+        if (homeworkNameTextView.requestFocus())
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
     }
 
@@ -596,6 +605,7 @@ public class AddHomework extends AppCompatActivity {
             customTimeRadioButton = null;
             pickedDateTime = null;
             homeworkNameTextView = null;
+            priorityCheckBox = null;
 
         }
 
@@ -941,7 +951,7 @@ public class AddHomework extends AppCompatActivity {
 
                 if (nextClassRadioButton.isChecked()) {
 
-                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), getNextDateTimeOfClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), getNextDateTimeOfClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else if (specificClassRadioButton.isChecked()) {
 
@@ -1046,11 +1056,11 @@ public class AddHomework extends AppCompatActivity {
 
                     }
 
-                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else if (customTimeRadioButton.isChecked()) {
 
-                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else {
 

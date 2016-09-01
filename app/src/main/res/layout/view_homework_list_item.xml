@@ -18,13 +18,29 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp">
 
-        <ImageView
+        <RelativeLayout
 
-            android:id="@+id/view_homework_list_item_color_indicator"
+            android:id="@+id/view_homework_list_item_color_indicator_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@drawable/color_indicator_homework" />
+            android:layout_centerVertical="true">
+
+            <ImageView
+
+                android:id="@+id/view_homework_list_item_color_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/color_indicator_homework" />
+
+            <ImageView
+
+                android:id="@+id/view_homework_list_item_priority_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/priority" />
+
+        </RelativeLayout>
 
         <RelativeLayout
 
@@ -32,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@id/view_homework_list_item_color_indicator">
+            android:layout_toRightOf="@id/view_homework_list_item_color_indicator_layout">
 
             <TextView
 

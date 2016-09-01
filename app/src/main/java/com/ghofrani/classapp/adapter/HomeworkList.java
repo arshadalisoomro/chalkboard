@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkViewHolder> {
 
     private final ArrayList<Homework> homeworkArrayList;
-    private final Context context;
     private final View.OnClickListener onClickListener;
     private final DateTimeFormatter dayOfWeekString;
     private final DateTimeFormatter time24Hour;
@@ -31,16 +30,15 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
     private final DateTimeFormatter shortDate;
     private final boolean is24Hour;
 
-    public HomeworkList(ArrayList<Homework> homeworkArrayList, final Context contextInput) {
+    public HomeworkList(Context context, ArrayList<Homework> homeworkArrayList) {
 
         this.homeworkArrayList = homeworkArrayList;
-        this.context = contextInput;
 
         dayOfWeekString = DateTimeFormat.forPattern("EEEE");
         time24Hour = DateTimeFormat.forPattern("HH:mm");
         timeAMPM = DateTimeFormat.forPattern("h:mm a");
         shortDate = DateTimeFormat.forPattern("dd/MM/yy");
-        is24Hour = PreferenceManager.getDefaultSharedPreferences(contextInput).getBoolean("24_hour_time", true);
+        is24Hour = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("24_hour_time", true);
 
         onClickListener = new View.OnClickListener() {
 
@@ -143,6 +141,11 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         homeworkViewHolder.colorIndicatorImageView.setColorFilter(homeworkArrayList.get(position).getColor());
 
+        if (homeworkArrayList.get(position).isHighPriority())
+            homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.VISIBLE);
+        else
+            homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.GONE);
+
     }
 
     private ArrayList<StandardClass> getClassesArrayListOfDay(int day) {
@@ -189,6 +192,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
         final TextView titleTextView;
         final TextView subtitleTextView;
         final ImageView colorIndicatorImageView;
+        final ImageView priorityIndicatorImageView;
 
         HomeworkViewHolder(View itemView) {
 
@@ -198,6 +202,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
             titleTextView = (TextView) itemView.findViewById(R.id.view_homework_list_item_name);
             subtitleTextView = (TextView) itemView.findViewById(R.id.view_homework_list_item_due);
             colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_homework_list_item_color_indicator);
+            priorityIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_homework_list_item_priority_indicator);
 
         }
 

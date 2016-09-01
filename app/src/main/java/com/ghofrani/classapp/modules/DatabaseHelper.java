@@ -84,7 +84,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.Homework.COLUMN_NAME + " TEXT,"
             + DatabaseContract.Homework.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Homework.COLUMN_DATE_TIME + " TEXT,"
-            + DatabaseContract.Homework.COLUMN_ATTACH + " BOOLEAN)";
+            + DatabaseContract.Homework.COLUMN_ATTACH + " BOOLEAN,"
+            + DatabaseContract.Homework.COLUMN_PRIORITY + " BOOLEAN)";
 
     public DatabaseHelper(Context context) {
 
@@ -582,6 +583,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homeworkToAdd.get(i).getClassName());
             contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homeworkToAdd.get(i).getDateTime().toString());
             contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homeworkToAdd.get(i).isAttach() ? 1 : 0);
+            contentValues.put(DatabaseContract.Homework.COLUMN_PRIORITY, homeworkToAdd.get(i).isHighPriority() ? 1 : 0);
 
             sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
 

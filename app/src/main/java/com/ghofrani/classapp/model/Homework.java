@@ -9,14 +9,16 @@ public class Homework {
     private final DateTime dateTime;
     private final boolean attach;
     private final int color;
+    private final boolean highPriority;
 
-    public Homework(String name, String className, DateTime dateTime, boolean attach, int color) {
+    public Homework(String name, String className, DateTime dateTime, boolean attach, int color, boolean highPriority) {
 
         this.name = name;
         this.className = className;
         this.dateTime = dateTime;
         this.attach = attach;
         this.color = color;
+        this.highPriority = highPriority;
 
     }
 
@@ -38,6 +40,10 @@ public class Homework {
 
     public int getColor() {
         return color;
+    }
+
+    public boolean isHighPriority() {
+        return highPriority;
     }
 
 }

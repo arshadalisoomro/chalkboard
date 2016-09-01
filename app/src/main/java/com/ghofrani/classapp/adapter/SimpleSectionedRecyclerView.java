@@ -15,12 +15,11 @@ public class SimpleSectionedRecyclerView extends RecyclerView.Adapter<RecyclerVi
 
     private static final int SECTION_TYPE = 0;
     private final Context context;
+    private final int sectionResourceID;
+    private final int textResourceID;
+    private final RecyclerView.Adapter baseAdapter;
+    private final SparseArray<Section> sectionsSparseArray = new SparseArray<>();
     private boolean isValid = true;
-    private int sectionResourceID;
-    private int textResourceID;
-
-    private RecyclerView.Adapter baseAdapter;
-    private SparseArray<Section> sectionsSparseArray = new SparseArray<Section>();
 
     public SimpleSectionedRecyclerView(Context context, int sectionResourceID, int textResourceID, RecyclerView.Adapter baseAdapter) {
 
@@ -135,7 +134,7 @@ public class SimpleSectionedRecyclerView extends RecyclerView.Adapter<RecyclerVi
 
     }
 
-    public int sectionedPositionToPosition(int sectionedPosition) {
+    private int sectionedPositionToPosition(int sectionedPosition) {
 
         if (isSectionHeaderPosition(sectionedPosition))
             return RecyclerView.NO_POSITION;
@@ -155,7 +154,7 @@ public class SimpleSectionedRecyclerView extends RecyclerView.Adapter<RecyclerVi
 
     }
 
-    public boolean isSectionHeaderPosition(int position) {
+    private boolean isSectionHeaderPosition(int position) {
 
         return sectionsSparseArray.get(position) != null;
 
@@ -177,7 +176,7 @@ public class SimpleSectionedRecyclerView extends RecyclerView.Adapter<RecyclerVi
 
     public static class SectionViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView title;
+        public final TextView title;
 
         public SectionViewHolder(View view, int textResourceID) {
 
@@ -190,20 +189,14 @@ public class SimpleSectionedRecyclerView extends RecyclerView.Adapter<RecyclerVi
 
     public static class Section {
 
-        int firstPosition;
+        final int firstPosition;
+        final CharSequence title;
         int sectionedPosition;
-        CharSequence title;
 
         public Section(int firstPosition, CharSequence title) {
 
             this.firstPosition = firstPosition;
             this.title = title;
-
-        }
-
-        public CharSequence getTitle() {
-
-            return title;
 
         }
 

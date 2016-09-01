@@ -107,7 +107,7 @@ public class Background extends Service {
 
         public void onReceive(Context context, Intent intent) {
 
-            getData(intent.hasExtra("skip_homework") ? false : true);
+            getData(!intent.hasExtra("skip_homework"));
             getTimetable();
 
         }
@@ -899,7 +899,7 @@ public class Background extends Service {
 
             while (homeworkCursor.moveToNext()) {
 
-                Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)));
+                Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)), homeworkCursor.getInt(5) == 1);
 
                 if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 

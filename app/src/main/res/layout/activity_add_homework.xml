@@ -100,6 +100,7 @@
 
             <RelativeLayout
 
+                android:id="@+id/add_homework_radio_group_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/add_homework_class_layout"
@@ -151,6 +152,20 @@
                 </RadioGroup>
 
             </RelativeLayout>
+
+            <CheckBox
+
+                android:id="@+id/add_homework_high_priority_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_homework_radio_group_layout"
+                android:layout_marginLeft="14.75dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:checked="false"
+                android:paddingLeft="26.5dp"
+                android:text="High priority"
+                android:textSize="16sp" />
 
         </RelativeLayout>
 
