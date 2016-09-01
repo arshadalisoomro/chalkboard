@@ -79,8 +79,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="0.5dp"
-                        android:src="@drawable/color_indicator_class_card"
-                        android:translationY="1.75dp" />
+                        android:src="@drawable/color_indicator_class_card" />
 
                 </RelativeLayout>
 

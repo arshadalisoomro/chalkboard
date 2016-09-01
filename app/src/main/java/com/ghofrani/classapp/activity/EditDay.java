@@ -27,7 +27,6 @@ import com.borax12.materialdaterangepicker.time.TimePickerDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.EditDayList;
 import com.ghofrani.classapp.model.StandardClass;
-import com.ghofrani.classapp.model.TimedSlimClass;
 import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
@@ -40,10 +39,10 @@ import java.util.List;
 
 public class EditDay extends AppCompatActivity {
 
-    String startTimeTextAdd;
-    String endTimeTextAdd;
-    String startTimeTextEdit;
-    String endTimeTextEdit;
+    private String startTimeTextAdd;
+    private String endTimeTextAdd;
+    private String startTimeTextEdit;
+    private String endTimeTextEdit;
     private ListView listView;
     private EditDayList listAdapter;
     private ArrayList<StandardClass> standardClassArrayList;
@@ -569,15 +568,9 @@ public class EditDay extends AppCompatActivity {
 
                                     databaseHelper.deleteAllClassesOfDay(day);
 
-                                    for (int i = 0; i < currentClasses.size(); i++) {
-
-                                        databaseHelper.insertClassIntoDay(new TimedSlimClass(currentClasses.get(i).getName(), currentClasses.get(i).getStartTime(), currentClasses.get(i).getEndTime()), day);
-
-                                    }
+                                    databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
 
                                 } else {
-
-                                    databaseHelper.insertClassIntoDay(new TimedSlimClass(className, dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime), dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)), day);
 
                                     currentClasses = new ArrayList<>();
                                     currentClasses.add(new StandardClass(className,
@@ -588,6 +581,8 @@ public class EditDay extends AppCompatActivity {
                                             databaseHelper.getClassLocation(className),
                                             databaseHelper.getClassTeacher(className),
                                             databaseHelper.getClassColor(className)));
+
+                                    databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
 
                                 }
 
@@ -1276,11 +1271,7 @@ public class EditDay extends AppCompatActivity {
 
                                 databaseHelper.deleteAllClassesOfDay(day);
 
-                                for (int i = 0; i < currentClasses.size(); i++) {
-
-                                    databaseHelper.insertClassIntoDay(new TimedSlimClass(currentClasses.get(i).getName(), currentClasses.get(i).getStartTime(), currentClasses.get(i).getEndTime()), day);
-
-                                }
+                                databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
 
                                 databaseHelper.close();
 

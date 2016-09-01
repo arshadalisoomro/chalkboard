@@ -124,7 +124,7 @@
                         android:layout_marginBottom="8dp"
                         android:onClick="onRadioButtonClicked"
                         android:paddingLeft="26.5dp"
-                        android:text="Next lesson"
+                        android:text="Next class"
                         android:textSize="16sp" />
 
                     <RadioButton
@@ -135,7 +135,7 @@
                         android:layout_marginBottom="8dp"
                         android:onClick="onRadioButtonClicked"
                         android:paddingLeft="26.5dp"
-                        android:text="Specific lesson"
+                        android:text="Specific class"
                         android:textSize="16sp" />
 
                     <RadioButton

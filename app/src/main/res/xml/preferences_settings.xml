@@ -33,7 +33,7 @@
 
             android:defaultValue="true"
             android:key="24_hour_time"
-            android:summary="Uses 24 hour format instead of AM/PM format"
+            android:summary="Use 24 hour format instead of AM/PM format"
             android:title="Use 24 hour format" />
 
     </PreferenceCategory>
@@ -49,12 +49,12 @@
             android:summary="Expand next classes upon arrival on the home screen"
             android:title="Expand next classes" />
 
-        <CheckBoxPreference
+        <SwitchPreference
 
             android:defaultValue="true"
             android:key="tomorrow_classes"
             android:summary="Show tomorrow's classes on the home screen"
-            android:title="Show tomorrow's classes" />
+            android:title="Tomorrow's classes" />
 
         <CheckBoxPreference
 
@@ -70,20 +70,20 @@
 
         android:title="Notifications">
 
-        <CheckBoxPreference
+        <SwitchPreference
 
             android:defaultValue="true"
             android:key="class_notification"
             android:summary="Show a notification throughout the current class"
-            android:title="Enable current class notification" />
+            android:title="Current class notification" />
 
         <CheckBoxPreference
 
             android:defaultValue="true"
             android:dependency="class_notification"
             android:key="detailed_notification"
-            android:summary="Shows a notification with percentage progress"
-            android:title="Show detailed notification" />
+            android:summary="Shows percentage progress"
+            android:title="Show details" />
 
         <CheckBoxPreference
 

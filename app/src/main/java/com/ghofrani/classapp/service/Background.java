@@ -107,7 +107,7 @@ public class Background extends Service {
 
         public void onReceive(Context context, Intent intent) {
 
-            getData();
+            getData(intent.hasExtra("skip_homework") ? false : true);
             getTimetable();
 
         }
@@ -178,7 +178,7 @@ public class Background extends Service {
 
         dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
 
-        getData();
+        getData(true);
         getTimetable();
         getClasses();
 
@@ -235,27 +235,27 @@ public class Background extends Service {
 
                     case Intent.ACTION_TIME_TICK:
 
-                        getData();
+                        getData(true);
 
                         break;
 
                     case Intent.ACTION_TIMEZONE_CHANGED:
 
-                        getData();
+                        getData(true);
                         getTimetable();
 
                         break;
 
                     case Intent.ACTION_TIME_CHANGED:
 
-                        getData();
+                        getData(true);
                         getTimetable();
 
                         break;
 
                     case Intent.ACTION_DATE_CHANGED:
 
-                        getData();
+                        getData(true);
                         getTimetable();
 
                         break;
@@ -270,7 +270,7 @@ public class Background extends Service {
 
     }
 
-    private void getData() {
+    private void getData(boolean processHomework) {
 
         if (handler != null) {
 
@@ -838,103 +838,108 @@ public class Background extends Service {
 
         }
 
-        Cursor homeworkCursor = databaseHelper.getHomeworkCursor();
+        if (processHomework) {
 
-        final ArrayList<Homework> todayHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> tomorrowHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> thisWeekHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> nextWeekHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> thisMonthHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
+            Cursor homeworkCursor = databaseHelper.getHomeworkCursor();
 
-        DateTime today = DateTime.now();
-        DateTime tomorrow = today.plusDays(1);
+            final ArrayList<Homework> todayHomeworkArrayList = new ArrayList<>();
+            final ArrayList<Homework> tomorrowHomeworkArrayList = new ArrayList<>();
+            final ArrayList<Homework> thisWeekHomeworkArrayList = new ArrayList<>();
+            final ArrayList<Homework> nextWeekHomeworkArrayList = new ArrayList<>();
+            final ArrayList<Homework> thisMonthHomeworkArrayList = new ArrayList<>();
+            final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
 
-        boolean thisWeekEnabled = true;
-        Interval thisWeek;
-        Interval nextWeek;
+            DateTime today = DateTime.now();
+            DateTime tomorrow = today.plusDays(1);
 
-        switch (today.getDayOfWeek()) {
+            boolean thisWeekEnabled = true;
+            Interval thisWeek;
+            Interval nextWeek;
 
-            case DateTimeConstants.FRIDAY:
+            switch (today.getDayOfWeek()) {
 
-                thisWeekEnabled = false;
-                thisWeek = new Interval(today, today);
-                nextWeek = new Interval(today.plusDays(2).withTime(0, 0, 0, 0), today.plusDays(9).withTime(0, 0, 0, 0));
+                case DateTimeConstants.FRIDAY:
 
-                break;
+                    thisWeekEnabled = false;
+                    thisWeek = new Interval(today, today);
+                    nextWeek = new Interval(today.plusDays(2).withTime(0, 0, 0, 0), today.plusDays(9).withTime(0, 0, 0, 0));
 
-            case DateTimeConstants.SATURDAY:
+                    break;
 
-                thisWeekEnabled = false;
-                thisWeek = new Interval(today, today);
-                nextWeek = new Interval(today.plusDays(1).withTime(0, 0, 0, 0), today.plusDays(8).withTime(0, 0, 0, 0));
+                case DateTimeConstants.SATURDAY:
 
-                break;
+                    thisWeekEnabled = false;
+                    thisWeek = new Interval(today, today);
+                    nextWeek = new Interval(today.plusDays(1).withTime(0, 0, 0, 0), today.plusDays(8).withTime(0, 0, 0, 0));
 
-            default:
+                    break;
 
-                thisWeek = new Interval(tomorrow.plusDays(1).withTime(0, 0, 0, 0), tomorrow.plusDays(DateTimeConstants.SUNDAY - tomorrow.getDayOfWeek()).withTime(0, 0, 0, 0));
-                nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7).withTimeAtStartOfDay());
+                default:
 
-        }
-
-        boolean thisMonthEnabled = false;
-        Interval thisMonth = new Interval(today, today);
-
-        if (nextWeek.getEnd().getMonthOfYear() == today.getMonthOfYear()) {
-
-            if (today.dayOfMonth().withMaximumValue().getDayOfMonth() > nextWeek.getEnd().getDayOfMonth() - 1) {
-
-                thisMonthEnabled = true;
-                thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue());
+                    thisWeek = new Interval(tomorrow.plusDays(1).withTime(0, 0, 0, 0), tomorrow.plusDays(DateTimeConstants.SUNDAY - tomorrow.getDayOfWeek()).withTime(0, 0, 0, 0));
+                    nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7).withTimeAtStartOfDay());
 
             }
 
-        }
+            boolean thisMonthEnabled = false;
+            Interval thisMonth = new Interval(today, today);
 
-        DateTimeZone dateTimeZone = DateTimeZone.getDefault();
+            if (nextWeek.getEnd().getMonthOfYear() == today.getMonthOfYear()) {
 
-        while (homeworkCursor.moveToNext()) {
+                if (today.dayOfMonth().withMaximumValue().getDayOfMonth() > nextWeek.getEnd().getDayOfMonth() - 1) {
 
-            Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)));
+                    thisMonthEnabled = true;
+                    thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue());
 
-            if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
-
-                todayHomeworkArrayList.add(homework);
-
-            } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
-
-                tomorrowHomeworkArrayList.add(homework);
-
-            } else if (thisWeek.contains(homework.getDateTime()) && thisWeekEnabled) {
-
-                thisWeekHomeworkArrayList.add(homework);
-
-            } else if (nextWeek.contains(homework.getDateTime())) {
-
-                nextWeekHomeworkArrayList.add(homework);
-
-            } else if (thisMonth.contains(homework.getDateTime()) && thisMonthEnabled) {
-
-                thisMonthHomeworkArrayList.add(homework);
-
-            } else {
-
-                beyondThisMonthHomeworkArrayList.add(homework);
+                }
 
             }
 
+            DateTimeZone dateTimeZone = DateTimeZone.getDefault();
+
+            while (homeworkCursor.moveToNext()) {
+
+                Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)));
+
+                if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+
+                    todayHomeworkArrayList.add(homework);
+
+                } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+
+                    tomorrowHomeworkArrayList.add(homework);
+
+                } else if (thisWeek.contains(homework.getDateTime()) && thisWeekEnabled) {
+
+                    thisWeekHomeworkArrayList.add(homework);
+
+                } else if (nextWeek.contains(homework.getDateTime())) {
+
+                    nextWeekHomeworkArrayList.add(homework);
+
+                } else if (thisMonth.contains(homework.getDateTime()) && thisMonthEnabled) {
+
+                    thisMonthHomeworkArrayList.add(homework);
+
+                } else {
+
+                    beyondThisMonthHomeworkArrayList.add(homework);
+
+                }
+
+            }
+
+            homeworkCursor.close();
+
+            DataStore.todayHomeworkArrayList = todayHomeworkArrayList;
+            DataStore.tomorrowHomeworkArrayList = tomorrowHomeworkArrayList;
+            DataStore.thisWeekHomeworkArrayList = thisWeekHomeworkArrayList;
+            DataStore.nextWeekHomeworkArrayList = nextWeekHomeworkArrayList;
+            DataStore.thisMonthHomeworkArrayList = thisMonthHomeworkArrayList;
+            DataStore.beyondThisMonthHomeworkArrayList = beyondThisMonthHomeworkArrayList;
+            DataStore.nextWeekEnd = nextWeek.getEnd();
+
         }
-
-        homeworkCursor.close();
-
-        DataStore.todayHomeworkArrayList = todayHomeworkArrayList;
-        DataStore.tomorrowHomeworkArrayList = tomorrowHomeworkArrayList;
-        DataStore.thisWeekHomeworkArrayList = thisWeekHomeworkArrayList;
-        DataStore.nextWeekHomeworkArrayList = nextWeekHomeworkArrayList;
-        DataStore.thisMonthHomeworkArrayList = thisMonthHomeworkArrayList;
-        DataStore.beyondThisMonthHomeworkArrayList = beyondThisMonthHomeworkArrayList;
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_UI"));
 

@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.SlimClass;
+import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
 public class AddClass extends AppCompatActivity {
@@ -161,7 +162,60 @@ public class AddClass extends AppCompatActivity {
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
-                if (!databaseHelper.checkIfClassExists(inputNameEditText.getText().toString().trim())) {
+                if (DataStore.allClassNamesArrayList != null) {
+
+                    if (!DataStore.allClassNamesArrayList.contains(inputNameEditText.getText().toString().trim())) {
+
+                        final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
+                        final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+
+                        if (!inputTeacherEditText.getText().toString().isEmpty() && !inputLocationEditText.getText().toString().isEmpty()) {
+
+                            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                            databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
+                                    inputLocationEditText.getText().toString().trim(),
+                                    inputTeacherEditText.getText().toString().trim(),
+                                    sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
+
+                            databaseHelper.close();
+
+                            final View currentFocus = this.getCurrentFocus();
+
+                            if (currentFocus != null) {
+
+                                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+
+                            }
+
+                            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
+
+                            setResult(0, new Intent().putExtra("switch_to_timetable", 1).putExtra("class", "AddClass"));
+
+                            finish();
+
+                            return true;
+
+                        } else {
+
+                            Toast.makeText(this, "Please add a teacher and location!", Toast.LENGTH_LONG).show();
+
+                            return true;
+
+                        }
+
+                    } else {
+
+                        databaseHelper.close();
+
+                        Toast.makeText(this, "A class with this name exists already!", Toast.LENGTH_LONG).show();
+
+                        return true;
+
+                    }
+
+                } else {
 
                     final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
                     final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
@@ -201,14 +255,6 @@ public class AddClass extends AppCompatActivity {
                         return true;
 
                     }
-
-                } else {
-
-                    databaseHelper.close();
-
-                    Toast.makeText(this, "A class with this name exists already!", Toast.LENGTH_LONG).show();
-
-                    return true;
 
                 }
 

@@ -9,10 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.ghofrani.classapp.model.DatabaseContract;
 import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.SlimClass;
-import com.ghofrani.classapp.model.TimedSlimClass;
+import com.ghofrani.classapp.model.StandardClass;
 
 import org.joda.time.LocalTime;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -110,7 +111,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void insertClassIntoDay(TimedSlimClass classToInsert, int day) {
+    public void insertClassesIntoDayStandard(ArrayList<StandardClass> classesToInsert, int day) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -120,71 +121,113 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             case Calendar.SUNDAY:
 
-                contentValues.put(DatabaseContract.Sunday.COLUMN_CLASS, classToInsert.getName());
-                contentValues.put(DatabaseContract.Sunday.COLUMN_START_TIME, classToInsert.getStartTime().toString());
-                contentValues.put(DatabaseContract.Sunday.COLUMN_END_TIME, classToInsert.getEndTime().toString());
+                for (int i = 0; i < classesToInsert.size(); i++) {
 
-                sqLiteDatabase.insert(DatabaseContract.Sunday.TABLE_NAME, null, contentValues);
+                    contentValues.clear();
+
+                    contentValues.put(DatabaseContract.Sunday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                    contentValues.put(DatabaseContract.Sunday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                    contentValues.put(DatabaseContract.Sunday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+
+                    sqLiteDatabase.insert(DatabaseContract.Sunday.TABLE_NAME, null, contentValues);
+
+                }
 
                 break;
 
             case Calendar.MONDAY:
 
-                contentValues.put(DatabaseContract.Monday.COLUMN_CLASS, classToInsert.getName());
-                contentValues.put(DatabaseContract.Monday.COLUMN_START_TIME, classToInsert.getStartTime().toString());
-                contentValues.put(DatabaseContract.Monday.COLUMN_END_TIME, classToInsert.getEndTime().toString());
+                for (int i = 0; i < classesToInsert.size(); i++) {
 
-                sqLiteDatabase.insert(DatabaseContract.Monday.TABLE_NAME, null, contentValues);
+                    contentValues.clear();
+
+                    contentValues.put(DatabaseContract.Monday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                    contentValues.put(DatabaseContract.Monday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                    contentValues.put(DatabaseContract.Monday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+
+                    sqLiteDatabase.insert(DatabaseContract.Monday.TABLE_NAME, null, contentValues);
+
+                }
 
                 break;
 
             case Calendar.TUESDAY:
 
-                contentValues.put(DatabaseContract.Tuesday.COLUMN_CLASS, classToInsert.getName());
-                contentValues.put(DatabaseContract.Tuesday.COLUMN_START_TIME, classToInsert.getStartTime().toString());
-                contentValues.put(DatabaseContract.Tuesday.COLUMN_END_TIME, classToInsert.getEndTime().toString());
+                for (int i = 0; i < classesToInsert.size(); i++) {
 
-                sqLiteDatabase.insert(DatabaseContract.Tuesday.TABLE_NAME, null, contentValues);
+                    contentValues.clear();
+
+                    contentValues.put(DatabaseContract.Tuesday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                    contentValues.put(DatabaseContract.Tuesday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                    contentValues.put(DatabaseContract.Tuesday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+
+                    sqLiteDatabase.insert(DatabaseContract.Tuesday.TABLE_NAME, null, contentValues);
+
+                }
 
                 break;
 
             case Calendar.WEDNESDAY:
 
-                contentValues.put(DatabaseContract.Wednesday.COLUMN_CLASS, classToInsert.getName());
-                contentValues.put(DatabaseContract.Wednesday.COLUMN_START_TIME, classToInsert.getStartTime().toString());
-                contentValues.put(DatabaseContract.Wednesday.COLUMN_END_TIME, classToInsert.getEndTime().toString());
+                for (int i = 0; i < classesToInsert.size(); i++) {
 
-                sqLiteDatabase.insert(DatabaseContract.Wednesday.TABLE_NAME, null, contentValues);
+                    contentValues.clear();
+
+                    contentValues.put(DatabaseContract.Wednesday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                    contentValues.put(DatabaseContract.Wednesday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                    contentValues.put(DatabaseContract.Wednesday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+
+                    sqLiteDatabase.insert(DatabaseContract.Wednesday.TABLE_NAME, null, contentValues);
+
+                }
 
                 break;
 
             case Calendar.THURSDAY:
 
-                contentValues.put(DatabaseContract.Thursday.COLUMN_CLASS, classToInsert.getName());
-                contentValues.put(DatabaseContract.Thursday.COLUMN_START_TIME, classToInsert.getStartTime().toString());
-                contentValues.put(DatabaseContract.Thursday.COLUMN_END_TIME, classToInsert.getEndTime().toString());
+                for (int i = 0; i < classesToInsert.size(); i++) {
 
-                sqLiteDatabase.insert(DatabaseContract.Thursday.TABLE_NAME, null, contentValues);
+                    contentValues.clear();
+
+                    contentValues.put(DatabaseContract.Thursday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                    contentValues.put(DatabaseContract.Thursday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                    contentValues.put(DatabaseContract.Thursday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+
+                    sqLiteDatabase.insert(DatabaseContract.Thursday.TABLE_NAME, null, contentValues);
+
+                }
 
                 break;
 
             case Calendar.FRIDAY:
 
-                contentValues.put(DatabaseContract.Friday.COLUMN_CLASS, classToInsert.getName());
-                contentValues.put(DatabaseContract.Friday.COLUMN_START_TIME, classToInsert.getStartTime().toString());
-                contentValues.put(DatabaseContract.Friday.COLUMN_END_TIME, classToInsert.getEndTime().toString());
+                for (int i = 0; i < classesToInsert.size(); i++) {
 
-                sqLiteDatabase.insert(DatabaseContract.Friday.TABLE_NAME, null, contentValues);
+                    contentValues.clear();
+
+                    contentValues.put(DatabaseContract.Friday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                    contentValues.put(DatabaseContract.Friday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                    contentValues.put(DatabaseContract.Friday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+
+                    sqLiteDatabase.insert(DatabaseContract.Friday.TABLE_NAME, null, contentValues);
+
+                }
 
                 break;
 
             case Calendar.SATURDAY:
 
-                contentValues.put(DatabaseContract.Saturday.COLUMN_CLASS, classToInsert.getName());
-                contentValues.put(DatabaseContract.Saturday.COLUMN_START_TIME, classToInsert.getStartTime().toString());
-                contentValues.put(DatabaseContract.Saturday.COLUMN_END_TIME, classToInsert.getEndTime().toString());
+                for (int i = 0; i < classesToInsert.size(); i++) {
 
-                sqLiteDatabase.insert(DatabaseContract.Saturday.TABLE_NAME, null, contentValues);
+                    contentValues.clear();
+
+                    contentValues.put(DatabaseContract.Saturday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                    contentValues.put(DatabaseContract.Saturday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                    contentValues.put(DatabaseContract.Saturday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+
+                    sqLiteDatabase.insert(DatabaseContract.Saturday.TABLE_NAME, null, contentValues);
+
+                }
 
                 break;
 
@@ -344,20 +387,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean checkIfClassExists(String classToCheck) {
+    public void deleteAllHomework() {
 
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from "
-                + DatabaseContract.ClassInfo.TABLE_NAME + " where "
-                + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
-                + classToCheck + "' collate nocase", null);
+        sqLiteDatabase.execSQL("delete from " + DatabaseContract.Homework.TABLE_NAME);
 
-        boolean exists = cursor.moveToNext();
-
-        cursor.close();
-
-        return exists;
+        sqLiteDatabase.close();
 
     }
 
@@ -532,18 +568,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void addHomework(Homework homeworkToAdd) {
+    public void addHomework(ArrayList<Homework> homeworkToAdd) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(DatabaseContract.Homework.COLUMN_NAME, homeworkToAdd.getName());
-        contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homeworkToAdd.getClassName());
-        contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homeworkToAdd.getDateTime().toString());
-        contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homeworkToAdd.isAttach() ? 1 : 0);
+        for (int i = 0; i < homeworkToAdd.size(); i++) {
 
-        sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
+            contentValues.clear();
+
+            contentValues.put(DatabaseContract.Homework.COLUMN_NAME, homeworkToAdd.get(i).getName());
+            contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homeworkToAdd.get(i).getClassName());
+            contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homeworkToAdd.get(i).getDateTime().toString());
+            contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homeworkToAdd.get(i).isAttach() ? 1 : 0);
+
+            sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
+
+        }
 
         sqLiteDatabase.close();
 

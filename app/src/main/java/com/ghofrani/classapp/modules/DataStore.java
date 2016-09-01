@@ -4,6 +4,8 @@ import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 
 public class DataStore {
@@ -35,6 +37,8 @@ public class DataStore {
     public static ArrayList<Homework> nextWeekHomeworkArrayList;
     public static ArrayList<Homework> thisMonthHomeworkArrayList;
     public static ArrayList<Homework> beyondThisMonthHomeworkArrayList;
+
+    public static DateTime nextWeekEnd;
 
     public static int progressBarProgress = 0;
     public static String progressBarText = "0%";
