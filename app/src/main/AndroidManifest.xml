@@ -3,6 +3,7 @@
 <manifest
 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ghofrani.classapp"
     android:installLocation="internalOnly">
 
@@ -14,12 +15,18 @@
 
         android:name="android.permission.VIBRATE" />
 
+    <uses-feature
+
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
 
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/app_theme">
+        android:theme="@style/chalkboard_theme"
+        tools:replace="android:theme">
 
         <activity
 
@@ -83,6 +90,22 @@
             android:screenOrientation="portrait">
 
         </activity>
+
+        <provider
+
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.ghofrani.classapp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/paths">
+
+            </meta-data>
+
+        </provider>
 
         <service
 

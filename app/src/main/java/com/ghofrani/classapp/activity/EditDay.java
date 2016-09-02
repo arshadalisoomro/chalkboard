@@ -1717,9 +1717,9 @@ public class EditDay extends AppCompatActivity {
     @Override
     protected void onStop() {
 
-        super.onStop();
-
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_data"));
+
+        super.onStop();
 
     }
 

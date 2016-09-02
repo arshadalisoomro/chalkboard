@@ -167,6 +167,17 @@
                 android:text="High priority"
                 android:textSize="16sp" />
 
+            <Button
+
+                android:id="@+id/add_homework_add_picture_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_homework_high_priority_check_box"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Add Picture" />
+
         </RelativeLayout>
 
     </ScrollView>
