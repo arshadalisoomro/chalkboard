@@ -33,6 +33,9 @@ import java.util.ArrayList;
 
 public class Overview extends Fragment {
 
+    private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION = 100;
+    private final int EXPANDABLE_LIST_VIEW_HEIGHT = 36;
+
     private ClassList classListAdapterTomorrow;
     private ClassList classListAdapterNext;
     private ExpandableListView expandableListViewNextClasses;
@@ -65,7 +68,7 @@ public class Overview extends Fragment {
     };
     private ArrayList<StandardClass> nextClassesArrayList;
     private ExpandableListView expandableListViewTomorrowClasses;
-    private final BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
 
@@ -216,6 +219,7 @@ public class Overview extends Fragment {
         expandableListViewNextClasses = null;
         nextClassesArrayList = null;
         classListAdapterNext = null;
+        collapseExpandableListViewsBroadcastReceiver = null;
         expandableListViewTomorrowClasses = null;
         tomorrowClassesArrayList = null;
         classListAdapterTomorrow = null;
@@ -680,14 +684,14 @@ public class Overview extends Fragment {
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                            relativeLayoutParams.height = (int) (getPixelFromDP(36) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+                            relativeLayoutParams.height = (int) (getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT)));
 
                             parentLayout.requestLayout();
 
                         }
                     };
 
-                    expandAnimation.setDuration(100);
+                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
                     parentLayout.startAnimation(expandAnimation);
 
                 } else {
@@ -716,19 +720,19 @@ public class Overview extends Fragment {
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                            relativeLayoutParams.height = (int) (getPixelFromDP(36) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+                            relativeLayoutParams.height = (int) (getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT)));
 
                             parentLayout.requestLayout();
 
                         }
                     };
 
-                    collapseAnimation.setDuration(100);
+                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
                     parentLayout.startAnimation(collapseAnimation);
 
                 } else {
 
-                    relativeLayoutParams.height = getPixelFromDP(36);
+                    relativeLayoutParams.height = getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT);
 
                     parentLayout.requestLayout();
 
@@ -792,14 +796,14 @@ public class Overview extends Fragment {
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                            relativeLayoutParams.height = (int) (getPixelFromDP(36) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+                            relativeLayoutParams.height = (int) (getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT) + interpolatedTime * (listViewLayoutParamsHeight - getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT)));
 
                             parentLayout.requestLayout();
 
                         }
                     };
 
-                    expandAnimation.setDuration(100);
+                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
                     parentLayout.startAnimation(expandAnimation);
 
                 } else {
@@ -828,19 +832,19 @@ public class Overview extends Fragment {
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                            relativeLayoutParams.height = (int) (getPixelFromDP(36) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(36)));
+                            relativeLayoutParams.height = (int) (getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT) + (1 - interpolatedTime) * (listViewLayoutParamsHeight - getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT)));
 
                             parentLayout.requestLayout();
 
                         }
                     };
 
-                    collapseAnimation.setDuration(100);
+                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
                     parentLayout.startAnimation(collapseAnimation);
 
                 } else {
 
-                    relativeLayoutParams.height = getPixelFromDP(36);
+                    relativeLayoutParams.height = getPixelFromDP(EXPANDABLE_LIST_VIEW_HEIGHT);
 
                     parentLayout.requestLayout();
 

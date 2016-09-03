@@ -39,6 +39,9 @@ import java.util.List;
 
 public class EditDay extends AppCompatActivity {
 
+    private final String FIRST_LESSON_ASSUMED_START_TIME = "08:00";
+    private final String FIRST_LESSON_ASSUMED_END_TIME = "09:00";
+
     private String startTimeTextAdd;
     private String endTimeTextAdd;
     private String startTimeTextEdit;
@@ -429,8 +432,8 @@ public class EditDay extends AppCompatActivity {
             standardClassArrayList.add(null);
 
             noClassIndexList.add(0);
-            startTimeStringForPosition.add("08:00");
-            endTimeStringForPosition.add("09:00");
+            startTimeStringForPosition.add(FIRST_LESSON_ASSUMED_START_TIME);
+            endTimeStringForPosition.add(FIRST_LESSON_ASSUMED_END_TIME);
 
         }
 
@@ -976,7 +979,7 @@ public class EditDay extends AppCompatActivity {
 
                         final Spinner classNameSpinner = (Spinner) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_spinner);
 
-                        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, DataStore.allClassNamesArrayList);
+                        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, DataStore.allClassNamesArrayList);
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);
@@ -1166,7 +1169,7 @@ public class EditDay extends AppCompatActivity {
 
                         final Spinner classNameSpinner = (Spinner) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_spinner);
 
-                        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, android.R.layout.simple_spinner_item, classNameList);
+                        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, classNameList);
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);

@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -27,6 +28,10 @@ import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.DatabaseHelper;
 
 public class AddClass extends AppCompatActivity {
+
+    private final int ID_TIMETABLE = 1;
+    private final int RESULT_OK = 0;
+    private final int RESULT_NO_CLASS_ADDED = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +115,8 @@ public class AddClass extends AppCompatActivity {
 
         getFragmentManager().beginTransaction().replace(R.id.add_class_color_frame_layout, new ColorFragment()).commit();
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
     }
 
     @Override
@@ -191,7 +198,7 @@ public class AddClass extends AppCompatActivity {
 
                             LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
 
-                            setResult(0, new Intent().putExtra("switch_to_timetable", 1).putExtra("class", "AddClass"));
+                            setResult(RESULT_OK, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE).putExtra("class", "AddClass"));
 
                             finish();
 
@@ -242,7 +249,7 @@ public class AddClass extends AppCompatActivity {
 
                         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
 
-                        setResult(0, new Intent().putExtra("switch_to_timetable", 1).putExtra("class", "AddClass"));
+                        setResult(RESULT_OK, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE).putExtra("class", "AddClass"));
 
                         finish();
 
@@ -293,7 +300,7 @@ public class AddClass extends AppCompatActivity {
 
                 materialDialog.dismiss();
 
-                setResult(1, new Intent());
+                setResult(RESULT_NO_CLASS_ADDED, new Intent());
 
                 AddClass.super.onBackPressed();
 
@@ -349,11 +356,11 @@ public class AddClass extends AppCompatActivity {
         @Override
         public void onPause() {
 
-            super.onPause();
-
             getPreferenceScreen()
                     .getSharedPreferences()
                     .unregisterOnSharedPreferenceChangeListener(this);
+
+            super.onPause();
 
         }
 

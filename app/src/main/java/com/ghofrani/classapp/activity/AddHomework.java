@@ -26,9 +26,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -61,7 +61,7 @@ public class AddHomework extends AppCompatActivity {
     private RadioButton specificClassRadioButton;
     private RadioButton customTimeRadioButton;
     private MutableDateTime pickedDateTime;
-    private TextView homeworkNameTextView;
+    private EditText homeworkNameEditText;
     private boolean firstRunSpecific = true;
     private int selectedIndex;
     private ArrayList<StandardClass> listItemClasses;
@@ -251,8 +251,8 @@ public class AddHomework extends AppCompatActivity {
         if (customTimeRadioButton == null)
             customTimeRadioButton = (RadioButton) findViewById(R.id.radio_custom);
 
-        if (homeworkNameTextView == null)
-            homeworkNameTextView = (TextView) findViewById(R.id.add_homework_input_name);
+        if (homeworkNameEditText == null)
+            homeworkNameEditText = (EditText) findViewById(R.id.add_homework_input_name);
 
         if (priorityCheckBox == null)
             priorityCheckBox = (CheckBox) findViewById(R.id.add_homework_high_priority_check_box);
@@ -284,8 +284,7 @@ public class AddHomework extends AppCompatActivity {
 
         }
 
-        if (homeworkNameTextView.requestFocus())
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
     }
 
@@ -303,7 +302,7 @@ public class AddHomework extends AppCompatActivity {
 
             } catch (IOException ex) {
 
-                Toast.makeText(this, "Error, please try again!", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Error, please try again!", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -328,6 +327,7 @@ public class AddHomework extends AppCompatActivity {
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         currentPhotoPath = "file:" + image.getAbsolutePath();
+
         return image;
 
     }
@@ -686,8 +686,12 @@ public class AddHomework extends AppCompatActivity {
             specificClassRadioButton = null;
             customTimeRadioButton = null;
             pickedDateTime = null;
-            homeworkNameTextView = null;
+            homeworkNameEditText = null;
+            listItemClasses = null;
+            listItemTitles = null;
+            daySwitches = null;
             priorityCheckBox = null;
+            addPictureButton = null;
 
         }
 
@@ -1026,14 +1030,14 @@ public class AddHomework extends AppCompatActivity {
 
         } else if (menuItem.getItemId() == R.id.toolbar_check_check) {
 
-            if (!homeworkNameTextView.getText().toString().isEmpty()) {
+            if (!homeworkNameEditText.getText().toString().isEmpty()) {
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
                 Homework homeworkToAdd;
 
                 if (nextClassRadioButton.isChecked()) {
 
-                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), getNextDateTimeOfClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
+                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), getNextDateTimeOfClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else if (specificClassRadioButton.isChecked()) {
 
@@ -1138,11 +1142,11 @@ public class AddHomework extends AppCompatActivity {
 
                     }
 
-                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
+                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else if (customTimeRadioButton.isChecked()) {
 
-                    homeworkToAdd = new Homework(homeworkNameTextView.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
+                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else {
 

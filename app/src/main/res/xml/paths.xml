@@ -3,6 +3,7 @@
 <paths>
 
     <external-path
+
         name="homework_pictures"
         path="Android/data/com.ghofrani.classapp/files/Pictures" />
 

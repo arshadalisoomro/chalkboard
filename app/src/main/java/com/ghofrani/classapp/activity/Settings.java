@@ -150,11 +150,11 @@ public class Settings extends AppCompatActivity {
         @Override
         public void onPause() {
 
-            super.onPause();
-
             getPreferenceScreen()
                     .getSharedPreferences()
                     .unregisterOnSharedPreferenceChangeListener(this);
+
+            super.onPause();
 
         }
 

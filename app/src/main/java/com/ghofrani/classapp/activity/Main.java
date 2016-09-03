@@ -47,6 +47,15 @@ import java.util.List;
 
 public class Main extends AppCompatActivity implements DrawerLayout.DrawerListener {
 
+    private final float TAB_LAYOUT_LAYOUT_LEFT_MARGIN = 60.5f;
+    private final int TAB_LAYOUT_LAYOUT_ANIMATION_DURATION = 200;
+    private final int RESULT_OK = 0;
+    private final int ID_OVERVIEW = 0;
+    private final int ID_TIMETABLE = 1;
+    private final int ID_CLASSES = 2;
+    private final int ID_HOMEWORK = 3;
+    private final int ID_SETTINGS = 4;
+
     private FloatingActionButton floatingActionButton;
     private DrawerLayout drawerLayout;
     private ScrollView scrollView;
@@ -54,7 +63,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private NavigationView navigationView;
-    private int currentView = 0;
+    private int currentView = ID_OVERVIEW;
     private boolean operateOnDrawerClosed;
     private int drawerViewToSwitchTo;
     private boolean floatingActionButtonContrast = false;
@@ -172,10 +181,10 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     if (menuItem.getItemId() == R.id.settings) {
 
-                        if (currentView == 0)
+                        if (currentView == ID_OVERVIEW)
                             LocalBroadcastManager.getInstance(Main.this).sendBroadcast(new Intent("collapse_lists"));
 
-                        drawerViewToSwitchTo = 4;
+                        drawerViewToSwitchTo = ID_SETTINGS;
 
                     } else {
 
@@ -195,8 +204,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                                 navigationView.setCheckedItem(R.id.overview);
 
-                                currentView = 0;
-                                drawerViewToSwitchTo = 0;
+                                currentView = ID_OVERVIEW;
+                                drawerViewToSwitchTo = ID_OVERVIEW;
 
                                 break;
 
@@ -216,8 +225,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                                 navigationView.setCheckedItem(R.id.timetable);
 
-                                currentView = 1;
-                                drawerViewToSwitchTo = 1;
+                                currentView = ID_TIMETABLE;
+                                drawerViewToSwitchTo = ID_TIMETABLE;
 
                                 break;
 
@@ -240,8 +249,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                                 navigationView.setCheckedItem(R.id.classes);
 
-                                currentView = 2;
-                                drawerViewToSwitchTo = 2;
+                                currentView = ID_CLASSES;
+                                drawerViewToSwitchTo = ID_CLASSES;
 
                                 break;
 
@@ -264,8 +273,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                                 navigationView.setCheckedItem(R.id.homework);
 
-                                currentView = 3;
-                                drawerViewToSwitchTo = 3;
+                                currentView = ID_HOMEWORK;
+                                drawerViewToSwitchTo = ID_HOMEWORK;
 
                                 break;
 
@@ -287,18 +296,18 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             @Override
             public void onClick(View v) {
 
-                if (currentView == 1) {
+                if (currentView == ID_TIMETABLE) {
 
                     if (!DataStore.allClassNamesArrayList.isEmpty())
                         startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataStore.selectedTabPosition));
                     else
                         Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
 
-                } else if (currentView == 2) {
+                } else if (currentView == ID_CLASSES) {
 
-                    startActivityForResult(new Intent(Main.this, AddClass.class), 0);
+                    startActivityForResult(new Intent(Main.this, AddClass.class), RESULT_OK);
 
-                } else if (currentView == 3) {
+                } else if (currentView == ID_HOMEWORK) {
 
                     if (DataStore.allClassNamesArrayList.isEmpty())
                         Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
@@ -311,7 +320,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         });
 
-        switchToView((getIntent().hasExtra("fragment") ? getIntent().getIntExtra("fragment", 0) : 0));
+        switchToView((getIntent().hasExtra("fragment") ? getIntent().getIntExtra("fragment", ID_OVERVIEW) : ID_OVERVIEW));
 
     }
 
@@ -395,7 +404,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             switch (drawerViewToSwitchTo) {
 
-                case 0:
+                case ID_OVERVIEW:
 
                     Overview overviewFragment = new Overview();
                     fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
@@ -403,7 +412,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     break;
 
-                case 1:
+                case ID_TIMETABLE:
 
                     tabLayout.setVisibility(AppBarLayout.VISIBLE);
                     viewPager.setVisibility(LinearLayout.VISIBLE);
@@ -443,14 +452,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                         @Override
                                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                            params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+                                            params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
 
                                             mainTabLayoutLayout.setLayoutParams(params);
 
                                         }
                                     };
 
-                                    animation.setDuration(200);
+                                    animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                                     drawerLayout.startAnimation(animation);
 
                                     DataStore.isAnimated = true;
@@ -469,14 +478,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                         @Override
                                         protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                            params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+                                            params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
 
                                             mainTabLayoutLayout.setLayoutParams(params);
 
                                         }
                                     };
 
-                                    animation.setDuration(200);
+                                    animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                                     drawerLayout.startAnimation(animation);
 
                                     DataStore.isAnimated = false;
@@ -505,14 +514,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                 @Override
                                 protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                    params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+                                    params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
 
                                     mainTabLayoutLayout.setLayoutParams(params);
 
                                 }
                             };
 
-                            animation.setDuration(200);
+                            animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                             drawerLayout.startAnimation(animation);
 
                             DataStore.isAnimated = true;
@@ -531,14 +540,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                 @Override
                                 protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                    params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+                                    params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
 
                                     mainTabLayoutLayout.setLayoutParams(params);
 
                                 }
                             };
 
-                            animation.setDuration(200);
+                            animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                             drawerLayout.startAnimation(animation);
 
                             DataStore.isAnimated = false;
@@ -549,7 +558,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     break;
 
-                case 2:
+                case ID_CLASSES:
 
                     Classes classesFragment = new Classes();
                     fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
@@ -557,7 +566,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     break;
 
-                case 3:
+                case ID_HOMEWORK:
 
                     Homework homeworkFragment = new Homework();
                     fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
@@ -565,7 +574,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     break;
 
-                case 4:
+                case ID_SETTINGS:
 
                     startActivity(new Intent(this, Settings.class));
 
@@ -592,7 +601,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         super.onActivityResult(requestCode, resultCode, resultIntent);
 
-        if (resultCode == 0) {
+        if (resultCode == RESULT_OK) {
 
             if (resultIntent.getStringExtra("class").equals("AddClass")) {
 
@@ -611,7 +620,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         switch (viewToSwitchTo) {
 
-            case 0:
+            case ID_OVERVIEW:
 
                 if (floatingActionButton.isShown())
                     floatingActionButton.hide();
@@ -633,7 +642,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 break;
 
-            case 1:
+            case ID_TIMETABLE:
 
                 if (!floatingActionButton.isShown())
                     floatingActionButton.show();
@@ -689,14 +698,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                        params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+                                        params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
 
                                         mainTabLayoutLayout.setLayoutParams(params);
 
                                     }
                                 };
 
-                                animation.setDuration(200);
+                                animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                                 drawerLayout.startAnimation(animation);
 
                                 DataStore.isAnimated = true;
@@ -715,14 +724,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                     @Override
                                     protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                        params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+                                        params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
 
                                         mainTabLayoutLayout.setLayoutParams(params);
 
                                     }
                                 };
 
-                                animation.setDuration(200);
+                                animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                                 drawerLayout.startAnimation(animation);
 
                                 DataStore.isAnimated = false;
@@ -751,14 +760,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             @Override
                             protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                params.leftMargin = (int) (getPixelFromDP(48) - (getPixelFromDP(48) * interpolatedTime));
+                                params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
 
                                 mainTabLayoutLayout.setLayoutParams(params);
 
                             }
                         };
 
-                        animation.setDuration(200);
+                        animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                         drawerLayout.startAnimation(animation);
 
                         DataStore.isAnimated = true;
@@ -777,14 +786,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             @Override
                             protected void applyTransformation(float interpolatedTime, Transformation t) {
 
-                                params.leftMargin = (int) (getPixelFromDP(48) * interpolatedTime);
+                                params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
 
                                 mainTabLayoutLayout.setLayoutParams(params);
 
                             }
                         };
 
-                        animation.setDuration(200);
+                        animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                         drawerLayout.startAnimation(animation);
 
                         DataStore.isAnimated = false;
@@ -795,7 +804,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 break;
 
-            case 2:
+            case ID_CLASSES:
 
                 if (!floatingActionButton.isShown())
                     floatingActionButton.show();
@@ -822,7 +831,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 break;
 
-            case 3:
+            case ID_HOMEWORK:
 
                 if (!floatingActionButton.isShown())
                     floatingActionButton.show();
@@ -849,9 +858,9 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 break;
 
-            case 4:
+            case ID_SETTINGS:
 
-                if (currentView == 0)
+                if (currentView == ID_OVERVIEW)
                     LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("collapse_lists"));
 
                 startActivity(new Intent(this, Settings.class));
