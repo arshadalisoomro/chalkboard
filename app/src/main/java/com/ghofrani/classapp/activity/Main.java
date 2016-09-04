@@ -500,7 +500,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 tabLayout.setupWithViewPager(viewPager);
 
-                tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
                     @Override
                     public void onTabSelected(TabLayout.Tab tabLayoutTab) {
