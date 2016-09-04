@@ -14,6 +14,7 @@ import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.modules.Utils;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -47,7 +48,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
                 /*
 
-                TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
+                final TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
 
                 context.startActivity(new Intent(context, ViewHomework.class).putExtra("homework", titleTextView.getText()));
 
@@ -83,7 +84,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         if (homeworkArrayList.get(position).isAttach()) {
 
-            ArrayList<StandardClass> classesList = getClassesArrayListOfDay(homeworkArrayList.get(position).getDateTime().getDayOfWeek());
+            ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(homeworkArrayList.get(position).getDateTime().getDayOfWeek());
 
             if (classesList != null) {
 
@@ -141,44 +142,6 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
             homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.VISIBLE);
         else
             homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.GONE);
-
-    }
-
-    private ArrayList<StandardClass> getClassesArrayListOfDay(int day) {
-
-        switch (day) {
-
-            case 1:
-
-                return DataStore.mondayClasses;
-
-            case 2:
-
-                return DataStore.tuesdayClasses;
-
-            case 3:
-
-                return DataStore.wednesdayClasses;
-
-            case 4:
-
-                return DataStore.thursdayClasses;
-
-            case 5:
-
-                return DataStore.fridayClasses;
-
-            case 6:
-
-                return DataStore.saturdayClasses;
-
-            case 7:
-
-                return DataStore.sundayClasses;
-
-        }
-
-        return null;
 
     }
 

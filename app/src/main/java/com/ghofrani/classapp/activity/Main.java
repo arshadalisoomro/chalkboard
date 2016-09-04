@@ -3,7 +3,6 @@ package com.ghofrani.classapp.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -40,6 +38,7 @@ import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
 import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.modules.Utils;
 import com.ghofrani.classapp.service.Background;
 
 import java.util.ArrayList;
@@ -71,76 +70,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        int colorPrimary = PreferenceManager.getDefaultSharedPreferences(this).getInt("primary_color", ContextCompat.getColor(this, R.color.teal));
-
-        if (colorPrimary == ContextCompat.getColor(this, R.color.red))
-            getTheme().applyStyle(R.style.primary_red, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.pink))
-            getTheme().applyStyle(R.style.primary_pink, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.purple))
-            getTheme().applyStyle(R.style.primary_purple, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.deep_purple))
-            getTheme().applyStyle(R.style.primary_deep_purple, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.indigo))
-            getTheme().applyStyle(R.style.primary_indigo, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.blue))
-            getTheme().applyStyle(R.style.primary_blue, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.light_blue))
-            getTheme().applyStyle(R.style.primary_light_blue, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.cyan))
-            getTheme().applyStyle(R.style.primary_cyan, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.teal))
-            getTheme().applyStyle(R.style.primary_teal, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.green))
-            getTheme().applyStyle(R.style.primary_green, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.light_green))
-            getTheme().applyStyle(R.style.primary_light_green, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.lime))
-            getTheme().applyStyle(R.style.primary_lime, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.orange))
-            getTheme().applyStyle(R.style.primary_orange, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.deep_orange))
-            getTheme().applyStyle(R.style.primary_deep_orange, true);
-        else if (colorPrimary == ContextCompat.getColor(this, R.color.blue_grey))
-            getTheme().applyStyle(R.style.primary_blue_grey, true);
-
-        int colorAccent = PreferenceManager.getDefaultSharedPreferences(this).getInt("accent_color", ContextCompat.getColor(this, R.color.deep_orange_accent));
-
-        if (colorAccent == ContextCompat.getColor(this, R.color.red_accent)) {
-            getTheme().applyStyle(R.style.accent_red, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.pink_accent)) {
-            getTheme().applyStyle(R.style.accent_pink, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.purple_accent)) {
-            getTheme().applyStyle(R.style.accent_purple, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.deep_purple_accent)) {
-            getTheme().applyStyle(R.style.accent_deep_purple, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.indigo_accent)) {
-            getTheme().applyStyle(R.style.accent_indigo, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.blue_accent)) {
-            getTheme().applyStyle(R.style.accent_blue, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.light_blue_accent)) {
-            getTheme().applyStyle(R.style.accent_light_blue, true);
-            floatingActionButtonContrast = true;
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.cyan_accent)) {
-            getTheme().applyStyle(R.style.accent_cyan, true);
-            floatingActionButtonContrast = true;
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.teal_accent)) {
-            getTheme().applyStyle(R.style.accent_teal, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.green_accent)) {
-            getTheme().applyStyle(R.style.accent_green, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.lime_accent)) {
-            getTheme().applyStyle(R.style.accent_lime, true);
-            floatingActionButtonContrast = true;
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.yellow_accent)) {
-            getTheme().applyStyle(R.style.accent_yellow, true);
-            floatingActionButtonContrast = true;
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.amber_accent)) {
-            getTheme().applyStyle(R.style.accent_amber, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.orange_accent)) {
-            getTheme().applyStyle(R.style.accent_orange, true);
-        } else if (colorAccent == ContextCompat.getColor(this, R.color.deep_orange_accent)) {
-            getTheme().applyStyle(R.style.accent_deep_orange, true);
-        }
+        floatingActionButtonContrast = Utils.setThemeGetContrastFlag(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -400,187 +330,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         if (operateOnDrawerClosed) {
 
-            final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-            switch (drawerViewToSwitchTo) {
-
-                case ID_OVERVIEW:
-
-                    Overview overviewFragment = new Overview();
-                    fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
-                    fragmentTransaction.commit();
-
-                    break;
-
-                case ID_TIMETABLE:
-
-                    tabLayout.setVisibility(AppBarLayout.VISIBLE);
-                    viewPager.setVisibility(LinearLayout.VISIBLE);
-
-                    fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.main_scroll_view)).commit();
-
-                    final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-                    adapter.addFragment(new Sunday(), "SUNDAY");
-                    adapter.addFragment(new Monday(), "MONDAY");
-                    adapter.addFragment(new Tuesday(), "TUESDAY");
-                    adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                    adapter.addFragment(new Thursday(), "THURSDAY");
-                    adapter.addFragment(new Friday(), "FRIDAY");
-                    adapter.addFragment(new Saturday(), "SATURDAY");
-
-                    viewPager.setAdapter(adapter);
-
-                    tabLayout.setupWithViewPager(viewPager);
-
-                    tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-
-                        @Override
-                        public void onTabSelected(TabLayout.Tab tabLayoutTab) {
-
-                            super.onTabSelected(tabLayoutTab);
-
-                            if (tabLayoutTab.getPosition() != 0) {
-
-                                if (!DataStore.isAnimated) {
-
-                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                    final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                                    final Animation animation = new Animation() {
-
-                                        @Override
-                                        protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                            params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
-
-                                            mainTabLayoutLayout.setLayoutParams(params);
-
-                                        }
-                                    };
-
-                                    animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                                    drawerLayout.startAnimation(animation);
-
-                                    DataStore.isAnimated = true;
-
-                                }
-
-                            } else {
-
-                                if (DataStore.isAnimated) {
-
-                                    final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                    final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                                    final Animation animation = new Animation() {
-
-                                        @Override
-                                        protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                            params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
-
-                                            mainTabLayoutLayout.setLayoutParams(params);
-
-                                        }
-                                    };
-
-                                    animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                                    drawerLayout.startAnimation(animation);
-
-                                    DataStore.isAnimated = false;
-
-                                }
-
-                            }
-
-                            DataStore.selectedTabPosition = tabLayoutTab.getPosition();
-
-                        }
-
-                    });
-
-                    tabLayout.getTabAt(DataStore.selectedTabPosition).select();
-
-                    if (DataStore.selectedTabPosition != 0) {
-
-                        if (!DataStore.isAnimated) {
-
-                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                            final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                            final Animation animation = new Animation() {
-
-                                @Override
-                                protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                    params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
-
-                                    mainTabLayoutLayout.setLayoutParams(params);
-
-                                }
-                            };
-
-                            animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                            drawerLayout.startAnimation(animation);
-
-                            DataStore.isAnimated = true;
-
-                        }
-
-                    } else {
-
-                        if (DataStore.isAnimated) {
-
-                            final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                            final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                            final Animation animation = new Animation() {
-
-                                @Override
-                                protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                    params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
-
-                                    mainTabLayoutLayout.setLayoutParams(params);
-
-                                }
-                            };
-
-                            animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                            drawerLayout.startAnimation(animation);
-
-                            DataStore.isAnimated = false;
-
-                        }
-
-                    }
-
-                    break;
-
-                case ID_CLASSES:
-
-                    Classes classesFragment = new Classes();
-                    fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
-                    fragmentTransaction.commit();
-
-                    break;
-
-                case ID_HOMEWORK:
-
-                    Homework homeworkFragment = new Homework();
-                    fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
-                    fragmentTransaction.commit();
-
-                    break;
-
-                case ID_SETTINGS:
-
-                    startActivity(new Intent(this, Settings.class));
-
-                    break;
-
-            }
+            performExpensiveSwitchOperations(drawerViewToSwitchTo, getSupportFragmentManager().beginTransaction());
 
             operateOnDrawerClosed = false;
 
@@ -636,10 +386,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 currentView = viewToSwitchTo;
 
-                Overview overviewFragment = new Overview();
-                fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
-                fragmentTransaction.commit();
-
                 break;
 
             case ID_TIMETABLE:
@@ -659,6 +405,81 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                 navigationView.setCheckedItem(R.id.timetable);
 
                 currentView = viewToSwitchTo;
+
+                break;
+
+            case ID_CLASSES:
+
+                if (!floatingActionButton.isShown())
+                    floatingActionButton.show();
+
+                if (floatingActionButtonContrast)
+                    floatingActionButton.setImageResource(R.drawable.add_black);
+                else
+                    floatingActionButton.setImageResource(R.drawable.add_white);
+
+                toolbar.setTitle("Classes");
+
+                tabLayout.setVisibility(AppBarLayout.GONE);
+                viewPager.setVisibility(LinearLayout.GONE);
+
+                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                navigationView.setCheckedItem(R.id.classes);
+
+                currentView = viewToSwitchTo;
+
+                break;
+
+            case ID_HOMEWORK:
+
+                if (!floatingActionButton.isShown())
+                    floatingActionButton.show();
+
+                if (floatingActionButtonContrast)
+                    floatingActionButton.setImageResource(R.drawable.add_black);
+                else
+                    floatingActionButton.setImageResource(R.drawable.add_white);
+
+                toolbar.setTitle("Homework");
+
+                tabLayout.setVisibility(AppBarLayout.GONE);
+                viewPager.setVisibility(LinearLayout.GONE);
+
+                scrollView.setVisibility(LinearLayout.VISIBLE);
+
+                navigationView.setCheckedItem(R.id.homework);
+
+                currentView = viewToSwitchTo;
+
+                break;
+
+            case ID_SETTINGS:
+
+                if (currentView == ID_OVERVIEW)
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("collapse_lists"));
+
+                break;
+
+        }
+
+        performExpensiveSwitchOperations(viewToSwitchTo, fragmentTransaction);
+
+    }
+
+    private void performExpensiveSwitchOperations(int viewID, final FragmentTransaction fragmentTransaction) {
+
+        switch (viewID) {
+
+            case ID_OVERVIEW:
+
+                Overview overviewFragment = new Overview();
+                fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
+                fragmentTransaction.commit();
+
+                break;
+
+            case ID_TIMETABLE:
 
                 tabLayout.setVisibility(AppBarLayout.VISIBLE);
                 viewPager.setVisibility(LinearLayout.VISIBLE);
@@ -806,25 +627,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_CLASSES:
 
-                if (!floatingActionButton.isShown())
-                    floatingActionButton.show();
-
-                if (floatingActionButtonContrast)
-                    floatingActionButton.setImageResource(R.drawable.add_black);
-                else
-                    floatingActionButton.setImageResource(R.drawable.add_white);
-
-                toolbar.setTitle("Classes");
-
-                tabLayout.setVisibility(AppBarLayout.GONE);
-                viewPager.setVisibility(LinearLayout.GONE);
-
-                scrollView.setVisibility(LinearLayout.VISIBLE);
-
-                navigationView.setCheckedItem(R.id.classes);
-
-                currentView = viewToSwitchTo;
-
                 Classes classesFragment = new Classes();
                 fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
                 fragmentTransaction.commit();
@@ -833,25 +635,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_HOMEWORK:
 
-                if (!floatingActionButton.isShown())
-                    floatingActionButton.show();
-
-                if (floatingActionButtonContrast)
-                    floatingActionButton.setImageResource(R.drawable.add_black);
-                else
-                    floatingActionButton.setImageResource(R.drawable.add_white);
-
-                toolbar.setTitle("Homework");
-
-                tabLayout.setVisibility(AppBarLayout.GONE);
-                viewPager.setVisibility(LinearLayout.GONE);
-
-                scrollView.setVisibility(LinearLayout.VISIBLE);
-
-                navigationView.setCheckedItem(R.id.homework);
-
-                currentView = viewToSwitchTo;
-
                 Homework homeworkFragment = new Homework();
                 fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
                 fragmentTransaction.commit();
@@ -859,9 +642,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                 break;
 
             case ID_SETTINGS:
-
-                if (currentView == ID_OVERVIEW)
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("collapse_lists"));
 
                 startActivity(new Intent(this, Settings.class));
 

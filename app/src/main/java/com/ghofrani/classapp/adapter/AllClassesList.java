@@ -32,7 +32,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             @Override
             public void onClick(View view) {
 
-                TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
+                final TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
 
                 context.startActivity(new Intent(context, ViewClass.class).putExtra("class", titleTextView.getText()));
 
