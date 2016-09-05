@@ -848,8 +848,9 @@ public class Background extends Service {
             final ArrayList<Homework> nextWeekHomeworkArrayList = new ArrayList<>();
             final ArrayList<Homework> thisMonthHomeworkArrayList = new ArrayList<>();
             final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
+            final ArrayList<Homework> pastHomeworkArrayList = new ArrayList<>();
 
-            DateTime today = DateTime.now();
+            DateTime today = DateTime.now().withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
             DateTime tomorrow = today.plusDays(1);
 
             boolean thisWeekEnabled = true;
@@ -903,7 +904,10 @@ public class Background extends Service {
 
                 if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-                    todayHomeworkArrayList.add(homework);
+                    if (today.isBefore(homework.getDateTime()) || today.isEqual(homework.getDateTime()))
+                        todayHomeworkArrayList.add(homework);
+                    else
+                        pastHomeworkArrayList.add(homework);
 
                 } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
@@ -921,6 +925,10 @@ public class Background extends Service {
 
                     thisMonthHomeworkArrayList.add(homework);
 
+                } else if (today.isAfter(homework.getDateTime())) {
+
+                    pastHomeworkArrayList.add(homework);
+
                 } else {
 
                     beyondThisMonthHomeworkArrayList.add(homework);
@@ -937,11 +945,15 @@ public class Background extends Service {
             DataStore.nextWeekHomeworkArrayList = nextWeekHomeworkArrayList;
             DataStore.thisMonthHomeworkArrayList = thisMonthHomeworkArrayList;
             DataStore.beyondThisMonthHomeworkArrayList = beyondThisMonthHomeworkArrayList;
+            DataStore.pastHomeworkArrayList = pastHomeworkArrayList;
             DataStore.nextWeekEnd = nextWeek.getEnd();
 
         }
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_UI"));
+
+        if (processHomework)
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_homework_UI"));
 
     }
 

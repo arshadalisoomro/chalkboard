@@ -58,6 +58,7 @@ public class Homework extends Fragment {
         homeworkArrayList.addAll(DataStore.nextWeekHomeworkArrayList);
         homeworkArrayList.addAll(DataStore.thisMonthHomeworkArrayList);
         homeworkArrayList.addAll(DataStore.beyondThisMonthHomeworkArrayList);
+        homeworkArrayList.addAll(DataStore.pastHomeworkArrayList);
 
         if (!homeworkArrayList.isEmpty()) {
 
@@ -109,8 +110,15 @@ public class Homework extends Fragment {
 
             }
 
-            if (!DataStore.beyondThisMonthHomeworkArrayList.isEmpty())
+            if (!DataStore.beyondThisMonthHomeworkArrayList.isEmpty()) {
+
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due after this month"));
+                nextSectionIndex += DataStore.beyondThisMonthHomeworkArrayList.size();
+
+            }
+
+            if (!DataStore.pastHomeworkArrayList.isEmpty())
+                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due in the past"));
 
             SimpleSectionedRecyclerView.Section[] sectionArray = new SimpleSectionedRecyclerView.Section[sections.size()];
             SimpleSectionedRecyclerView sectionedAdapter = new SimpleSectionedRecyclerView(getContext(), R.layout.view_homework_list_section, R.id.view_homework_list_section_text_view, new HomeworkList(getContext(), homeworkArrayList));

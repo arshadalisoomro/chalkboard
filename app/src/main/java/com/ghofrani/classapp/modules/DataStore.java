@@ -37,6 +37,7 @@ public class DataStore {
     public static ArrayList<Homework> nextWeekHomeworkArrayList;
     public static ArrayList<Homework> thisMonthHomeworkArrayList;
     public static ArrayList<Homework> beyondThisMonthHomeworkArrayList;
+    public static ArrayList<Homework> pastHomeworkArrayList;
 
     public static DateTime nextWeekEnd;
 
