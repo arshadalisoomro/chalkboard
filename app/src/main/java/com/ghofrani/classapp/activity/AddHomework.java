@@ -2,7 +2,6 @@ package com.ghofrani.classapp.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -40,8 +38,6 @@ import com.ghofrani.classapp.modules.DatabaseHelper;
 import com.ghofrani.classapp.modules.Utils;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 import org.joda.time.MutableDateTime;
 
@@ -67,7 +63,6 @@ public class AddHomework extends AppCompatActivity {
     private ArrayList<String> listItemTitles;
     private ArrayList<Integer> daySwitches;
     private CheckBox priorityCheckBox;
-    private Button addPictureButton;
     private String currentPhotoPath;
 
     @Override
@@ -191,33 +186,6 @@ public class AddHomework extends AppCompatActivity {
 
         if (priorityCheckBox == null)
             priorityCheckBox = (CheckBox) findViewById(R.id.add_homework_high_priority_check_box);
-
-        if (addPictureButton == null) {
-
-            addPictureButton = (Button) findViewById(R.id.add_homework_add_picture_button);
-
-            if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-
-                addPictureButton.setVisibility(View.VISIBLE);
-
-                addPictureButton.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-
-                        startPictureIntent();
-
-                    }
-
-                });
-
-            } else {
-
-                addPictureButton.setVisibility(View.GONE);
-
-            }
-
-        }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -626,7 +594,6 @@ public class AddHomework extends AppCompatActivity {
             listItemTitles = null;
             daySwitches = null;
             priorityCheckBox = null;
-            addPictureButton = null;
 
         }
 
@@ -1150,99 +1117,9 @@ public class AddHomework extends AppCompatActivity {
                 databaseHelper.deleteAllHomework();
                 databaseHelper.addHomework(homeworkArrayList);
 
-                final ArrayList<Homework> todayHomeworkArrayList = new ArrayList<>();
-                final ArrayList<Homework> tomorrowHomeworkArrayList = new ArrayList<>();
-                final ArrayList<Homework> thisWeekHomeworkArrayList = new ArrayList<>();
-                final ArrayList<Homework> nextWeekHomeworkArrayList = new ArrayList<>();
-                final ArrayList<Homework> thisMonthHomeworkArrayList = new ArrayList<>();
-                final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
-
-                DateTime today = DateTime.now();
-                DateTime tomorrow = today.plusDays(1);
-
-                boolean thisWeekEnabled = true;
-                Interval thisWeek;
-                Interval nextWeek;
-
-                switch (today.getDayOfWeek()) {
-
-                    case DateTimeConstants.FRIDAY:
-
-                        thisWeekEnabled = false;
-                        thisWeek = new Interval(today, today);
-                        nextWeek = new Interval(today.plusDays(2).withTime(0, 0, 0, 0), today.plusDays(9).withTime(0, 0, 0, 0));
-
-                        break;
-
-                    case DateTimeConstants.SATURDAY:
-
-                        thisWeekEnabled = false;
-                        thisWeek = new Interval(today, today);
-                        nextWeek = new Interval(today.plusDays(1).withTime(0, 0, 0, 0), today.plusDays(8).withTime(0, 0, 0, 0));
-
-                        break;
-
-                    default:
-
-                        thisWeek = new Interval(tomorrow.plusDays(1).withTime(0, 0, 0, 0), tomorrow.plusDays(DateTimeConstants.SUNDAY - tomorrow.getDayOfWeek()).withTime(0, 0, 0, 0));
-                        nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7).withTimeAtStartOfDay());
-
-                }
-
-                boolean thisMonthEnabled = false;
-                Interval thisMonth = new Interval(today, today);
-
-                if (nextWeek.getEnd().getMonthOfYear() == today.getMonthOfYear()) {
-
-                    if (today.dayOfMonth().withMaximumValue().getDayOfMonth() > nextWeek.getEnd().getDayOfMonth() - 1) {
-
-                        thisMonthEnabled = true;
-                        thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue());
-
-                    }
-
-                }
-
-                for (int i = 0; i < homeworkArrayList.size(); i++) {
-
-                    Homework homework = homeworkArrayList.get(i);
-
-                    if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
-
-                        todayHomeworkArrayList.add(homework);
-
-                    } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
-
-                        tomorrowHomeworkArrayList.add(homework);
-
-                    } else if (thisWeek.contains(homework.getDateTime()) && thisWeekEnabled) {
-
-                        thisWeekHomeworkArrayList.add(homework);
-
-                    } else if (nextWeek.contains(homework.getDateTime())) {
-
-                        nextWeekHomeworkArrayList.add(homework);
-
-                    } else if (thisMonth.contains(homework.getDateTime()) && thisMonthEnabled) {
-
-                        thisMonthHomeworkArrayList.add(homework);
-
-                    } else {
-
-                        beyondThisMonthHomeworkArrayList.add(homework);
-
-                    }
-
-                }
-
-                DataStore.todayHomeworkArrayList = todayHomeworkArrayList;
-                DataStore.tomorrowHomeworkArrayList = tomorrowHomeworkArrayList;
-                DataStore.thisWeekHomeworkArrayList = thisWeekHomeworkArrayList;
-                DataStore.nextWeekHomeworkArrayList = nextWeekHomeworkArrayList;
-                DataStore.thisMonthHomeworkArrayList = thisMonthHomeworkArrayList;
-                DataStore.beyondThisMonthHomeworkArrayList = beyondThisMonthHomeworkArrayList;
-
                 databaseHelper.close();
+
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_data"));
 
                 final View currentFocus = this.getCurrentFocus();
 
@@ -1252,8 +1129,6 @@ public class AddHomework extends AppCompatActivity {
                     inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                 }
-
-                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_data").putExtra("skip_homework", ""));
 
                 if (originNotification) {
 

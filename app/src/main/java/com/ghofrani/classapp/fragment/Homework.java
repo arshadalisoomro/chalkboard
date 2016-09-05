@@ -1,11 +1,15 @@
 package com.ghofrani.classapp.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +29,26 @@ public class Homework extends Fragment {
 
     private RecyclerView recyclerView;
     private CardView noHomeworkCardView;
+    private final BroadcastReceiver updateHomeworkUI = new BroadcastReceiver() {
+
+        @Override
+
+        public void onReceive(Context context, Intent intent) {
+
+            getView().post(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    updateUI();
+
+                }
+
+            });
+
+        }
+
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +68,18 @@ public class Homework extends Fragment {
         if (noHomeworkCardView == null)
             noHomeworkCardView = (CardView) getView().findViewById(R.id.homework_no_homework_card);
 
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(updateHomeworkUI, new IntentFilter("update_homework_UI"));
+
         updateUI();
+
+    }
+
+    @Override
+    public void onStop() {
+
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(updateHomeworkUI);
+
+        super.onStop();
 
     }
 

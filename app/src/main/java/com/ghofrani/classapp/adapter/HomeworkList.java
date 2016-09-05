@@ -16,6 +16,7 @@ import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
 import com.ghofrani.classapp.modules.Utils;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -30,6 +31,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
     private final DateTimeFormatter timeAMPM;
     private final DateTimeFormatter shortDate;
     private final boolean is24Hour;
+    private final DateTime tomorrow;
 
     public HomeworkList(Context context, ArrayList<Homework> homeworkArrayList) {
 
@@ -40,6 +42,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
         timeAMPM = DateTimeFormat.forPattern("h:mm a");
         shortDate = DateTimeFormat.forPattern("dd/MM/yy");
         is24Hour = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("24_hour_time", true);
+        tomorrow = DateTime.now().plusDays(1);
 
         onClickListener = new View.OnClickListener() {
 
@@ -88,17 +91,27 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
             if (classesList != null) {
 
-                for (int i = 0; i < classesList.size(); i++) {
+                int index = 0;
+                boolean completed = false;
 
-                    if (classesList.get(i).getName().equals(homeworkArrayList.get(position).getClassName())) {
+                while (index < classesList.size() && !completed) {
 
-                        if (classesList.get(i).getStartTime().equals(homeworkArrayList.get(position).getDateTime().toLocalTime())) {
+                    if (classesList.get(index).getName().equals(homeworkArrayList.get(position).getClassName())) {
 
-                            subtitleTextViewText = dayOfWeekString.print(homeworkArrayList.get(position).getDateTime()) + " • " + classesList.get(i).getName() + " at " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                        if (classesList.get(index).getStartTime().equals(homeworkArrayList.get(position).getDateTime().toLocalTime())) {
+
+                            if (!tomorrow.withTimeAtStartOfDay().isEqual(homeworkArrayList.get(position).getDateTime()))
+                                subtitleTextViewText = dayOfWeekString.print(homeworkArrayList.get(position).getDateTime()) + " • " + classesList.get(index).getName() + " at " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                            else
+                                subtitleTextViewText = classesList.get(index).getName() + " at " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+
+                            completed = true;
 
                         }
 
                     }
+
+                    index++;
 
                 }
 
@@ -108,7 +121,11 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
             if (homeworkArrayList.get(position).getDateTime().isAfter(DataStore.nextWeekEnd)) {
 
-                subtitleTextViewText = shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                subtitleTextViewText = homeworkArrayList.get(position).getClassName() + " • " + shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+
+            } else if (homeworkArrayList.get(position).getDateTime().withTimeAtStartOfDay().isEqual(tomorrow.withTimeAtStartOfDay())) {
+
+                subtitleTextViewText = homeworkArrayList.get(position).getClassName() + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
 
             } else {
 
@@ -122,11 +139,15 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
             if (homeworkArrayList.get(position).getDateTime().isAfter(DataStore.nextWeekEnd)) {
 
-                homeworkViewHolder.subtitleTextView.setText(shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
+                homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getClassName() + " • " + shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
+
+            } else if (homeworkArrayList.get(position).getDateTime().withTimeAtStartOfDay().isEqual(tomorrow.withTimeAtStartOfDay())) {
+
+                homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getClassName() + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
 
             } else {
 
-                homeworkViewHolder.subtitleTextView.setText(dayOfWeekString.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
+                homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getClassName() + " • " + dayOfWeekString.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
 
             }
 
