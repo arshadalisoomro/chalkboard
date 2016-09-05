@@ -15,11 +15,6 @@
 
         android:name="android.permission.VIBRATE" />
 
-    <uses-feature
-
-        android:name="android.hardware.camera"
-        android:required="false" />
-
     <application
 
         android:allowBackup="true"
@@ -31,7 +26,6 @@
         <activity
 
             android:name=".activity.Main"
-            android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -90,22 +84,6 @@
             android:screenOrientation="portrait">
 
         </activity>
-
-        <provider
-
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.ghofrani.classapp.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-
-            <meta-data
-
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/paths">
-
-            </meta-data>
-
-        </provider>
 
         <service
 

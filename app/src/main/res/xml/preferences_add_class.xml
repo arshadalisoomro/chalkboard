@@ -12,7 +12,7 @@
         android:summary="This color will show up on notifications about this class"
         android:title="Choose a color"
         tools:colors="@array/add_class_colors"
-        tools:columns="6"
+        tools:columns="5"
         tools:dialogTitle="Choose a color" />
 
 </PreferenceScreen>

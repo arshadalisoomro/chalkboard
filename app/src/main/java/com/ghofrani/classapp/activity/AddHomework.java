@@ -3,13 +3,9 @@ package com.ghofrani.classapp.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,12 +37,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.MutableDateTime;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class AddHomework extends AppCompatActivity {
 
@@ -188,50 +180,6 @@ public class AddHomework extends AppCompatActivity {
             priorityCheckBox = (CheckBox) findViewById(R.id.add_homework_high_priority_check_box);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-    }
-
-    private void startPictureIntent() {
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-
-            File photoFile = null;
-
-            try {
-
-                photoFile = createImageFile();
-
-            } catch (IOException ex) {
-
-                Toast.makeText(this, "Error, please try again!", Toast.LENGTH_SHORT).show();
-
-            }
-
-            if (photoFile != null) {
-
-                Uri photoURI = FileProvider.getUriForFile(this, "com.ghofrani.classapp.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, 1);
-
-            }
-
-        }
-
-    }
-
-    private File createImageFile() throws IOException {
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-
-        currentPhotoPath = "file:" + image.getAbsolutePath();
-
-        return image;
 
     }
 
