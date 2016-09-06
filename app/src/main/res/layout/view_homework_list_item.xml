@@ -13,60 +13,52 @@
 
     <RelativeLayout
 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp">
+
+        <TextView
+
+            android:id="@+id/view_homework_list_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <TextView
+
+            android:id="@+id/view_homework_list_item_due"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view_homework_list_item_name"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+
+        android:id="@+id/view_homework_list_item_color_indicator_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="16dp">
 
-        <RelativeLayout
+        <ImageView
 
-            android:id="@+id/view_homework_list_item_color_indicator_layout"
+            android:id="@+id/view_homework_list_item_color_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+            android:src="@drawable/color_indicator_homework" />
 
-            <ImageView
+        <ImageView
 
-                android:id="@+id/view_homework_list_item_color_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/color_indicator_homework" />
-
-            <ImageView
-
-                android:id="@+id/view_homework_list_item_priority_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/priority" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-
+            android:id="@+id/view_homework_list_item_priority_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@id/view_homework_list_item_color_indicator_layout">
-
-            <TextView
-
-                android:id="@+id/view_homework_list_item_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="15sp" />
-
-            <TextView
-
-                android:id="@+id/view_homework_list_item_due"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/view_homework_list_item_name"
-                android:textSize="14sp" />
-
-        </RelativeLayout>
+            android:layout_centerInParent="true"
+            android:src="@drawable/priority" />
 
     </RelativeLayout>
 

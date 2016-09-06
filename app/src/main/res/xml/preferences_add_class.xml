@@ -9,7 +9,7 @@
 
         android:defaultValue="@color/teal"
         android:key="add_class_color"
-        android:summary="This color will show up on notifications about this class"
+        android:summary="This color is associated with the class"
         android:title="Choose a color"
         tools:colors="@array/add_class_colors"
         tools:columns="5"

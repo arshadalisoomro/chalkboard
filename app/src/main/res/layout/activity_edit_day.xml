@@ -41,7 +41,9 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:childDivider="#d3d3d3"
+                    android:dividerHeight="1dp">
 
                 </ListView>
 

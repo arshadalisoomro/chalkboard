@@ -458,7 +458,7 @@ public class EditDay extends AppCompatActivity {
                                 final TextView dialogAddClassStartTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
                                 final TextView dialogAddClassEndTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
 
-                                TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                                final TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
                                     @Override
                                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
@@ -975,7 +975,14 @@ public class EditDay extends AppCompatActivity {
                         }
 
                         final TextView titleTextView = (TextView) view.findViewById(R.id.view_edit_day_list_child_text);
-                        final String selectedClassName = titleTextView.getText().toString();
+                        final TextView titleTextViewCentered = (TextView) view.findViewById(R.id.view_edit_day_list_child_text_centered);
+
+                        final String selectedClassName;
+
+                        if (titleTextView.getVisibility() == View.GONE)
+                            selectedClassName = titleTextViewCentered.getText().toString();
+                        else
+                            selectedClassName = titleTextView.getText().toString();
 
                         ArrayList<String> classNameList = DataStore.allClassNamesArrayList;
                         classNameList.remove(selectedClassName);
@@ -1142,7 +1149,7 @@ public class EditDay extends AppCompatActivity {
                                 startTimeTextEdit = "";
                                 endTimeTextEdit = "";
 
-                                TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                                final TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
                                     @Override
                                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {

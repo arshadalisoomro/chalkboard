@@ -8,11 +8,16 @@
     android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
-    <ImageView
+    <TextView
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/ic_launcher" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="18dp"
+        android:layout_marginLeft="18dp"
+        android:text="Chalkboard (A0.0.5)"
+        android:textColor="@color/white"
+        android:textSize="24sp" />
 
 </RelativeLayout>

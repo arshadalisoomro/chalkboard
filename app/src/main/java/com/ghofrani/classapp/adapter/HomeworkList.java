@@ -1,6 +1,7 @@
 package com.ghofrani.classapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.activity.ViewHomework;
 import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.modules.DataStore;
@@ -33,7 +35,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
     private final boolean is24Hour;
     private final DateTime tomorrow;
 
-    public HomeworkList(Context context, ArrayList<Homework> homeworkArrayList) {
+    public HomeworkList(final Context context, ArrayList<Homework> homeworkArrayList) {
 
         this.homeworkArrayList = homeworkArrayList;
 
@@ -49,13 +51,9 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
             @Override
             public void onClick(View view) {
 
-                /*
-
-                final TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
+                final TextView titleTextView = (TextView) view.findViewById(R.id.view_homework_list_item_name);
 
                 context.startActivity(new Intent(context, ViewHomework.class).putExtra("homework", titleTextView.getText()));
-
-                */
 
             }
 
@@ -163,6 +161,8 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
             homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.VISIBLE);
         else
             homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.GONE);
+
+        homeworkViewHolder.relativeLayout.setOnClickListener(onClickListener);
 
     }
 

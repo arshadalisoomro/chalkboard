@@ -5,6 +5,8 @@ public class SlimClass {
     private final String name;
     private final String location;
     private final String teacher;
+    private final boolean hasLocation;
+    private final boolean hasTeacher;
     private final int color;
 
     public SlimClass(String name, String location, String teacher, int color) {
@@ -14,6 +16,18 @@ public class SlimClass {
         this.teacher = teacher;
         this.color = color;
 
+        hasLocation = !location.equals("no-location");
+
+        hasTeacher = !teacher.equals("no-teacher");
+
+    }
+
+    public boolean hasLocation() {
+        return hasLocation;
+    }
+
+    public boolean hasTeacher() {
+        return hasTeacher;
     }
 
     public String getName() {

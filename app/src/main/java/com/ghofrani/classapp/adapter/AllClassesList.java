@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
@@ -22,10 +24,10 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
     private final Context context;
     private final View.OnClickListener onClickListener;
 
-    public AllClassesList(ArrayList<SlimClass> slimClassArrayList, Context contextInput) {
+    public AllClassesList(ArrayList<SlimClass> slimClassArrayList, Context context) {
 
         this.slimClassArrayList = slimClassArrayList;
-        this.context = contextInput;
+        this.context = context;
 
         onClickListener = new View.OnClickListener() {
 
@@ -33,8 +35,12 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             public void onClick(View view) {
 
                 final TextView titleTextView = (TextView) view.findViewById(R.id.view_class_card_title);
+                final TextView titleTextViewCentered = (TextView) view.findViewById(R.id.view_class_card_title_centered);
 
-                context.startActivity(new Intent(context, ViewClass.class).putExtra("class", titleTextView.getText()));
+                if (titleTextView.getVisibility() == View.GONE)
+                    AllClassesList.this.context.startActivity(new Intent(AllClassesList.this.context, ViewClass.class).putExtra("class", titleTextViewCentered.getText()));
+                else
+                    AllClassesList.this.context.startActivity(new Intent(AllClassesList.this.context, ViewClass.class).putExtra("class", titleTextView.getText()));
 
             }
 
@@ -60,17 +66,82 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
     @Override
     public void onBindViewHolder(ClassViewHolder classViewHolder, int position) {
 
-        classViewHolder.titleTextView.setText(slimClassArrayList.get(position).getName());
-        classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getTeacher() + " • " + slimClassArrayList.get(position).getLocation());
+        final FrameLayout.LayoutParams relativeParams = (FrameLayout.LayoutParams) classViewHolder.rootRelativeLayout.getLayoutParams();
+
+        if (slimClassArrayList.get(position).hasLocation()) {
+
+            relativeParams.setMargins(getPixelFromDP(16), getPixelFromDP(14), getPixelFromDP(16), getPixelFromDP(14));
+            classViewHolder.rootRelativeLayout.setLayoutParams(relativeParams);
+
+            classViewHolder.titleTextViewCentered.setVisibility(View.GONE);
+
+            classViewHolder.relativeLayout.setVisibility(View.VISIBLE);
+
+            classViewHolder.titleTextView.setVisibility(View.VISIBLE);
+            classViewHolder.titleTextView.setText(slimClassArrayList.get(position).getName());
+
+            classViewHolder.teacherLocationTextView.setVisibility(View.VISIBLE);
+
+            if (slimClassArrayList.get(position).hasTeacher())
+                classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getTeacher() + " • " + slimClassArrayList.get(position).getLocation());
+            else
+                classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getLocation());
+
+            classViewHolder.colorIndicatorImageView.setTranslationY(getPixelFromDP(-1));
+
+        } else if (slimClassArrayList.get(position).hasTeacher()) {
+
+            relativeParams.setMargins(getPixelFromDP(16), getPixelFromDP(14), getPixelFromDP(16), getPixelFromDP(14));
+            classViewHolder.rootRelativeLayout.setLayoutParams(relativeParams);
+
+            classViewHolder.titleTextViewCentered.setVisibility(View.GONE);
+
+            classViewHolder.relativeLayout.setVisibility(View.VISIBLE);
+
+            classViewHolder.titleTextView.setVisibility(View.VISIBLE);
+            classViewHolder.titleTextView.setText(slimClassArrayList.get(position).getName());
+
+            classViewHolder.teacherLocationTextView.setVisibility(View.VISIBLE);
+            classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getTeacher());
+
+            classViewHolder.colorIndicatorImageView.setTranslationY(getPixelFromDP(-1));
+
+        } else {
+
+            relativeParams.setMargins(getPixelFromDP(16), getPixelFromDP(10), getPixelFromDP(16), getPixelFromDP(10));
+            classViewHolder.rootRelativeLayout.setLayoutParams(relativeParams);
+
+            classViewHolder.relativeLayout.setVisibility(View.GONE);
+
+            classViewHolder.titleTextView.setVisibility(View.GONE);
+            classViewHolder.teacherLocationTextView.setVisibility(View.GONE);
+
+            classViewHolder.titleTextViewCentered.setVisibility(View.VISIBLE);
+            classViewHolder.titleTextViewCentered.setText(slimClassArrayList.get(position).getName());
+
+            classViewHolder.colorIndicatorImageView.setTranslationY(0);
+
+        }
+
         classViewHolder.colorIndicatorImageView.setColorFilter(slimClassArrayList.get(position).getColor());
         classViewHolder.cardView.setOnClickListener(onClickListener);
+
+    }
+
+    private int getPixelFromDP(float dPtoConvert) {
+
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dPtoConvert * scale + 0.5f);
 
     }
 
     public static class ClassViewHolder extends RecyclerView.ViewHolder {
 
         final CardView cardView;
+        final RelativeLayout rootRelativeLayout;
+        final RelativeLayout relativeLayout;
         final TextView titleTextView;
+        final TextView titleTextViewCentered;
         final TextView teacherLocationTextView;
         final ImageView colorIndicatorImageView;
 
@@ -79,7 +150,10 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             super(itemView);
 
             cardView = (CardView) itemView.findViewById(R.id.view_class_card);
+            rootRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.view_class_card_root_relative_layout);
+            relativeLayout = (RelativeLayout) itemView.findViewById(R.id.view_class_card_relative_layout);
             titleTextView = (TextView) itemView.findViewById(R.id.view_class_card_title);
+            titleTextViewCentered = (TextView) itemView.findViewById(R.id.view_class_card_title_centered);
             teacherLocationTextView = (TextView) itemView.findViewById(R.id.view_class_card_teacher_location);
             colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_class_color_indicator);
 

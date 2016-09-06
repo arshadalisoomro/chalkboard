@@ -55,7 +55,6 @@ public class AddHomework extends AppCompatActivity {
     private ArrayList<String> listItemTitles;
     private ArrayList<Integer> daySwitches;
     private CheckBox priorityCheckBox;
-    private String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

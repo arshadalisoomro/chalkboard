@@ -81,8 +81,15 @@ public class Saturday extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                        final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                        final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
+
+                        if (DataStore.saturdayClasses.get(position).hasLocation())
+                            startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                        else if (DataStore.saturdayClasses.get(position).hasTeacher())
+                            startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                        else
+                            startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextViewCentered.getText().toString()));
 
                     }
 

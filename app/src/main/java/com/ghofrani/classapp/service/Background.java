@@ -522,10 +522,12 @@ public class Background extends Service {
                             else
                                 remainingTitleText = minutesRemaining + " mins. left";
 
+                            DataStore.minutesLeftText = remainingTitleText;
+
                             remoteViews.setTextViewText(headerId, currentClass.getName() + " • " + remainingTitleText);
 
                             if (DataStore.isNextClasses)
-                                remoteViews.setTextViewText(textId, "Next: " + DataStore.nextClass.getName() + " at " + DataStore.nextClass.getLocation());
+                                remoteViews.setTextViewText(textId, "Next: " + DataStore.nextClass.getName() + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
                             else
                                 remoteViews.setTextViewText(textId, "No further classes");
 
@@ -628,6 +630,8 @@ public class Background extends Service {
                             else
                                 remainingText = minutesRemaining + " mins. left";
 
+                            DataStore.minutesLeftText = remainingText;
+
                             if (DataStore.isNextClasses)
                                 remainingText += " • Next: " + DataStore.nextClass.getName();
                             else
@@ -699,6 +703,9 @@ public class Background extends Service {
 
                             final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
 
+                            final int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            String remainingText;
+
                             String progressBarText = "";
                             int progressBarProgress = 0;
 
@@ -718,6 +725,13 @@ public class Background extends Service {
                                 progressBarProgress = 100;
 
                             }
+
+                            if (minutesRemaining == 1)
+                                remainingText = "1 min. left";
+                            else
+                                remainingText = minutesRemaining + " mins. left";
+
+                            DataStore.minutesLeftText = remainingText;
 
                             DataStore.progressBarText = progressBarText;
                             DataStore.progressBarProgress = progressBarProgress;
@@ -770,13 +784,13 @@ public class Background extends Service {
                 notificationCompatBuilder.setContentTitle("Next: " + DataStore.nextClass.getName());
 
                 if (minutesLeft >= 60)
-                    notificationCompatBuilder.setContentText("In 60 minutes at " + DataStore.nextClass.getLocation());
+                    notificationCompatBuilder.setContentText("In 60 minutes" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
                 else if (minutesLeft <= 0)
-                    notificationCompatBuilder.setContentText("In 0 minutes at " + DataStore.nextClass.getLocation());
+                    notificationCompatBuilder.setContentText("In 0 minutes" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
                 else if (minutesLeft == 1)
-                    notificationCompatBuilder.setContentText("In 1 minute at " + DataStore.nextClass.getLocation());
+                    notificationCompatBuilder.setContentText("In 1 minute" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
                 else
-                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes at " + DataStore.nextClass.getLocation());
+                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
 
                 notificationManager.notify(1, notificationCompatBuilder.build());
 

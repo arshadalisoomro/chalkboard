@@ -4,7 +4,9 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="52dp"
+    android:layoutDirection="ltr"
+    android:minHeight="52dp">
 
     <ImageView
 
@@ -13,24 +15,44 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/add_white"
-        android:tint="@color/grey" />
+        android:tint="@color/grey"
+        android:visibility="gone" />
 
     <TextView
 
-        android:id="@+id/view_edit_day_list_child_text"
+        android:id="@+id/view_edit_day_list_child_text_centered"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:textSize="15sp" />
+        android:layout_centerVertical="true"
+        android:textSize="15sp"
+        android:visibility="gone" />
 
-    <TextView
+    <RelativeLayout
 
-        android:id="@+id/view_edit_day_list_child_location"
+        android:id="@+id/view_edit_day_list_child_relative_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/view_edit_day_list_child_text"
-        android:layout_marginBottom="7dp"
-        android:textSize="12sp" />
+        android:layout_centerVertical="true"
+        android:visibility="gone">
+
+        <TextView
+
+            android:id="@+id/view_edit_day_list_child_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <TextView
+
+            android:id="@+id/view_edit_day_list_child_teacher_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view_edit_day_list_child_text"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
     <TextView
 
@@ -39,6 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -46,6 +46,7 @@ public class Overview extends Fragment {
     private TextView currentClassStartTimeTextView;
     private TextView currentClassEndTimeTextView;
     private ImageView currentClassColorIndicator;
+    private CardView currentClassCardView;
     private BroadcastReceiver updateProgressBarBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -230,6 +231,7 @@ public class Overview extends Fragment {
         currentClassStartTimeTextView = null;
         currentClassEndTimeTextView = null;
         currentClassColorIndicator = null;
+        currentClassCardView = null;
 
         super.onDestroyView();
 
@@ -239,6 +241,24 @@ public class Overview extends Fragment {
 
         if (DataStore.isCurrentClass) {
 
+            if (currentClassCardView == null) {
+
+                currentClassCardView = (CardView) getView().findViewById(R.id.overview_current_class_card);
+                currentClassCardView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+
+                        final TextView titleTextView = (TextView) view.findViewById(R.id.overview_current_class_card_title);
+
+                        startActivity(new Intent(Overview.this.getContext(), ViewClass.class).putExtra("class", titleTextView.getText()));
+
+                    }
+
+                });
+
+            }
+
             StandardClass currentClass = DataStore.currentClass;
 
             if (currentClassTitleTextView == null)
@@ -247,9 +267,24 @@ public class Overview extends Fragment {
             currentClassTitleTextView.setText(currentClass.getName());
 
             if (currentClassLocationTeacherTextView == null)
-                currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_location_teacher);
+                currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_teacher_location);
 
-            currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + currentClass.getLocation());
+            if (currentClass.hasLocation()) {
+
+                if (currentClass.hasTeacher())
+                    currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + currentClass.getLocation() + " • " + DataStore.minutesLeftText);
+                else
+                    currentClassLocationTeacherTextView.setText(currentClass.getLocation() + " • " + DataStore.minutesLeftText);
+
+            } else if (currentClass.hasTeacher()) {
+
+                currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + DataStore.minutesLeftText);
+
+            } else {
+
+                currentClassLocationTeacherTextView.setText(DataStore.minutesLeftText);
+
+            }
 
             if (currentClassStartTimeTextView == null)
                 currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
@@ -501,8 +536,15 @@ public class Overview extends Fragment {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
 
-                    TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                    startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
+
+                    if (DataStore.nextClassesArrayList.get(childPosition).hasLocation())
+                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                    else if (DataStore.nextClassesArrayList.get(childPosition).hasTeacher())
+                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                    else
+                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextViewCentered.getText().toString()));
 
                     expandableListViewNextClasses.collapseGroup(0);
                     setListViewHeightBasedOnChildrenNext(true, false);
@@ -589,8 +631,15 @@ public class Overview extends Fragment {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
 
-                    TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                    startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
+                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
+
+                    if (DataStore.tomorrowClassesArrayList.get(childPosition).hasLocation())
+                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                    else if (DataStore.tomorrowClassesArrayList.get(childPosition).hasTeacher())
+                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
+                    else
+                        startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextViewCentered.getText().toString()));
 
                     expandableListViewTomorrowClasses.collapseGroup(0);
                     setListViewHeightBasedOnChildrenTomorrow(true, false);

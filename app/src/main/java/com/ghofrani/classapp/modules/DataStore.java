@@ -39,6 +39,8 @@ public class DataStore {
     public static ArrayList<Homework> beyondThisMonthHomeworkArrayList;
     public static ArrayList<Homework> pastHomeworkArrayList;
 
+    public static String minutesLeftText;
+
     public static DateTime nextWeekEnd;
 
     public static int progressBarProgress = 0;

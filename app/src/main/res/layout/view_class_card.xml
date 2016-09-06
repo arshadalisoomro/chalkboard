@@ -16,32 +16,49 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="4dp"
         android:clickable="true"
-        android:elevation="2dp"
         android:foreground="?android:attr/selectableItemBackground">
 
         <RelativeLayout
 
+            android:id="@+id/view_class_card_root_relative_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="14dp">
+            android:layout_height="45dp">
 
             <TextView
 
-                android:id="@+id/view_class_card_title"
+                android:id="@+id/view_class_card_title_centered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp" />
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:visibility="gone" />
 
-            <TextView
+            <RelativeLayout
 
-                android:id="@+id/view_class_card_teacher_location"
+                android:id="@+id/view_class_card_relative_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/view_class_card_title"
-                android:textSize="14sp" />
+                android:layout_centerVertical="true"
+                android:visibility="gone">
+
+                <TextView
+
+                    android:id="@+id/view_class_card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
+                <TextView
+
+                    android:id="@+id/view_class_card_teacher_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/view_class_card_title"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
 
             <ImageView
 
@@ -50,7 +67,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="0.5dp"
                 android:src="@drawable/color_indicator_class_card" />
 
         </RelativeLayout>

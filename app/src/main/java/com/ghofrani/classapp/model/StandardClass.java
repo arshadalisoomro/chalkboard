@@ -15,6 +15,8 @@ public class StandardClass {
     private final String location;
     private final String teacher;
     private final boolean is24Hour;
+    private final boolean hasLocation;
+    private final boolean hasTeacher;
     private final int color;
 
     public StandardClass(String name, LocalTime startTime, LocalTime endTime, boolean is24Hour, DateTimeFormatter formatter, String location, String teacher, int color) {
@@ -35,6 +37,18 @@ public class StandardClass {
         this.teacher = teacher;
         this.color = color;
 
+        hasLocation = !location.equals("no-location");
+
+        hasTeacher = !teacher.equals("no-teacher");
+
+    }
+
+    public boolean hasLocation() {
+        return hasLocation;
+    }
+
+    public boolean hasTeacher() {
+        return hasTeacher;
     }
 
     public String getName() {

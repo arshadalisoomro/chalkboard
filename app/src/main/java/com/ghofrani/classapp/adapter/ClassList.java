@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
@@ -91,14 +92,53 @@ public class ClassList extends BaseExpandableListAdapter {
 
         final StandardClass standardClass = classesArrayList.get(childPosition);
 
+        final RelativeLayout listChildRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.view_list_child_relative_layout);
         final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
-        listChildTitleTextView.setText(standardClass.getName());
+        final TextView listChildTeacherLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_teacher_location);
+        final TextView listChildTitleTextViewCentered = (TextView) convertView.findViewById(R.id.view_list_child_text_centered);
 
-        final TextView listChildSubtitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
-        listChildSubtitleTextView.setText(standardClass.getStartTimeString(true) + " - " + standardClass.getEndTimeString(true));
+        if (standardClass.hasLocation()) {
 
-        final TextView listChildLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_location);
-        listChildLocationTextView.setText(standardClass.getLocation());
+            listChildTitleTextViewCentered.setVisibility(View.GONE);
+
+            listChildRelativeLayout.setVisibility(View.VISIBLE);
+
+            listChildTitleTextView.setVisibility(View.VISIBLE);
+            listChildTitleTextView.setText(standardClass.getName());
+
+            listChildTeacherLocationTextView.setVisibility(View.VISIBLE);
+
+            if (standardClass.hasTeacher())
+                listChildTeacherLocationTextView.setText(standardClass.getTeacher() + " • " + standardClass.getLocation());
+            else
+                listChildTeacherLocationTextView.setText(standardClass.getLocation());
+
+        } else if (standardClass.hasTeacher()) {
+
+            listChildTitleTextViewCentered.setVisibility(View.GONE);
+
+            listChildRelativeLayout.setVisibility(View.VISIBLE);
+
+            listChildTitleTextView.setVisibility(View.VISIBLE);
+            listChildTitleTextView.setText(standardClass.getName());
+
+            listChildTeacherLocationTextView.setVisibility(View.VISIBLE);
+            listChildTeacherLocationTextView.setText(standardClass.getTeacher());
+
+        } else {
+
+            listChildRelativeLayout.setVisibility(View.GONE);
+
+            listChildTitleTextView.setVisibility(View.GONE);
+            listChildTeacherLocationTextView.setVisibility(View.GONE);
+
+            listChildTitleTextViewCentered.setVisibility(View.VISIBLE);
+            listChildTitleTextViewCentered.setText(standardClass.getName());
+
+        }
+
+        final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
+        listChildTimeTextView.setText(standardClass.getStartTimeString(true) + " - " + standardClass.getEndTimeString(true));
 
         return convertView;
 
