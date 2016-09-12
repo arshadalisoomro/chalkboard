@@ -1,15 +1,11 @@
 package com.ghofrani.classapp.fragment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +16,10 @@ import android.view.ViewGroup;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.HomeworkList;
 import com.ghofrani.classapp.adapter.SimpleSectionedRecyclerView;
-import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.module.DataSingleton;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,26 +28,13 @@ public class Homework extends Fragment {
 
     private RecyclerView recyclerView;
     private CardView noHomeworkCardView;
-    private final BroadcastReceiver updateHomeworkUI = new BroadcastReceiver() {
 
-        @Override
+    @Subscribe
+    public void onEvent(com.ghofrani.classapp.event.UpdateHomeworkUI updateHomeworkUI) {
 
-        public void onReceive(Context context, Intent intent) {
+        updateUI();
 
-            getView().post(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    updateUI();
-
-                }
-
-            });
-
-        }
-
-    };
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,18 +54,18 @@ public class Homework extends Fragment {
         if (noHomeworkCardView == null)
             noHomeworkCardView = (CardView) getView().findViewById(R.id.homework_no_homework_card);
 
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(updateHomeworkUI, new IntentFilter("update_homework_UI"));
+        EventBus.getDefault().register(this);
 
         updateUI();
 
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
 
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(updateHomeworkUI);
+        EventBus.getDefault().unregister(this);
 
-        super.onStop();
+        super.onPause();
 
     }
 
@@ -87,13 +73,13 @@ public class Homework extends Fragment {
 
         ArrayList<com.ghofrani.classapp.model.Homework> homeworkArrayList = new ArrayList<>();
 
-        homeworkArrayList.addAll(DataStore.todayHomeworkArrayList);
-        homeworkArrayList.addAll(DataStore.tomorrowHomeworkArrayList);
-        homeworkArrayList.addAll(DataStore.thisWeekHomeworkArrayList);
-        homeworkArrayList.addAll(DataStore.nextWeekHomeworkArrayList);
-        homeworkArrayList.addAll(DataStore.thisMonthHomeworkArrayList);
-        homeworkArrayList.addAll(DataStore.beyondThisMonthHomeworkArrayList);
-        homeworkArrayList.addAll(DataStore.pastHomeworkArrayList);
+        homeworkArrayList.addAll(DataSingleton.getInstance().getTodayHomeworkArrayList());
+        homeworkArrayList.addAll(DataSingleton.getInstance().getTomorrowHomeworkArrayList());
+        homeworkArrayList.addAll(DataSingleton.getInstance().getThisWeekHomeworkArrayList());
+        homeworkArrayList.addAll(DataSingleton.getInstance().getNextWeekHomeworkArrayList());
+        homeworkArrayList.addAll(DataSingleton.getInstance().getThisMonthHomeworkArrayList());
+        homeworkArrayList.addAll(DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList());
+        homeworkArrayList.addAll(DataSingleton.getInstance().getPastHomeworkArrayList());
 
         if (!homeworkArrayList.isEmpty()) {
 
@@ -110,49 +96,49 @@ public class Homework extends Fragment {
 
             int nextSectionIndex = 0;
 
-            if (!DataStore.todayHomeworkArrayList.isEmpty()) {
+            if (!DataSingleton.getInstance().getTodayHomeworkArrayList().isEmpty()) {
 
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due today"));
-                nextSectionIndex += DataStore.todayHomeworkArrayList.size();
+                nextSectionIndex += DataSingleton.getInstance().getTodayHomeworkArrayList().size();
 
             }
 
-            if (!DataStore.tomorrowHomeworkArrayList.isEmpty()) {
+            if (!DataSingleton.getInstance().getTomorrowHomeworkArrayList().isEmpty()) {
 
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due tomorrow"));
-                nextSectionIndex += DataStore.tomorrowHomeworkArrayList.size();
+                nextSectionIndex += DataSingleton.getInstance().getTomorrowHomeworkArrayList().size();
 
             }
 
-            if (!DataStore.thisWeekHomeworkArrayList.isEmpty()) {
+            if (!DataSingleton.getInstance().getThisWeekHomeworkArrayList().isEmpty()) {
 
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due this week"));
-                nextSectionIndex += DataStore.thisWeekHomeworkArrayList.size();
+                nextSectionIndex += DataSingleton.getInstance().getThisWeekHomeworkArrayList().size();
 
             }
 
-            if (!DataStore.nextWeekHomeworkArrayList.isEmpty()) {
+            if (!DataSingleton.getInstance().getNextWeekHomeworkArrayList().isEmpty()) {
 
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due next week"));
-                nextSectionIndex += DataStore.nextWeekHomeworkArrayList.size();
+                nextSectionIndex += DataSingleton.getInstance().getNextWeekHomeworkArrayList().size();
 
             }
 
-            if (!DataStore.thisMonthHomeworkArrayList.isEmpty()) {
+            if (!DataSingleton.getInstance().getThisMonthHomeworkArrayList().isEmpty()) {
 
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due this month"));
-                nextSectionIndex += DataStore.thisMonthHomeworkArrayList.size();
+                nextSectionIndex += DataSingleton.getInstance().getThisMonthHomeworkArrayList().size();
 
             }
 
-            if (!DataStore.beyondThisMonthHomeworkArrayList.isEmpty()) {
+            if (!DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList().isEmpty()) {
 
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due after this month"));
-                nextSectionIndex += DataStore.beyondThisMonthHomeworkArrayList.size();
+                nextSectionIndex += DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList().size();
 
             }
 
-            if (!DataStore.pastHomeworkArrayList.isEmpty())
+            if (!DataSingleton.getInstance().getPastHomeworkArrayList().isEmpty())
                 sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due in the past"));
 
             SimpleSectionedRecyclerView.Section[] sectionArray = new SimpleSectionedRecyclerView.Section[sections.size()];

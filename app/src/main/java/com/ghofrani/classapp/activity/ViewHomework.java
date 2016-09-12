@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.modules.Utils;
+import com.ghofrani.classapp.module.Utils;
 
 public class ViewHomework extends AppCompatActivity {
 

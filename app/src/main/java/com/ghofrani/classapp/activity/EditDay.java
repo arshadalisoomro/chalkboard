@@ -1,12 +1,10 @@
 package com.ghofrani.classapp.activity;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -25,11 +23,13 @@ import com.borax12.materialdaterangepicker.time.RadialPickerLayout;
 import com.borax12.materialdaterangepicker.time.TimePickerDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.EditDayList;
+import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.model.StandardClass;
-import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.DatabaseHelper;
-import com.ghofrani.classapp.modules.Utils;
+import com.ghofrani.classapp.module.DataSingleton;
+import com.ghofrani.classapp.module.DatabaseHelper;
+import com.ghofrani.classapp.module.Utils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -825,7 +825,7 @@ public class EditDay extends AppCompatActivity {
 
                         final Spinner classNameSpinner = (Spinner) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_spinner);
 
-                        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, DataStore.allClassNamesArrayList);
+                        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, DataSingleton.getInstance().getAllClassNamesArrayList());
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);
@@ -984,7 +984,7 @@ public class EditDay extends AppCompatActivity {
                         else
                             selectedClassName = titleTextView.getText().toString();
 
-                        ArrayList<String> classNameList = DataStore.allClassNamesArrayList;
+                        ArrayList<String> classNameList = DataSingleton.getInstance().getAllClassNamesArrayList();
                         classNameList.remove(selectedClassName);
                         classNameList.add(0, selectedClassName);
 
@@ -1573,7 +1573,7 @@ public class EditDay extends AppCompatActivity {
     @Override
     protected void onStop() {
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_data"));
+        EventBus.getDefault().post(new Update(true, false, false, false));
 
         super.onStop();
 

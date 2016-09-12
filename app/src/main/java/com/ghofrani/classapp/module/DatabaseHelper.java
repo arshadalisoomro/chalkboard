@@ -1,4 +1,4 @@
-package com.ghofrani.classapp.modules;
+package com.ghofrani.classapp.module;
 
 import android.content.ContentValues;
 import android.content.Context;

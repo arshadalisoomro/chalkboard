@@ -1,4 +1,4 @@
-package com.ghofrani.classapp.modules;
+package com.ghofrani.classapp.module;
 
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -166,43 +166,43 @@ public class Utils {
 
             case 1:
 
-                DataStore.sundayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setSundayClasses(standardClassArrayList);
 
                 break;
 
             case 2:
 
-                DataStore.mondayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setMondayClasses(standardClassArrayList);
 
                 break;
 
             case 3:
 
-                DataStore.tuesdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setTuesdayClasses(standardClassArrayList);
 
                 break;
 
             case 4:
 
-                DataStore.wednesdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setWednesdayClasses(standardClassArrayList);
 
                 break;
 
             case 5:
 
-                DataStore.thursdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setThursdayClasses(standardClassArrayList);
 
                 break;
 
             case 6:
 
-                DataStore.fridayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setFridayClasses(standardClassArrayList);
 
                 break;
 
             case 7:
 
-                DataStore.saturdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setSaturdayClasses(standardClassArrayList);
 
                 break;
 
@@ -216,31 +216,31 @@ public class Utils {
 
             case 1:
 
-                return DataStore.sundayClasses;
+                return DataSingleton.getInstance().getSundayClasses();
 
             case 2:
 
-                return DataStore.mondayClasses;
+                return DataSingleton.getInstance().getMondayClasses();
 
             case 3:
 
-                return DataStore.tuesdayClasses;
+                return DataSingleton.getInstance().getTuesdayClasses();
 
             case 4:
 
-                return DataStore.wednesdayClasses;
+                return DataSingleton.getInstance().getWednesdayClasses();
 
             case 5:
 
-                return DataStore.thursdayClasses;
+                return DataSingleton.getInstance().getThursdayClasses();
 
             case 6:
 
-                return DataStore.fridayClasses;
+                return DataSingleton.getInstance().getFridayClasses();
 
             case 7:
 
-                return DataStore.saturdayClasses;
+                return DataSingleton.getInstance().getSaturdayClasses();
 
             default:
 

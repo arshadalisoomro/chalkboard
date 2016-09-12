@@ -9,7 +9,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -23,10 +22,13 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.model.SlimClass;
-import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.DatabaseHelper;
-import com.ghofrani.classapp.modules.Utils;
+import com.ghofrani.classapp.module.DataSingleton;
+import com.ghofrani.classapp.module.DatabaseHelper;
+import com.ghofrani.classapp.module.Utils;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class AddClass extends AppCompatActivity {
 
@@ -108,21 +110,29 @@ public class AddClass extends AppCompatActivity {
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
-                if (DataStore.allClassNamesArrayList != null) {
+                final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
+                final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
 
-                    if (!DataStore.allClassNamesArrayList.contains(inputNameEditText.getText().toString().trim())) {
+                final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-                        final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
-                        final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+                if (DataSingleton.getInstance().getAllClassNamesArrayList() != null) {
 
-                        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                    if (!DataSingleton.getInstance().getAllClassNamesArrayList().contains(inputNameEditText.getText().toString().trim())) {
 
-                        databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
-                                (inputLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : inputLocationEditText.getText().toString().trim()),
-                                (inputTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : inputTeacherEditText.getText().toString().trim()),
-                                sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
+                        try {
 
-                        databaseHelper.close();
+                            databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
+                                    (inputLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : inputLocationEditText.getText().toString().trim()),
+                                    (inputTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : inputTeacherEditText.getText().toString().trim()),
+                                    sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
+
+                        } finally {
+
+                            databaseHelper.close();
+
+                        }
+
+                        EventBus.getDefault().post(new Update(false, false, false, true));
 
                         final View currentFocus = this.getCurrentFocus();
 
@@ -132,8 +142,6 @@ public class AddClass extends AppCompatActivity {
                             inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                         }
-
-                        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
 
                         setResult(RESULT_OK, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE).putExtra("class", "AddClass"));
 
@@ -153,17 +161,20 @@ public class AddClass extends AppCompatActivity {
 
                 } else {
 
-                    final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
-                    final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+                    try {
 
-                    final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
+                                (inputLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : inputLocationEditText.getText().toString().trim()),
+                                (inputTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : inputTeacherEditText.getText().toString().trim()),
+                                sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
 
-                    databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
-                            (inputLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : inputLocationEditText.getText().toString().trim()),
-                            (inputTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : inputTeacherEditText.getText().toString().trim()),
-                            sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
+                    } finally {
 
-                    databaseHelper.close();
+                        databaseHelper.close();
+
+                    }
+
+                    EventBus.getDefault().post(new Update(false, false, false, true));
 
                     final View currentFocus = this.getCurrentFocus();
 
@@ -173,8 +184,6 @@ public class AddClass extends AppCompatActivity {
                         inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                     }
-
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_classes"));
 
                     setResult(RESULT_OK, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE).putExtra("class", "AddClass"));
 

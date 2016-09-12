@@ -11,12 +11,9 @@
 
         android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-permission
-
-        android:name="android.permission.VIBRATE" />
-
     <application
 
+        android:name=".module.Chalkboard"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -94,7 +91,7 @@
 
         </service>
 
-        <receiver android:name="com.ghofrani.classapp.modules.BootBroadcastReceiver">
+        <receiver android:name=".module.BootBroadcastReceiver">
 
             <intent-filter>
 

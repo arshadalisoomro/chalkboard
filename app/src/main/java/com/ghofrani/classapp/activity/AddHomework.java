@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -27,12 +26,14 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.StandardClass;
-import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.DatabaseHelper;
-import com.ghofrani.classapp.modules.Utils;
+import com.ghofrani.classapp.module.DataSingleton;
+import com.ghofrani.classapp.module.DatabaseHelper;
+import com.ghofrani.classapp.module.Utils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.MutableDateTime;
@@ -75,6 +76,67 @@ public class AddHomework extends AppCompatActivity {
         if (getIntent().hasExtra("origin_notification"))
             originNotification = true;
 
+        DateTime tomorrow = new DateTime().plusDays(1);
+
+        pickedDateTime = new MutableDateTime();
+
+        pickedDateTime.setYear(tomorrow.getYear());
+        pickedDateTime.setMonthOfYear(tomorrow.getMonthOfYear());
+        pickedDateTime.setDayOfMonth(tomorrow.getDayOfMonth());
+        pickedDateTime.setTime(0, 0, 0, 0);
+
+        ArrayList<String> allClassNamesArrayList = DataSingleton.getInstance().getAllClassNamesArrayList();
+
+        if (DataSingleton.getInstance().getCurrentClass() != null) {
+
+            allClassNamesArrayList.remove(DataSingleton.getInstance().getCurrentClass().getName());
+            allClassNamesArrayList.add(0, DataSingleton.getInstance().getCurrentClass().getName());
+
+        }
+
+        classNameSpinner = (Spinner) findViewById(R.id.add_homework_class_spinner);
+
+        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, allClassNamesArrayList);
+
+        classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        classNameSpinner.setAdapter(classNameSpinnerAdapter);
+
+        classNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (specificClassRadioButton.isChecked())
+                    specificClassRadioButton.setChecked(false);
+
+                if (isClassInTimetable(adapterView.getSelectedItem().toString())) {
+
+                    nextClassRadioButton.setEnabled(true);
+                    specificClassRadioButton.setEnabled(true);
+
+                } else {
+
+                    nextClassRadioButton.setEnabled(false);
+                    nextClassRadioButton.setChecked(false);
+
+                    specificClassRadioButton.setEnabled(false);
+                    specificClassRadioButton.setChecked(false);
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+
+        });
+
+        nextClassRadioButton = (RadioButton) findViewById(R.id.radio_next);
+
+        if (DataSingleton.getInstance().getCurrentClass() != null)
+            nextClassRadioButton.setChecked(true);
+
     }
 
     @Override
@@ -82,74 +144,8 @@ public class AddHomework extends AppCompatActivity {
 
         super.onResume();
 
-        if (pickedDateTime == null) {
-
-            DateTime tomorrow = new DateTime().plusDays(1);
-
-            pickedDateTime = new MutableDateTime();
-
-            pickedDateTime.setYear(tomorrow.getYear());
-            pickedDateTime.setMonthOfYear(tomorrow.getMonthOfYear());
-            pickedDateTime.setDayOfMonth(tomorrow.getDayOfMonth());
-            pickedDateTime.setTime(0, 0, 0, 0);
-
-        }
-
-        if (classNameSpinner == null) {
-
+        if (classNameSpinner == null)
             classNameSpinner = (Spinner) findViewById(R.id.add_homework_class_spinner);
-
-            ArrayList<String> allClassNamesArrayList;
-
-            if (DataStore.isCurrentClass) {
-
-                allClassNamesArrayList = DataStore.allClassNamesArrayList;
-                allClassNamesArrayList.remove(DataStore.currentClass.getName());
-                allClassNamesArrayList.add(0, DataStore.currentClass.getName());
-
-            } else {
-
-                allClassNamesArrayList = DataStore.allClassNamesArrayList;
-
-            }
-
-            final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, allClassNamesArrayList);
-
-            classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            classNameSpinner.setAdapter(classNameSpinnerAdapter);
-
-            classNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                    if (specificClassRadioButton.isChecked())
-                        specificClassRadioButton.setChecked(false);
-
-                    if (isClassInTimetable(adapterView.getSelectedItem().toString())) {
-
-                        nextClassRadioButton.setEnabled(true);
-                        specificClassRadioButton.setEnabled(true);
-
-                    } else {
-
-                        nextClassRadioButton.setEnabled(false);
-                        nextClassRadioButton.setChecked(false);
-
-                        specificClassRadioButton.setEnabled(false);
-                        specificClassRadioButton.setChecked(false);
-
-                    }
-
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-
-            });
-
-        }
 
         if (listItemClasses == null)
             listItemClasses = new ArrayList<>();
@@ -162,9 +158,6 @@ public class AddHomework extends AppCompatActivity {
 
         if (nextClassRadioButton == null)
             nextClassRadioButton = (RadioButton) findViewById(R.id.radio_next);
-
-        if (DataStore.isCurrentClass)
-            nextClassRadioButton.setChecked(true);
 
         if (specificClassRadioButton == null)
             specificClassRadioButton = (RadioButton) findViewById(R.id.radio_specific);
@@ -186,11 +179,11 @@ public class AddHomework extends AppCompatActivity {
 
         int i = 0;
 
-        if (DataStore.sundayClasses != null) {
+        if (DataSingleton.getInstance().getSundayClasses() != null) {
 
-            while (i < DataStore.sundayClasses.size()) {
+            while (i < DataSingleton.getInstance().getSundayClasses().size()) {
 
-                if (className.equals(DataStore.sundayClasses.get(i).getName()))
+                if (className.equals(DataSingleton.getInstance().getSundayClasses().get(i).getName()))
                     return true;
 
                 i++;
@@ -201,11 +194,11 @@ public class AddHomework extends AppCompatActivity {
 
         }
 
-        if (DataStore.mondayClasses != null) {
+        if (DataSingleton.getInstance().getMondayClasses() != null) {
 
-            while (i < DataStore.mondayClasses.size()) {
+            while (i < DataSingleton.getInstance().getMondayClasses().size()) {
 
-                if (className.equals(DataStore.mondayClasses.get(i).getName()))
+                if (className.equals(DataSingleton.getInstance().getMondayClasses().get(i).getName()))
                     return true;
 
                 i++;
@@ -216,11 +209,11 @@ public class AddHomework extends AppCompatActivity {
 
         }
 
-        if (DataStore.tuesdayClasses != null) {
+        if (DataSingleton.getInstance().getTuesdayClasses() != null) {
 
-            while (i < DataStore.tuesdayClasses.size()) {
+            while (i < DataSingleton.getInstance().getTuesdayClasses().size()) {
 
-                if (className.equals(DataStore.tuesdayClasses.get(i).getName()))
+                if (className.equals(DataSingleton.getInstance().getTuesdayClasses().get(i).getName()))
                     return true;
 
                 i++;
@@ -231,11 +224,11 @@ public class AddHomework extends AppCompatActivity {
 
         }
 
-        if (DataStore.wednesdayClasses != null) {
+        if (DataSingleton.getInstance().getWednesdayClasses() != null) {
 
-            while (i < DataStore.wednesdayClasses.size()) {
+            while (i < DataSingleton.getInstance().getWednesdayClasses().size()) {
 
-                if (className.equals(DataStore.wednesdayClasses.get(i).getName()))
+                if (className.equals(DataSingleton.getInstance().getWednesdayClasses().get(i).getName()))
                     return true;
 
                 i++;
@@ -246,11 +239,11 @@ public class AddHomework extends AppCompatActivity {
 
         }
 
-        if (DataStore.thursdayClasses != null) {
+        if (DataSingleton.getInstance().getThursdayClasses() != null) {
 
-            while (i < DataStore.thursdayClasses.size()) {
+            while (i < DataSingleton.getInstance().getThursdayClasses().size()) {
 
-                if (className.equals(DataStore.thursdayClasses.get(i).getName()))
+                if (className.equals(DataSingleton.getInstance().getThursdayClasses().get(i).getName()))
                     return true;
 
                 i++;
@@ -261,11 +254,11 @@ public class AddHomework extends AppCompatActivity {
 
         }
 
-        if (DataStore.fridayClasses != null) {
+        if (DataSingleton.getInstance().getFridayClasses() != null) {
 
-            while (i < DataStore.fridayClasses.size()) {
+            while (i < DataSingleton.getInstance().getFridayClasses().size()) {
 
-                if (className.equals(DataStore.fridayClasses.get(i).getName()))
+                if (className.equals(DataSingleton.getInstance().getFridayClasses().get(i).getName()))
                     return true;
 
                 i++;
@@ -276,11 +269,11 @@ public class AddHomework extends AppCompatActivity {
 
         }
 
-        if (DataStore.saturdayClasses != null) {
+        if (DataSingleton.getInstance().getSaturdayClasses() != null) {
 
-            while (i < DataStore.saturdayClasses.size()) {
+            while (i < DataSingleton.getInstance().getSaturdayClasses().size()) {
 
-                if (className.equals(DataStore.saturdayClasses.get(i).getName()))
+                if (className.equals(DataSingleton.getInstance().getSaturdayClasses().get(i).getName()))
                     return true;
 
                 i++;
@@ -304,29 +297,14 @@ public class AddHomework extends AppCompatActivity {
                     listItemClasses.clear();
                     listItemTitles.clear();
 
-                    if (DataStore.sundayClasses != null) {
+                    if (DataSingleton.getInstance().getSundayClasses() != null) {
 
-                        for (int i = 0; i < DataStore.sundayClasses.size(); i++) {
+                        for (int i = 0; i < DataSingleton.getInstance().getSundayClasses().size(); i++) {
 
-                            if (DataStore.sundayClasses.get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+                            if (DataSingleton.getInstance().getSundayClasses().get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
 
-                                listItemTitles.add("Sunday's class at " + DataStore.sundayClasses.get(i).getStartTimeString(true));
-                                listItemClasses.add(DataStore.sundayClasses.get(i));
-
-                            }
-
-                        }
-
-                    }
-
-                    if (DataStore.mondayClasses != null) {
-
-                        for (int i = 0; i < DataStore.mondayClasses.size(); i++) {
-
-                            if (DataStore.mondayClasses.get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
-
-                                listItemTitles.add("Monday's class at " + DataStore.mondayClasses.get(i).getStartTimeString(true));
-                                listItemClasses.add(DataStore.mondayClasses.get(i));
+                                listItemTitles.add("Sunday's class at " + DataSingleton.getInstance().getSundayClasses().get(i).getStartTimeString(true));
+                                listItemClasses.add(DataSingleton.getInstance().getSundayClasses().get(i));
 
                             }
 
@@ -334,29 +312,14 @@ public class AddHomework extends AppCompatActivity {
 
                     }
 
-                    if (DataStore.tuesdayClasses != null) {
+                    if (DataSingleton.getInstance().getMondayClasses() != null) {
 
-                        for (int i = 0; i < DataStore.tuesdayClasses.size(); i++) {
+                        for (int i = 0; i < DataSingleton.getInstance().getMondayClasses().size(); i++) {
 
-                            if (DataStore.tuesdayClasses.get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+                            if (DataSingleton.getInstance().getMondayClasses().get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
 
-                                listItemTitles.add("Tuesday's class at " + DataStore.tuesdayClasses.get(i).getStartTimeString(true));
-                                listItemClasses.add(DataStore.tuesdayClasses.get(i));
-
-                            }
-
-                        }
-
-                    }
-
-                    if (DataStore.wednesdayClasses != null) {
-
-                        for (int i = 0; i < DataStore.wednesdayClasses.size(); i++) {
-
-                            if (DataStore.wednesdayClasses.get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
-
-                                listItemTitles.add("Wednesday's class at " + DataStore.wednesdayClasses.get(i).getStartTimeString(true));
-                                listItemClasses.add(DataStore.wednesdayClasses.get(i));
+                                listItemTitles.add("Monday's class at " + DataSingleton.getInstance().getMondayClasses().get(i).getStartTimeString(true));
+                                listItemClasses.add(DataSingleton.getInstance().getMondayClasses().get(i));
 
                             }
 
@@ -364,29 +327,14 @@ public class AddHomework extends AppCompatActivity {
 
                     }
 
-                    if (DataStore.thursdayClasses != null) {
+                    if (DataSingleton.getInstance().getTuesdayClasses() != null) {
 
-                        for (int i = 0; i < DataStore.thursdayClasses.size(); i++) {
+                        for (int i = 0; i < DataSingleton.getInstance().getTuesdayClasses().size(); i++) {
 
-                            if (DataStore.thursdayClasses.get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+                            if (DataSingleton.getInstance().getTuesdayClasses().get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
 
-                                listItemTitles.add("Thursday's class at " + DataStore.thursdayClasses.get(i).getStartTimeString(true));
-                                listItemClasses.add(DataStore.thursdayClasses.get(i));
-
-                            }
-
-                        }
-
-                    }
-
-                    if (DataStore.fridayClasses != null) {
-
-                        for (int i = 0; i < DataStore.fridayClasses.size(); i++) {
-
-                            if (DataStore.fridayClasses.get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
-
-                                listItemTitles.add("Friday's class at " + DataStore.fridayClasses.get(i).getStartTimeString(true));
-                                listItemClasses.add(DataStore.fridayClasses.get(i));
+                                listItemTitles.add("Tuesday's class at " + DataSingleton.getInstance().getTuesdayClasses().get(i).getStartTimeString(true));
+                                listItemClasses.add(DataSingleton.getInstance().getTuesdayClasses().get(i));
 
                             }
 
@@ -394,14 +342,59 @@ public class AddHomework extends AppCompatActivity {
 
                     }
 
-                    if (DataStore.saturdayClasses != null) {
+                    if (DataSingleton.getInstance().getWednesdayClasses() != null) {
 
-                        for (int i = 0; i < DataStore.saturdayClasses.size(); i++) {
+                        for (int i = 0; i < DataSingleton.getInstance().getWednesdayClasses().size(); i++) {
 
-                            if (DataStore.saturdayClasses.get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+                            if (DataSingleton.getInstance().getWednesdayClasses().get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
 
-                                listItemTitles.add("Saturday's class at " + DataStore.saturdayClasses.get(i).getStartTimeString(true));
-                                listItemClasses.add(DataStore.saturdayClasses.get(i));
+                                listItemTitles.add("Wednesday's class at " + DataSingleton.getInstance().getWednesdayClasses().get(i).getStartTimeString(true));
+                                listItemClasses.add(DataSingleton.getInstance().getWednesdayClasses().get(i));
+
+                            }
+
+                        }
+
+                    }
+
+                    if (DataSingleton.getInstance().getThursdayClasses() != null) {
+
+                        for (int i = 0; i < DataSingleton.getInstance().getThursdayClasses().size(); i++) {
+
+                            if (DataSingleton.getInstance().getThursdayClasses().get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+
+                                listItemTitles.add("Thursday's class at " + DataSingleton.getInstance().getThursdayClasses().get(i).getStartTimeString(true));
+                                listItemClasses.add(DataSingleton.getInstance().getThursdayClasses().get(i));
+
+                            }
+
+                        }
+
+                    }
+
+                    if (DataSingleton.getInstance().getFridayClasses() != null) {
+
+                        for (int i = 0; i < DataSingleton.getInstance().getFridayClasses().size(); i++) {
+
+                            if (DataSingleton.getInstance().getFridayClasses().get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+
+                                listItemTitles.add("Friday's class at " + DataSingleton.getInstance().getFridayClasses().get(i).getStartTimeString(true));
+                                listItemClasses.add(DataSingleton.getInstance().getFridayClasses().get(i));
+
+                            }
+
+                        }
+
+                    }
+
+                    if (DataSingleton.getInstance().getSaturdayClasses() != null) {
+
+                        for (int i = 0; i < DataSingleton.getInstance().getSaturdayClasses().size(); i++) {
+
+                            if (DataSingleton.getInstance().getSaturdayClasses().get(i).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+
+                                listItemTitles.add("Saturday's class at " + DataSingleton.getInstance().getSaturdayClasses().get(i).getStartTimeString(true));
+                                listItemClasses.add(DataSingleton.getInstance().getSaturdayClasses().get(i));
 
                             }
 
@@ -550,23 +543,23 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getSundayDateTimeOfClass(String className, LocalTime now) {
 
-        if (DataStore.sundayClasses != null) {
+        if (DataSingleton.getInstance().getSundayClasses() != null) {
 
-            for (int i = 0; i < DataStore.sundayClasses.size(); i++) {
+            for (int i = 0; i < DataSingleton.getInstance().getSundayClasses().size(); i++) {
 
-                if (DataStore.sundayClasses.get(i).getName().equals(className)) {
+                if (DataSingleton.getInstance().getSundayClasses().get(i).getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 
-                        if (DataStore.sundayClasses.get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.SUNDAY)) {
+                        if (DataSingleton.getInstance().getSundayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.SUNDAY)) {
 
-                            return new DateTime().withTime(DataStore.sundayClasses.get(i).getStartTime());
+                            return new DateTime().withTime(DataSingleton.getInstance().getSundayClasses().get(i).getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataStore.sundayClasses.get(i).getStartTime());
+                        return new DateTime().withTime(DataSingleton.getInstance().getSundayClasses().get(i).getStartTime());
 
                     }
 
@@ -584,23 +577,23 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getMondayDateTimeOfClass(String className, LocalTime now) {
 
-        if (DataStore.mondayClasses != null) {
+        if (DataSingleton.getInstance().getMondayClasses() != null) {
 
-            for (int i = 0; i < DataStore.mondayClasses.size(); i++) {
+            for (int i = 0; i < DataSingleton.getInstance().getMondayClasses().size(); i++) {
 
-                if (DataStore.mondayClasses.get(i).getName().equals(className)) {
+                if (DataSingleton.getInstance().getMondayClasses().get(i).getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
 
-                        if (DataStore.mondayClasses.get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.MONDAY)) {
+                        if (DataSingleton.getInstance().getMondayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.MONDAY)) {
 
-                            return new DateTime().withTime(DataStore.mondayClasses.get(i).getStartTime());
+                            return new DateTime().withTime(DataSingleton.getInstance().getMondayClasses().get(i).getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataStore.mondayClasses.get(i).getStartTime());
+                        return new DateTime().withTime(DataSingleton.getInstance().getMondayClasses().get(i).getStartTime());
 
                     }
 
@@ -618,23 +611,23 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getTuesdayDateTimeOfClass(String className, LocalTime now) {
 
-        if (DataStore.tuesdayClasses != null) {
+        if (DataSingleton.getInstance().getTuesdayClasses() != null) {
 
-            for (int i = 0; i < DataStore.tuesdayClasses.size(); i++) {
+            for (int i = 0; i < DataSingleton.getInstance().getTuesdayClasses().size(); i++) {
 
-                if (DataStore.tuesdayClasses.get(i).getName().equals(className)) {
+                if (DataSingleton.getInstance().getTuesdayClasses().get(i).getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
 
-                        if (DataStore.tuesdayClasses.get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.TUESDAY)) {
+                        if (DataSingleton.getInstance().getTuesdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.TUESDAY)) {
 
-                            return new DateTime().withTime(DataStore.tuesdayClasses.get(i).getStartTime());
+                            return new DateTime().withTime(DataSingleton.getInstance().getTuesdayClasses().get(i).getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataStore.tuesdayClasses.get(i).getStartTime());
+                        return new DateTime().withTime(DataSingleton.getInstance().getTuesdayClasses().get(i).getStartTime());
 
                     }
 
@@ -652,23 +645,23 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getWednesdayDateTimeOfClass(String className, LocalTime now) {
 
-        if (DataStore.wednesdayClasses != null) {
+        if (DataSingleton.getInstance().getWednesdayClasses() != null) {
 
-            for (int i = 0; i < DataStore.wednesdayClasses.size(); i++) {
+            for (int i = 0; i < DataSingleton.getInstance().getWednesdayClasses().size(); i++) {
 
-                if (DataStore.wednesdayClasses.get(i).getName().equals(className)) {
+                if (DataSingleton.getInstance().getWednesdayClasses().get(i).getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
 
-                        if (DataStore.wednesdayClasses.get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.WEDNESDAY)) {
+                        if (DataSingleton.getInstance().getWednesdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.WEDNESDAY)) {
 
-                            return new DateTime().withTime(DataStore.wednesdayClasses.get(i).getStartTime());
+                            return new DateTime().withTime(DataSingleton.getInstance().getWednesdayClasses().get(i).getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataStore.wednesdayClasses.get(i).getStartTime());
+                        return new DateTime().withTime(DataSingleton.getInstance().getWednesdayClasses().get(i).getStartTime());
 
                     }
 
@@ -686,23 +679,23 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getThursdayDateTimeOfClass(String className, LocalTime now) {
 
-        if (DataStore.thursdayClasses != null) {
+        if (DataSingleton.getInstance().getThursdayClasses() != null) {
 
-            for (int i = 0; i < DataStore.thursdayClasses.size(); i++) {
+            for (int i = 0; i < DataSingleton.getInstance().getThursdayClasses().size(); i++) {
 
-                if (DataStore.thursdayClasses.get(i).getName().equals(className)) {
+                if (DataSingleton.getInstance().getThursdayClasses().get(i).getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
 
-                        if (DataStore.thursdayClasses.get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.THURSDAY)) {
+                        if (DataSingleton.getInstance().getThursdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.THURSDAY)) {
 
-                            return new DateTime().withTime(DataStore.thursdayClasses.get(i).getStartTime());
+                            return new DateTime().withTime(DataSingleton.getInstance().getThursdayClasses().get(i).getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataStore.thursdayClasses.get(i).getStartTime());
+                        return new DateTime().withTime(DataSingleton.getInstance().getThursdayClasses().get(i).getStartTime());
 
                     }
 
@@ -720,23 +713,23 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getFridayDateTimeOfClass(String className, LocalTime now) {
 
-        if (DataStore.fridayClasses != null) {
+        if (DataSingleton.getInstance().getFridayClasses() != null) {
 
-            for (int i = 0; i < DataStore.fridayClasses.size(); i++) {
+            for (int i = 0; i < DataSingleton.getInstance().getFridayClasses().size(); i++) {
 
-                if (DataStore.fridayClasses.get(i).getName().equals(className)) {
+                if (DataSingleton.getInstance().getFridayClasses().get(i).getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
 
-                        if (DataStore.fridayClasses.get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.FRIDAY)) {
+                        if (DataSingleton.getInstance().getFridayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.FRIDAY)) {
 
-                            return new DateTime().withTime(DataStore.fridayClasses.get(i).getStartTime());
+                            return new DateTime().withTime(DataSingleton.getInstance().getFridayClasses().get(i).getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataStore.fridayClasses.get(i).getStartTime());
+                        return new DateTime().withTime(DataSingleton.getInstance().getFridayClasses().get(i).getStartTime());
 
                     }
 
@@ -754,23 +747,23 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getSaturdayDateTimeOfClass(String className, LocalTime now) {
 
-        if (DataStore.saturdayClasses != null) {
+        if (DataSingleton.getInstance().getSaturdayClasses() != null) {
 
-            for (int i = 0; i < DataStore.saturdayClasses.size(); i++) {
+            for (int i = 0; i < DataSingleton.getInstance().getSaturdayClasses().size(); i++) {
 
-                if (DataStore.saturdayClasses.get(i).getName().equals(className)) {
+                if (DataSingleton.getInstance().getSaturdayClasses().get(i).getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
 
-                        if (DataStore.saturdayClasses.get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.SATURDAY)) {
+                        if (DataSingleton.getInstance().getSaturdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.SATURDAY)) {
 
-                            return new DateTime().withTime(DataStore.saturdayClasses.get(i).getStartTime());
+                            return new DateTime().withTime(DataSingleton.getInstance().getSaturdayClasses().get(i).getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataStore.saturdayClasses.get(i).getStartTime());
+                        return new DateTime().withTime(DataSingleton.getInstance().getSaturdayClasses().get(i).getStartTime());
 
                     }
 
@@ -1012,12 +1005,13 @@ public class AddHomework extends AppCompatActivity {
 
                 ArrayList<Homework> homeworkArrayList = new ArrayList<>();
 
-                homeworkArrayList.addAll(DataStore.todayHomeworkArrayList);
-                homeworkArrayList.addAll(DataStore.tomorrowHomeworkArrayList);
-                homeworkArrayList.addAll(DataStore.thisWeekHomeworkArrayList);
-                homeworkArrayList.addAll(DataStore.nextWeekHomeworkArrayList);
-                homeworkArrayList.addAll(DataStore.thisMonthHomeworkArrayList);
-                homeworkArrayList.addAll(DataStore.beyondThisMonthHomeworkArrayList);
+                homeworkArrayList.addAll(DataSingleton.getInstance().getTodayHomeworkArrayList());
+                homeworkArrayList.addAll(DataSingleton.getInstance().getTomorrowHomeworkArrayList());
+                homeworkArrayList.addAll(DataSingleton.getInstance().getThisWeekHomeworkArrayList());
+                homeworkArrayList.addAll(DataSingleton.getInstance().getNextWeekHomeworkArrayList());
+                homeworkArrayList.addAll(DataSingleton.getInstance().getThisMonthHomeworkArrayList());
+                homeworkArrayList.addAll(DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList());
+                homeworkArrayList.addAll(DataSingleton.getInstance().getPastHomeworkArrayList());
 
                 if (!homeworkArrayList.isEmpty()) {
 
@@ -1061,12 +1055,18 @@ public class AddHomework extends AppCompatActivity {
 
                 }
 
-                databaseHelper.deleteAllHomework();
-                databaseHelper.addHomework(homeworkArrayList);
+                try {
 
-                databaseHelper.close();
+                    databaseHelper.deleteAllHomework();
+                    databaseHelper.addHomework(homeworkArrayList);
 
-                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_data"));
+                } finally {
+
+                    databaseHelper.close();
+
+                }
+
+                EventBus.getDefault().post(new Update(false, true, false, false));
 
                 final View currentFocus = this.getCurrentFocus();
 

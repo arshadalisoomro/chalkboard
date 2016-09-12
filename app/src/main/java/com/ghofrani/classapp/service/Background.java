@@ -16,21 +16,24 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.AddHomework;
 import com.ghofrani.classapp.activity.Main;
+import com.ghofrani.classapp.event.Update;
+import com.ghofrani.classapp.event.UpdateClassesUI;
+import com.ghofrani.classapp.event.UpdateHomeworkUI;
+import com.ghofrani.classapp.event.UpdateProgressUI;
 import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
-import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.DatabaseHelper;
+import com.ghofrani.classapp.module.DataSingleton;
+import com.ghofrani.classapp.module.DatabaseHelper;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -59,7 +62,6 @@ public class Background extends Service {
 
     }
 
-    private SharedPreferences sharedPreferences;
     private int progressBarId;
     private int progressTextId;
     private int headerId;
@@ -92,39 +94,15 @@ public class Background extends Service {
 
     private DateTimeFormatter dateTimeFormatterAMPM;
 
-    private StandardClass currentClass;
+    private SharedPreferences sharedPreferences;
     private DatabaseHelper databaseHelper;
 
     private boolean currentToNextTransition = false;
     private boolean nextToCurrentTransition = false;
     private boolean simpleToDetailedTransition = false;
     private boolean detailedToSimpleTransition = false;
+
     private boolean is24Hour;
-
-    private BroadcastReceiver updateData = new BroadcastReceiver() {
-
-        @Override
-
-        public void onReceive(Context context, Intent intent) {
-
-            getData();
-            getTimetable();
-
-        }
-
-    };
-
-    private BroadcastReceiver updateClasses = new BroadcastReceiver() {
-
-        @Override
-
-        public void onReceive(Context context, Intent intent) {
-
-            getClasses();
-
-        }
-
-    };
 
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -144,18 +122,21 @@ public class Background extends Service {
 
         super.onCreate();
 
-        JodaTimeAndroid.init(this);
-
+        EventBus.getDefault().register(this);
         registerBroadcastReceiver();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(updateData, new IntentFilter("update_data"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(updateClasses, new IntentFilter("update_classes"));
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        databaseHelper = new DatabaseHelper(this);
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
+
         progressBarId = R.id.view_notification_progress_bar_red;
         textId = R.id.view_notification_text;
         headerId = R.id.view_notification_header;
         progressTextId = R.id.view_notification_progress_text;
+
+        dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
 
         red = ContextCompat.getColor(this, R.color.red);
         pink = ContextCompat.getColor(this, R.color.pink);
@@ -176,25 +157,37 @@ public class Background extends Service {
         black = ContextCompat.getColor(this, R.color.black);
         blueGrey = ContextCompat.getColor(this, R.color.blue_grey);
 
-        dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
-
         getData();
+        getHomework();
         getTimetable();
         getClasses();
+
+    }
+
+    @Subscribe
+    public void onEvent(Update updateEvent) {
+
+        if (updateEvent.isData())
+            getData();
+
+        if (updateEvent.isHomework())
+            getHomework();
+
+        if (updateEvent.isTimetable())
+            getTimetable();
+
+        if (updateEvent.isClasses())
+            getClasses();
 
     }
 
     @Override
     public void onDestroy() {
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(updateData);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(updateClasses);
+        unregisterReceiver(backgroundBroadcastReceiver);
+        EventBus.getDefault().unregister(this);
 
-        if (backgroundBroadcastReceiver != null) {
-
-            unregisterReceiver(backgroundBroadcastReceiver);
-
-        }
+        notificationManager.cancelAll();
 
         if (handler != null) {
 
@@ -203,12 +196,9 @@ public class Background extends Service {
 
         }
 
+        sharedPreferences = null;
         databaseHelper.close();
 
-        notificationManager.cancelAll();
-
-        updateData = null;
-        updateClasses = null;
         backgroundIntentFilter = null;
         backgroundBroadcastReceiver = null;
         notificationRunnable = null;
@@ -216,7 +206,6 @@ public class Background extends Service {
         notificationCompatBuilder = null;
         notificationManager = null;
         remoteViews = null;
-        currentClass = null;
         databaseHelper = null;
         dateTimeFormatterAMPM = null;
 
@@ -236,12 +225,14 @@ public class Background extends Service {
                     case Intent.ACTION_TIME_TICK:
 
                         getData();
+                        getHomework();
 
                         break;
 
                     case Intent.ACTION_TIMEZONE_CHANGED:
 
                         getData();
+                        getHomework();
                         getTimetable();
 
                         break;
@@ -249,6 +240,7 @@ public class Background extends Service {
                     case Intent.ACTION_TIME_CHANGED:
 
                         getData();
+                        getHomework();
                         getTimetable();
 
                         break;
@@ -256,6 +248,7 @@ public class Background extends Service {
                     case Intent.ACTION_DATE_CHANGED:
 
                         getData();
+                        getHomework();
                         getTimetable();
 
                         break;
@@ -279,68 +272,53 @@ public class Background extends Service {
 
         }
 
-        boolean isCurrentClass = false;
-        boolean isNextClasses = false;
-
-        if (sharedPreferences == null)
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if (databaseHelper == null)
-            databaseHelper = new DatabaseHelper(this);
-
-        Cursor todayCursor = databaseHelper.getClassesCursor(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
-
-        final ArrayList<StandardClass> nextClassesArrayList = new ArrayList<>();
-        boolean nextClassDefined = false;
-
         is24Hour = sharedPreferences.getBoolean("24_hour_time", true);
+
+        final Cursor todayCursor = databaseHelper.getClassesCursor(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+
+        StandardClass currentClass = null;
+        StandardClass nextClass = null;
+        ArrayList<StandardClass> nextClassesArrayList = new ArrayList<>();
 
         final LocalTime currentTime = new LocalTime().now();
 
-        while (todayCursor.moveToNext()) {
+        try {
 
-            StandardClass standardClass = new StandardClass(todayCursor.getString(1),
-                    LocalTime.parse(todayCursor.getString(2)),
-                    LocalTime.parse(todayCursor.getString(3)),
-                    is24Hour,
-                    dateTimeFormatterAMPM,
-                    databaseHelper.getClassLocation(todayCursor.getString(1)),
-                    databaseHelper.getClassTeacher(todayCursor.getString(1)),
-                    databaseHelper.getClassColor(todayCursor.getString(1)));
+            while (todayCursor.moveToNext()) {
 
-            if (standardClass.getStartTime().isAfter(currentTime)) {
+                final StandardClass standardClass = new StandardClass(todayCursor.getString(1),
+                        LocalTime.parse(todayCursor.getString(2)),
+                        LocalTime.parse(todayCursor.getString(3)),
+                        is24Hour,
+                        dateTimeFormatterAMPM,
+                        databaseHelper.getClassLocation(todayCursor.getString(1)),
+                        databaseHelper.getClassTeacher(todayCursor.getString(1)),
+                        databaseHelper.getClassColor(todayCursor.getString(1)));
 
-                nextClassesArrayList.add(standardClass);
-                isNextClasses = true;
-                DataStore.isNextClasses = true;
+                if (standardClass.getStartTime().isAfter(currentTime)) {
 
-                if (!nextClassDefined) {
+                    nextClassesArrayList.add(standardClass);
 
-                    DataStore.nextClass = standardClass;
-                    nextClassDefined = true;
+                    if (nextClass == null)
+                        nextClass = standardClass;
+
+                } else if (standardClass.getStartTime().isBefore(currentTime) && standardClass.getEndTime().isAfter(currentTime)) {
+
+                    currentClass = standardClass;
 
                 }
 
-            } else if (standardClass.getEndTime().isAfter(currentTime) && standardClass.getStartTime().isBefore(currentTime)) {
-
-                isCurrentClass = true;
-                currentClass = standardClass;
-                DataStore.currentClass = standardClass;
-
             }
+
+        } finally {
+
+            todayCursor.close();
 
         }
 
-        todayCursor.close();
+        if (currentClass != null) {
 
-        DataStore.isNextClasses = isNextClasses;
-
-        if (isNextClasses)
-            DataStore.nextClassesArrayList = nextClassesArrayList;
-
-        DataStore.isCurrentClass = isCurrentClass;
-
-        if (isCurrentClass) {
+            final StandardClass finalCurrentClass = currentClass;
 
             if (sharedPreferences.getBoolean("class_notification", true)) {
 
@@ -370,9 +348,6 @@ public class Background extends Service {
                     final Intent homeworkActivityIntent = new Intent(this, AddHomework.class).putExtra("origin_notification", true);
                     final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    if (remoteViews == null)
-                        remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
-
                     remoteViews.setOnClickPendingIntent(R.id.view_notification_button, addHomeworkActivityIntent);
 
                     remoteViews.setInt(progressBarId, "setVisibility", View.GONE);
@@ -382,9 +357,9 @@ public class Background extends Service {
 
                     if (sharedPreferences.getBoolean("flip_colors", false)) {
 
-                        remoteViews.setInt(R.id.view_notification_layout, "setBackgroundColor", currentClass.getColor());
+                        remoteViews.setInt(R.id.view_notification_layout, "setBackgroundColor", finalCurrentClass.getColor());
 
-                        if (currentClass.getColor() == lime || currentClass.getColor() == yellow || currentClass.getColor() == amber) {
+                        if (finalCurrentClass.getColor() == lime || finalCurrentClass.getColor() == yellow || finalCurrentClass.getColor() == amber) {
 
                             remoteViews.setInt(R.id.view_notification_button, "setColorFilter", Color.BLACK);
 
@@ -407,78 +382,78 @@ public class Background extends Service {
 
                     } else {
 
-                        remoteViews.setInt(R.id.view_notification_button, "setColorFilter", currentClass.getColor());
+                        remoteViews.setInt(R.id.view_notification_button, "setColorFilter", finalCurrentClass.getColor());
                         remoteViews.setInt(R.id.view_notification_layout, "setBackgroundColor", Color.TRANSPARENT);
 
-                        if (currentClass.getColor() == red) {
+                        if (finalCurrentClass.getColor() == red) {
 
                             progressBarId = R.id.view_notification_progress_bar_red;
 
-                        } else if (currentClass.getColor() == pink) {
+                        } else if (finalCurrentClass.getColor() == pink) {
 
                             progressBarId = R.id.view_notification_progress_bar_pink;
 
-                        } else if (currentClass.getColor() == purple) {
+                        } else if (finalCurrentClass.getColor() == purple) {
 
                             progressBarId = R.id.view_notification_progress_bar_purple;
 
-                        } else if (currentClass.getColor() == deepPurple) {
+                        } else if (finalCurrentClass.getColor() == deepPurple) {
 
                             progressBarId = R.id.view_notification_progress_bar_deep_purple;
 
-                        } else if (currentClass.getColor() == indigo) {
+                        } else if (finalCurrentClass.getColor() == indigo) {
 
                             progressBarId = R.id.view_notification_progress_bar_indigo;
 
-                        } else if (currentClass.getColor() == blue) {
+                        } else if (finalCurrentClass.getColor() == blue) {
 
                             progressBarId = R.id.view_notification_progress_bar_blue;
 
-                        } else if (currentClass.getColor() == lightBlue) {
+                        } else if (finalCurrentClass.getColor() == lightBlue) {
 
                             progressBarId = R.id.view_notification_progress_bar_light_blue;
 
-                        } else if (currentClass.getColor() == cyan) {
+                        } else if (finalCurrentClass.getColor() == cyan) {
 
                             progressBarId = R.id.view_notification_progress_bar_cyan;
 
-                        } else if (currentClass.getColor() == teal) {
+                        } else if (finalCurrentClass.getColor() == teal) {
 
                             progressBarId = R.id.view_notification_progress_bar_teal;
 
-                        } else if (currentClass.getColor() == green) {
+                        } else if (finalCurrentClass.getColor() == green) {
 
                             progressBarId = R.id.view_notification_progress_bar_green;
 
-                        } else if (currentClass.getColor() == lightGreen) {
+                        } else if (finalCurrentClass.getColor() == lightGreen) {
 
                             progressBarId = R.id.view_notification_progress_bar_light_green;
 
-                        } else if (currentClass.getColor() == lime) {
+                        } else if (finalCurrentClass.getColor() == lime) {
 
                             progressBarId = R.id.view_notification_progress_bar_lime;
 
-                        } else if (currentClass.getColor() == yellow) {
+                        } else if (finalCurrentClass.getColor() == yellow) {
 
                             progressBarId = R.id.view_notification_progress_bar_yellow;
 
-                        } else if (currentClass.getColor() == amber) {
+                        } else if (finalCurrentClass.getColor() == amber) {
 
                             progressBarId = R.id.view_notification_progress_bar_amber;
 
-                        } else if (currentClass.getColor() == orange) {
+                        } else if (finalCurrentClass.getColor() == orange) {
 
                             progressBarId = R.id.view_notification_progress_bar_orange;
 
-                        } else if (currentClass.getColor() == deepOrange) {
+                        } else if (finalCurrentClass.getColor() == deepOrange) {
 
                             progressBarId = R.id.view_notification_progress_bar_deep_orange;
 
-                        } else if (currentClass.getColor() == black) {
+                        } else if (finalCurrentClass.getColor() == black) {
 
                             progressBarId = R.id.view_notification_progress_bar_black;
 
-                        } else if (currentClass.getColor() == blueGrey) {
+                        } else if (finalCurrentClass.getColor() == blueGrey) {
 
                             progressBarId = R.id.view_notification_progress_bar_blue_grey;
 
@@ -509,12 +484,12 @@ public class Background extends Service {
 
                             final DateTime currentTime = new DateTime();
 
-                            final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
-                            final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+                            final long currentClassTotal = new Interval(finalCurrentClass.getStartTime().toDateTimeToday(), finalCurrentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            final long currentClassProgress = new Interval(finalCurrentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
 
                             final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
 
-                            final int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            final int minutesRemaining = finalCurrentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
                             String remainingTitleText;
 
                             if (minutesRemaining == 1)
@@ -522,12 +497,10 @@ public class Background extends Service {
                             else
                                 remainingTitleText = minutesRemaining + " mins. left";
 
-                            DataStore.minutesLeftText = remainingTitleText;
+                            remoteViews.setTextViewText(headerId, finalCurrentClass.getName() + " • " + remainingTitleText);
 
-                            remoteViews.setTextViewText(headerId, currentClass.getName() + " • " + remainingTitleText);
-
-                            if (DataStore.isNextClasses)
-                                remoteViews.setTextViewText(textId, "Next: " + DataStore.nextClass.getName() + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
+                            if (DataSingleton.getInstance().getNextClass() != null)
+                                remoteViews.setTextViewText(textId, "Next: " + DataSingleton.getInstance().getNextClass().getName() + (DataSingleton.getInstance().getNextClass().hasLocation() ? " at " + DataSingleton.getInstance().getNextClass().getLocation() : ""));
                             else
                                 remoteViews.setTextViewText(textId, "No further classes");
 
@@ -560,12 +533,13 @@ public class Background extends Service {
 
                             }
 
-                            DataStore.progressBarText = progressBarText;
-                            DataStore.progressBarProgress = progressBarProgress;
+                            DataSingleton.getInstance().setMinutesLeftText(remainingTitleText);
+                            DataSingleton.getInstance().setProgressBarProgress(progressBarProgress);
+                            DataSingleton.getInstance().setProgessbarText(progressBarText);
+
+                            EventBus.getDefault().post(new UpdateProgressUI());
 
                             notificationManager.notify(0, notificationCompatBuilder.build());
-
-                            LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
 
                             handler.postDelayed(this, 15000);
 
@@ -606,7 +580,7 @@ public class Background extends Service {
                     notificationCompatBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setOngoing(true)
-                            .setColor(currentClass.getColor())
+                            .setColor(finalCurrentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
                             .setPriority(Notification.PRIORITY_MAX)
                             .setWhen(0);
@@ -617,12 +591,12 @@ public class Background extends Service {
 
                             final DateTime currentTime = new DateTime();
 
-                            final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
-                            final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+                            final long currentClassTotal = new Interval(finalCurrentClass.getStartTime().toDateTimeToday(), finalCurrentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            final long currentClassProgress = new Interval(finalCurrentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
 
                             final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
 
-                            final int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            final int minutesRemaining = finalCurrentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
                             String remainingText;
 
                             if (minutesRemaining == 1)
@@ -630,14 +604,12 @@ public class Background extends Service {
                             else
                                 remainingText = minutesRemaining + " mins. left";
 
-                            DataStore.minutesLeftText = remainingText;
-
-                            if (DataStore.isNextClasses)
-                                remainingText += " • Next: " + DataStore.nextClass.getName();
+                            if (DataSingleton.getInstance().getNextClass() != null)
+                                remainingText += " • Next: " + DataSingleton.getInstance().getNextClass().getName();
                             else
                                 remainingText += " • No further classes";
 
-                            notificationCompatBuilder.setContentTitle(currentClass.getName());
+                            notificationCompatBuilder.setContentTitle(finalCurrentClass.getName());
                             notificationCompatBuilder.setContentText(remainingText);
 
                             String progressBarText = "";
@@ -660,12 +632,13 @@ public class Background extends Service {
 
                             }
 
-                            DataStore.progressBarText = progressBarText;
-                            DataStore.progressBarProgress = progressBarProgress;
+                            DataSingleton.getInstance().setMinutesLeftText(remainingText);
+                            DataSingleton.getInstance().setProgressBarProgress(progressBarProgress);
+                            DataSingleton.getInstance().setProgessbarText(progressBarText);
+
+                            EventBus.getDefault().post(new UpdateProgressUI());
 
                             notificationManager.notify(0, notificationCompatBuilder.build());
-
-                            LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
 
                             handler.postDelayed(this, 15000);
 
@@ -698,12 +671,12 @@ public class Background extends Service {
 
                             final DateTime currentTime = new DateTime();
 
-                            final long currentClassTotal = new Interval(currentClass.getStartTime().toDateTimeToday(), currentClass.getEndTime().toDateTimeToday()).toDurationMillis();
-                            final long currentClassProgress = new Interval(currentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
+                            final long currentClassTotal = new Interval(finalCurrentClass.getStartTime().toDateTimeToday(), finalCurrentClass.getEndTime().toDateTimeToday()).toDurationMillis();
+                            final long currentClassProgress = new Interval(finalCurrentClass.getStartTime().toDateTimeToday(), currentTime).toDurationMillis();
 
                             final int percentageValueInt = (int) (currentClassProgress * 100 / currentClassTotal);
 
-                            final int minutesRemaining = currentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
+                            final int minutesRemaining = finalCurrentClass.getEndTime().toDateTimeToday().getMinuteOfDay() - currentTime.getMinuteOfDay() - 1;
                             String remainingText;
 
                             String progressBarText = "";
@@ -731,12 +704,11 @@ public class Background extends Service {
                             else
                                 remainingText = minutesRemaining + " mins. left";
 
-                            DataStore.minutesLeftText = remainingText;
+                            DataSingleton.getInstance().setMinutesLeftText(remainingText);
+                            DataSingleton.getInstance().setProgressBarProgress(progressBarProgress);
+                            DataSingleton.getInstance().setProgessbarText(progressBarText);
 
-                            DataStore.progressBarText = progressBarText;
-                            DataStore.progressBarProgress = progressBarProgress;
-
-                            LocalBroadcastManager.getInstance(Background.this).sendBroadcast(new Intent("update_progress_bar"));
+                            EventBus.getDefault().post(new UpdateProgressUI());
 
                             handler.postDelayed(this, 15000);
 
@@ -752,7 +724,7 @@ public class Background extends Service {
 
             }
 
-        } else if (DataStore.isNextClasses) {
+        } else if (nextClass != null) {
 
             nextToCurrentTransition = true;
 
@@ -765,7 +737,7 @@ public class Background extends Service {
 
             final DateTime currentTimeNow = new DateTime();
 
-            final int minutesLeft = Minutes.minutesBetween(currentTimeNow, DataStore.nextClass.getStartTime().toDateTimeToday()).getMinutes();
+            final int minutesLeft = Minutes.minutesBetween(currentTimeNow, nextClass.getStartTime().toDateTimeToday()).getMinutes();
 
             if (minutesLeft <= Integer.parseInt(sharedPreferences.getString("next_class_notification_minutes", "30"))) {
 
@@ -777,20 +749,20 @@ public class Background extends Service {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentIntent(addHomeActivityIntent)
                         .setWhen(0)
-                        .setColor(DataStore.nextClass.getColor())
+                        .setColor(nextClass.getColor())
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
                         .setPriority(Notification.PRIORITY_MAX);
 
-                notificationCompatBuilder.setContentTitle("Next: " + DataStore.nextClass.getName());
+                notificationCompatBuilder.setContentTitle("Next: " + nextClass.getName());
 
                 if (minutesLeft >= 60)
-                    notificationCompatBuilder.setContentText("In 60 minutes" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
+                    notificationCompatBuilder.setContentText("In 60 minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
                 else if (minutesLeft <= 0)
-                    notificationCompatBuilder.setContentText("In 0 minutes" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
+                    notificationCompatBuilder.setContentText("In 0 minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
                 else if (minutesLeft == 1)
-                    notificationCompatBuilder.setContentText("In 1 minute" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
+                    notificationCompatBuilder.setContentText("In 1 minute" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
                 else
-                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes" + (DataStore.nextClass.hasLocation() ? " at " + DataStore.nextClass.getLocation() : ""));
+                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
 
                 notificationManager.notify(1, notificationCompatBuilder.build());
 
@@ -811,6 +783,8 @@ public class Background extends Service {
 
         }
 
+        ArrayList<StandardClass> tomorrowClassesArrayList = new ArrayList<>();
+
         if (sharedPreferences.getBoolean("tomorrow_classes", true)) {
 
             int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -822,35 +796,39 @@ public class Background extends Service {
 
             Cursor tomorrowCursor = databaseHelper.getClassesCursor(day);
 
-            final ArrayList<StandardClass> tomorrowClassesArrayList = new ArrayList<>();
+            try {
 
-            while (tomorrowCursor.moveToNext()) {
+                while (tomorrowCursor.moveToNext()) {
 
-                tomorrowClassesArrayList.add(new StandardClass(tomorrowCursor.getString(1),
-                        LocalTime.parse(tomorrowCursor.getString(2)),
-                        LocalTime.parse(tomorrowCursor.getString(3)),
-                        is24Hour,
-                        dateTimeFormatterAMPM,
-                        databaseHelper.getClassLocation(tomorrowCursor.getString(1)),
-                        databaseHelper.getClassTeacher(tomorrowCursor.getString(1)),
-                        databaseHelper.getClassColor(tomorrowCursor.getString(1))));
+                    tomorrowClassesArrayList.add(new StandardClass(tomorrowCursor.getString(1),
+                            LocalTime.parse(tomorrowCursor.getString(2)),
+                            LocalTime.parse(tomorrowCursor.getString(3)),
+                            is24Hour,
+                            dateTimeFormatterAMPM,
+                            databaseHelper.getClassLocation(tomorrowCursor.getString(1)),
+                            databaseHelper.getClassTeacher(tomorrowCursor.getString(1)),
+                            databaseHelper.getClassColor(tomorrowCursor.getString(1))));
 
-            }
+                }
 
-            tomorrowCursor.close();
+            } finally {
 
-            if (!tomorrowClassesArrayList.isEmpty()) {
-
-                DataStore.isTomorrowClasses = true;
-                DataStore.tomorrowClassesArrayList = tomorrowClassesArrayList;
-
-            } else {
-
-                DataStore.isTomorrowClasses = false;
+                tomorrowCursor.close();
 
             }
 
         }
+
+        DataSingleton.getInstance().setCurrentClass(currentClass);
+        DataSingleton.getInstance().setNextClass(nextClass);
+        DataSingleton.getInstance().setNextClassesArrayList(nextClassesArrayList);
+        DataSingleton.getInstance().setTomorrowClassesArrayList(tomorrowClassesArrayList);
+
+        EventBus.getDefault().post(new UpdateClassesUI());
+
+    }
+
+    private void getHomework() {
 
         Cursor homeworkCursor = databaseHelper.getHomeworkCursor();
 
@@ -910,55 +888,61 @@ public class Background extends Service {
 
         DateTimeZone dateTimeZone = DateTimeZone.getDefault();
 
-        while (homeworkCursor.moveToNext()) {
+        try {
 
-            Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)), homeworkCursor.getInt(5) == 1);
+            while (homeworkCursor.moveToNext()) {
 
-            if (today.isAfter(homework.getDateTime())) {
+                Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)), homeworkCursor.getInt(5) == 1);
 
-                pastHomeworkArrayList.add(homework);
+                if (today.isAfter(homework.getDateTime())) {
 
-            } else if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                    pastHomeworkArrayList.add(homework);
 
-                todayHomeworkArrayList.add(homework);
+                } else if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-            } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                    todayHomeworkArrayList.add(homework);
 
-                tomorrowHomeworkArrayList.add(homework);
+                } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-            } else if (thisWeek.contains(homework.getDateTime()) && thisWeekEnabled) {
+                    tomorrowHomeworkArrayList.add(homework);
 
-                thisWeekHomeworkArrayList.add(homework);
+                } else if (thisWeek.contains(homework.getDateTime()) && thisWeekEnabled) {
 
-            } else if (nextWeek.contains(homework.getDateTime())) {
+                    thisWeekHomeworkArrayList.add(homework);
 
-                nextWeekHomeworkArrayList.add(homework);
+                } else if (nextWeek.contains(homework.getDateTime())) {
 
-            } else if (thisMonth.contains(homework.getDateTime()) && thisMonthEnabled) {
+                    nextWeekHomeworkArrayList.add(homework);
 
-                thisMonthHomeworkArrayList.add(homework);
+                } else if (thisMonth.contains(homework.getDateTime()) && thisMonthEnabled) {
 
-            } else {
+                    thisMonthHomeworkArrayList.add(homework);
 
-                beyondThisMonthHomeworkArrayList.add(homework);
+                } else {
+
+                    beyondThisMonthHomeworkArrayList.add(homework);
+
+                }
 
             }
 
+        } finally {
+
+            homeworkCursor.close();
+
         }
 
-        homeworkCursor.close();
+        DataSingleton.getInstance().setTodayHomeworkArrayList(todayHomeworkArrayList);
+        DataSingleton.getInstance().setTomorrowHomeworkArrayList(tomorrowHomeworkArrayList);
+        DataSingleton.getInstance().setThisWeekHomeworkArrayList(thisWeekHomeworkArrayList);
+        DataSingleton.getInstance().setNextWeekHomeworkArrayList(nextWeekHomeworkArrayList);
+        DataSingleton.getInstance().setThisMonthHomeworkArrayList(thisMonthHomeworkArrayList);
+        DataSingleton.getInstance().setBeyondThisMonthHomeworkArrayList(beyondThisMonthHomeworkArrayList);
+        DataSingleton.getInstance().setPastHomeworkArrayList(pastHomeworkArrayList);
 
-        DataStore.todayHomeworkArrayList = todayHomeworkArrayList;
-        DataStore.tomorrowHomeworkArrayList = tomorrowHomeworkArrayList;
-        DataStore.thisWeekHomeworkArrayList = thisWeekHomeworkArrayList;
-        DataStore.nextWeekHomeworkArrayList = nextWeekHomeworkArrayList;
-        DataStore.thisMonthHomeworkArrayList = thisMonthHomeworkArrayList;
-        DataStore.beyondThisMonthHomeworkArrayList = beyondThisMonthHomeworkArrayList;
-        DataStore.pastHomeworkArrayList = pastHomeworkArrayList;
-        DataStore.nextWeekEnd = nextWeek.getEnd();
+        DataSingleton.getInstance().setNextWeekEnd(nextWeek.getEnd());
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_UI"));
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("update_homework_UI"));
+        EventBus.getDefault().post(new UpdateHomeworkUI());
 
     }
 
@@ -968,43 +952,43 @@ public class Background extends Service {
 
             case 1:
 
-                DataStore.sundayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setSundayClasses(standardClassArrayList);
 
                 break;
 
             case 2:
 
-                DataStore.mondayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setMondayClasses(standardClassArrayList);
 
                 break;
 
             case 3:
 
-                DataStore.tuesdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setTuesdayClasses(standardClassArrayList);
 
                 break;
 
             case 4:
 
-                DataStore.wednesdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setWednesdayClasses(standardClassArrayList);
 
                 break;
 
             case 5:
 
-                DataStore.thursdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setThursdayClasses(standardClassArrayList);
 
                 break;
 
             case 6:
 
-                DataStore.fridayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setFridayClasses(standardClassArrayList);
 
                 break;
 
             case 7:
 
-                DataStore.saturdayClasses = standardClassArrayList;
+                DataSingleton.getInstance().setSaturdayClasses(standardClassArrayList);
 
                 break;
 
@@ -1014,34 +998,39 @@ public class Background extends Service {
 
     private void getTimetable() {
 
-        if (databaseHelper == null)
-            databaseHelper = new DatabaseHelper(this);
+        Cursor timetableCursor = null;
 
-        Cursor timetableCursor;
+        try {
 
-        for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
+            for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
 
-            final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
+                final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
 
-            timetableCursor = databaseHelper.getClassesCursor(i);
+                timetableCursor = databaseHelper.getClassesCursor(i);
 
-            while (timetableCursor.moveToNext()) {
+                while (timetableCursor.moveToNext()) {
 
-                classesArrayList.add(new StandardClass(timetableCursor.getString(1),
-                        LocalTime.parse(timetableCursor.getString(2)),
-                        LocalTime.parse(timetableCursor.getString(3)),
-                        is24Hour,
-                        dateTimeFormatterAMPM,
-                        databaseHelper.getClassLocation(timetableCursor.getString(1)),
-                        databaseHelper.getClassTeacher(timetableCursor.getString(1)),
-                        databaseHelper.getClassColor(timetableCursor.getString(1))));
+                    classesArrayList.add(new StandardClass(timetableCursor.getString(1),
+                            LocalTime.parse(timetableCursor.getString(2)),
+                            LocalTime.parse(timetableCursor.getString(3)),
+                            is24Hour,
+                            dateTimeFormatterAMPM,
+                            databaseHelper.getClassLocation(timetableCursor.getString(1)),
+                            databaseHelper.getClassTeacher(timetableCursor.getString(1)),
+                            databaseHelper.getClassColor(timetableCursor.getString(1))));
+
+                }
+
+                if (!classesArrayList.isEmpty())
+                    setClassesArrayListOfDay(i, classesArrayList);
+                else
+                    setClassesArrayListOfDay(i, null);
 
             }
 
-            if (!classesArrayList.isEmpty())
-                setClassesArrayListOfDay(i, classesArrayList);
-            else
-                setClassesArrayListOfDay(i, null);
+        } finally {
+
+            timetableCursor.close();
 
         }
 
@@ -1049,25 +1038,30 @@ public class Background extends Service {
 
     private void getClasses() {
 
-        if (databaseHelper == null)
-            databaseHelper = new DatabaseHelper(this);
-
         Cursor classesCursor = databaseHelper.getClassesCursor();
 
         final ArrayList<SlimClass> slimClassArrayList = new ArrayList<>();
         final ArrayList<String> classNamesArrayList = new ArrayList<>();
 
-        while (classesCursor.moveToNext()) {
+        try {
 
-            slimClassArrayList.add(new SlimClass(classesCursor.getString(1), classesCursor.getString(2), classesCursor.getString(3), databaseHelper.getClassColor(classesCursor.getString(1))));
-            classNamesArrayList.add(classesCursor.getString(1));
+            while (classesCursor.moveToNext()) {
+
+                slimClassArrayList.add(new SlimClass(classesCursor.getString(1), classesCursor.getString(2), classesCursor.getString(3), databaseHelper.getClassColor(classesCursor.getString(1))));
+                classNamesArrayList.add(classesCursor.getString(1));
+
+            }
+
+        } finally {
+
+            classesCursor.close();
 
         }
 
         Collections.reverse(classNamesArrayList);
 
-        DataStore.allClassesArrayList = slimClassArrayList;
-        DataStore.allClassNamesArrayList = classNamesArrayList;
+        DataSingleton.getInstance().setAllClassesArrayList(slimClassArrayList);
+        DataSingleton.getInstance().setAllClassNamesArrayList(classNamesArrayList);
 
     }
 

@@ -14,7 +14,7 @@ import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.ViewClass;
 import com.ghofrani.classapp.adapter.TimetableList;
 import com.ghofrani.classapp.model.StandardClass;
-import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.module.DataSingleton;
 
 import java.util.ArrayList;
 
@@ -64,12 +64,12 @@ public class Monday extends Fragment {
 
     private void updateUI() {
 
-        if (DataStore.mondayClasses != null) {
+        if (DataSingleton.getInstance().getMondayClasses() != null) {
 
             noClassesTextView.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
 
-            standardClassArrayList = DataStore.mondayClasses;
+            standardClassArrayList = DataSingleton.getInstance().getMondayClasses();
 
             if (listAdapter == null) {
 
@@ -84,9 +84,9 @@ public class Monday extends Fragment {
                         final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
                         final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
 
-                        if (DataStore.mondayClasses.get(position).hasLocation())
+                        if (DataSingleton.getInstance().getMondayClasses().get(position).hasLocation())
                             startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
-                        else if (DataStore.mondayClasses.get(position).hasTeacher())
+                        else if (DataSingleton.getInstance().getMondayClasses().get(position).hasTeacher())
                             startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
                         else
                             startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextViewCentered.getText().toString()));

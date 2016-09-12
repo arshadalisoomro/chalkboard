@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.AllClassesList;
-import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.module.DataSingleton;
 
 public class Classes extends Fragment {
 
@@ -52,7 +52,7 @@ public class Classes extends Fragment {
 
     private void updateUI() {
 
-        if (!DataStore.allClassesArrayList.isEmpty()) {
+        if (!DataSingleton.getInstance().getAllClassesArrayList().isEmpty()) {
 
             noClassesCardView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -63,7 +63,7 @@ public class Classes extends Fragment {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
 
-            AllClassesList allClassesListAdapter = new AllClassesList(DataStore.allClassesArrayList, getContext());
+            AllClassesList allClassesListAdapter = new AllClassesList(DataSingleton.getInstance().getAllClassesArrayList(), getContext());
             recyclerView.setAdapter(allClassesListAdapter);
 
         } else {

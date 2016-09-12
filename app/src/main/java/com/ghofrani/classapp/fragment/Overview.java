@@ -1,13 +1,9 @@
 package com.ghofrani.classapp.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +22,14 @@ import android.widget.TextView;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.ViewClass;
 import com.ghofrani.classapp.adapter.ClassList;
+import com.ghofrani.classapp.event.CollapseLists;
+import com.ghofrani.classapp.event.UpdateClassesUI;
+import com.ghofrani.classapp.event.UpdateProgressUI;
 import com.ghofrani.classapp.model.StandardClass;
-import com.ghofrani.classapp.modules.DataStore;
+import com.ghofrani.classapp.module.DataSingleton;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -47,115 +49,9 @@ public class Overview extends Fragment {
     private TextView currentClassEndTimeTextView;
     private ImageView currentClassColorIndicator;
     private CardView currentClassCardView;
-    private BroadcastReceiver updateProgressBarBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-
-        public void onReceive(Context context, Intent intent) {
-
-            getView().post(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    updateProgressBar();
-
-                }
-
-            });
-
-        }
-
-    };
     private ArrayList<StandardClass> nextClassesArrayList;
     private ExpandableListView expandableListViewTomorrowClasses;
-    private BroadcastReceiver collapseExpandableListViewsBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-
-        public void onReceive(Context context, Intent intent) {
-
-            getView().post(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    if (expandableListViewNextClasses != null) {
-
-                        if (expandableListViewNextClasses.isGroupExpanded(0)) {
-
-                            expandableListViewNextClasses.collapseGroup(0);
-
-                            setListViewHeightBasedOnChildrenNext(true, false);
-
-                        }
-
-                    }
-
-                    if (expandableListViewTomorrowClasses != null) {
-
-                        if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
-
-                            expandableListViewTomorrowClasses.collapseGroup(0);
-
-                            setListViewHeightBasedOnChildrenTomorrow(true, false);
-
-                        }
-
-                    }
-
-                }
-
-            });
-
-        }
-
-    };
     private ArrayList<StandardClass> tomorrowClassesArrayList;
-    private BroadcastReceiver updateUIBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-
-        public void onReceive(Context context, Intent intent) {
-
-            getView().post(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    if (expandableListViewNextClasses != null) {
-
-                        if (expandableListViewNextClasses.isGroupExpanded(0)) {
-
-                            expandableListViewNextClasses.collapseGroup(0);
-
-                            setListViewHeightBasedOnChildrenNext(true, true);
-
-                        }
-
-                    }
-
-                    if (expandableListViewTomorrowClasses != null) {
-
-                        if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
-
-                            expandableListViewTomorrowClasses.collapseGroup(0);
-
-                            setListViewHeightBasedOnChildrenTomorrow(true, true);
-
-                        }
-
-                    }
-
-                    updateUI();
-
-                }
-
-            });
-
-        }
-
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -164,14 +60,106 @@ public class Overview extends Fragment {
 
     }
 
+    @Subscribe
+    public void OnEvent(UpdateProgressUI updateProgressUIEvent) {
+
+        getView().post(new Runnable() {
+
+            @Override
+            public void run() {
+
+                updateProgressBar();
+
+            }
+
+        });
+
+    }
+
+    @Subscribe
+    public void onEvent(CollapseLists collapseListsEvent) {
+
+        getView().post(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (expandableListViewNextClasses != null) {
+
+                    if (expandableListViewNextClasses.isGroupExpanded(0)) {
+
+                        expandableListViewNextClasses.collapseGroup(0);
+
+                        setListViewHeightBasedOnChildrenNext(true, false);
+
+                    }
+
+                }
+
+                if (expandableListViewTomorrowClasses != null) {
+
+                    if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                        expandableListViewTomorrowClasses.collapseGroup(0);
+
+                        setListViewHeightBasedOnChildrenTomorrow(true, false);
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    @Subscribe
+    public void onEvent(UpdateClassesUI updateClassesUIEvent) {
+
+        getView().post(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (expandableListViewNextClasses != null) {
+
+                    if (expandableListViewNextClasses.isGroupExpanded(0)) {
+
+                        expandableListViewNextClasses.collapseGroup(0);
+
+                        setListViewHeightBasedOnChildrenNext(true, true);
+
+                    }
+
+                }
+
+                if (expandableListViewTomorrowClasses != null) {
+
+                    if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                        expandableListViewTomorrowClasses.collapseGroup(0);
+
+                        setListViewHeightBasedOnChildrenTomorrow(true, true);
+
+                    }
+
+                }
+
+                updateUI();
+
+            }
+
+        });
+
+    }
+
     @Override
     public void onResume() {
 
         super.onResume();
 
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(updateProgressBarBroadcastReceiver, new IntentFilter("update_progress_bar"));
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(updateUIBroadcastReceiver, new IntentFilter("update_UI"));
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(collapseExpandableListViewsBroadcastReceiver, new IntentFilter("collapse_lists"));
+        EventBus.getDefault().register(this);
 
         updateUI();
 
@@ -180,33 +168,40 @@ public class Overview extends Fragment {
     @Override
     public void onStop() {
 
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(updateProgressBarBroadcastReceiver);
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(updateUIBroadcastReceiver);
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(collapseExpandableListViewsBroadcastReceiver);
+        EventBus.getDefault().unregister(this);
 
-        if (expandableListViewNextClasses != null) {
+        getView().post(new Runnable() {
 
-            if (expandableListViewNextClasses.isGroupExpanded(0)) {
+            @Override
+            public void run() {
 
-                expandableListViewNextClasses.collapseGroup(0);
+                if (expandableListViewNextClasses != null) {
 
-                setListViewHeightBasedOnChildrenNext(true, false);
+                    if (expandableListViewNextClasses.isGroupExpanded(0)) {
+
+                        expandableListViewNextClasses.collapseGroup(0);
+
+                        setListViewHeightBasedOnChildrenNext(true, false);
+
+                    }
+
+                }
+
+                if (expandableListViewTomorrowClasses != null) {
+
+                    if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                        expandableListViewTomorrowClasses.collapseGroup(0);
+
+                        setListViewHeightBasedOnChildrenTomorrow(true, false);
+
+                    }
+
+                }
 
             }
 
-        }
-
-        if (expandableListViewTomorrowClasses != null) {
-
-            if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
-
-                expandableListViewTomorrowClasses.collapseGroup(0);
-
-                setListViewHeightBasedOnChildrenTomorrow(true, false);
-
-            }
-
-        }
+        });
 
         super.onStop();
 
@@ -215,12 +210,9 @@ public class Overview extends Fragment {
     @Override
     public void onDestroyView() {
 
-        updateProgressBarBroadcastReceiver = null;
-        updateUIBroadcastReceiver = null;
         expandableListViewNextClasses = null;
         nextClassesArrayList = null;
         classListAdapterNext = null;
-        collapseExpandableListViewsBroadcastReceiver = null;
         expandableListViewTomorrowClasses = null;
         tomorrowClassesArrayList = null;
         classListAdapterTomorrow = null;
@@ -239,7 +231,7 @@ public class Overview extends Fragment {
 
     private void updateUI() {
 
-        if (DataStore.isCurrentClass) {
+        if (DataSingleton.getInstance().getCurrentClass() != null) {
 
             if (currentClassCardView == null) {
 
@@ -259,7 +251,7 @@ public class Overview extends Fragment {
 
             }
 
-            StandardClass currentClass = DataStore.currentClass;
+            StandardClass currentClass = DataSingleton.getInstance().getCurrentClass();
 
             if (currentClassTitleTextView == null)
                 currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
@@ -272,17 +264,17 @@ public class Overview extends Fragment {
             if (currentClass.hasLocation()) {
 
                 if (currentClass.hasTeacher())
-                    currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + currentClass.getLocation() + " • " + DataStore.minutesLeftText);
+                    currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + currentClass.getLocation() + " • " + DataSingleton.getInstance().getMinutesLeftText());
                 else
-                    currentClassLocationTeacherTextView.setText(currentClass.getLocation() + " • " + DataStore.minutesLeftText);
+                    currentClassLocationTeacherTextView.setText(currentClass.getLocation() + " • " + DataSingleton.getInstance().getMinutesLeftText());
 
             } else if (currentClass.hasTeacher()) {
 
-                currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + DataStore.minutesLeftText);
+                currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + DataSingleton.getInstance().getMinutesLeftText());
 
             } else {
 
-                currentClassLocationTeacherTextView.setText(DataStore.minutesLeftText);
+                currentClassLocationTeacherTextView.setText(DataSingleton.getInstance().getMinutesLeftText());
 
             }
 
@@ -305,9 +297,9 @@ public class Overview extends Fragment {
 
         }
 
-        if (DataStore.isNextClasses) {
+        if (DataSingleton.getInstance().getNextClass() != null) {
 
-            nextClassesArrayList = DataStore.nextClassesArrayList;
+            nextClassesArrayList = DataSingleton.getInstance().getNextClassesArrayList();
 
             configureExpandableListViewNextClasses();
 
@@ -317,9 +309,9 @@ public class Overview extends Fragment {
 
         }
 
-        if (DataStore.isTomorrowClasses && PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
+        if (DataSingleton.getInstance().getTomorrowClassesArrayList().size() > 0) {
 
-            tomorrowClassesArrayList = DataStore.tomorrowClassesArrayList;
+            tomorrowClassesArrayList = DataSingleton.getInstance().getTomorrowClassesArrayList();
 
             configureExpandableListViewTomorrowClasses();
 
@@ -342,15 +334,15 @@ public class Overview extends Fragment {
             progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
 
         progressBar.setIndeterminate(false);
-        progressBar.setProgress(DataStore.progressBarProgress);
+        progressBar.setProgress(DataSingleton.getInstance().getProgressBarProgress());
 
-        progressTextView.setText(DataStore.progressBarText);
+        progressTextView.setText(DataSingleton.getInstance().getProgessbarText());
 
     }
 
     private void setMarginsVisibility() {
 
-        if (DataStore.isCurrentClass) {
+        if (DataSingleton.getInstance().getCurrentClass() != null) {
 
             CardView noClassesCard = (CardView) getView().findViewById(R.id.overview_no_classes_card);
             noClassesCard.setVisibility(View.GONE);
@@ -358,7 +350,7 @@ public class Overview extends Fragment {
             CardView currentClassCard = (CardView) getView().findViewById(R.id.overview_current_class_card);
             currentClassCard.setVisibility(View.VISIBLE);
 
-            if (DataStore.isNextClasses) {
+            if (DataSingleton.getInstance().getNextClass() != null) {
 
                 RelativeLayout.LayoutParams layoutParamsCCC;
                 layoutParamsCCC = (RelativeLayout.LayoutParams) currentClassCard.getLayoutParams();
@@ -373,7 +365,7 @@ public class Overview extends Fragment {
                 layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(4), getPixelFromDP(16), getPixelFromDP(16));
                 nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                if (DataStore.isTomorrowClasses && PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
+                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
 
                     layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(4), getPixelFromDP(16), getPixelFromDP(4));
                     nextClassesCard.setLayoutParams(layoutParamsNCC);
@@ -398,7 +390,7 @@ public class Overview extends Fragment {
                 CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.GONE);
 
-                if (DataStore.isTomorrowClasses && PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
+                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
 
                     RelativeLayout.LayoutParams layoutParamsCCC;
                     layoutParamsCCC = (RelativeLayout.LayoutParams) currentClassCard.getLayoutParams();
@@ -427,7 +419,7 @@ public class Overview extends Fragment {
             CardView currentClassCard = (CardView) getView().findViewById(R.id.overview_current_class_card);
             currentClassCard.setVisibility(View.GONE);
 
-            if (DataStore.isNextClasses) {
+            if (DataSingleton.getInstance().getNextClass() != null) {
 
                 CardView noClasses = (CardView) getView().findViewById(R.id.overview_no_classes_card);
                 noClasses.setVisibility(View.GONE);
@@ -440,7 +432,7 @@ public class Overview extends Fragment {
                 layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16));
                 nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                if (DataStore.isTomorrowClasses && PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
+                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
 
                     layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(4));
                     nextClassesCard.setLayoutParams(layoutParamsNCC);
@@ -465,7 +457,7 @@ public class Overview extends Fragment {
                 CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.GONE);
 
-                if (DataStore.isTomorrowClasses && PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true)) {
+                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
 
                     CardView noClasses = (CardView) getView().findViewById(R.id.overview_no_classes_card);
                     noClasses.setVisibility(View.GONE);
@@ -539,9 +531,9 @@ public class Overview extends Fragment {
                     final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
                     final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
 
-                    if (DataStore.nextClassesArrayList.get(childPosition).hasLocation())
+                    if (DataSingleton.getInstance().getNextClassesArrayList().get(childPosition).hasLocation())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
-                    else if (DataStore.nextClassesArrayList.get(childPosition).hasTeacher())
+                    else if (DataSingleton.getInstance().getNextClassesArrayList().get(childPosition).hasTeacher())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
                     else
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextViewCentered.getText().toString()));
@@ -634,9 +626,9 @@ public class Overview extends Fragment {
                     final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
                     final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
 
-                    if (DataStore.tomorrowClassesArrayList.get(childPosition).hasLocation())
+                    if (DataSingleton.getInstance().getTomorrowClassesArrayList().get(childPosition).hasLocation())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
-                    else if (DataStore.tomorrowClassesArrayList.get(childPosition).hasTeacher())
+                    else if (DataSingleton.getInstance().getTomorrowClassesArrayList().get(childPosition).hasTeacher())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
                     else
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextViewCentered.getText().toString()));

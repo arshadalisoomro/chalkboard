@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.event.CollapseLists;
 import com.ghofrani.classapp.fragment.Classes;
 import com.ghofrani.classapp.fragment.Homework;
 import com.ghofrani.classapp.fragment.Overview;
@@ -37,9 +37,10 @@ import com.ghofrani.classapp.fragment.timetable.Sunday;
 import com.ghofrani.classapp.fragment.timetable.Thursday;
 import com.ghofrani.classapp.fragment.timetable.Tuesday;
 import com.ghofrani.classapp.fragment.timetable.Wednesday;
-import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.Utils;
-import com.ghofrani.classapp.service.Background;
+import com.ghofrani.classapp.module.DataSingleton;
+import com.ghofrani.classapp.module.Utils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +75,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        startService(new Intent(this, Background.class));
 
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
@@ -112,7 +111,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                     if (menuItem.getItemId() == R.id.settings) {
 
                         if (currentView == ID_OVERVIEW)
-                            LocalBroadcastManager.getInstance(Main.this).sendBroadcast(new Intent("collapse_lists"));
+                            EventBus.getDefault().post(new CollapseLists());
 
                         drawerViewToSwitchTo = ID_SETTINGS;
 
@@ -228,8 +227,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 if (currentView == ID_TIMETABLE) {
 
-                    if (!DataStore.allClassNamesArrayList.isEmpty())
-                        startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataStore.selectedTabPosition));
+                    if (!DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty())
+                        startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataSingleton.getInstance().getSelectedTabPosition()));
                     else
                         Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
 
@@ -239,7 +238,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 } else if (currentView == ID_HOMEWORK) {
 
-                    if (DataStore.allClassNamesArrayList.isEmpty())
+                    if (DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty())
                         Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
                     else
                         startActivity(new Intent(Main.this, AddHomework.class));
@@ -280,11 +279,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
         if (viewPager == null)
             viewPager = (ViewPager) findViewById(R.id.main_view_pager);
 
-        if (DataStore.recreate) {
+        if (DataSingleton.getInstance().isRecreate()) {
 
-            DataStore.recreate = false;
-            DataStore.isAnimated = false;
-            DataStore.selectedTabPosition = 0;
+            DataSingleton.getInstance().setRecreate(false);
+            DataSingleton.getInstance().setAnimated(false);
+            DataSingleton.getInstance().setSelectedTabPosition(0);
 
             drawerLayout = null;
             toolbar = null;
@@ -354,6 +353,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
         if (resultCode == RESULT_OK) {
 
             if (resultIntent.getStringExtra("class").equals("AddClass")) {
+
+                onResume();
 
                 switchToView(resultIntent.getIntExtra("switch_to_timetable", requestCode));
                 Toast.makeText(this, "Add your class into the timetable!", Toast.LENGTH_LONG).show();
@@ -457,7 +458,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             case ID_SETTINGS:
 
                 if (currentView == ID_OVERVIEW)
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("collapse_lists"));
+                    EventBus.getDefault().post(new CollapseLists());
 
                 break;
 
@@ -509,7 +510,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                         if (tabLayoutTab.getPosition() != 0) {
 
-                            if (!DataStore.isAnimated) {
+                            if (!DataSingleton.getInstance().isAnimated()) {
 
                                 final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                 final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -529,13 +530,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                 animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                                 drawerLayout.startAnimation(animation);
 
-                                DataStore.isAnimated = true;
+                                DataSingleton.getInstance().setAnimated(true);
 
                             }
 
                         } else {
 
-                            if (DataStore.isAnimated) {
+                            if (DataSingleton.getInstance().isAnimated()) {
 
                                 final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                                 final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -555,23 +556,23 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                                 animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                                 drawerLayout.startAnimation(animation);
 
-                                DataStore.isAnimated = false;
+                                DataSingleton.getInstance().setAnimated(false);
 
                             }
 
                         }
 
-                        DataStore.selectedTabPosition = tabLayoutTab.getPosition();
+                        DataSingleton.getInstance().setSelectedTabPosition(tabLayoutTab.getPosition());
 
                     }
 
                 });
 
-                tabLayout.getTabAt(DataStore.selectedTabPosition).select();
+                tabLayout.getTabAt(DataSingleton.getInstance().getSelectedTabPosition()).select();
 
-                if (DataStore.selectedTabPosition != 0) {
+                if (DataSingleton.getInstance().getSelectedTabPosition() != 0) {
 
-                    if (!DataStore.isAnimated) {
+                    if (!DataSingleton.getInstance().isAnimated()) {
 
                         final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                         final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -591,13 +592,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                         animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                         drawerLayout.startAnimation(animation);
 
-                        DataStore.isAnimated = true;
+                        DataSingleton.getInstance().setAnimated(true);
 
                     }
 
                 } else {
 
-                    if (DataStore.isAnimated) {
+                    if (DataSingleton.getInstance().isAnimated()) {
 
                         final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
                         final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
@@ -617,7 +618,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                         animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
                         drawerLayout.startAnimation(animation);
 
-                        DataStore.isAnimated = false;
+                        DataSingleton.getInstance().setAnimated(false);
 
                     }
 

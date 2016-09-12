@@ -1,18 +1,19 @@
 package com.ghofrani.classapp.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.modules.DataStore;
-import com.ghofrani.classapp.modules.Utils;
+import com.ghofrani.classapp.event.Update;
+import com.ghofrani.classapp.module.DataSingleton;
+import com.ghofrani.classapp.module.Utils;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class Settings extends AppCompatActivity {
 
@@ -96,19 +97,19 @@ public class Settings extends AppCompatActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-            if (key.equals("detailed_notification") && DataStore.isCurrentClass
-                    || key.equals("flip_colors") && DataStore.isCurrentClass
-                    || key.equals("class_notification") && DataStore.isCurrentClass
-                    || key.equals("next_class_notification_minutes") && DataStore.isNextClasses
+            if (key.equals("detailed_notification") && DataSingleton.getInstance().getCurrentClass() != null
+                    || key.equals("flip_colors") && DataSingleton.getInstance().getCurrentClass() != null
+                    || key.equals("class_notification") && DataSingleton.getInstance().getCurrentClass() != null
+                    || key.equals("next_class_notification_minutes") && DataSingleton.getInstance().getCurrentClass() != null
                     || key.equals("tomorrow_classes")
                     || key.equals("24_hour_time")) {
 
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("update_data"));
+                EventBus.getDefault().post(new Update(true, false, false, false));
 
             } else if (key.equals("primary_color")
                     || key.equals("accent_color")) {
 
-                DataStore.recreate = true;
+                DataSingleton.getInstance().setRecreate(true);
 
                 getActivity().recreate();
 
