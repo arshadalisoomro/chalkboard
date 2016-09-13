@@ -102,7 +102,7 @@
 
         <com.afollestad.materialdialogs.prefs.MaterialListPreference
 
-            android:defaultValue="30"
+            android:defaultValue="60"
             android:entries="@array/next_class_notification_minutes_text"
             android:entryValues="@array/next_class_notification_minutes_values"
             android:key="next_class_notification_minutes"
