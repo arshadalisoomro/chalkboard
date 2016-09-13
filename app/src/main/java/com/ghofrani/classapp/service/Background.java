@@ -141,7 +141,7 @@ public class Background extends Service {
 
         dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
 
-        audioManager = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         red = ContextCompat.getColor(this, R.color.red);
         pink = ContextCompat.getColor(this, R.color.pink);
@@ -203,6 +203,7 @@ public class Background extends Service {
 
         sharedPreferences = null;
         databaseHelper.close();
+        databaseHelper = null;
 
         backgroundIntentFilter = null;
         backgroundBroadcastReceiver = null;
@@ -211,8 +212,8 @@ public class Background extends Service {
         notificationCompatBuilder = null;
         notificationManager = null;
         remoteViews = null;
-        databaseHelper = null;
         dateTimeFormatterAMPM = null;
+        audioManager = null;
 
         super.onDestroy();
 
