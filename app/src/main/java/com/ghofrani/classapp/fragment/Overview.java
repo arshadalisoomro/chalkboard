@@ -270,6 +270,9 @@ public class Overview extends Fragment {
             if (currentClassLocationTeacherTextView == null)
                 currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_teacher_location);
 
+            if (currentClassColorIndicator == null)
+                currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
+
             if (currentClass.hasLocation()) {
 
                 if (currentClass.hasTeacher())
@@ -277,13 +280,19 @@ public class Overview extends Fragment {
                 else
                     currentClassLocationTeacherTextView.setText(currentClass.getLocation() + " • " + DataSingleton.getInstance().getMinutesLeftText());
 
+                currentClassColorIndicator.setTranslationY(getPixelFromDP(-1.5f));
+
             } else if (currentClass.hasTeacher()) {
 
                 currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + DataSingleton.getInstance().getMinutesLeftText());
 
+                currentClassColorIndicator.setTranslationY(getPixelFromDP(-1.5f));
+
             } else {
 
                 currentClassLocationTeacherTextView.setText(DataSingleton.getInstance().getMinutesLeftText());
+
+                currentClassColorIndicator.setTranslationY(getPixelFromDP(0));
 
             }
 
@@ -296,9 +305,6 @@ public class Overview extends Fragment {
                 currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
 
             currentClassEndTimeTextView.setText(currentClass.getEndTimeString(true));
-
-            if (currentClassColorIndicator == null)
-                currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
 
             currentClassColorIndicator.setColorFilter(currentClass.getColor());
 
