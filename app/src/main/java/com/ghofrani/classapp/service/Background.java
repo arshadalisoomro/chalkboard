@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -97,6 +98,8 @@ public class Background extends Service {
     private SharedPreferences sharedPreferences;
     private DatabaseHelper databaseHelper;
 
+    private AudioManager audioManager;
+
     private boolean currentToNextTransition = false;
     private boolean nextToCurrentTransition = false;
     private boolean simpleToDetailedTransition = false;
@@ -137,6 +140,8 @@ public class Background extends Service {
         progressTextId = R.id.view_notification_progress_text;
 
         dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
+
+        audioManager = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
 
         red = ContextCompat.getColor(this, R.color.red);
         pink = ContextCompat.getColor(this, R.color.pink);
@@ -317,6 +322,9 @@ public class Background extends Service {
         }
 
         if (currentClass != null) {
+
+            if (sharedPreferences.getBoolean("mute_phone_during_class", true))
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 
             final StandardClass finalCurrentClass = currentClass;
 
@@ -728,6 +736,9 @@ public class Background extends Service {
 
         } else if (nextClass != null) {
 
+            if (sharedPreferences.getBoolean("mute_phone_during_class", true))
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
             nextToCurrentTransition = true;
 
             if (currentToNextTransition) {
@@ -775,6 +786,9 @@ public class Background extends Service {
             }
 
         } else {
+
+            if (sharedPreferences.getBoolean("mute_phone_during_class", true))
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
             currentToNextTransition = false;
             nextToCurrentTransition = false;

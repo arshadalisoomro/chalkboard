@@ -36,6 +36,13 @@
             android:summary="Use 24 hour format instead of AM/PM format"
             android:title="Use 24 hour format" />
 
+        <CheckBoxPreference
+
+            android:defaultValue="true"
+            android:key="mute_phone_during_class"
+            android:summary="Turns vibrate only mode on during classes"
+            android:title="Mute phone during classes" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
