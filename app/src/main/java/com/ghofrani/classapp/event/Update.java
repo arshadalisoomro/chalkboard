@@ -2,10 +2,10 @@ package com.ghofrani.classapp.event;
 
 public class Update {
 
-    private boolean data;
-    private boolean homework;
-    private boolean timetable;
-    private boolean classes;
+    private final boolean data;
+    private final boolean homework;
+    private final boolean timetable;
+    private final boolean classes;
 
     public Update(boolean data, boolean homework, boolean timetable, boolean classes) {
 

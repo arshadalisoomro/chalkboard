@@ -118,123 +118,129 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
 
-        switch (day) {
+        try {
 
-            case Calendar.SUNDAY:
+            switch (day) {
 
-                for (int i = 0; i < classesToInsert.size(); i++) {
+                case Calendar.SUNDAY:
 
-                    contentValues.clear();
+                    for (int i = 0; i < classesToInsert.size(); i++) {
 
-                    contentValues.put(DatabaseContract.Sunday.COLUMN_CLASS, classesToInsert.get(i).getName());
-                    contentValues.put(DatabaseContract.Sunday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
-                    contentValues.put(DatabaseContract.Sunday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+                        contentValues.clear();
 
-                    sqLiteDatabase.insert(DatabaseContract.Sunday.TABLE_NAME, null, contentValues);
+                        contentValues.put(DatabaseContract.Sunday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                        contentValues.put(DatabaseContract.Sunday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                        contentValues.put(DatabaseContract.Sunday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
 
-                }
+                        sqLiteDatabase.insert(DatabaseContract.Sunday.TABLE_NAME, null, contentValues);
 
-                break;
+                    }
 
-            case Calendar.MONDAY:
+                    break;
 
-                for (int i = 0; i < classesToInsert.size(); i++) {
+                case Calendar.MONDAY:
 
-                    contentValues.clear();
+                    for (int i = 0; i < classesToInsert.size(); i++) {
 
-                    contentValues.put(DatabaseContract.Monday.COLUMN_CLASS, classesToInsert.get(i).getName());
-                    contentValues.put(DatabaseContract.Monday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
-                    contentValues.put(DatabaseContract.Monday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+                        contentValues.clear();
 
-                    sqLiteDatabase.insert(DatabaseContract.Monday.TABLE_NAME, null, contentValues);
+                        contentValues.put(DatabaseContract.Monday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                        contentValues.put(DatabaseContract.Monday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                        contentValues.put(DatabaseContract.Monday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
 
-                }
+                        sqLiteDatabase.insert(DatabaseContract.Monday.TABLE_NAME, null, contentValues);
 
-                break;
+                    }
 
-            case Calendar.TUESDAY:
+                    break;
 
-                for (int i = 0; i < classesToInsert.size(); i++) {
+                case Calendar.TUESDAY:
 
-                    contentValues.clear();
+                    for (int i = 0; i < classesToInsert.size(); i++) {
 
-                    contentValues.put(DatabaseContract.Tuesday.COLUMN_CLASS, classesToInsert.get(i).getName());
-                    contentValues.put(DatabaseContract.Tuesday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
-                    contentValues.put(DatabaseContract.Tuesday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+                        contentValues.clear();
 
-                    sqLiteDatabase.insert(DatabaseContract.Tuesday.TABLE_NAME, null, contentValues);
+                        contentValues.put(DatabaseContract.Tuesday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                        contentValues.put(DatabaseContract.Tuesday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                        contentValues.put(DatabaseContract.Tuesday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
 
-                }
+                        sqLiteDatabase.insert(DatabaseContract.Tuesday.TABLE_NAME, null, contentValues);
 
-                break;
+                    }
 
-            case Calendar.WEDNESDAY:
+                    break;
 
-                for (int i = 0; i < classesToInsert.size(); i++) {
+                case Calendar.WEDNESDAY:
 
-                    contentValues.clear();
+                    for (int i = 0; i < classesToInsert.size(); i++) {
 
-                    contentValues.put(DatabaseContract.Wednesday.COLUMN_CLASS, classesToInsert.get(i).getName());
-                    contentValues.put(DatabaseContract.Wednesday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
-                    contentValues.put(DatabaseContract.Wednesday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+                        contentValues.clear();
 
-                    sqLiteDatabase.insert(DatabaseContract.Wednesday.TABLE_NAME, null, contentValues);
+                        contentValues.put(DatabaseContract.Wednesday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                        contentValues.put(DatabaseContract.Wednesday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                        contentValues.put(DatabaseContract.Wednesday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
 
-                }
+                        sqLiteDatabase.insert(DatabaseContract.Wednesday.TABLE_NAME, null, contentValues);
 
-                break;
+                    }
 
-            case Calendar.THURSDAY:
+                    break;
 
-                for (int i = 0; i < classesToInsert.size(); i++) {
+                case Calendar.THURSDAY:
 
-                    contentValues.clear();
+                    for (int i = 0; i < classesToInsert.size(); i++) {
 
-                    contentValues.put(DatabaseContract.Thursday.COLUMN_CLASS, classesToInsert.get(i).getName());
-                    contentValues.put(DatabaseContract.Thursday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
-                    contentValues.put(DatabaseContract.Thursday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+                        contentValues.clear();
 
-                    sqLiteDatabase.insert(DatabaseContract.Thursday.TABLE_NAME, null, contentValues);
+                        contentValues.put(DatabaseContract.Thursday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                        contentValues.put(DatabaseContract.Thursday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                        contentValues.put(DatabaseContract.Thursday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
 
-                }
+                        sqLiteDatabase.insert(DatabaseContract.Thursday.TABLE_NAME, null, contentValues);
 
-                break;
+                    }
 
-            case Calendar.FRIDAY:
+                    break;
 
-                for (int i = 0; i < classesToInsert.size(); i++) {
+                case Calendar.FRIDAY:
 
-                    contentValues.clear();
+                    for (int i = 0; i < classesToInsert.size(); i++) {
 
-                    contentValues.put(DatabaseContract.Friday.COLUMN_CLASS, classesToInsert.get(i).getName());
-                    contentValues.put(DatabaseContract.Friday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
-                    contentValues.put(DatabaseContract.Friday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+                        contentValues.clear();
 
-                    sqLiteDatabase.insert(DatabaseContract.Friday.TABLE_NAME, null, contentValues);
+                        contentValues.put(DatabaseContract.Friday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                        contentValues.put(DatabaseContract.Friday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                        contentValues.put(DatabaseContract.Friday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
 
-                }
+                        sqLiteDatabase.insert(DatabaseContract.Friday.TABLE_NAME, null, contentValues);
 
-                break;
+                    }
 
-            case Calendar.SATURDAY:
+                    break;
 
-                for (int i = 0; i < classesToInsert.size(); i++) {
+                case Calendar.SATURDAY:
 
-                    contentValues.clear();
+                    for (int i = 0; i < classesToInsert.size(); i++) {
 
-                    contentValues.put(DatabaseContract.Saturday.COLUMN_CLASS, classesToInsert.get(i).getName());
-                    contentValues.put(DatabaseContract.Saturday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
-                    contentValues.put(DatabaseContract.Saturday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
+                        contentValues.clear();
 
-                    sqLiteDatabase.insert(DatabaseContract.Saturday.TABLE_NAME, null, contentValues);
+                        contentValues.put(DatabaseContract.Saturday.COLUMN_CLASS, classesToInsert.get(i).getName());
+                        contentValues.put(DatabaseContract.Saturday.COLUMN_START_TIME, classesToInsert.get(i).getStartTime().toString());
+                        contentValues.put(DatabaseContract.Saturday.COLUMN_END_TIME, classesToInsert.get(i).getEndTime().toString());
 
-                }
+                        sqLiteDatabase.insert(DatabaseContract.Saturday.TABLE_NAME, null, contentValues);
 
-                break;
+                    }
+
+                    break;
+
+            }
+
+        } finally {
+
+            sqLiteDatabase.close();
 
         }
-
-        sqLiteDatabase.close();
 
     }
 
@@ -242,88 +248,94 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-        switch (day) {
+        try {
 
-            case Calendar.SUNDAY:
+            switch (day) {
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Sunday.TABLE_NAME + " where "
-                        + DatabaseContract.Sunday.COLUMN_CLASS + "='"
-                        + classToRemove + "' and "
-                        + DatabaseContract.Sunday.COLUMN_START_TIME + "='"
-                        + startTime.toString() + "'");
+                case Calendar.SUNDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Sunday.TABLE_NAME + " where "
+                            + DatabaseContract.Sunday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Sunday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
 
-            case Calendar.MONDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Monday.TABLE_NAME + " where "
-                        + DatabaseContract.Monday.COLUMN_CLASS + "='"
-                        + classToRemove + "' and "
-                        + DatabaseContract.Monday.COLUMN_START_TIME + "='"
-                        + startTime.toString() + "'");
+                case Calendar.MONDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Monday.TABLE_NAME + " where "
+                            + DatabaseContract.Monday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Monday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
 
-            case Calendar.TUESDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Tuesday.TABLE_NAME + " where "
-                        + DatabaseContract.Tuesday.COLUMN_CLASS + "='"
-                        + classToRemove + "' and "
-                        + DatabaseContract.Tuesday.COLUMN_START_TIME + "='"
-                        + startTime.toString() + "'");
+                case Calendar.TUESDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Tuesday.TABLE_NAME + " where "
+                            + DatabaseContract.Tuesday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Tuesday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
 
-            case Calendar.WEDNESDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Wednesday.TABLE_NAME + " where "
-                        + DatabaseContract.Wednesday.COLUMN_CLASS + "='"
-                        + classToRemove + "' and "
-                        + DatabaseContract.Wednesday.COLUMN_START_TIME + "='"
-                        + startTime.toString() + "'");
+                case Calendar.WEDNESDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Wednesday.TABLE_NAME + " where "
+                            + DatabaseContract.Wednesday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Wednesday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
 
-            case Calendar.THURSDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Thursday.TABLE_NAME + " where "
-                        + DatabaseContract.Thursday.COLUMN_CLASS + "='"
-                        + classToRemove + "' and "
-                        + DatabaseContract.Thursday.COLUMN_START_TIME + "='"
-                        + startTime.toString() + "'");
+                case Calendar.THURSDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Thursday.TABLE_NAME + " where "
+                            + DatabaseContract.Thursday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Thursday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
 
-            case Calendar.FRIDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Friday.TABLE_NAME + " where "
-                        + DatabaseContract.Friday.COLUMN_CLASS + "='"
-                        + classToRemove + "' and "
-                        + DatabaseContract.Friday.COLUMN_START_TIME + "='"
-                        + startTime.toString() + "'");
+                case Calendar.FRIDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Friday.TABLE_NAME + " where "
+                            + DatabaseContract.Friday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Friday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
 
-            case Calendar.SATURDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Saturday.TABLE_NAME + " where "
-                        + DatabaseContract.Saturday.COLUMN_CLASS + "='"
-                        + classToRemove + "' and "
-                        + DatabaseContract.Saturday.COLUMN_START_TIME + "='"
-                        + startTime.toString() + "'");
+                case Calendar.SATURDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Saturday.TABLE_NAME + " where "
+                            + DatabaseContract.Saturday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Saturday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
+
+                    break;
+
+            }
+
+        } finally {
+
+            sqLiteDatabase.close();
 
         }
-
-        sqLiteDatabase.close();
 
     }
 
@@ -331,60 +343,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-        switch (day) {
+        try {
 
-            case Calendar.SUNDAY:
+            switch (day) {
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Sunday.TABLE_NAME);
+                case Calendar.SUNDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Sunday.TABLE_NAME);
 
-            case Calendar.MONDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Monday.TABLE_NAME);
+                case Calendar.MONDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Monday.TABLE_NAME);
 
-            case Calendar.TUESDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Tuesday.TABLE_NAME);
+                case Calendar.TUESDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Tuesday.TABLE_NAME);
 
-            case Calendar.WEDNESDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Wednesday.TABLE_NAME);
+                case Calendar.WEDNESDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Wednesday.TABLE_NAME);
 
-            case Calendar.THURSDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Thursday.TABLE_NAME);
+                case Calendar.THURSDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Thursday.TABLE_NAME);
 
-            case Calendar.FRIDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Friday.TABLE_NAME);
+                case Calendar.FRIDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Friday.TABLE_NAME);
 
-            case Calendar.SATURDAY:
+                    break;
 
-                sqLiteDatabase.execSQL("delete from "
-                        + DatabaseContract.Saturday.TABLE_NAME);
+                case Calendar.SATURDAY:
 
-                break;
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Saturday.TABLE_NAME);
+
+                    break;
+
+            }
+
+        } finally {
+
+            sqLiteDatabase.close();
 
         }
-
-        sqLiteDatabase.close();
 
     }
 
@@ -392,9 +410,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-        sqLiteDatabase.execSQL("delete from " + DatabaseContract.Homework.TABLE_NAME);
+        try {
 
-        sqLiteDatabase.close();
+            sqLiteDatabase.execSQL("delete from " + DatabaseContract.Homework.TABLE_NAME);
+
+        } finally {
+
+            sqLiteDatabase.close();
+
+        }
 
     }
 
@@ -404,14 +428,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(DatabaseContract.ClassInfo.COLUMN_NAME, classToAdd.getName());
-        contentValues.put(DatabaseContract.ClassInfo.COLUMN_LOCATION, classToAdd.getLocation());
-        contentValues.put(DatabaseContract.ClassInfo.COLUMN_TEACHER, classToAdd.getTeacher());
-        contentValues.put(DatabaseContract.ClassInfo.COLUMN_COLOR, classToAdd.getColor());
+        try {
 
-        sqLiteDatabase.insert(DatabaseContract.ClassInfo.TABLE_NAME, null, contentValues);
+            contentValues.put(DatabaseContract.ClassInfo.COLUMN_NAME, classToAdd.getName());
+            contentValues.put(DatabaseContract.ClassInfo.COLUMN_LOCATION, classToAdd.getLocation());
+            contentValues.put(DatabaseContract.ClassInfo.COLUMN_TEACHER, classToAdd.getTeacher());
+            contentValues.put(DatabaseContract.ClassInfo.COLUMN_COLOR, classToAdd.getColor());
 
-        sqLiteDatabase.close();
+            sqLiteDatabase.insert(DatabaseContract.ClassInfo.TABLE_NAME, null, contentValues);
+
+        } finally {
+
+            sqLiteDatabase.close();
+
+        }
 
     }
 
@@ -575,21 +605,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues contentValues = new ContentValues();
 
-        for (int i = 0; i < homeworkToAdd.size(); i++) {
+        try {
 
-            contentValues.clear();
+            for (int i = 0; i < homeworkToAdd.size(); i++) {
 
-            contentValues.put(DatabaseContract.Homework.COLUMN_NAME, homeworkToAdd.get(i).getName());
-            contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homeworkToAdd.get(i).getClassName());
-            contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homeworkToAdd.get(i).getDateTime().toString());
-            contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homeworkToAdd.get(i).isAttach() ? 1 : 0);
-            contentValues.put(DatabaseContract.Homework.COLUMN_PRIORITY, homeworkToAdd.get(i).isHighPriority() ? 1 : 0);
+                contentValues.clear();
 
-            sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
+                contentValues.put(DatabaseContract.Homework.COLUMN_NAME, homeworkToAdd.get(i).getName());
+                contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homeworkToAdd.get(i).getClassName());
+                contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homeworkToAdd.get(i).getDateTime().toString());
+                contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homeworkToAdd.get(i).isAttach() ? 1 : 0);
+                contentValues.put(DatabaseContract.Homework.COLUMN_PRIORITY, homeworkToAdd.get(i).isHighPriority() ? 1 : 0);
+
+                sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
+
+            }
+
+        } finally {
+
+            sqLiteDatabase.close();
 
         }
-
-        sqLiteDatabase.close();
 
     }
 

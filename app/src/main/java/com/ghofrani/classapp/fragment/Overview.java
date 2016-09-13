@@ -79,12 +79,12 @@ public class Overview extends Fragment {
     @Subscribe
     public void onEvent(CollapseLists collapseListsEvent) {
 
-        getView().post(new Runnable() {
+        if (expandableListViewNextClasses != null) {
 
-            @Override
-            public void run() {
+            expandableListViewNextClasses.post(new Runnable() {
 
-                if (expandableListViewNextClasses != null) {
+                @Override
+                public void run() {
 
                     if (expandableListViewNextClasses.isGroupExpanded(0)) {
 
@@ -96,7 +96,16 @@ public class Overview extends Fragment {
 
                 }
 
-                if (expandableListViewTomorrowClasses != null) {
+            });
+
+        }
+
+        if (expandableListViewTomorrowClasses != null) {
+
+            expandableListViewTomorrowClasses.post(new Runnable() {
+
+                @Override
+                public void run() {
 
                     if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
 
@@ -108,21 +117,21 @@ public class Overview extends Fragment {
 
                 }
 
-            }
+            });
 
-        });
+        }
 
     }
 
     @Subscribe
     public void onEvent(UpdateClassesUI updateClassesUIEvent) {
 
-        getView().post(new Runnable() {
+        if (expandableListViewNextClasses != null) {
 
-            @Override
-            public void run() {
+            expandableListViewNextClasses.post(new Runnable() {
 
-                if (expandableListViewNextClasses != null) {
+                @Override
+                public void run() {
 
                     if (expandableListViewNextClasses.isGroupExpanded(0)) {
 
@@ -134,7 +143,16 @@ public class Overview extends Fragment {
 
                 }
 
-                if (expandableListViewTomorrowClasses != null) {
+            });
+
+        }
+
+        if (expandableListViewTomorrowClasses != null) {
+
+            expandableListViewTomorrowClasses.post(new Runnable() {
+
+                @Override
+                public void run() {
 
                     if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
 
@@ -146,11 +164,11 @@ public class Overview extends Fragment {
 
                 }
 
-                updateUI();
+            });
 
-            }
+        }
 
-        });
+        updateUI();
 
     }
 
@@ -166,44 +184,35 @@ public class Overview extends Fragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
 
         EventBus.getDefault().unregister(this);
 
-        getView().post(new Runnable() {
+        if (expandableListViewNextClasses != null) {
 
-            @Override
-            public void run() {
+            if (expandableListViewNextClasses.isGroupExpanded(0)) {
 
-                if (expandableListViewNextClasses != null) {
+                expandableListViewNextClasses.collapseGroup(0);
 
-                    if (expandableListViewNextClasses.isGroupExpanded(0)) {
-
-                        expandableListViewNextClasses.collapseGroup(0);
-
-                        setListViewHeightBasedOnChildrenNext(true, false);
-
-                    }
-
-                }
-
-                if (expandableListViewTomorrowClasses != null) {
-
-                    if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
-
-                        expandableListViewTomorrowClasses.collapseGroup(0);
-
-                        setListViewHeightBasedOnChildrenTomorrow(true, false);
-
-                    }
-
-                }
+                setListViewHeightBasedOnChildrenNext(true, false);
 
             }
 
-        });
+        }
 
-        super.onStop();
+        if (expandableListViewTomorrowClasses != null) {
+
+            if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+
+                expandableListViewTomorrowClasses.collapseGroup(0);
+
+                setListViewHeightBasedOnChildrenTomorrow(true, false);
+
+            }
+
+        }
+
+        super.onPause();
 
     }
 
@@ -309,7 +318,7 @@ public class Overview extends Fragment {
 
         }
 
-        if (DataSingleton.getInstance().getTomorrowClassesArrayList().size() > 0) {
+        if (!DataSingleton.getInstance().getTomorrowClassesArrayList().isEmpty()) {
 
             tomorrowClassesArrayList = DataSingleton.getInstance().getTomorrowClassesArrayList();
 
@@ -365,7 +374,7 @@ public class Overview extends Fragment {
                 layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(4), getPixelFromDP(16), getPixelFromDP(16));
                 nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
+                if (!DataSingleton.getInstance().getTomorrowClassesArrayList().isEmpty()) {
 
                     layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(4), getPixelFromDP(16), getPixelFromDP(4));
                     nextClassesCard.setLayoutParams(layoutParamsNCC);
@@ -390,7 +399,7 @@ public class Overview extends Fragment {
                 CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.GONE);
 
-                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
+                if (!DataSingleton.getInstance().getTomorrowClassesArrayList().isEmpty()) {
 
                     RelativeLayout.LayoutParams layoutParamsCCC;
                     layoutParamsCCC = (RelativeLayout.LayoutParams) currentClassCard.getLayoutParams();
@@ -432,7 +441,7 @@ public class Overview extends Fragment {
                 layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16));
                 nextClassesCard.setLayoutParams(layoutParamsNCC);
 
-                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
+                if (!DataSingleton.getInstance().getTomorrowClassesArrayList().isEmpty()) {
 
                     layoutParamsNCC.setMargins(getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(16), getPixelFromDP(4));
                     nextClassesCard.setLayoutParams(layoutParamsNCC);
@@ -457,7 +466,7 @@ public class Overview extends Fragment {
                 CardView nextClassesCard = (CardView) getView().findViewById(R.id.overview_next_classes_card);
                 nextClassesCard.setVisibility(View.GONE);
 
-                if (DataSingleton.getInstance().getTomorrowHomeworkArrayList().size() > 0) {
+                if (!DataSingleton.getInstance().getTomorrowClassesArrayList().isEmpty()) {
 
                     CardView noClasses = (CardView) getView().findViewById(R.id.overview_no_classes_card);
                     noClasses.setVisibility(View.GONE);
@@ -583,7 +592,7 @@ public class Overview extends Fragment {
 
                 }
 
-            }, 100);
+            }, 50);
 
         } else {
 
@@ -674,11 +683,12 @@ public class Overview extends Fragment {
                 public void run() {
 
                     expandableListViewTomorrowClasses.expandGroup(0);
+
                     setListViewHeightBasedOnChildrenTomorrow(true, true);
 
                 }
 
-            }, 100);
+            }, 50);
 
         } else {
 
@@ -690,7 +700,7 @@ public class Overview extends Fragment {
 
     private void setListViewHeightBasedOnChildrenNext(boolean changeParams, boolean animate) {
 
-        ListAdapter listAdapter = expandableListViewNextClasses.getAdapter();
+        final ListAdapter listAdapter = expandableListViewNextClasses.getAdapter();
 
         if (listAdapter == null)
             return;
@@ -699,7 +709,7 @@ public class Overview extends Fragment {
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
 
-            View listItem = listAdapter.getView(i, null, expandableListViewNextClasses);
+            final View listItem = listAdapter.getView(i, null, expandableListViewNextClasses);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
 
@@ -709,8 +719,8 @@ public class Overview extends Fragment {
 
         if (changeParams) {
 
-            TextView groupText = (TextView) expandableListViewNextClasses.findViewById(R.id.view_list_group_text);
-            LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
+            final TextView groupText = (TextView) expandableListViewNextClasses.findViewById(R.id.view_list_group_text);
+            final LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
             if (expandableListViewNextClasses.isGroupExpanded(0)) {
 
@@ -802,7 +812,7 @@ public class Overview extends Fragment {
 
     private void setListViewHeightBasedOnChildrenTomorrow(boolean changeParams, boolean animate) {
 
-        ListAdapter listAdapter = expandableListViewTomorrowClasses.getAdapter();
+        final ListAdapter listAdapter = expandableListViewTomorrowClasses.getAdapter();
 
         if (listAdapter == null)
             return;
@@ -811,7 +821,7 @@ public class Overview extends Fragment {
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
 
-            View listItem = listAdapter.getView(i, null, expandableListViewTomorrowClasses);
+            final View listItem = listAdapter.getView(i, null, expandableListViewTomorrowClasses);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
 
@@ -821,8 +831,8 @@ public class Overview extends Fragment {
 
         if (changeParams) {
 
-            TextView groupText = (TextView) expandableListViewTomorrowClasses.findViewById(R.id.view_list_group_text);
-            LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
+            final TextView groupText = (TextView) expandableListViewTomorrowClasses.findViewById(R.id.view_list_group_text);
+            final LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
             if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
 

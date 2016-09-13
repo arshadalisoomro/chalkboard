@@ -361,81 +361,87 @@ public class EditDay extends AppCompatActivity {
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
                                 ArrayList<StandardClass> currentClasses;
 
-                                if (Utils.getClassesArrayListOfDay(day) != null) {
+                                try {
 
-                                    currentClasses = Utils.getClassesArrayListOfDay(day);
+                                    if (Utils.getClassesArrayListOfDay(day) != null) {
 
-                                    boolean inserted = false;
-                                    int index = 0;
+                                        currentClasses = Utils.getClassesArrayListOfDay(day);
 
-                                    while (!inserted) {
+                                        boolean inserted = false;
+                                        int index = 0;
 
-                                        if (classStartTime.equals(currentClasses.get(index).getEndTimeString(false).replace(":", ""))) {
+                                        while (!inserted) {
 
-                                            inserted = true;
+                                            if (classStartTime.equals(currentClasses.get(index).getEndTimeString(false).replace(":", ""))) {
 
-                                            currentClasses.add(index + 1, new StandardClass(className,
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    is24Hour,
-                                                    dateTimeFormatterAMPM,
-                                                    databaseHelper.getClassLocation(className),
-                                                    databaseHelper.getClassTeacher(className),
-                                                    databaseHelper.getClassColor(className)));
+                                                inserted = true;
 
-                                        } else if (Integer.parseInt(classStartTime) < Integer.parseInt(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
+                                                currentClasses.add(index + 1, new StandardClass(className,
+                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                        is24Hour,
+                                                        dateTimeFormatterAMPM,
+                                                        databaseHelper.getClassLocation(className),
+                                                        databaseHelper.getClassTeacher(className),
+                                                        databaseHelper.getClassColor(className)));
 
-                                            inserted = true;
+                                            } else if (Integer.parseInt(classStartTime) < Integer.parseInt(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
 
-                                            currentClasses.add(index, new StandardClass(className,
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    is24Hour,
-                                                    dateTimeFormatterAMPM,
-                                                    databaseHelper.getClassLocation(className),
-                                                    databaseHelper.getClassTeacher(className),
-                                                    databaseHelper.getClassColor(className)));
+                                                inserted = true;
 
-                                        } else if ((currentClasses.size() - index) == 1) {
+                                                currentClasses.add(index, new StandardClass(className,
+                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                        is24Hour,
+                                                        dateTimeFormatterAMPM,
+                                                        databaseHelper.getClassLocation(className),
+                                                        databaseHelper.getClassTeacher(className),
+                                                        databaseHelper.getClassColor(className)));
 
-                                            inserted = true;
+                                            } else if ((currentClasses.size() - index) == 1) {
 
-                                            currentClasses.add(new StandardClass(className,
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    is24Hour,
-                                                    dateTimeFormatterAMPM,
-                                                    databaseHelper.getClassLocation(className),
-                                                    databaseHelper.getClassTeacher(className),
-                                                    databaseHelper.getClassColor(className)));
+                                                inserted = true;
+
+                                                currentClasses.add(new StandardClass(className,
+                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                        is24Hour,
+                                                        dateTimeFormatterAMPM,
+                                                        databaseHelper.getClassLocation(className),
+                                                        databaseHelper.getClassTeacher(className),
+                                                        databaseHelper.getClassColor(className)));
+
+                                            }
+
+                                            index++;
 
                                         }
 
-                                        index++;
+                                        databaseHelper.deleteAllClassesOfDay(day);
+
+                                        databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
+
+                                    } else {
+
+                                        currentClasses = new ArrayList<>();
+                                        currentClasses.add(new StandardClass(className,
+                                                dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                is24Hour,
+                                                dateTimeFormatterAMPM,
+                                                databaseHelper.getClassLocation(className),
+                                                databaseHelper.getClassTeacher(className),
+                                                databaseHelper.getClassColor(className)));
+
+                                        databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
 
                                     }
 
-                                    databaseHelper.deleteAllClassesOfDay(day);
+                                } finally {
 
-                                    databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
-
-                                } else {
-
-                                    currentClasses = new ArrayList<>();
-                                    currentClasses.add(new StandardClass(className,
-                                            dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                            dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                            is24Hour,
-                                            dateTimeFormatterAMPM,
-                                            databaseHelper.getClassLocation(className),
-                                            databaseHelper.getClassTeacher(className),
-                                            databaseHelper.getClassColor(className)));
-
-                                    databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
+                                    databaseHelper.close();
 
                                 }
-
-                                databaseHelper.close();
 
                                 Utils.setClassesArrayListOfDay(day, currentClasses);
 
@@ -1061,75 +1067,81 @@ public class EditDay extends AppCompatActivity {
 
                                 boolean is24Hour = PreferenceManager.getDefaultSharedPreferences(EditDay.this).getBoolean("24_hour_time", true);
 
-                                while (!inserted) {
+                                try {
 
-                                    if (classStartTime.equals(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
+                                    while (!inserted) {
 
-                                        inserted = true;
-                                        currentClasses.remove(index);
+                                        if (classStartTime.equals(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
 
-                                        currentClasses.add(index, new StandardClass(className,
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                is24Hour,
-                                                dateTimeFormatterAMPM,
-                                                databaseHelper.getClassLocation(className),
-                                                databaseHelper.getClassTeacher(className),
-                                                databaseHelper.getClassColor(className)));
+                                            inserted = true;
+                                            currentClasses.remove(index);
 
-                                    } else if (classStartTime.equals(currentClasses.get(index).getEndTimeString(false).replace(":", ""))) {
+                                            currentClasses.add(index, new StandardClass(className,
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                    is24Hour,
+                                                    dateTimeFormatterAMPM,
+                                                    databaseHelper.getClassLocation(className),
+                                                    databaseHelper.getClassTeacher(className),
+                                                    databaseHelper.getClassColor(className)));
 
-                                        inserted = true;
-                                        currentClasses.remove(index + 1);
+                                        } else if (classStartTime.equals(currentClasses.get(index).getEndTimeString(false).replace(":", ""))) {
 
-                                        currentClasses.add(index + 1, new StandardClass(className,
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                is24Hour,
-                                                dateTimeFormatterAMPM,
-                                                databaseHelper.getClassLocation(className),
-                                                databaseHelper.getClassTeacher(className),
-                                                databaseHelper.getClassColor(className)));
+                                            inserted = true;
+                                            currentClasses.remove(index + 1);
 
-                                    } else if (Integer.parseInt(classStartTime) < Integer.parseInt(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
+                                            currentClasses.add(index + 1, new StandardClass(className,
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                    is24Hour,
+                                                    dateTimeFormatterAMPM,
+                                                    databaseHelper.getClassLocation(className),
+                                                    databaseHelper.getClassTeacher(className),
+                                                    databaseHelper.getClassColor(className)));
 
-                                        inserted = true;
-                                        currentClasses.remove(index);
+                                        } else if (Integer.parseInt(classStartTime) < Integer.parseInt(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
 
-                                        currentClasses.add(index, new StandardClass(className,
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                is24Hour,
-                                                dateTimeFormatterAMPM,
-                                                databaseHelper.getClassLocation(className),
-                                                databaseHelper.getClassTeacher(className),
-                                                databaseHelper.getClassColor(className)));
+                                            inserted = true;
+                                            currentClasses.remove(index);
 
-                                    } else if ((currentClasses.size() - index) == 1) {
+                                            currentClasses.add(index, new StandardClass(className,
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                    is24Hour,
+                                                    dateTimeFormatterAMPM,
+                                                    databaseHelper.getClassLocation(className),
+                                                    databaseHelper.getClassTeacher(className),
+                                                    databaseHelper.getClassColor(className)));
 
-                                        inserted = true;
-                                        currentClasses.remove(currentClasses.size() - 1);
+                                        } else if ((currentClasses.size() - index) == 1) {
 
-                                        currentClasses.add(new StandardClass(className,
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                is24Hour,
-                                                dateTimeFormatterAMPM,
-                                                databaseHelper.getClassLocation(className),
-                                                databaseHelper.getClassTeacher(className),
-                                                databaseHelper.getClassColor(className)));
+                                            inserted = true;
+                                            currentClasses.remove(currentClasses.size() - 1);
+
+                                            currentClasses.add(new StandardClass(className,
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
+                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
+                                                    is24Hour,
+                                                    dateTimeFormatterAMPM,
+                                                    databaseHelper.getClassLocation(className),
+                                                    databaseHelper.getClassTeacher(className),
+                                                    databaseHelper.getClassColor(className)));
+
+                                        }
+
+                                        index++;
 
                                     }
 
-                                    index++;
+                                    databaseHelper.deleteAllClassesOfDay(day);
+
+                                    databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
+
+                                } finally {
+
+                                    databaseHelper.close();
 
                                 }
-
-                                databaseHelper.deleteAllClassesOfDay(day);
-
-                                databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
-
-                                databaseHelper.close();
 
                                 Utils.setClassesArrayListOfDay(day, currentClasses);
 
@@ -1520,31 +1532,38 @@ public class EditDay extends AppCompatActivity {
                             public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
 
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
-                                databaseHelper.removeClassOutOfDay(day, selectedClassName, selectedClassStartTime);
 
-                                final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
+                                try {
 
-                                Cursor classesCursor = databaseHelper.getClassesCursor(day);
+                                    databaseHelper.removeClassOutOfDay(day, selectedClassName, selectedClassStartTime);
 
-                                while (classesCursor.moveToNext()) {
+                                    final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
 
-                                    classesArrayList.add(new StandardClass(classesCursor.getString(1),
-                                            LocalTime.parse(classesCursor.getString(2)),
-                                            LocalTime.parse(classesCursor.getString(3)),
-                                            is24Hour,
-                                            dateTimeFormatterAMPM,
-                                            databaseHelper.getClassLocation(classesCursor.getString(1)),
-                                            databaseHelper.getClassTeacher(classesCursor.getString(1)),
-                                            databaseHelper.getClassColor(classesCursor.getString(1))));
+                                    Cursor classesCursor = databaseHelper.getClassesCursor(day);
+
+                                    while (classesCursor.moveToNext()) {
+
+                                        classesArrayList.add(new StandardClass(classesCursor.getString(1),
+                                                LocalTime.parse(classesCursor.getString(2)),
+                                                LocalTime.parse(classesCursor.getString(3)),
+                                                is24Hour,
+                                                dateTimeFormatterAMPM,
+                                                databaseHelper.getClassLocation(classesCursor.getString(1)),
+                                                databaseHelper.getClassTeacher(classesCursor.getString(1)),
+                                                databaseHelper.getClassColor(classesCursor.getString(1))));
+
+                                    }
+
+                                    if (!classesArrayList.isEmpty())
+                                        Utils.setClassesArrayListOfDay(day, classesArrayList);
+                                    else
+                                        Utils.setClassesArrayListOfDay(day, null);
+
+                                } finally {
+
+                                    databaseHelper.close();
 
                                 }
-
-                                if (!classesArrayList.isEmpty())
-                                    Utils.setClassesArrayListOfDay(day, classesArrayList);
-                                else
-                                    Utils.setClassesArrayListOfDay(day, null);
-
-                                databaseHelper.close();
 
                                 materialDialog.dismiss();
 

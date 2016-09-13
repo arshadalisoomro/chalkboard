@@ -474,7 +474,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_OVERVIEW:
 
-                Overview overviewFragment = new Overview();
+                final Overview overviewFragment = new Overview();
                 fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
                 fragmentTransaction.commit();
 
@@ -628,7 +628,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_CLASSES:
 
-                Classes classesFragment = new Classes();
+                final Classes classesFragment = new Classes();
                 fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
                 fragmentTransaction.commit();
 
@@ -636,7 +636,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_HOMEWORK:
 
-                Homework homeworkFragment = new Homework();
+                final Homework homeworkFragment = new Homework();
                 fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
                 fragmentTransaction.commit();
 

@@ -187,9 +187,9 @@ public class Homework extends Fragment {
 
             for (int i = 0; i < childCount; i++) {
 
-                View childView = parentView.getChildAt(i);
+                final View childView = parentView.getChildAt(i);
 
-                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
+                final RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
 
                 int top = childView.getBottom() + layoutParams.bottomMargin;
                 int bottom = top + dividerDrawable.getIntrinsicHeight();

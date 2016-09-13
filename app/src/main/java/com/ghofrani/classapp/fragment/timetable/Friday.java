@@ -121,13 +121,13 @@ public class Friday extends Fragment {
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
 
-            View listItem = listAdapter.getView(i, null, listView);
+            final View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
 
         }
 
-        ViewGroup.LayoutParams listViewLayoutParams = listView.getLayoutParams();
+        final ViewGroup.LayoutParams listViewLayoutParams = listView.getLayoutParams();
         listViewLayoutParams.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(listViewLayoutParams);
 

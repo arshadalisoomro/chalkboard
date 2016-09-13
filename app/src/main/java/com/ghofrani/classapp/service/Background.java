@@ -604,13 +604,15 @@ public class Background extends Service {
                             else
                                 remainingText = minutesRemaining + " mins. left";
 
+                            String remainingNotificationText = remainingText;
+
                             if (DataSingleton.getInstance().getNextClass() != null)
-                                remainingText += " • Next: " + DataSingleton.getInstance().getNextClass().getName();
+                                remainingNotificationText += " • Next: " + DataSingleton.getInstance().getNextClass().getName();
                             else
-                                remainingText += " • No further classes";
+                                remainingNotificationText += " • No further classes";
 
                             notificationCompatBuilder.setContentTitle(finalCurrentClass.getName());
-                            notificationCompatBuilder.setContentText(remainingText);
+                            notificationCompatBuilder.setContentText(remainingNotificationText);
 
                             String progressBarText = "";
                             int progressBarProgress = 0;
@@ -886,7 +888,7 @@ public class Background extends Service {
 
         }
 
-        DateTimeZone dateTimeZone = DateTimeZone.getDefault();
+        final DateTimeZone dateTimeZone = DateTimeZone.getDefault();
 
         try {
 
