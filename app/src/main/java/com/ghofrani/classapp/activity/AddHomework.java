@@ -181,9 +181,9 @@ public class AddHomework extends AppCompatActivity {
 
             if (Utils.getClassesArrayListOfDay(i) != null) {
 
-                for (int i2 = 0; i2 < Utils.getClassesArrayListOfDay(i).size(); i2++) {
+                for (StandardClass standardClass : Utils.getClassesArrayListOfDay(i)) {
 
-                    if (className.equals(Utils.getClassesArrayListOfDay(i).get(i2).getName()))
+                    if (className.equals(standardClass.getName()))
                         return true;
 
                 }
@@ -211,58 +211,58 @@ public class AddHomework extends AppCompatActivity {
 
                         if (Utils.getClassesArrayListOfDay(i) != null) {
 
-                            for (int i2 = 0; i2 < Utils.getClassesArrayListOfDay(i).size(); i2++) {
+                            for (StandardClass standardClass : Utils.getClassesArrayListOfDay(i)) {
 
-                                if (Utils.getClassesArrayListOfDay(i).get(i2).getName().equals(classNameSpinner.getSelectedItem().toString())) {
+                                if (standardClass.getName().equals(classNameSpinner.getSelectedItem().toString())) {
 
                                     switch (i) {
 
                                         case 1:
 
-                                            listItemTitles.add("Sunday's class at " + DataSingleton.getInstance().getSundayClasses().get(i2).getStartTimeString(true));
+                                            listItemTitles.add("Sunday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
                                         case 2:
 
-                                            listItemTitles.add("Monday's class at " + DataSingleton.getInstance().getMondayClasses().get(i2).getStartTimeString(true));
+                                            listItemTitles.add("Monday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
                                         case 3:
 
-                                            listItemTitles.add("Tuesday's class at " + DataSingleton.getInstance().getTuesdayClasses().get(i2).getStartTimeString(true));
+                                            listItemTitles.add("Tuesday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
                                         case 4:
 
-                                            listItemTitles.add("Wednesday's class at " + DataSingleton.getInstance().getWednesdayClasses().get(i2).getStartTimeString(true));
+                                            listItemTitles.add("Wednesday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
                                         case 5:
 
-                                            listItemTitles.add("Thursday's class at " + DataSingleton.getInstance().getThursdayClasses().get(i2).getStartTimeString(true));
+                                            listItemTitles.add("Thursday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
                                         case 6:
 
-                                            listItemTitles.add("Friday's class at " + DataSingleton.getInstance().getFridayClasses().get(i2).getStartTimeString(true));
+                                            listItemTitles.add("Friday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
                                         case 7:
 
-                                            listItemTitles.add("Saturday's class at " + DataSingleton.getInstance().getSaturdayClasses().get(i2).getStartTimeString(true));
+                                            listItemTitles.add("Saturday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
 
                                     }
 
-                                    listItemClasses.add(Utils.getClassesArrayListOfDay(i).get(i2));
+                                    listItemClasses.add(standardClass);
 
                                 }
 
@@ -272,10 +272,7 @@ public class AddHomework extends AppCompatActivity {
 
                     }
 
-                    final String[] listItemsArray = new String[listItemTitles.size()];
-
-                    for (int i = 0; i < listItemTitles.size(); i++)
-                        listItemsArray[i] = listItemTitles.get(i);
+                    final String[] listItemsArray = (String[]) listItemTitles.toArray();
 
                     new Handler().postDelayed(new Runnable() {
 
@@ -415,21 +412,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (DataSingleton.getInstance().getSundayClasses() != null) {
 
-            for (int i = 0; i < DataSingleton.getInstance().getSundayClasses().size(); i++) {
+            for (StandardClass standardClass : DataSingleton.getInstance().getSundayClasses()) {
 
-                if (DataSingleton.getInstance().getSundayClasses().get(i).getName().equals(className)) {
+                if (standardClass.getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 
-                        if (DataSingleton.getInstance().getSundayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.SUNDAY)) {
+                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.SUNDAY)) {
 
-                            return new DateTime().withTime(DataSingleton.getInstance().getSundayClasses().get(i).getStartTime());
+                            return new DateTime().withTime(standardClass.getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataSingleton.getInstance().getSundayClasses().get(i).getStartTime());
+                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 
@@ -449,21 +446,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (DataSingleton.getInstance().getMondayClasses() != null) {
 
-            for (int i = 0; i < DataSingleton.getInstance().getMondayClasses().size(); i++) {
+            for (StandardClass standardClass : DataSingleton.getInstance().getMondayClasses()) {
 
-                if (DataSingleton.getInstance().getMondayClasses().get(i).getName().equals(className)) {
+                if (standardClass.getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
 
-                        if (DataSingleton.getInstance().getMondayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.MONDAY)) {
+                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.MONDAY)) {
 
-                            return new DateTime().withTime(DataSingleton.getInstance().getMondayClasses().get(i).getStartTime());
+                            return new DateTime().withTime(standardClass.getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataSingleton.getInstance().getMondayClasses().get(i).getStartTime());
+                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 
@@ -483,21 +480,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (DataSingleton.getInstance().getTuesdayClasses() != null) {
 
-            for (int i = 0; i < DataSingleton.getInstance().getTuesdayClasses().size(); i++) {
+            for (StandardClass standardClass : DataSingleton.getInstance().getTuesdayClasses()) {
 
-                if (DataSingleton.getInstance().getTuesdayClasses().get(i).getName().equals(className)) {
+                if (standardClass.getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
 
-                        if (DataSingleton.getInstance().getTuesdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.TUESDAY)) {
+                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.TUESDAY)) {
 
-                            return new DateTime().withTime(DataSingleton.getInstance().getTuesdayClasses().get(i).getStartTime());
+                            return new DateTime().withTime(standardClass.getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataSingleton.getInstance().getTuesdayClasses().get(i).getStartTime());
+                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 
@@ -517,21 +514,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (DataSingleton.getInstance().getWednesdayClasses() != null) {
 
-            for (int i = 0; i < DataSingleton.getInstance().getWednesdayClasses().size(); i++) {
+            for (StandardClass standardClass : DataSingleton.getInstance().getWednesdayClasses()) {
 
-                if (DataSingleton.getInstance().getWednesdayClasses().get(i).getName().equals(className)) {
+                if (standardClass.getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
 
-                        if (DataSingleton.getInstance().getWednesdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.WEDNESDAY)) {
+                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.WEDNESDAY)) {
 
-                            return new DateTime().withTime(DataSingleton.getInstance().getWednesdayClasses().get(i).getStartTime());
+                            return new DateTime().withTime(standardClass.getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataSingleton.getInstance().getWednesdayClasses().get(i).getStartTime());
+                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 
@@ -551,21 +548,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (DataSingleton.getInstance().getThursdayClasses() != null) {
 
-            for (int i = 0; i < DataSingleton.getInstance().getThursdayClasses().size(); i++) {
+            for (StandardClass standardClass : DataSingleton.getInstance().getThursdayClasses()) {
 
-                if (DataSingleton.getInstance().getThursdayClasses().get(i).getName().equals(className)) {
+                if (standardClass.getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
 
-                        if (DataSingleton.getInstance().getThursdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.THURSDAY)) {
+                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.THURSDAY)) {
 
-                            return new DateTime().withTime(DataSingleton.getInstance().getThursdayClasses().get(i).getStartTime());
+                            return new DateTime().withTime(standardClass.getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataSingleton.getInstance().getThursdayClasses().get(i).getStartTime());
+                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 
@@ -585,21 +582,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (DataSingleton.getInstance().getFridayClasses() != null) {
 
-            for (int i = 0; i < DataSingleton.getInstance().getFridayClasses().size(); i++) {
+            for (StandardClass standardClass : DataSingleton.getInstance().getFridayClasses()) {
 
-                if (DataSingleton.getInstance().getFridayClasses().get(i).getName().equals(className)) {
+                if (standardClass.getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
 
-                        if (DataSingleton.getInstance().getFridayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.FRIDAY)) {
+                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.FRIDAY)) {
 
-                            return new DateTime().withTime(DataSingleton.getInstance().getFridayClasses().get(i).getStartTime());
+                            return new DateTime().withTime(standardClass.getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataSingleton.getInstance().getFridayClasses().get(i).getStartTime());
+                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 
@@ -619,21 +616,21 @@ public class AddHomework extends AppCompatActivity {
 
         if (DataSingleton.getInstance().getSaturdayClasses() != null) {
 
-            for (int i = 0; i < DataSingleton.getInstance().getSaturdayClasses().size(); i++) {
+            for (StandardClass standardClass : DataSingleton.getInstance().getSaturdayClasses()) {
 
-                if (DataSingleton.getInstance().getSaturdayClasses().get(i).getName().equals(className)) {
+                if (standardClass.getName().equals(className)) {
 
                     if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
 
-                        if (DataSingleton.getInstance().getSaturdayClasses().get(i).getStartTime().isAfter(now) || daySwitches.contains(Calendar.SATURDAY)) {
+                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.SATURDAY)) {
 
-                            return new DateTime().withTime(DataSingleton.getInstance().getSaturdayClasses().get(i).getStartTime());
+                            return new DateTime().withTime(standardClass.getStartTime());
 
                         }
 
                     } else {
 
-                        return new DateTime().withTime(DataSingleton.getInstance().getSaturdayClasses().get(i).getStartTime());
+                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 

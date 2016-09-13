@@ -1004,7 +1004,7 @@ public class Background extends Service {
 
         try {
 
-            for (int i = 1; i < Calendar.SATURDAY + 1; i++) {
+            for (int i = 1; i < 8; i++) {
 
                 final ArrayList<StandardClass> classesArrayList = new ArrayList<>();
 
