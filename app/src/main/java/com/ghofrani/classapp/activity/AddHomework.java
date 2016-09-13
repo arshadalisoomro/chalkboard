@@ -272,7 +272,10 @@ public class AddHomework extends AppCompatActivity {
 
                     }
 
-                    final String[] listItemsArray = (String[]) listItemTitles.toArray();
+                    final String[] listItemsArray = new String[listItemTitles.size()];
+
+                    for (int i = 0; i < listItemTitles.size(); i++)
+                        listItemsArray[i] = listItemTitles.get(i);
 
                     new Handler().postDelayed(new Runnable() {
 
