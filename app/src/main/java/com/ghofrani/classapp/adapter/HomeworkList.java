@@ -52,7 +52,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
             public void onClick(View view) {
 
                 final TextView titleTextView = (TextView) view.findViewById(R.id.view_homework_list_item_name);
-                String[] titleTextViewArray = titleTextView.getText().toString().split(" • ");
+                final String[] titleTextViewArray = titleTextView.getText().toString().split(" • ");
 
                 context.startActivity(new Intent(context, ViewHomework.class).putExtra("homework", titleTextViewArray[1]));
 
