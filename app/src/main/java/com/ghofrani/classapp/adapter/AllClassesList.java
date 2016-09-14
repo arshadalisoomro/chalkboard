@@ -38,9 +38,9 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
                 final TextView titleTextViewCentered = (TextView) view.findViewById(R.id.view_class_card_title_centered);
 
                 if (titleTextView.getVisibility() == View.GONE)
-                    AllClassesList.this.context.startActivity(new Intent(AllClassesList.this.context, ViewClass.class).putExtra("class", titleTextViewCentered.getText()));
+                    AllClassesList.this.context.startActivity(new Intent(AllClassesList.this.context, ViewClass.class).putExtra("class", titleTextViewCentered.getText().toString()));
                 else
-                    AllClassesList.this.context.startActivity(new Intent(AllClassesList.this.context, ViewClass.class).putExtra("class", titleTextView.getText()));
+                    AllClassesList.this.context.startActivity(new Intent(AllClassesList.this.context, ViewClass.class).putExtra("class", titleTextView.getText().toString()));
 
             }
 
