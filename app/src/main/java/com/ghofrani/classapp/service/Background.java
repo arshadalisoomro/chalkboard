@@ -873,7 +873,7 @@ public class Background extends Service {
 
                 thisWeekEnabled = false;
                 thisWeek = new Interval(today, today);
-                nextWeek = new Interval(today.plusDays(2).withTime(0, 0, 0, 0), today.plusDays(9).withTime(0, 0, 0, 0));
+                nextWeek = new Interval(today.plusDays(2).withTimeAtStartOfDay(), today.plusDays(9).withTimeAtStartOfDay());
 
                 break;
 
@@ -881,14 +881,14 @@ public class Background extends Service {
 
                 thisWeekEnabled = false;
                 thisWeek = new Interval(today, today);
-                nextWeek = new Interval(today.plusDays(1).withTime(0, 0, 0, 0), today.plusDays(8).withTime(0, 0, 0, 0));
+                nextWeek = new Interval(today.plusDays(1).withTimeAtStartOfDay(), today.plusDays(8).withTimeAtStartOfDay());
 
                 break;
 
             default:
 
-                thisWeek = new Interval(tomorrow.plusDays(1).withTime(0, 0, 0, 0), tomorrow.plusDays(DateTimeConstants.SUNDAY - tomorrow.getDayOfWeek()).withTime(0, 0, 0, 0));
-                nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7).withTimeAtStartOfDay());
+                thisWeek = new Interval(tomorrow.plusDays(1).withTimeAtStartOfDay(), tomorrow.plusDays(DateTimeConstants.SUNDAY - tomorrow.getDayOfWeek()).withTimeAtStartOfDay());
+                nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7));
 
         }
 
@@ -897,10 +897,10 @@ public class Background extends Service {
 
         if (nextWeek.getEnd().getMonthOfYear() == today.getMonthOfYear()) {
 
-            if (today.dayOfMonth().withMaximumValue().getDayOfMonth() > nextWeek.getEnd().getDayOfMonth() - 1) {
+            if (today.dayOfMonth().withMaximumValue().getDayOfMonth() > nextWeek.getEnd().minusDays(1).getDayOfMonth()) {
 
                 thisMonthEnabled = true;
-                thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue());
+                thisMonth = new Interval(nextWeek.getEnd(), today.dayOfMonth().withMaximumValue().plusDays(1).withTimeAtStartOfDay());
 
             }
 
@@ -912,9 +912,9 @@ public class Background extends Service {
 
             while (homeworkCursor.moveToNext()) {
 
-                Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)), homeworkCursor.getInt(5) == 1);
+                final Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)), homeworkCursor.getInt(5) == 1);
 
-                if (today.isAfter(homework.getDateTime())) {
+                if (homework.getDateTime().isBefore(today) || homework.getDateTime().isEqual(today)) {
 
                     pastHomeworkArrayList.add(homework);
 

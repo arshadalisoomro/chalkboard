@@ -5,7 +5,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <include
@@ -25,9 +24,7 @@
 
             android:id="@+id/settings_frame_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="4dp"
-            android:scrollbars="none" />
+            android:layout_height="wrap_content" />
 
     </ScrollView>
 

@@ -57,9 +57,6 @@ public class Classes extends Fragment {
             noClassesCardView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
 
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setNestedScrollingEnabled(false);
-
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
 

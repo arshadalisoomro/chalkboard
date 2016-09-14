@@ -749,6 +749,8 @@ public class AddHomework extends AppCompatActivity {
 
                 if (nextClassRadioButton.isChecked()) {
 
+                    daySwitches.clear();
+
                     homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), getNextDateTimeOfClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else if (specificClassRadioButton.isChecked()) {

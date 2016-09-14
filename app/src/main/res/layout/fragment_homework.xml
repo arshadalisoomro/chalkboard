@@ -1,51 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<LinearLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
 
+        android:id="@+id/homework_no_homework_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        android:paddingBottom="12dp">
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
 
-        <android.support.v7.widget.CardView
+        <TextView
 
-            android:id="@+id/homework_no_homework_card"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            android:visibility="gone">
+            android:layout_margin="16dp"
+            android:text="No homework to show."
+            android:textSize="15sp" />
 
-            <TextView
+    </android.support.v7.widget.CardView>
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="No homework to show."
-                android:textSize="15sp" />
+    <android.support.v7.widget.RecyclerView
 
-        </android.support.v7.widget.CardView>
+        android:id="@+id/homework_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="4dp"
+        android:visibility="gone" />
 
-        <android.support.v7.widget.RecyclerView
-
-            android:id="@+id/homework_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="4dp"
-            android:clipToPadding="false" />
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

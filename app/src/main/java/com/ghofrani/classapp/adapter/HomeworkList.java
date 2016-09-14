@@ -27,12 +27,12 @@ import java.util.ArrayList;
 public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkViewHolder> {
 
     private final ArrayList<Homework> homeworkArrayList;
-    private final View.OnClickListener onClickListener;
     private final DateTimeFormatter dayOfWeekString;
     private final DateTimeFormatter time24Hour;
     private final DateTimeFormatter timeAMPM;
     private final DateTimeFormatter shortDate;
     private final boolean is24Hour;
+    private final View.OnClickListener onClickListener;
     private final DateTime tomorrow;
 
     public HomeworkList(final Context context, ArrayList<Homework> homeworkArrayList) {
@@ -78,14 +78,16 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
     @Override
     public void onBindViewHolder(HomeworkViewHolder homeworkViewHolder, int position) {
 
+        final Homework homework = homeworkArrayList.get(position);
+
         homeworkViewHolder.relativeLayout.setOnClickListener(onClickListener);
-        homeworkViewHolder.titleTextView.setText(homeworkArrayList.get(position).getName());
+        homeworkViewHolder.titleTextView.setText(homework.getClassName() + " • " + homework.getName());
 
         String subtitleTextViewText = "";
 
-        if (homeworkArrayList.get(position).isAttach()) {
+        if (homework.isAttach()) {
 
-            ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(homeworkArrayList.get(position).getDateTime().getDayOfWeek());
+            ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(homework.getDateTime().getDayOfWeek() == 7 ? 1 : homework.getDateTime().getDayOfWeek() + 1);
 
             if (classesList != null) {
 
@@ -94,14 +96,33 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
                 while (index < classesList.size() && !completed) {
 
-                    if (classesList.get(index).getName().equals(homeworkArrayList.get(position).getClassName())) {
+                    if (classesList.get(index).getName().equals(homework.getClassName())) {
 
-                        if (classesList.get(index).getStartTime().equals(homeworkArrayList.get(position).getDateTime().toLocalTime())) {
+                        if (classesList.get(index).getStartTime().equals(homework.getDateTime().toLocalTime())) {
 
-                            if (!tomorrow.withTimeAtStartOfDay().isEqual(homeworkArrayList.get(position).getDateTime()))
-                                subtitleTextViewText = dayOfWeekString.print(homeworkArrayList.get(position).getDateTime()) + " • " + classesList.get(index).getName() + " at " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
-                            else
-                                subtitleTextViewText = classesList.get(index).getName() + " at " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                            if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+
+                                subtitleTextViewText = "Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+
+                            } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+
+                                if (homework.getDateTime().isBefore(tomorrow.minusDays(1)) || homework.getDateTime().isEqual(tomorrow.minusDays(1)))
+                                    subtitleTextViewText = "Today • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                else
+                                    subtitleTextViewText = "Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+
+                            } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(homework.getDateTime())) {
+
+                                if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay()))
+                                    subtitleTextViewText = "Yesterday • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                else
+                                    subtitleTextViewText = shortDate.print(homework.getDateTime()) + " • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+
+                            } else {
+
+                                subtitleTextViewText = dayOfWeekString.print(homework.getDateTime()) + " • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+
+                            }
 
                             completed = true;
 
@@ -117,21 +138,31 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         } else {
 
-            if (homeworkArrayList.get(position).getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
+            if (homework.getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
 
-                subtitleTextViewText = homeworkArrayList.get(position).getClassName() + " • " + shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                subtitleTextViewText = shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
 
-            } else if (homeworkArrayList.get(position).getDateTime().withTimeAtStartOfDay().isEqual(tomorrow.withTimeAtStartOfDay())) {
+            } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-                subtitleTextViewText = homeworkArrayList.get(position).getClassName() + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                subtitleTextViewText = is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime());
 
-            } else if (tomorrow.minusDays(1).isAfter(homeworkArrayList.get(position).getDateTime())) {
+            } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-                subtitleTextViewText = homeworkArrayList.get(position).getClassName() + " • " + shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                if (homework.getDateTime().isBefore(tomorrow.minusDays(1)) || homework.getDateTime().isEqual(tomorrow.minusDays(1)))
+                    subtitleTextViewText = "Today • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                else
+                    subtitleTextViewText = is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime());
+
+            } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(homework.getDateTime())) {
+
+                if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay()))
+                    subtitleTextViewText = "Yesterday • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                else
+                    subtitleTextViewText = shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
 
             } else {
 
-                subtitleTextViewText = dayOfWeekString.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime()));
+                subtitleTextViewText = dayOfWeekString.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
 
             }
 
@@ -139,21 +170,31 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         if (subtitleTextViewText.isEmpty()) {
 
-            if (homeworkArrayList.get(position).getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
+            if (homework.getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
 
-                homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getClassName() + " • " + shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
+                homeworkViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
 
-            } else if (homeworkArrayList.get(position).getDateTime().withTimeAtStartOfDay().isEqual(tomorrow.withTimeAtStartOfDay())) {
+            } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-                homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getClassName() + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
+                homeworkViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
 
-            } else if (tomorrow.minusDays(1).isAfter(homeworkArrayList.get(position).getDateTime())) {
+            } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-                homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getClassName() + " • " + shortDate.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
+                if (homework.getDateTime().isBefore(tomorrow.minusDays(1)) || homework.getDateTime().isEqual(tomorrow.minusDays(1)))
+                    homeworkViewHolder.subtitleTextView.setText("Today • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                else
+                    homeworkViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+
+            } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(homework.getDateTime())) {
+
+                if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay()))
+                    homeworkViewHolder.subtitleTextView.setText("Yesterday • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                else
+                    homeworkViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
 
             } else {
 
-                homeworkViewHolder.subtitleTextView.setText(homeworkArrayList.get(position).getClassName() + " • " + dayOfWeekString.print(homeworkArrayList.get(position).getDateTime()) + " • " + (is24Hour ? time24Hour.print(homeworkArrayList.get(position).getDateTime()) : timeAMPM.print(homeworkArrayList.get(position).getDateTime())));
+                homeworkViewHolder.subtitleTextView.setText(dayOfWeekString.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
 
             }
 
@@ -163,14 +204,12 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         }
 
-        homeworkViewHolder.colorIndicatorImageView.setColorFilter(homeworkArrayList.get(position).getColor());
+        homeworkViewHolder.colorIndicatorImageView.setColorFilter(homework.getColor());
 
-        if (homeworkArrayList.get(position).isHighPriority())
+        if (homework.isHighPriority())
             homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.VISIBLE);
         else
             homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.GONE);
-
-        homeworkViewHolder.relativeLayout.setOnClickListener(onClickListener);
 
     }
 

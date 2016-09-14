@@ -86,9 +86,6 @@ public class Homework extends Fragment {
             noHomeworkCardView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
 
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setNestedScrollingEnabled(false);
-
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
 
