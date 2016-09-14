@@ -1,6 +1,7 @@
 package com.ghofrani.classapp.fragment;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -308,6 +309,11 @@ public class Overview extends Fragment {
 
             currentClassColorIndicator.setColorFilter(currentClass.getColor());
 
+            if (progressBar == null)
+                progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
+
+            progressBar.setProgressTintList(ColorStateList.valueOf(currentClass.getColor()));
+
             updateProgressBar();
 
         }
@@ -342,14 +348,11 @@ public class Overview extends Fragment {
 
     private void updateProgressBar() {
 
-        if (progressBar == null)
-            progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
+        progressBar.setIndeterminate(false);
+        progressBar.setProgress(DataSingleton.getInstance().getProgressBarProgress());
 
         if (progressTextView == null)
             progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
-
-        progressBar.setIndeterminate(false);
-        progressBar.setProgress(DataSingleton.getInstance().getProgressBarProgress());
 
         progressTextView.setText(DataSingleton.getInstance().getProgessbarText());
 
