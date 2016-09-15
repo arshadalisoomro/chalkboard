@@ -101,8 +101,7 @@ public class Settings extends AppCompatActivity {
                     || key.equals("flip_colors") && DataSingleton.getInstance().getCurrentClass() != null
                     || key.equals("class_notification") && DataSingleton.getInstance().getCurrentClass() != null
                     || key.equals("next_class_notification_minutes") && DataSingleton.getInstance().getCurrentClass() != null
-                    || key.equals("tomorrow_classes")
-                    || key.equals("24_hour_time")) {
+                    || key.equals("tomorrow_classes")) {
 
                 EventBus.getDefault().post(new Update(true, false, false, false));
 
@@ -112,6 +111,10 @@ public class Settings extends AppCompatActivity {
                 DataSingleton.getInstance().setRecreate(true);
 
                 getActivity().recreate();
+
+            } else if (key.equals("24_hour_time")) {
+
+                DataSingleton.getInstance().setIs24Hour(sharedPreferences.getBoolean("24_hour_time", true));
 
             }
 

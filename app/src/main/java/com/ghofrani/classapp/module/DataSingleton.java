@@ -47,6 +47,8 @@ public class DataSingleton {
     private boolean isAnimated;
     private int selectedTabPosition;
 
+    private boolean is24Hour;
+
     private boolean recreate;
 
     private DataSingleton() {
@@ -79,6 +81,8 @@ public class DataSingleton {
 
         isAnimated = false;
         selectedTabPosition = 0;
+
+        is24Hour = true;
 
         recreate = false;
 
@@ -303,6 +307,14 @@ public class DataSingleton {
 
     public void setSelectedTabPosition(int selectedTabPosition) {
         this.selectedTabPosition = selectedTabPosition;
+    }
+
+    public boolean is24Hour() {
+        return is24Hour;
+    }
+
+    public void setIs24Hour(boolean is24Hour) {
+        this.is24Hour = is24Hour;
     }
 
     public boolean isRecreate() {

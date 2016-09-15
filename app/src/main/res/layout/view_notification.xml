@@ -285,7 +285,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@id/view_notification_progress_layout"
-        android:paddingRight="64dp"
+        android:paddingRight="56dp"
         android:paddingTop="6dp">
 
         <TextView

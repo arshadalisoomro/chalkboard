@@ -13,31 +13,6 @@
 
     <RelativeLayout
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp">
-
-        <TextView
-
-            android:id="@+id/view_homework_list_item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="15sp" />
-
-        <TextView
-
-            android:id="@+id/view_homework_list_item_due"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/view_homework_list_item_name"
-            android:textSize="14sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-
         android:id="@+id/view_homework_list_item_color_indicator_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,6 +34,37 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:src="@drawable/priority" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/view_homework_list_item_color_indicator_layout"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:paddingRight="64dp">
+
+        <TextView
+
+            android:id="@+id/view_homework_list_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <TextView
+
+            android:id="@+id/view_homework_list_item_due"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view_homework_list_item_name"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 

@@ -58,21 +58,6 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="14dp">
 
-                    <TextView
-
-                        android:id="@+id/overview_current_class_card_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp" />
-
-                    <TextView
-
-                        android:id="@+id/overview_current_class_card_teacher_location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/overview_current_class_card_title"
-                        android:textSize="14sp" />
-
                     <ImageView
 
                         android:id="@+id/overview_current_class_card_class_color_indicator"
@@ -83,6 +68,29 @@
                         android:layout_marginRight="0.5dp"
                         android:src="@drawable/color_indicator_class_card"
                         android:translationY="-0.5dp" />
+
+                    <TextView
+
+                        android:id="@+id/overview_current_class_card_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@id/overview_current_class_card_class_color_indicator"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingRight="56dp"
+                        android:textSize="18sp" />
+
+                    <TextView
+
+                        android:id="@+id/overview_current_class_card_teacher_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@id/overview_current_class_card_class_color_indicator"
+                        android:layout_below="@id/overview_current_class_card_title"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingRight="56dp"
+                        android:textSize="14sp" />
 
                 </RelativeLayout>
 

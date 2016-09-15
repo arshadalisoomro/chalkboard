@@ -105,8 +105,6 @@ public class Background extends Service {
     private boolean simpleToDetailedTransition = false;
     private boolean detailedToSimpleTransition = false;
 
-    private boolean is24Hour;
-
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         return START_STICKY;
@@ -130,6 +128,8 @@ public class Background extends Service {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         databaseHelper = new DatabaseHelper(this);
+
+        DataSingleton.getInstance().setIs24Hour(sharedPreferences.getBoolean("24_hour_time", true));
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
@@ -278,8 +278,6 @@ public class Background extends Service {
 
         }
 
-        is24Hour = sharedPreferences.getBoolean("24_hour_time", true);
-
         final Cursor todayCursor = databaseHelper.getClassesCursor(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
         StandardClass currentClass = null;
@@ -295,8 +293,8 @@ public class Background extends Service {
                 final StandardClass standardClass = new StandardClass(todayCursor.getString(1),
                         LocalTime.parse(todayCursor.getString(2)),
                         LocalTime.parse(todayCursor.getString(3)),
-                        is24Hour,
-                        dateTimeFormatterAMPM,
+                        dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(2))),
+                        dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(3))),
                         databaseHelper.getClassLocation(todayCursor.getString(1)),
                         databaseHelper.getClassTeacher(todayCursor.getString(1)),
                         databaseHelper.getClassColor(todayCursor.getString(1)));
@@ -823,8 +821,8 @@ public class Background extends Service {
                     tomorrowClassesArrayList.add(new StandardClass(tomorrowCursor.getString(1),
                             LocalTime.parse(tomorrowCursor.getString(2)),
                             LocalTime.parse(tomorrowCursor.getString(3)),
-                            is24Hour,
-                            dateTimeFormatterAMPM,
+                            dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(2))),
+                            dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(3))),
                             databaseHelper.getClassLocation(tomorrowCursor.getString(1)),
                             databaseHelper.getClassTeacher(tomorrowCursor.getString(1)),
                             databaseHelper.getClassColor(tomorrowCursor.getString(1))));
@@ -1033,8 +1031,8 @@ public class Background extends Service {
                     classesArrayList.add(new StandardClass(timetableCursor.getString(1),
                             LocalTime.parse(timetableCursor.getString(2)),
                             LocalTime.parse(timetableCursor.getString(3)),
-                            is24Hour,
-                            dateTimeFormatterAMPM,
+                            dateTimeFormatterAMPM.print(LocalTime.parse(timetableCursor.getString(2))),
+                            dateTimeFormatterAMPM.print(LocalTime.parse(timetableCursor.getString(3))),
                             databaseHelper.getClassLocation(timetableCursor.getString(1)),
                             databaseHelper.getClassTeacher(timetableCursor.getString(1)),
                             databaseHelper.getClassColor(timetableCursor.getString(1))));

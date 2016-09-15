@@ -977,6 +977,16 @@ public class AddHomework extends AppCompatActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+
+        super.onNewIntent(intent);
+
+        if (intent.hasExtra("origin_notification"))
+            originNotification = true;
+
+    }
+
+    @Override
     public void onBackPressed() {
 
         final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);

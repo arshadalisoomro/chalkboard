@@ -379,8 +379,8 @@ public class EditDay extends AppCompatActivity {
                                                 currentClasses.add(index + 1, new StandardClass(className,
                                                         dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                         dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                        is24Hour,
-                                                        dateTimeFormatterAMPM,
+                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                         databaseHelper.getClassLocation(className),
                                                         databaseHelper.getClassTeacher(className),
                                                         databaseHelper.getClassColor(className)));
@@ -392,8 +392,8 @@ public class EditDay extends AppCompatActivity {
                                                 currentClasses.add(index, new StandardClass(className,
                                                         dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                         dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                        is24Hour,
-                                                        dateTimeFormatterAMPM,
+                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                         databaseHelper.getClassLocation(className),
                                                         databaseHelper.getClassTeacher(className),
                                                         databaseHelper.getClassColor(className)));
@@ -405,8 +405,8 @@ public class EditDay extends AppCompatActivity {
                                                 currentClasses.add(new StandardClass(className,
                                                         dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                         dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                        is24Hour,
-                                                        dateTimeFormatterAMPM,
+                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                         databaseHelper.getClassLocation(className),
                                                         databaseHelper.getClassTeacher(className),
                                                         databaseHelper.getClassColor(className)));
@@ -427,8 +427,8 @@ public class EditDay extends AppCompatActivity {
                                         currentClasses.add(new StandardClass(className,
                                                 dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                 dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                is24Hour,
-                                                dateTimeFormatterAMPM,
+                                                dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                 databaseHelper.getClassLocation(className),
                                                 databaseHelper.getClassTeacher(className),
                                                 databaseHelper.getClassColor(className)));
@@ -1065,8 +1065,6 @@ public class EditDay extends AppCompatActivity {
                                 boolean inserted = false;
                                 int index = 0;
 
-                                boolean is24Hour = PreferenceManager.getDefaultSharedPreferences(EditDay.this).getBoolean("24_hour_time", true);
-
                                 try {
 
                                     while (!inserted) {
@@ -1079,8 +1077,8 @@ public class EditDay extends AppCompatActivity {
                                             currentClasses.add(index, new StandardClass(className,
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    is24Hour,
-                                                    dateTimeFormatterAMPM,
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                     databaseHelper.getClassLocation(className),
                                                     databaseHelper.getClassTeacher(className),
                                                     databaseHelper.getClassColor(className)));
@@ -1093,8 +1091,8 @@ public class EditDay extends AppCompatActivity {
                                             currentClasses.add(index + 1, new StandardClass(className,
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    is24Hour,
-                                                    dateTimeFormatterAMPM,
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                     databaseHelper.getClassLocation(className),
                                                     databaseHelper.getClassTeacher(className),
                                                     databaseHelper.getClassColor(className)));
@@ -1107,8 +1105,8 @@ public class EditDay extends AppCompatActivity {
                                             currentClasses.add(index, new StandardClass(className,
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    is24Hour,
-                                                    dateTimeFormatterAMPM,
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                     databaseHelper.getClassLocation(className),
                                                     databaseHelper.getClassTeacher(className),
                                                     databaseHelper.getClassColor(className)));
@@ -1121,8 +1119,8 @@ public class EditDay extends AppCompatActivity {
                                             currentClasses.add(new StandardClass(className,
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
                                                     dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    is24Hour,
-                                                    dateTimeFormatterAMPM,
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
+                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
                                                     databaseHelper.getClassLocation(className),
                                                     databaseHelper.getClassTeacher(className),
                                                     databaseHelper.getClassColor(className)));
@@ -1546,8 +1544,8 @@ public class EditDay extends AppCompatActivity {
                                         classesArrayList.add(new StandardClass(classesCursor.getString(1),
                                                 LocalTime.parse(classesCursor.getString(2)),
                                                 LocalTime.parse(classesCursor.getString(3)),
-                                                is24Hour,
-                                                dateTimeFormatterAMPM,
+                                                dateTimeFormatterAMPM.print(LocalTime.parse(classesCursor.getString(2))),
+                                                dateTimeFormatterAMPM.print(LocalTime.parse(classesCursor.getString(3))),
                                                 databaseHelper.getClassLocation(classesCursor.getString(1)),
                                                 databaseHelper.getClassTeacher(classesCursor.getString(1)),
                                                 databaseHelper.getClassColor(classesCursor.getString(1))));

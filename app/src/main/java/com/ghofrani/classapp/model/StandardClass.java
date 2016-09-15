@@ -1,7 +1,8 @@
 package com.ghofrani.classapp.model;
 
+import com.ghofrani.classapp.module.DataSingleton;
+
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormatter;
 
 public class StandardClass {
 
@@ -14,12 +15,11 @@ public class StandardClass {
     private final String endTimeStringAMPM;
     private final String location;
     private final String teacher;
-    private final boolean is24Hour;
     private final boolean hasLocation;
     private final boolean hasTeacher;
     private final int color;
 
-    public StandardClass(String name, LocalTime startTime, LocalTime endTime, boolean is24Hour, DateTimeFormatter formatter, String location, String teacher, int color) {
+    public StandardClass(String name, LocalTime startTime, LocalTime endTime, String startTimeStringAMPM, String endTimeStringAMPM, String location, String teacher, int color) {
 
         this.name = name;
 
@@ -29,10 +29,9 @@ public class StandardClass {
         this.startTimeString = this.startTime.toString().substring(0, 5);
         this.endTimeString = this.endTime.toString().substring(0, 5);
 
-        this.startTimeStringAMPM = formatter.print(startTime);
-        this.endTimeStringAMPM = formatter.print(endTime);
+        this.startTimeStringAMPM = startTimeStringAMPM;
+        this.endTimeStringAMPM = endTimeStringAMPM;
 
-        this.is24Hour = is24Hour;
         this.location = location;
         this.teacher = teacher;
         this.color = color;
@@ -63,7 +62,7 @@ public class StandardClass {
 
         if (respectSettings) {
 
-            if (is24Hour)
+            if (DataSingleton.getInstance().is24Hour())
                 return startTimeString;
             else
                 return startTimeStringAMPM;
@@ -82,7 +81,7 @@ public class StandardClass {
 
         if (respectSettings) {
 
-            if (is24Hour)
+            if (DataSingleton.getInstance().is24Hour())
                 return endTimeString;
             else
                 return endTimeStringAMPM;

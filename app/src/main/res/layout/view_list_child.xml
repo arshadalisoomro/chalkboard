@@ -10,10 +10,23 @@
 
     <TextView
 
-        android:id="@+id/view_list_child_text_centered"
+        android:id="@+id/view_list_child_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:textSize="12sp" />
+
+    <TextView
+
+        android:id="@+id/view_list_child_text_centered"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/view_edit_day_list_child_time"
+        android:layout_centerVertical="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingRight="128dp"
         android:textSize="15sp"
         android:visibility="gone" />
 
@@ -22,35 +35,32 @@
         android:id="@+id/view_list_child_relative_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignRight="@id/view_edit_day_list_child_time"
         android:layout_centerVertical="true"
+        android:paddingRight="128dp"
         android:visibility="gone">
 
         <TextView
 
             android:id="@+id/view_list_child_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="15sp"
             android:visibility="gone" />
 
         <TextView
 
             android:id="@+id/view_list_child_teacher_location"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/view_list_child_text"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="12sp"
             android:visibility="gone" />
 
     </RelativeLayout>
-
-    <TextView
-
-        android:id="@+id/view_list_child_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:textSize="12sp" />
 
 </RelativeLayout>

@@ -468,6 +468,15 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+        super.onNewIntent(intent);
+
+        switchToView((intent.hasExtra("fragment") ? intent.getIntExtra("fragment", ID_OVERVIEW) : ID_OVERVIEW));
+
+    }
+
     private void performExpensiveSwitchOperations(int viewID, final FragmentTransaction fragmentTransaction) {
 
         switch (viewID) {

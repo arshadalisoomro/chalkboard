@@ -24,6 +24,7 @@
 
             android:name=".activity.Main"
             android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -46,6 +47,7 @@
         <activity
 
             android:name=".activity.AddHomework"
+            android:launchMode="singleTop"
             android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">
 
