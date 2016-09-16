@@ -282,7 +282,7 @@ public class Background extends Service {
         StandardClass nextClass = null;
         ArrayList<StandardClass> nextClassesArrayList = new ArrayList<>();
 
-        final LocalTime currentTime = new LocalTime().now();
+        final LocalTime currentTime = new LocalTime().withHourOfDay(LocalTime.now().getHourOfDay()).withMinuteOfHour(LocalTime.now().getMinuteOfHour()).withSecondOfMinute(0).withMillisOfSecond(0);
 
         try {
 
@@ -304,7 +304,7 @@ public class Background extends Service {
                     if (nextClass == null)
                         nextClass = standardClass;
 
-                } else if (standardClass.getStartTime().isBefore(currentTime) && standardClass.getEndTime().isAfter(currentTime)) {
+                } else if ((standardClass.getStartTime().isBefore(currentTime) || standardClass.getStartTime().isEqual(currentTime)) && standardClass.getEndTime().isAfter(currentTime)) {
 
                     currentClass = standardClass;
 

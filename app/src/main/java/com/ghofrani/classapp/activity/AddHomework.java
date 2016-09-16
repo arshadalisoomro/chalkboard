@@ -336,7 +336,7 @@ public class AddHomework extends AppCompatActivity {
                                     pickedDateTime.setDayOfMonth(dayOfMonth);
                                     pickedDateTime.setTime(0, 0, 0, 0);
 
-                                    final DateTime now = DateTime.now();
+                                    final DateTime now = new DateTime();
 
                                     if (!pickedDateTime.isBefore(now.withTimeAtStartOfDay())) {
 
@@ -347,7 +347,7 @@ public class AddHomework extends AppCompatActivity {
 
                                                 pickedDateTime.setTime(hourOfDay, minuteOfHour, 0, 0);
 
-                                                if (pickedDateTime.isBefore(now.withTime(now.getHourOfDay(), now.getMinuteOfHour(), 0, 0))) {
+                                                if (pickedDateTime.isBefore(now.withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0))) {
 
                                                     Toast.makeText(AddHomework.this, "Choose a time after now!", Toast.LENGTH_LONG).show();
 
@@ -419,7 +419,7 @@ public class AddHomework extends AppCompatActivity {
         int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
         int iterations = -1;
 
-        final LocalTime now = LocalTime.now();
+        final LocalTime now = new LocalTime().withHourOfDay(LocalTime.now().getHourOfDay()).withMinuteOfHour(LocalTime.now().getMinuteOfHour()).withSecondOfMinute(0).withMillisOfSecond(0);
         DateTime returnDateTime = null;
 
         while (returnDateTime == null) {
