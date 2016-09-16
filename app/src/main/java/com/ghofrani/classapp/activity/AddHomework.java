@@ -414,25 +414,34 @@ public class AddHomework extends AppCompatActivity {
 
     }
 
-    private DateTime getSundayDateTimeOfClass(String className, LocalTime now) {
+    private DateTime getDateTimeOfNextClass(String className) {
 
-        if (DataSingleton.getInstance().getSundayClasses() != null) {
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int iterations = -1;
 
-            for (StandardClass standardClass : DataSingleton.getInstance().getSundayClasses()) {
+        final LocalTime now = LocalTime.now();
+        DateTime returnDateTime = null;
 
-                if (standardClass.getName().equals(className)) {
+        while (returnDateTime == null) {
 
-                    if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            iterations++;
 
-                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.SUNDAY)) {
+            if (Utils.getClassesArrayListOfDay(day) != null) {
 
-                            return new DateTime().withTime(standardClass.getStartTime());
+                for (StandardClass standardClass : Utils.getClassesArrayListOfDay(day)) {
+
+                    if (standardClass.getName().equals(className)) {
+
+                        if (iterations == 0) {
+
+                            if (standardClass.getStartTime().isAfter(now))
+                                returnDateTime = new DateTime().withTime(standardClass.getStartTime());
+
+                        } else {
+
+                            returnDateTime = new DateTime().withTime(standardClass.getStartTime());
 
                         }
-
-                    } else {
-
-                        return new DateTime().withTime(standardClass.getStartTime());
 
                     }
 
@@ -440,255 +449,14 @@ public class AddHomework extends AppCompatActivity {
 
             }
 
-        }
-
-        daySwitches.add(Calendar.SUNDAY);
-
-        return getMondayDateTimeOfClass(className, now).plusDays(1);
-
-    }
-
-    private DateTime getMondayDateTimeOfClass(String className, LocalTime now) {
-
-        if (DataSingleton.getInstance().getMondayClasses() != null) {
-
-            for (StandardClass standardClass : DataSingleton.getInstance().getMondayClasses()) {
-
-                if (standardClass.getName().equals(className)) {
-
-                    if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-
-                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.MONDAY)) {
-
-                            return new DateTime().withTime(standardClass.getStartTime());
-
-                        }
-
-                    } else {
-
-                        return new DateTime().withTime(standardClass.getStartTime());
-
-                    }
-
-                }
-
-            }
+            if (day == 7)
+                day = 1;
+            else
+                day++;
 
         }
 
-        daySwitches.add(Calendar.MONDAY);
-
-        return getTuesdayDateTimeOfClass(className, now).plusDays(1);
-
-    }
-
-    private DateTime getTuesdayDateTimeOfClass(String className, LocalTime now) {
-
-        if (DataSingleton.getInstance().getTuesdayClasses() != null) {
-
-            for (StandardClass standardClass : DataSingleton.getInstance().getTuesdayClasses()) {
-
-                if (standardClass.getName().equals(className)) {
-
-                    if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
-
-                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.TUESDAY)) {
-
-                            return new DateTime().withTime(standardClass.getStartTime());
-
-                        }
-
-                    } else {
-
-                        return new DateTime().withTime(standardClass.getStartTime());
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        daySwitches.add(Calendar.TUESDAY);
-
-        return getWednesdayDateTimeOfClass(className, now).plusDays(1);
-
-    }
-
-    private DateTime getWednesdayDateTimeOfClass(String className, LocalTime now) {
-
-        if (DataSingleton.getInstance().getWednesdayClasses() != null) {
-
-            for (StandardClass standardClass : DataSingleton.getInstance().getWednesdayClasses()) {
-
-                if (standardClass.getName().equals(className)) {
-
-                    if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
-
-                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.WEDNESDAY)) {
-
-                            return new DateTime().withTime(standardClass.getStartTime());
-
-                        }
-
-                    } else {
-
-                        return new DateTime().withTime(standardClass.getStartTime());
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        daySwitches.add(Calendar.WEDNESDAY);
-
-        return getThursdayDateTimeOfClass(className, now).plusDays(1);
-
-    }
-
-    private DateTime getThursdayDateTimeOfClass(String className, LocalTime now) {
-
-        if (DataSingleton.getInstance().getThursdayClasses() != null) {
-
-            for (StandardClass standardClass : DataSingleton.getInstance().getThursdayClasses()) {
-
-                if (standardClass.getName().equals(className)) {
-
-                    if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
-
-                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.THURSDAY)) {
-
-                            return new DateTime().withTime(standardClass.getStartTime());
-
-                        }
-
-                    } else {
-
-                        return new DateTime().withTime(standardClass.getStartTime());
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        daySwitches.add(Calendar.THURSDAY);
-
-        return getFridayDateTimeOfClass(className, now).plusDays(1);
-
-    }
-
-    private DateTime getFridayDateTimeOfClass(String className, LocalTime now) {
-
-        if (DataSingleton.getInstance().getFridayClasses() != null) {
-
-            for (StandardClass standardClass : DataSingleton.getInstance().getFridayClasses()) {
-
-                if (standardClass.getName().equals(className)) {
-
-                    if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-
-                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.FRIDAY)) {
-
-                            return new DateTime().withTime(standardClass.getStartTime());
-
-                        }
-
-                    } else {
-
-                        return new DateTime().withTime(standardClass.getStartTime());
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        daySwitches.add(Calendar.FRIDAY);
-
-        return getSaturdayDateTimeOfClass(className, now).plusDays(1);
-
-    }
-
-    private DateTime getSaturdayDateTimeOfClass(String className, LocalTime now) {
-
-        if (DataSingleton.getInstance().getSaturdayClasses() != null) {
-
-            for (StandardClass standardClass : DataSingleton.getInstance().getSaturdayClasses()) {
-
-                if (standardClass.getName().equals(className)) {
-
-                    if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-
-                        if (standardClass.getStartTime().isAfter(now) || daySwitches.contains(Calendar.SATURDAY)) {
-
-                            return new DateTime().withTime(standardClass.getStartTime());
-
-                        }
-
-                    } else {
-
-                        return new DateTime().withTime(standardClass.getStartTime());
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        daySwitches.add(Calendar.SATURDAY);
-
-        return getSundayDateTimeOfClass(className, now).plusDays(1);
-
-    }
-
-    private DateTime getNextDateTimeOfClass(String className) {
-
-        LocalTime now = LocalTime.now();
-
-        switch (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
-
-            case Calendar.SUNDAY:
-
-                return getSundayDateTimeOfClass(className, now);
-
-            case Calendar.MONDAY:
-
-                return getMondayDateTimeOfClass(className, now);
-
-            case Calendar.TUESDAY:
-
-                return getTuesdayDateTimeOfClass(className, now);
-
-            case Calendar.WEDNESDAY:
-
-                return getWednesdayDateTimeOfClass(className, now);
-
-            case Calendar.THURSDAY:
-
-                return getThursdayDateTimeOfClass(className, now);
-
-            case Calendar.FRIDAY:
-
-                return getFridayDateTimeOfClass(className, now);
-
-            case Calendar.SATURDAY:
-
-                return getSaturdayDateTimeOfClass(className, now);
-
-        }
-
-        return new DateTime();
+        return returnDateTime.plusDays(iterations);
 
     }
 
@@ -758,7 +526,7 @@ public class AddHomework extends AppCompatActivity {
 
                     daySwitches.clear();
 
-                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), getNextDateTimeOfClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
+                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), getDateTimeOfNextClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
 
                 } else if (specificClassRadioButton.isChecked()) {
 
