@@ -82,43 +82,25 @@ public class Overview extends Fragment {
 
         if (expandableListViewNextClasses != null) {
 
-            expandableListViewNextClasses.post(new Runnable() {
+            if (expandableListViewNextClasses.isGroupExpanded(0)) {
 
-                @Override
-                public void run() {
+                expandableListViewNextClasses.collapseGroup(0);
 
-                    if (expandableListViewNextClasses.isGroupExpanded(0)) {
+                setListViewHeightBasedOnChildrenNext(true, false);
 
-                        expandableListViewNextClasses.collapseGroup(0);
-
-                        setListViewHeightBasedOnChildrenNext(true, false);
-
-                    }
-
-                }
-
-            });
+            }
 
         }
 
         if (expandableListViewTomorrowClasses != null) {
 
-            expandableListViewTomorrowClasses.post(new Runnable() {
+            if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
 
-                @Override
-                public void run() {
+                expandableListViewTomorrowClasses.collapseGroup(0);
 
-                    if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+                setListViewHeightBasedOnChildrenTomorrow(true, false);
 
-                        expandableListViewTomorrowClasses.collapseGroup(0);
-
-                        setListViewHeightBasedOnChildrenTomorrow(true, false);
-
-                    }
-
-                }
-
-            });
+            }
 
         }
 
@@ -129,43 +111,25 @@ public class Overview extends Fragment {
 
         if (expandableListViewNextClasses != null) {
 
-            expandableListViewNextClasses.post(new Runnable() {
+            if (expandableListViewNextClasses.isGroupExpanded(0)) {
 
-                @Override
-                public void run() {
+                expandableListViewNextClasses.collapseGroup(0);
 
-                    if (expandableListViewNextClasses.isGroupExpanded(0)) {
+                setListViewHeightBasedOnChildrenNext(true, true);
 
-                        expandableListViewNextClasses.collapseGroup(0);
-
-                        setListViewHeightBasedOnChildrenNext(true, true);
-
-                    }
-
-                }
-
-            });
+            }
 
         }
 
         if (expandableListViewTomorrowClasses != null) {
 
-            expandableListViewTomorrowClasses.post(new Runnable() {
+            if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
 
-                @Override
-                public void run() {
+                expandableListViewTomorrowClasses.collapseGroup(0);
 
-                    if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
+                setListViewHeightBasedOnChildrenTomorrow(true, true);
 
-                        expandableListViewTomorrowClasses.collapseGroup(0);
-
-                        setListViewHeightBasedOnChildrenTomorrow(true, true);
-
-                    }
-
-                }
-
-            });
+            }
 
         }
 
@@ -178,9 +142,9 @@ public class Overview extends Fragment {
 
         super.onResume();
 
-        EventBus.getDefault().register(this);
-
         updateUI();
+
+        EventBus.getDefault().register(this);
 
     }
 
@@ -601,7 +565,7 @@ public class Overview extends Fragment {
 
                 }
 
-            }, 50);
+            }, 75);
 
         } else {
 
@@ -697,7 +661,7 @@ public class Overview extends Fragment {
 
                 }
 
-            }, 50);
+            }, 75);
 
         } else {
 

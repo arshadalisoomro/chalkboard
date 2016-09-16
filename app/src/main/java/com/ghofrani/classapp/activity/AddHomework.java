@@ -76,15 +76,6 @@ public class AddHomework extends AppCompatActivity {
         if (getIntent().hasExtra("origin_notification"))
             originNotification = true;
 
-        final DateTime tomorrow = new DateTime().plusDays(1);
-
-        pickedDateTime = new MutableDateTime();
-
-        pickedDateTime.setYear(tomorrow.getYear());
-        pickedDateTime.setMonthOfYear(tomorrow.getMonthOfYear());
-        pickedDateTime.setDayOfMonth(tomorrow.getDayOfMonth());
-        pickedDateTime.setTime(0, 0, 0, 0);
-
         ArrayList<String> allClassNamesArrayList = DataSingleton.getInstance().getAllClassNamesArrayList();
 
         if (DataSingleton.getInstance().getCurrentClass() != null) {
@@ -170,6 +161,19 @@ public class AddHomework extends AppCompatActivity {
 
         if (priorityCheckBox == null)
             priorityCheckBox = (CheckBox) findViewById(R.id.add_homework_high_priority_check_box);
+
+        if (pickedDateTime == null) {
+
+            final DateTime tomorrow = new DateTime().plusDays(1);
+
+            pickedDateTime = new MutableDateTime();
+
+            pickedDateTime.setYear(tomorrow.getYear());
+            pickedDateTime.setMonthOfYear(tomorrow.getMonthOfYear());
+            pickedDateTime.setDayOfMonth(tomorrow.getDayOfMonth());
+            pickedDateTime.setTime(0, 0, 0, 0);
+
+        }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -398,7 +402,6 @@ public class AddHomework extends AppCompatActivity {
             nextClassRadioButton = null;
             specificClassRadioButton = null;
             customTimeRadioButton = null;
-            pickedDateTime = null;
             homeworkNameEditText = null;
             listItemClasses = null;
             listItemTitles = null;
@@ -712,10 +715,14 @@ public class AddHomework extends AppCompatActivity {
 
                     if (originNotification) {
 
+                        pickedDateTime = null;
+
                         finish();
                         startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
 
                     } else {
+
+                        pickedDateTime = null;
 
                         AddHomework.super.onBackPressed();
 
@@ -1007,10 +1014,14 @@ public class AddHomework extends AppCompatActivity {
 
                 if (originNotification) {
 
+                    pickedDateTime = null;
+
                     finish();
                     startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
 
                 } else {
+
+                    pickedDateTime = null;
 
                     AddHomework.super.onBackPressed();
 

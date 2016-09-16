@@ -53,16 +53,6 @@ public class Background extends Service {
     private static IntentFilter backgroundIntentFilter;
     private static BroadcastReceiver backgroundBroadcastReceiver;
 
-    static {
-
-        backgroundIntentFilter = new IntentFilter();
-        backgroundIntentFilter.addAction(Intent.ACTION_TIME_TICK);
-        backgroundIntentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        backgroundIntentFilter.addAction(Intent.ACTION_TIME_CHANGED);
-        backgroundIntentFilter.addAction(Intent.ACTION_DATE_CHANGED);
-
-    }
-
     private int progressBarId;
     private int progressTextId;
     private int headerId;
@@ -123,9 +113,6 @@ public class Background extends Service {
 
         super.onCreate();
 
-        EventBus.getDefault().register(this);
-        registerBroadcastReceiver();
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         databaseHelper = new DatabaseHelper(this);
 
@@ -167,6 +154,16 @@ public class Background extends Service {
         getTimetable();
         getClasses();
 
+        backgroundIntentFilter = new IntentFilter();
+        backgroundIntentFilter.addAction(Intent.ACTION_TIME_TICK);
+        backgroundIntentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        backgroundIntentFilter.addAction(Intent.ACTION_TIME_CHANGED);
+        backgroundIntentFilter.addAction(Intent.ACTION_DATE_CHANGED);
+
+        registerBroadcastReceiver();
+
+        EventBus.getDefault().register(this);
+
     }
 
     @Subscribe
@@ -189,8 +186,9 @@ public class Background extends Service {
     @Override
     public void onDestroy() {
 
-        unregisterReceiver(backgroundBroadcastReceiver);
         EventBus.getDefault().unregister(this);
+
+        unregisterReceiver(backgroundBroadcastReceiver);
 
         notificationManager.cancelAll();
 
@@ -821,8 +819,8 @@ public class Background extends Service {
                     tomorrowClassesArrayList.add(new StandardClass(tomorrowCursor.getString(1),
                             LocalTime.parse(tomorrowCursor.getString(2)),
                             LocalTime.parse(tomorrowCursor.getString(3)),
-                            dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(2))),
-                            dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(3))),
+                            dateTimeFormatterAMPM.print(LocalTime.parse(tomorrowCursor.getString(2))),
+                            dateTimeFormatterAMPM.print(LocalTime.parse(tomorrowCursor.getString(3))),
                             databaseHelper.getClassLocation(tomorrowCursor.getString(1)),
                             databaseHelper.getClassTeacher(tomorrowCursor.getString(1)),
                             databaseHelper.getClassColor(tomorrowCursor.getString(1))));

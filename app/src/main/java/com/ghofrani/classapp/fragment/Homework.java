@@ -54,9 +54,9 @@ public class Homework extends Fragment {
         if (noHomeworkCardView == null)
             noHomeworkCardView = (CardView) getView().findViewById(R.id.homework_no_homework_card);
 
-        EventBus.getDefault().register(this);
-
         updateUI();
+
+        EventBus.getDefault().register(this);
 
     }
 

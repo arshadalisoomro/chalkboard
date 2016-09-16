@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24.5dp"
-        android:layout_marginRight="24.5dp"
+        android:layout_marginRight="23.5dp"
         android:prompt="@string/spinner_prompt"
         android:scrollbars="none" />
 

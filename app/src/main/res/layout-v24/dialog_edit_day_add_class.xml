@@ -9,33 +9,33 @@
 
     <Spinner
 
-        android:id="@+id/dialog_edit_day_edit_class_spinner"
+        android:id="@+id/dialog_edit_day_add_class_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24.5dp"
-        android:layout_marginRight="24.5dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="12.25dp"
         android:prompt="@string/spinner_prompt"
         android:scrollbars="none" />
 
     <TextView
 
-        android:id="@+id/dialog_edit_day_edit_class_start_time_label"
+        android:id="@+id/dialog_edit_day_add_class_start_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_edit_day_edit_class_spinner"
+        android:layout_below="@id/dialog_edit_day_add_class_spinner"
         android:layout_marginTop="16dp"
-        android:paddingLeft="24.5dp"
+        android:paddingLeft="24dp"
         android:text="Start time:"
         android:textColor="#000000"
         android:textSize="15sp" />
 
     <TextView
 
-        android:id="@+id/dialog_edit_day_edit_class_start_time"
+        android:id="@+id/dialog_edit_day_add_class_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/dialog_edit_day_edit_class_start_time_label"
+        android:layout_alignTop="@id/dialog_edit_day_add_class_start_time_label"
         android:layout_marginRight="29.75dp"
         android:gravity="right"
         android:textColor="#000000"
@@ -43,23 +43,23 @@
 
     <TextView
 
-        android:id="@+id/dialog_edit_day_edit_class_end_time_label"
+        android:id="@+id/dialog_edit_day_add_class_end_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_edit_day_edit_class_start_time_label"
+        android:layout_below="@id/dialog_edit_day_add_class_start_time_label"
         android:layout_marginTop="4dp"
-        android:paddingLeft="24.5dp"
+        android:paddingLeft="24dp"
         android:text="End time:"
         android:textColor="#000000"
         android:textSize="15sp" />
 
     <TextView
 
-        android:id="@+id/dialog_edit_day_edit_class_end_time"
+        android:id="@+id/dialog_edit_day_add_class_end_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/dialog_edit_day_edit_class_end_time_label"
+        android:layout_alignTop="@id/dialog_edit_day_add_class_end_time_label"
         android:layout_marginRight="29.75dp"
         android:gravity="right"
         android:textColor="#000000"
