@@ -88,7 +88,7 @@ public class HomeworkList extends RecyclerView.Adapter<HomeworkList.HomeworkView
 
         if (homework.isAttach()) {
 
-            ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(homework.getDateTime().getDayOfWeek() == 7 ? 1 : homework.getDateTime().getDayOfWeek() + 1);
+            ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(homework.getDateTime().getDayOfWeek());
 
             if (classesList != null) {
 

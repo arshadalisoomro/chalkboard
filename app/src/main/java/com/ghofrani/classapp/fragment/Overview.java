@@ -309,7 +309,7 @@ public class Overview extends Fragment {
         if (progressTextView == null)
             progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
 
-        progressTextView.setText(DataSingleton.getInstance().getProgessbarText());
+        progressTextView.setText(DataSingleton.getInstance().getProgressBarText());
 
     }
 

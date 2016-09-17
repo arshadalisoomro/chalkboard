@@ -28,6 +28,30 @@
 
     </string-array>
 
+    <string-array name="days_of_week">
+
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+
+    </string-array>
+
+    <string-array name="days_of_week_values">
+
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+
+    </string-array>
+
     <array name="primary_colors">
 
         <item>@color/red</item>

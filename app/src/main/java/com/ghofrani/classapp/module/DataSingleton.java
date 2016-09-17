@@ -21,7 +21,7 @@ public class DataSingleton {
 
     private String minutesLeftText;
     private int progressBarProgress;
-    private String progessbarText;
+    private String progressBarText;
 
     private ArrayList<StandardClass> sundayClasses;
     private ArrayList<StandardClass> mondayClasses;
@@ -52,6 +52,7 @@ public class DataSingleton {
     private boolean is24Hour;
 
     private boolean recreate;
+    private boolean isChangedFirstDay;
 
     private DataSingleton() {
 
@@ -60,7 +61,7 @@ public class DataSingleton {
         tomorrowClassesArrayList = new ArrayList<>();
 
         progressBarProgress = 0;
-        progessbarText = "0%";
+        progressBarText = "0%";
 
         sundayClasses = new ArrayList<>();
         mondayClasses = new ArrayList<>();
@@ -89,6 +90,7 @@ public class DataSingleton {
         is24Hour = true;
 
         recreate = false;
+        isChangedFirstDay = false;
 
     }
 
@@ -153,12 +155,12 @@ public class DataSingleton {
         this.progressBarProgress = progressBarProgress;
     }
 
-    public String getProgessbarText() {
-        return progessbarText;
+    public String getProgressBarText() {
+        return progressBarText;
     }
 
-    public void setProgessbarText(String progessbarText) {
-        this.progessbarText = progessbarText;
+    public void setProgressBarText(String progressBarText) {
+        this.progressBarText = progressBarText;
     }
 
     public ArrayList<StandardClass> getSundayClasses() {
@@ -335,6 +337,14 @@ public class DataSingleton {
 
     public void setRecreate(boolean recreate) {
         this.recreate = recreate;
+    }
+
+    public boolean isChangedFirstDay() {
+        return isChangedFirstDay;
+    }
+
+    public void setChangedFirstDay(boolean changedFirstDay) {
+        isChangedFirstDay = changedFirstDay;
     }
 
 }

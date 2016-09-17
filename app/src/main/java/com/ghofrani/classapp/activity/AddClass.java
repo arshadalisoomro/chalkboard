@@ -138,7 +138,7 @@ public class AddClass extends AppCompatActivity {
 
                         if (currentFocus != null) {
 
-                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                         }
@@ -180,7 +180,7 @@ public class AddClass extends AppCompatActivity {
 
                     if (currentFocus != null) {
 
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                     }

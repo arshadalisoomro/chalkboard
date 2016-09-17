@@ -14,9 +14,9 @@ public class Chalkboard extends Application {
 
         super.onCreate();
 
-        DataSingleton.initInstance();
-
         JodaTimeAndroid.init(this);
+
+        DataSingleton.initInstance();
         startService(new Intent(this, Background.class));
 
     }

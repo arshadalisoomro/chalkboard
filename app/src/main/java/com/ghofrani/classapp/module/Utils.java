@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.StandardClass;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+
 import java.util.ArrayList;
 
 public class Utils {
@@ -164,45 +167,45 @@ public class Utils {
 
         switch (day) {
 
-            case 1:
-
-                DataSingleton.getInstance().setSundayClasses(standardClassArrayList);
-
-                break;
-
-            case 2:
+            case DateTimeConstants.MONDAY:
 
                 DataSingleton.getInstance().setMondayClasses(standardClassArrayList);
 
                 break;
 
-            case 3:
+            case DateTimeConstants.TUESDAY:
 
                 DataSingleton.getInstance().setTuesdayClasses(standardClassArrayList);
 
                 break;
 
-            case 4:
+            case DateTimeConstants.WEDNESDAY:
 
                 DataSingleton.getInstance().setWednesdayClasses(standardClassArrayList);
 
                 break;
 
-            case 5:
+            case DateTimeConstants.THURSDAY:
 
                 DataSingleton.getInstance().setThursdayClasses(standardClassArrayList);
 
                 break;
 
-            case 6:
+            case DateTimeConstants.FRIDAY:
 
                 DataSingleton.getInstance().setFridayClasses(standardClassArrayList);
 
                 break;
 
-            case 7:
+            case DateTimeConstants.SATURDAY:
 
                 DataSingleton.getInstance().setSaturdayClasses(standardClassArrayList);
+
+                break;
+
+            case DateTimeConstants.SUNDAY:
+
+                DataSingleton.getInstance().setSundayClasses(standardClassArrayList);
 
                 break;
 
@@ -214,37 +217,147 @@ public class Utils {
 
         switch (day) {
 
-            case 1:
-
-                return DataSingleton.getInstance().getSundayClasses();
-
-            case 2:
+            case DateTimeConstants.MONDAY:
 
                 return DataSingleton.getInstance().getMondayClasses();
 
-            case 3:
+            case DateTimeConstants.TUESDAY:
 
                 return DataSingleton.getInstance().getTuesdayClasses();
 
-            case 4:
+            case DateTimeConstants.WEDNESDAY:
 
                 return DataSingleton.getInstance().getWednesdayClasses();
 
-            case 5:
+            case DateTimeConstants.THURSDAY:
 
                 return DataSingleton.getInstance().getThursdayClasses();
 
-            case 6:
+            case DateTimeConstants.FRIDAY:
 
                 return DataSingleton.getInstance().getFridayClasses();
 
-            case 7:
+            case DateTimeConstants.SATURDAY:
 
                 return DataSingleton.getInstance().getSaturdayClasses();
+
+            case DateTimeConstants.SUNDAY:
+
+                return DataSingleton.getInstance().getSundayClasses();
 
             default:
 
                 return new ArrayList<>();
+
+        }
+
+    }
+
+    public static int getPlusDaysTill(int day) {
+
+        final DateTime now = DateTime.now();
+
+        switch (day) {
+
+            case DateTimeConstants.MONDAY:
+
+                return 8 - now.getDayOfWeek();
+
+            case DateTimeConstants.TUESDAY:
+
+                if (now.getDayOfWeek() == DateTimeConstants.TUESDAY) {
+
+                    return 7;
+
+                } else if (now.getDayOfWeek() < DateTimeConstants.TUESDAY) {
+
+                    return 2 - now.getDayOfWeek();
+
+                } else {
+
+                    return 9 - now.getDayOfWeek();
+
+                }
+
+            case DateTimeConstants.WEDNESDAY:
+
+                if (now.getDayOfWeek() == DateTimeConstants.WEDNESDAY) {
+
+                    return 7;
+
+                } else if (now.getDayOfWeek() < DateTimeConstants.WEDNESDAY) {
+
+                    return 3 - now.getDayOfWeek();
+
+                } else {
+
+                    return 10 - now.getDayOfWeek();
+
+                }
+
+            case DateTimeConstants.THURSDAY:
+
+                if (now.getDayOfWeek() == DateTimeConstants.THURSDAY) {
+
+                    return 7;
+
+                } else if (now.getDayOfWeek() < DateTimeConstants.THURSDAY) {
+
+                    return 4 - now.getDayOfWeek();
+
+                } else {
+
+                    return 11 - now.getDayOfWeek();
+
+                }
+
+            case DateTimeConstants.FRIDAY:
+
+                if (now.getDayOfWeek() == DateTimeConstants.FRIDAY) {
+
+                    return 7;
+
+                } else if (now.getDayOfWeek() < DateTimeConstants.FRIDAY) {
+
+                    return 5 - now.getDayOfWeek();
+
+                } else {
+
+                    return 12 - now.getDayOfWeek();
+
+                }
+
+            case DateTimeConstants.SATURDAY:
+
+                if (now.getDayOfWeek() == DateTimeConstants.SATURDAY) {
+
+                    return 7;
+
+                } else if (now.getDayOfWeek() < DateTimeConstants.SATURDAY) {
+
+                    return 6 - now.getDayOfWeek();
+
+                } else {
+
+                    return 12 - now.getDayOfWeek();
+
+                }
+
+            case DateTimeConstants.SUNDAY:
+
+                if (now.getDayOfWeek() == DateTimeConstants.SUNDAY) {
+
+                    return 7;
+
+                } else {
+
+                    return 7 - now.getDayOfWeek();
+
+                }
+
+            default:
+
+                return 0;
 
         }
 

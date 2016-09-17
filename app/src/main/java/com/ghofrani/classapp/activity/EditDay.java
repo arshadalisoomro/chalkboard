@@ -30,6 +30,7 @@ import com.ghofrani.classapp.module.DatabaseHelper;
 import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -68,28 +69,216 @@ public class EditDay extends AppCompatActivity {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.edit_day_toolbar);
 
-        switch (getIntent().getIntExtra("day", 0)) {
+        switch (Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("first_day_of_week", "1"))) {
 
-            case 0:
-                toolbar.setTitle("Edit Sunday");
+            case DateTimeConstants.MONDAY:
+
+                switch (getIntent().getIntExtra("day", 0)) {
+
+                    case 0:
+                        toolbar.setTitle("Edit Monday's Classes");
+                        break;
+                    case 1:
+                        toolbar.setTitle("Edit Tuesday's Classes");
+                        break;
+                    case 2:
+                        toolbar.setTitle("Edit Wednesday's Classes");
+                        break;
+                    case 3:
+                        toolbar.setTitle("Edit Thursday's Classes");
+                        break;
+                    case 4:
+                        toolbar.setTitle("Edit Friday's Classes");
+                        break;
+                    case 5:
+                        toolbar.setTitle("Edit Saturday's Classes");
+                        break;
+                    case 6:
+                        toolbar.setTitle("Edit Sunday's Classes");
+                        break;
+
+                }
+
                 break;
-            case 1:
-                toolbar.setTitle("Edit Monday");
+
+            case DateTimeConstants.TUESDAY:
+
+                switch (getIntent().getIntExtra("day", 0)) {
+
+                    case 0:
+                        toolbar.setTitle("Edit Tuesday's Classes");
+                        break;
+                    case 1:
+                        toolbar.setTitle("Edit Wednesday's Classes");
+                        break;
+                    case 2:
+                        toolbar.setTitle("Edit Thursday's Classes");
+                        break;
+                    case 3:
+                        toolbar.setTitle("Edit Friday's Classes");
+                        break;
+                    case 4:
+                        toolbar.setTitle("Edit Saturday's Classes");
+                        break;
+                    case 5:
+                        toolbar.setTitle("Edit Sunday's Classes");
+                        break;
+                    case 6:
+                        toolbar.setTitle("Edit Monday's Classes");
+                        break;
+
+                }
+
                 break;
-            case 2:
-                toolbar.setTitle("Edit Tuesday");
+
+            case DateTimeConstants.WEDNESDAY:
+
+                switch (getIntent().getIntExtra("day", 0)) {
+
+                    case 0:
+                        toolbar.setTitle("Edit Wednesday's Classes");
+                        break;
+                    case 1:
+                        toolbar.setTitle("Edit Thursday's Classes");
+                        break;
+                    case 2:
+                        toolbar.setTitle("Edit Friday's Classes");
+                        break;
+                    case 3:
+                        toolbar.setTitle("Edit Saturday's Classes");
+                        break;
+                    case 4:
+                        toolbar.setTitle("Edit Sunday's Classes");
+                        break;
+                    case 5:
+                        toolbar.setTitle("Edit Monday's Classes");
+                        break;
+                    case 6:
+                        toolbar.setTitle("Edit Tuesday's Classes");
+                        break;
+
+                }
+
                 break;
-            case 3:
-                toolbar.setTitle("Edit Wednesday");
+
+            case DateTimeConstants.THURSDAY:
+
+                switch (getIntent().getIntExtra("day", 0)) {
+
+                    case 0:
+                        toolbar.setTitle("Edit Sunday's Classes");
+                        break;
+                    case 1:
+                        toolbar.setTitle("Edit Monday's Classes");
+                        break;
+                    case 2:
+                        toolbar.setTitle("Edit Tuesday's Classes");
+                        break;
+                    case 3:
+                        toolbar.setTitle("Edit Wednesday's Classes");
+                        break;
+                    case 4:
+                        toolbar.setTitle("Edit Thursday's Classes");
+                        break;
+                    case 5:
+                        toolbar.setTitle("Edit Friday's Classes");
+                        break;
+                    case 6:
+                        toolbar.setTitle("Edit Saturday's Classes");
+                        break;
+
+                }
+
                 break;
-            case 4:
-                toolbar.setTitle("Edit Thursday");
+
+            case DateTimeConstants.FRIDAY:
+
+                switch (getIntent().getIntExtra("day", 0)) {
+
+                    case 0:
+                        toolbar.setTitle("Edit Sunday's Classes");
+                        break;
+                    case 1:
+                        toolbar.setTitle("Edit Monday's Classes");
+                        break;
+                    case 2:
+                        toolbar.setTitle("Edit Tuesday's Classes");
+                        break;
+                    case 3:
+                        toolbar.setTitle("Edit Wednesday's Classes");
+                        break;
+                    case 4:
+                        toolbar.setTitle("Edit Thursday's Classes");
+                        break;
+                    case 5:
+                        toolbar.setTitle("Edit Friday's Classes");
+                        break;
+                    case 6:
+                        toolbar.setTitle("Edit Saturday's Classes");
+                        break;
+
+                }
+
                 break;
-            case 5:
-                toolbar.setTitle("Edit Friday");
+
+            case DateTimeConstants.SATURDAY:
+
+                switch (getIntent().getIntExtra("day", 0)) {
+
+                    case 0:
+                        toolbar.setTitle("Edit Sunday's Classes");
+                        break;
+                    case 1:
+                        toolbar.setTitle("Edit Monday's Classes");
+                        break;
+                    case 2:
+                        toolbar.setTitle("Edit Tuesday's Classes");
+                        break;
+                    case 3:
+                        toolbar.setTitle("Edit Wednesday's Classes");
+                        break;
+                    case 4:
+                        toolbar.setTitle("Edit Thursday's Classes");
+                        break;
+                    case 5:
+                        toolbar.setTitle("Edit Friday's Classes");
+                        break;
+                    case 6:
+                        toolbar.setTitle("Edit Saturday's Classes");
+                        break;
+
+                }
+
                 break;
-            case 6:
-                toolbar.setTitle("Edit Saturday");
+
+            case DateTimeConstants.SUNDAY:
+
+                switch (getIntent().getIntExtra("day", 0)) {
+
+                    case 0:
+                        toolbar.setTitle("Edit Sunday's Classes");
+                        break;
+                    case 1:
+                        toolbar.setTitle("Edit Monday's Classes");
+                        break;
+                    case 2:
+                        toolbar.setTitle("Edit Tuesday's Classes");
+                        break;
+                    case 3:
+                        toolbar.setTitle("Edit Wednesday's Classes");
+                        break;
+                    case 4:
+                        toolbar.setTitle("Edit Thursday's Classes");
+                        break;
+                    case 5:
+                        toolbar.setTitle("Edit Friday's Classes");
+                        break;
+                    case 6:
+                        toolbar.setTitle("Edit Saturday's Classes");
+                        break;
+
+                }
+
                 break;
 
         }
@@ -101,7 +290,51 @@ public class EditDay extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        day = getIntent().getIntExtra("day", 0) + 1;
+        switch (toolbar.getTitle().toString()) {
+
+            case "Edit Monday's Classes":
+
+                day = DateTimeConstants.MONDAY;
+
+                break;
+
+            case "Edit Tuesday's Classes":
+
+                day = DateTimeConstants.TUESDAY;
+
+                break;
+
+            case "Edit Wednesday's Classes":
+
+                day = DateTimeConstants.WEDNESDAY;
+
+                break;
+
+            case "Edit Thursday's Classes":
+
+                day = DateTimeConstants.THURSDAY;
+
+                break;
+
+            case "Edit Friday's Classes":
+
+                day = DateTimeConstants.FRIDAY;
+
+                break;
+
+            case "Edit Saturday's Classes":
+
+                day = DateTimeConstants.SATURDAY;
+
+                break;
+
+            case "Edit Sunday's Classes":
+
+                day = DateTimeConstants.SUNDAY;
+
+                break;
+
+        }
 
     }
 
@@ -419,7 +652,7 @@ public class EditDay extends AppCompatActivity {
 
                                         }
 
-                                        databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
+                                        databaseHelper.insertClassesIntoDay(currentClasses, day);
 
                                     } else {
 
@@ -433,7 +666,7 @@ public class EditDay extends AppCompatActivity {
                                                 locationTeacherColor[1],
                                                 Integer.parseInt(locationTeacherColor[2])));
 
-                                        databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
+                                        databaseHelper.insertClassesIntoDay(currentClasses, day);
 
                                     }
 
@@ -1064,8 +1297,6 @@ public class EditDay extends AppCompatActivity {
 
                                 final String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(className);
 
-                                currentClasses = Utils.getClassesArrayListOfDay(day);
-
                                 boolean inserted = false;
                                 int index = 0;
 
@@ -1076,7 +1307,6 @@ public class EditDay extends AppCompatActivity {
                                         if (classStartTime.isEqual(currentClasses.get(index).getStartTime())) {
 
                                             inserted = true;
-
                                             currentClasses.remove(index);
 
                                             currentClasses.add(index, new StandardClass(className,
@@ -1105,7 +1335,6 @@ public class EditDay extends AppCompatActivity {
                                         } else if (classStartTime.isBefore(currentClasses.get(index).getStartTime())) {
 
                                             inserted = true;
-
                                             currentClasses.remove(index);
 
                                             currentClasses.add(index, new StandardClass(className,
@@ -1120,7 +1349,6 @@ public class EditDay extends AppCompatActivity {
                                         } else if ((currentClasses.size() - index) == 1) {
 
                                             inserted = true;
-
                                             currentClasses.remove(currentClasses.size() - 1);
 
                                             currentClasses.add(new StandardClass(className,
@@ -1138,7 +1366,7 @@ public class EditDay extends AppCompatActivity {
 
                                     }
 
-                                    databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
+                                    databaseHelper.insertClassesIntoDay(currentClasses, day);
 
                                 } finally {
 
@@ -1619,13 +1847,13 @@ public class EditDay extends AppCompatActivity {
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
 
-            View listItem = listAdapter.getView(i, null, listView);
+            final View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
 
         }
 
-        ViewGroup.LayoutParams listViewLayoutParams = listView.getLayoutParams();
+        final ViewGroup.LayoutParams listViewLayoutParams = listView.getLayoutParams();
         listViewLayoutParams.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(listViewLayoutParams);
 

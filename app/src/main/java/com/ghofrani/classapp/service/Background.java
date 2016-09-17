@@ -32,6 +32,7 @@ import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
+import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,7 +46,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 
 public class Background extends Service {
@@ -276,7 +276,7 @@ public class Background extends Service {
 
         }
 
-        final Cursor todayCursor = databaseHelper.getClassesCursor(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        final Cursor todayCursor = databaseHelper.getClassesCursor(new DateTime().getDayOfWeek());
 
         StandardClass currentClass = null;
         StandardClass nextClass = null;
@@ -543,7 +543,7 @@ public class Background extends Service {
 
                             DataSingleton.getInstance().setMinutesLeftText(remainingTitleText);
                             DataSingleton.getInstance().setProgressBarProgress(progressBarProgress);
-                            DataSingleton.getInstance().setProgessbarText(progressBarText);
+                            DataSingleton.getInstance().setProgressBarText(progressBarText);
 
                             EventBus.getDefault().post(new UpdateProgressUI());
 
@@ -644,7 +644,7 @@ public class Background extends Service {
 
                             DataSingleton.getInstance().setMinutesLeftText(remainingText);
                             DataSingleton.getInstance().setProgressBarProgress(progressBarProgress);
-                            DataSingleton.getInstance().setProgessbarText(progressBarText);
+                            DataSingleton.getInstance().setProgressBarText(progressBarText);
 
                             EventBus.getDefault().post(new UpdateProgressUI());
 
@@ -716,7 +716,7 @@ public class Background extends Service {
 
                             DataSingleton.getInstance().setMinutesLeftText(remainingText);
                             DataSingleton.getInstance().setProgressBarProgress(progressBarProgress);
-                            DataSingleton.getInstance().setProgessbarText(progressBarText);
+                            DataSingleton.getInstance().setProgressBarText(progressBarText);
 
                             EventBus.getDefault().post(new UpdateProgressUI());
 
@@ -751,7 +751,7 @@ public class Background extends Service {
 
             final DateTime currentTimeNow = new DateTime();
 
-            final int minutesLeft = Minutes.minutesBetween(currentTimeNow, nextClass.getStartTime().toDateTimeToday()).getMinutes();
+            int minutesLeft = Minutes.minutesBetween(currentTimeNow, nextClass.getStartTime().toDateTimeToday()).getMinutes();
 
             if (minutesLeft <= Integer.parseInt(sharedPreferences.getString("next_class_notification_minutes", "30"))) {
 
@@ -805,12 +805,12 @@ public class Background extends Service {
 
         if (sharedPreferences.getBoolean("tomorrow_classes", true)) {
 
-            int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            int day = new DateTime().getDayOfWeek();
 
-            if (day > 0 && day < 7)
-                day++;
-            else
+            if (day == 7)
                 day = 1;
+            else
+                day++;
 
             Cursor tomorrowCursor = databaseHelper.getClassesCursor(day);
 
@@ -860,35 +860,87 @@ public class Background extends Service {
         final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
         final ArrayList<Homework> pastHomeworkArrayList = new ArrayList<>();
 
-        DateTime today = DateTime.now().withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
-        DateTime tomorrow = today.plusDays(1);
+        final DateTime today = DateTime.now().withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
+        final DateTime tomorrow = today.plusDays(1);
 
         boolean thisWeekEnabled = true;
         Interval thisWeek;
         Interval nextWeek;
 
-        switch (today.getDayOfWeek()) {
+        int secondLastDayOfWeek = 0;
+        int lastDayOfWeek = 0;
+
+        switch (Integer.parseInt(sharedPreferences.getString("first_day_of_week", "1"))) {
+
+            case DateTimeConstants.MONDAY:
+
+                secondLastDayOfWeek = DateTimeConstants.SATURDAY;
+                lastDayOfWeek = DateTimeConstants.SUNDAY;
+
+                break;
+
+            case DateTimeConstants.TUESDAY:
+
+                secondLastDayOfWeek = DateTimeConstants.SUNDAY;
+                lastDayOfWeek = DateTimeConstants.MONDAY;
+
+                break;
+
+            case DateTimeConstants.WEDNESDAY:
+
+                secondLastDayOfWeek = DateTimeConstants.MONDAY;
+                lastDayOfWeek = DateTimeConstants.TUESDAY;
+
+                break;
+
+            case DateTimeConstants.THURSDAY:
+
+                secondLastDayOfWeek = DateTimeConstants.TUESDAY;
+                lastDayOfWeek = DateTimeConstants.WEDNESDAY;
+
+                break;
 
             case DateTimeConstants.FRIDAY:
 
-                thisWeekEnabled = false;
-                thisWeek = new Interval(today, today);
-                nextWeek = new Interval(today.plusDays(2).withTimeAtStartOfDay(), today.plusDays(9).withTimeAtStartOfDay());
+                secondLastDayOfWeek = DateTimeConstants.WEDNESDAY;
+                lastDayOfWeek = DateTimeConstants.THURSDAY;
 
                 break;
 
             case DateTimeConstants.SATURDAY:
 
-                thisWeekEnabled = false;
-                thisWeek = new Interval(today, today);
-                nextWeek = new Interval(today.plusDays(1).withTimeAtStartOfDay(), today.plusDays(8).withTimeAtStartOfDay());
+                secondLastDayOfWeek = DateTimeConstants.THURSDAY;
+                lastDayOfWeek = DateTimeConstants.FRIDAY;
 
                 break;
 
-            default:
+            case DateTimeConstants.SUNDAY:
 
-                thisWeek = new Interval(tomorrow.plusDays(1).withTimeAtStartOfDay(), tomorrow.plusDays(DateTimeConstants.SUNDAY - tomorrow.getDayOfWeek()).withTimeAtStartOfDay());
-                nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7));
+                secondLastDayOfWeek = DateTimeConstants.FRIDAY;
+                lastDayOfWeek = DateTimeConstants.SATURDAY;
+
+                break;
+
+        }
+
+        final DateTime thisWeekEndDateTime = new DateTime().plusDays(Utils.getPlusDaysTill(Integer.parseInt(sharedPreferences.getString("first_day_of_week", "1"))));
+
+        if (today.getDayOfWeek() == secondLastDayOfWeek) {
+
+            thisWeekEnabled = false;
+            thisWeek = new Interval(today, today);
+            nextWeek = new Interval(today.plusDays(2).withTimeAtStartOfDay(), today.plusDays(9).withTimeAtStartOfDay());
+
+        } else if (today.getDayOfWeek() == lastDayOfWeek) {
+
+            thisWeekEnabled = false;
+            thisWeek = new Interval(today, today);
+            nextWeek = new Interval(today.plusDays(1).withTimeAtStartOfDay(), today.plusDays(8).withTimeAtStartOfDay());
+
+        } else {
+
+            thisWeek = new Interval(tomorrow.plusDays(1).withTimeAtStartOfDay(), thisWeekEndDateTime.withTimeAtStartOfDay());
+            nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7));
 
         }
 
@@ -966,56 +1018,6 @@ public class Background extends Service {
 
     }
 
-    private void setClassesArrayListOfDay(int day, ArrayList<StandardClass> standardClassArrayList) {
-
-        switch (day) {
-
-            case 1:
-
-                DataSingleton.getInstance().setSundayClasses(standardClassArrayList);
-
-                break;
-
-            case 2:
-
-                DataSingleton.getInstance().setMondayClasses(standardClassArrayList);
-
-                break;
-
-            case 3:
-
-                DataSingleton.getInstance().setTuesdayClasses(standardClassArrayList);
-
-                break;
-
-            case 4:
-
-                DataSingleton.getInstance().setWednesdayClasses(standardClassArrayList);
-
-                break;
-
-            case 5:
-
-                DataSingleton.getInstance().setThursdayClasses(standardClassArrayList);
-
-                break;
-
-            case 6:
-
-                DataSingleton.getInstance().setFridayClasses(standardClassArrayList);
-
-                break;
-
-            case 7:
-
-                DataSingleton.getInstance().setSaturdayClasses(standardClassArrayList);
-
-                break;
-
-        }
-
-    }
-
     private void getTimetable() {
 
         Cursor timetableCursor = null;
@@ -1044,9 +1046,9 @@ public class Background extends Service {
                 }
 
                 if (!classesArrayList.isEmpty())
-                    setClassesArrayListOfDay(i, classesArrayList);
+                    Utils.setClassesArrayListOfDay(i, classesArrayList);
                 else
-                    setClassesArrayListOfDay(i, null);
+                    Utils.setClassesArrayListOfDay(i, null);
 
             }
 

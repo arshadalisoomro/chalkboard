@@ -35,11 +35,11 @@ import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class AddHomework extends AppCompatActivity {
 
@@ -185,7 +185,7 @@ public class AddHomework extends AppCompatActivity {
 
             if (Utils.getClassesArrayListOfDay(i) != null) {
 
-                for (StandardClass standardClass : Utils.getClassesArrayListOfDay(i)) {
+                for (final StandardClass standardClass : Utils.getClassesArrayListOfDay(i)) {
 
                     if (className.equals(standardClass.getName()))
                         return true;
@@ -215,54 +215,53 @@ public class AddHomework extends AppCompatActivity {
 
                         if (Utils.getClassesArrayListOfDay(i) != null) {
 
-                            for (StandardClass standardClass : Utils.getClassesArrayListOfDay(i)) {
+                            for (final StandardClass standardClass : Utils.getClassesArrayListOfDay(i)) {
 
                                 if (standardClass.getName().equals(classNameSpinner.getSelectedItem().toString())) {
 
                                     switch (i) {
 
-                                        case 1:
-
-                                            listItemTitles.add("Sunday's class at " + standardClass.getStartTimeString(true));
-
-                                            break;
-
-                                        case 2:
+                                        case DateTimeConstants.MONDAY:
 
                                             listItemTitles.add("Monday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
-                                        case 3:
+                                        case DateTimeConstants.TUESDAY:
 
                                             listItemTitles.add("Tuesday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
-                                        case 4:
+                                        case DateTimeConstants.WEDNESDAY:
 
                                             listItemTitles.add("Wednesday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
-                                        case 5:
+                                        case DateTimeConstants.THURSDAY:
 
                                             listItemTitles.add("Thursday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
-                                        case 6:
+                                        case DateTimeConstants.FRIDAY:
 
                                             listItemTitles.add("Friday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
-                                        case 7:
+                                        case DateTimeConstants.SATURDAY:
 
                                             listItemTitles.add("Saturday's class at " + standardClass.getStartTimeString(true));
 
                                             break;
 
+                                        case DateTimeConstants.SUNDAY:
+
+                                            listItemTitles.add("Sunday's class at " + standardClass.getStartTimeString(true));
+
+                                            break;
 
                                     }
 
@@ -316,7 +315,7 @@ public class AddHomework extends AppCompatActivity {
 
                     if (currentFocus != null) {
 
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                     }
@@ -416,7 +415,7 @@ public class AddHomework extends AppCompatActivity {
 
     private DateTime getDateTimeOfNextClass(String className) {
 
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int day = new DateTime().getDayOfWeek();
         int iterations = -1;
 
         final LocalTime now = new LocalTime().withHourOfDay(LocalTime.now().getHourOfDay()).withMinuteOfHour(LocalTime.now().getMinuteOfHour()).withSecondOfMinute(0).withMillisOfSecond(0);
@@ -428,7 +427,7 @@ public class AddHomework extends AppCompatActivity {
 
             if (Utils.getClassesArrayListOfDay(day) != null) {
 
-                for (StandardClass standardClass : Utils.getClassesArrayListOfDay(day)) {
+                for (final StandardClass standardClass : Utils.getClassesArrayListOfDay(day)) {
 
                     if (standardClass.getName().equals(className)) {
 
@@ -530,104 +529,36 @@ public class AddHomework extends AppCompatActivity {
 
                 } else if (specificClassRadioButton.isChecked()) {
 
-                    DateTime pickedDateTimeSpecific = new DateTime();
+                    final DateTime pickedDateTimeSpecific = new DateTime();
                     int plusDays = 0;
 
-                    if (listItemTitles.get(selectedIndex).startsWith("Sun")) {
+                    if (listItemTitles.get(selectedIndex).startsWith("Mon")) {
 
-                        if (pickedDateTimeSpecific.getDayOfWeek() == 7) {
-
-                            plusDays = 7;
-
-                        } else {
-
-                            plusDays = 7 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        }
-
-                    } else if (listItemTitles.get(selectedIndex).startsWith("Mon")) {
-
-                        plusDays = 8 - pickedDateTimeSpecific.getDayOfWeek();
+                        plusDays = Utils.getPlusDaysTill(DateTimeConstants.MONDAY);
 
                     } else if (listItemTitles.get(selectedIndex).startsWith("Tue")) {
 
-                        if (pickedDateTimeSpecific.getDayOfWeek() == 2) {
-
-                            plusDays = 7;
-
-                        } else if (pickedDateTimeSpecific.getDayOfWeek() < 2) {
-
-                            plusDays = 2 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        } else {
-
-                            plusDays = 9 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        }
+                        plusDays = Utils.getPlusDaysTill(DateTimeConstants.TUESDAY);
 
                     } else if (listItemTitles.get(selectedIndex).startsWith("Wed")) {
 
-                        if (pickedDateTimeSpecific.getDayOfWeek() == 3) {
-
-                            plusDays = 7;
-
-                        } else if (pickedDateTimeSpecific.getDayOfWeek() < 3) {
-
-                            plusDays = 3 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        } else {
-
-                            plusDays = 10 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        }
+                        plusDays = Utils.getPlusDaysTill(DateTimeConstants.WEDNESDAY);
 
                     } else if (listItemTitles.get(selectedIndex).startsWith("Thu")) {
 
-                        if (pickedDateTimeSpecific.getDayOfWeek() == 4) {
-
-                            plusDays = 7;
-
-                        } else if (pickedDateTimeSpecific.getDayOfWeek() < 4) {
-
-                            plusDays = 4 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        } else {
-
-                            plusDays = 11 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        }
+                        plusDays = Utils.getPlusDaysTill(DateTimeConstants.THURSDAY);
 
                     } else if (listItemTitles.get(selectedIndex).startsWith("Fri")) {
 
-                        if (pickedDateTimeSpecific.getDayOfWeek() == 5) {
-
-                            plusDays = 7;
-
-                        } else if (pickedDateTimeSpecific.getDayOfWeek() < 5) {
-
-                            plusDays = 5 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        } else {
-
-                            plusDays = 12 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        }
+                        plusDays = Utils.getPlusDaysTill(DateTimeConstants.FRIDAY);
 
                     } else if (listItemTitles.get(selectedIndex).startsWith("Sat")) {
 
-                        if (pickedDateTimeSpecific.getDayOfWeek() == 6) {
+                        plusDays = Utils.getPlusDaysTill(DateTimeConstants.SATURDAY);
 
-                            plusDays = 7;
+                    } else if (listItemTitles.get(selectedIndex).startsWith("Sun")) {
 
-                        } else if (pickedDateTimeSpecific.getDayOfWeek() < 6) {
-
-                            plusDays = 6 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        } else {
-
-                            plusDays = 12 - pickedDateTimeSpecific.getDayOfWeek();
-
-                        }
+                        plusDays = Utils.getPlusDaysTill(DateTimeConstants.SUNDAY);
 
                     }
 
@@ -718,7 +649,7 @@ public class AddHomework extends AppCompatActivity {
 
                 if (currentFocus != null) {
 
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
 
                 }

@@ -116,6 +116,12 @@ public class Settings extends AppCompatActivity {
 
                 DataSingleton.getInstance().setIs24Hour(sharedPreferences.getBoolean("24_hour_time", true));
 
+            } else if (key.equals("first_day_of_week")) {
+
+                EventBus.getDefault().post(new Update(false, true, false, false));
+
+                DataSingleton.getInstance().setChangedFirstDay(true);
+
             }
 
         }

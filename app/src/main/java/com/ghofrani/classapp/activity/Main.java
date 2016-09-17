@@ -1,8 +1,10 @@
 package com.ghofrani.classapp.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -41,6 +43,7 @@ import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.joda.time.DateTimeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -281,23 +284,34 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         if (DataSingleton.getInstance().isRecreate()) {
 
-            DataSingleton.getInstance().setRecreate(false);
-            DataSingleton.getInstance().setAnimated(false);
-            DataSingleton.getInstance().setSelectedTabPosition(0);
+            performRecreate();
 
-            drawerLayout = null;
-            toolbar = null;
-            tabLayout = null;
-            viewPager = null;
-            scrollView = null;
-            navigationView = null;
-            floatingActionButton = null;
+        } else if (DataSingleton.getInstance().isChangedFirstDay()) {
 
-            finish();
-
-            startActivity(getIntent());
+            performRecreate();
 
         }
+
+    }
+
+    private void performRecreate() {
+
+        DataSingleton.getInstance().setRecreate(false);
+        DataSingleton.getInstance().setAnimated(false);
+        DataSingleton.getInstance().setChangedFirstDay(false);
+        DataSingleton.getInstance().setSelectedTabPosition(0);
+
+        drawerLayout = null;
+        toolbar = null;
+        tabLayout = null;
+        viewPager = null;
+        scrollView = null;
+        navigationView = null;
+        floatingActionButton = null;
+
+        finish();
+
+        startActivity(getIntent());
 
     }
 
@@ -494,19 +508,105 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                 tabLayout.setVisibility(AppBarLayout.VISIBLE);
                 viewPager.setVisibility(LinearLayout.VISIBLE);
 
-                fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.main_scroll_view)).commit();
+                if (getSupportFragmentManager().findFragmentById(R.id.main_scroll_view) != null)
+                    fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.main_scroll_view)).commit();
 
                 final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-                adapter.addFragment(new Sunday(), "SUNDAY");
-                adapter.addFragment(new Monday(), "MONDAY");
-                adapter.addFragment(new Tuesday(), "TUESDAY");
-                adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                adapter.addFragment(new Thursday(), "THURSDAY");
-                adapter.addFragment(new Friday(), "FRIDAY");
-                adapter.addFragment(new Saturday(), "SATURDAY");
+                final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                switch (Integer.parseInt(sharedPreferences.getString("first_day_of_week", "1"))) {
+
+                    case DateTimeConstants.MONDAY:
+
+                        adapter.addFragment(new Monday(), "MONDAY");
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+                        adapter.addFragment(new Friday(), "FRIDAY");
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+
+                        break;
+
+                    case DateTimeConstants.TUESDAY:
+
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+                        adapter.addFragment(new Friday(), "FRIDAY");
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+                        adapter.addFragment(new Monday(), "MONDAY");
+
+                        break;
+
+                    case DateTimeConstants.WEDNESDAY:
+
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+                        adapter.addFragment(new Friday(), "FRIDAY");
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+                        adapter.addFragment(new Monday(), "MONDAY");
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+
+                        break;
+
+                    case DateTimeConstants.THURSDAY:
+
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+                        adapter.addFragment(new Friday(), "FRIDAY");
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+                        adapter.addFragment(new Monday(), "MONDAY");
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+
+                        break;
+
+                    case DateTimeConstants.FRIDAY:
+
+                        adapter.addFragment(new Friday(), "FRIDAY");
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+                        adapter.addFragment(new Monday(), "MONDAY");
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+
+                        break;
+
+                    case DateTimeConstants.SATURDAY:
+
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+                        adapter.addFragment(new Monday(), "MONDAY");
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+                        adapter.addFragment(new Friday(), "FRIDAY");
+
+                        break;
+
+                    case DateTimeConstants.SUNDAY:
+
+                        adapter.addFragment(new Sunday(), "SUNDAY");
+                        adapter.addFragment(new Monday(), "MONDAY");
+                        adapter.addFragment(new Tuesday(), "TUESDAY");
+                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
+                        adapter.addFragment(new Thursday(), "THURSDAY");
+                        adapter.addFragment(new Friday(), "FRIDAY");
+                        adapter.addFragment(new Saturday(), "SATURDAY");
+
+                        break;
+
+                }
 
                 viewPager.setAdapter(adapter);
+
+                tabLayout.clearOnTabSelectedListeners();
+                tabLayout.removeAllTabs();
 
                 tabLayout.setupWithViewPager(viewPager);
 

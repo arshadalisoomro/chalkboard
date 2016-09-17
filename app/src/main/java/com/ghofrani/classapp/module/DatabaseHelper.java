@@ -6,15 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.DatabaseContract;
 import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -112,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void insertClassesIntoDayStandard(ArrayList<StandardClass> classesToInsert, int day) {
+    public void insertClassesIntoDay(ArrayList<StandardClass> classesToInsert, int day) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -125,16 +126,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         switch (day) {
 
-            case Calendar.SUNDAY:
-
-                columnClass = DatabaseContract.Sunday.COLUMN_CLASS;
-                columnStartTime = DatabaseContract.Sunday.COLUMN_START_TIME;
-                columnEndTime = DatabaseContract.Sunday.COLUMN_END_TIME;
-                tableName = DatabaseContract.Sunday.TABLE_NAME;
-
-                break;
-
-            case Calendar.MONDAY:
+            case DateTimeConstants.MONDAY:
 
                 columnClass = DatabaseContract.Monday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Monday.COLUMN_START_TIME;
@@ -143,7 +135,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 break;
 
-            case Calendar.TUESDAY:
+            case DateTimeConstants.TUESDAY:
 
                 columnClass = DatabaseContract.Tuesday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Tuesday.COLUMN_START_TIME;
@@ -152,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 break;
 
-            case Calendar.WEDNESDAY:
+            case DateTimeConstants.WEDNESDAY:
 
                 columnClass = DatabaseContract.Wednesday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Wednesday.COLUMN_START_TIME;
@@ -161,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 break;
 
-            case Calendar.THURSDAY:
+            case DateTimeConstants.THURSDAY:
 
                 columnClass = DatabaseContract.Thursday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Thursday.COLUMN_START_TIME;
@@ -170,7 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 break;
 
-            case Calendar.FRIDAY:
+            case DateTimeConstants.FRIDAY:
 
                 columnClass = DatabaseContract.Friday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Friday.COLUMN_START_TIME;
@@ -179,12 +171,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 break;
 
-            case Calendar.SATURDAY:
+            case DateTimeConstants.SATURDAY:
 
                 columnClass = DatabaseContract.Saturday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Saturday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Saturday.COLUMN_END_TIME;
                 tableName = DatabaseContract.Saturday.TABLE_NAME;
+
+                break;
+
+            case DateTimeConstants.SUNDAY:
+
+                columnClass = DatabaseContract.Sunday.COLUMN_CLASS;
+                columnStartTime = DatabaseContract.Sunday.COLUMN_START_TIME;
+                columnEndTime = DatabaseContract.Sunday.COLUMN_END_TIME;
+                tableName = DatabaseContract.Sunday.TABLE_NAME;
 
                 break;
 
@@ -230,18 +231,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             switch (day) {
 
-                case Calendar.SUNDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Sunday.TABLE_NAME + " where "
-                            + DatabaseContract.Sunday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Sunday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
-
-                    break;
-
-                case Calendar.MONDAY:
+                case DateTimeConstants.MONDAY:
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Monday.TABLE_NAME + " where "
@@ -252,7 +242,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     break;
 
-                case Calendar.TUESDAY:
+                case DateTimeConstants.TUESDAY:
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Tuesday.TABLE_NAME + " where "
@@ -263,7 +253,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     break;
 
-                case Calendar.WEDNESDAY:
+                case DateTimeConstants.WEDNESDAY:
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Wednesday.TABLE_NAME + " where "
@@ -274,7 +264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     break;
 
-                case Calendar.THURSDAY:
+                case DateTimeConstants.THURSDAY:
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Thursday.TABLE_NAME + " where "
@@ -285,7 +275,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     break;
 
-                case Calendar.FRIDAY:
+                case DateTimeConstants.FRIDAY:
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Friday.TABLE_NAME + " where "
@@ -296,13 +286,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     break;
 
-                case Calendar.SATURDAY:
+                case DateTimeConstants.SATURDAY:
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Saturday.TABLE_NAME + " where "
                             + DatabaseContract.Saturday.COLUMN_CLASS + "='"
                             + classToRemove + "' and "
                             + DatabaseContract.Saturday.COLUMN_START_TIME + "='"
+                            + startTime.toString() + "'");
+
+                    break;
+
+                case DateTimeConstants.SUNDAY:
+
+                    sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Sunday.TABLE_NAME + " where "
+                            + DatabaseContract.Sunday.COLUMN_CLASS + "='"
+                            + classToRemove + "' and "
+                            + DatabaseContract.Sunday.COLUMN_START_TIME + "='"
                             + startTime.toString() + "'");
 
                     break;
@@ -400,7 +401,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.close();
 
-            return 0;
+            return R.color.black;
 
         }
 
@@ -413,45 +414,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         switch (day) {
 
-            case Calendar.SUNDAY:
-
-                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Sunday.TABLE_NAME + " order by rowid", null);
-
-                break;
-
-            case Calendar.MONDAY:
+            case DateTimeConstants.MONDAY:
 
                 cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Monday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
-            case Calendar.TUESDAY:
+            case DateTimeConstants.TUESDAY:
 
                 cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Tuesday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
-            case Calendar.WEDNESDAY:
+            case DateTimeConstants.WEDNESDAY:
 
                 cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Wednesday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
-            case Calendar.THURSDAY:
+            case DateTimeConstants.THURSDAY:
 
                 cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Thursday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
-            case Calendar.FRIDAY:
+            case DateTimeConstants.FRIDAY:
 
                 cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Friday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
-            case Calendar.SATURDAY:
+            case DateTimeConstants.SATURDAY:
 
                 cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Saturday.TABLE_NAME + " order by rowid", null);
+
+                break;
+
+            case DateTimeConstants.SUNDAY:
+
+                cursor = sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Sunday.TABLE_NAME + " order by rowid", null);
 
                 break;
 
