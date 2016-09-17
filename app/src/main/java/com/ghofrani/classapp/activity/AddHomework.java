@@ -704,8 +704,7 @@ public class AddHomework extends AppCompatActivity {
 
                 try {
 
-                    databaseHelper.deleteAllHomework();
-                    databaseHelper.addHomework(homeworkArrayList);
+                    databaseHelper.flushHomework(homeworkArrayList);
 
                 } finally {
 

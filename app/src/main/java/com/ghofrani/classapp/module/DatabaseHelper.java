@@ -199,6 +199,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
 
+            sqLiteDatabase.execSQL("delete from " + tableName);
+
             for (StandardClass standardClass : classesToInsert) {
 
                 contentValues.clear();
@@ -315,89 +317,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void deleteAllClassesOfDay(int day) {
-
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-
-        try {
-
-            switch (day) {
-
-                case Calendar.SUNDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Sunday.TABLE_NAME);
-
-                    break;
-
-                case Calendar.MONDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Monday.TABLE_NAME);
-
-                    break;
-
-                case Calendar.TUESDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Tuesday.TABLE_NAME);
-
-                    break;
-
-                case Calendar.WEDNESDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Wednesday.TABLE_NAME);
-
-                    break;
-
-                case Calendar.THURSDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Thursday.TABLE_NAME);
-
-                    break;
-
-                case Calendar.FRIDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Friday.TABLE_NAME);
-
-                    break;
-
-                case Calendar.SATURDAY:
-
-                    sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Saturday.TABLE_NAME);
-
-                    break;
-
-            }
-
-        } finally {
-
-            sqLiteDatabase.close();
-
-        }
-
-    }
-
-    public void deleteAllHomework() {
-
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-
-        try {
-
-            sqLiteDatabase.execSQL("delete from " + DatabaseContract.Homework.TABLE_NAME);
-
-        } finally {
-
-            sqLiteDatabase.close();
-
-        }
-
-    }
-
     public void addClass(SlimClass classToAdd) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
@@ -421,7 +340,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public String getClassLocation(String className) {
+    public String[] getClassLocationTeacherColor(String className) {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
@@ -430,46 +349,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
                 + className + "'", null);
 
-        if (cursor.moveToNext()) {
-
-            String resultString = cursor.getString(2);
-
-            cursor.close();
-
-            sqLiteDatabase.close();
-
-            return resultString;
-
-        } else {
-
-            cursor.close();
-
-            sqLiteDatabase.close();
-
-            return null;
-
-        }
-
-    }
-
-    public String getClassTeacher(String className) {
-
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from "
-                + DatabaseContract.ClassInfo.TABLE_NAME + " where "
-                + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
-                + className + "'", null);
+        final String[] locationTeacherColor = new String[3];
 
         if (cursor.moveToNext()) {
 
-            String resultString = cursor.getString(3);
+            locationTeacherColor[0] = cursor.getString(2);
+            locationTeacherColor[1] = cursor.getString(3);
+            locationTeacherColor[2] = cursor.getString(4);
 
             cursor.close();
 
             sqLiteDatabase.close();
 
-            return resultString;
+            return locationTeacherColor;
 
         } else {
 
@@ -575,13 +467,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void addHomework(ArrayList<Homework> homeworkToAdd) {
+    public void flushHomework(ArrayList<Homework> homeworkToAdd) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
         try {
+
+            sqLiteDatabase.execSQL("delete from " + DatabaseContract.Homework.TABLE_NAME);
 
             for (Homework homework : homeworkToAdd) {
 

@@ -343,18 +343,18 @@ public class EditDay extends AppCompatActivity {
                                 final TextView classStartTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
                                 final TextView classEndTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
 
-                                String classStartTime;
-                                String classEndTime;
+                                final LocalTime classStartTime;
+                                final LocalTime classEndTime;
 
                                 if (is24Hour) {
 
-                                    classStartTime = classStartTimeTextView.getText().toString().replace(":", "");
-                                    classEndTime = classEndTimeTextView.getText().toString().replace(":", "");
+                                    classStartTime = dateTimeFormatter24HourNoColon.parseLocalTime(classStartTimeTextView.getText().toString().replace(":", ""));
+                                    classEndTime = dateTimeFormatter24HourNoColon.parseLocalTime(classEndTimeTextView.getText().toString().replace(":", ""));
 
                                 } else {
 
-                                    classStartTime = dateTimeFormatter24HourNoColon.print(dateTimeFormatterAMPM.parseLocalTime(classStartTimeTextView.getText().toString()));
-                                    classEndTime = dateTimeFormatter24HourNoColon.print(dateTimeFormatterAMPM.parseLocalTime(classEndTimeTextView.getText().toString()));
+                                    classStartTime = dateTimeFormatterAMPM.parseLocalTime(classStartTimeTextView.getText().toString());
+                                    classEndTime = dateTimeFormatterAMPM.parseLocalTime(classEndTimeTextView.getText().toString());
 
                                 }
 
@@ -362,6 +362,8 @@ public class EditDay extends AppCompatActivity {
                                 ArrayList<StandardClass> currentClasses;
 
                                 try {
+
+                                    final String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(className);
 
                                     if (Utils.getClassesArrayListOfDay(day) != null) {
 
@@ -372,44 +374,44 @@ public class EditDay extends AppCompatActivity {
 
                                         while (!inserted) {
 
-                                            if (classStartTime.equals(currentClasses.get(index).getEndTimeString(false).replace(":", ""))) {
+                                            if (classStartTime.isEqual(currentClasses.get(index).getEndTime())) {
 
                                                 inserted = true;
 
                                                 currentClasses.add(index + 1, new StandardClass(className,
-                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                        databaseHelper.getClassLocation(className),
-                                                        databaseHelper.getClassTeacher(className),
-                                                        databaseHelper.getClassColor(className)));
+                                                        classStartTime,
+                                                        classEndTime,
+                                                        dateTimeFormatterAMPM.print(classStartTime),
+                                                        dateTimeFormatterAMPM.print(classEndTime),
+                                                        locationTeacherColor[0],
+                                                        locationTeacherColor[1],
+                                                        Integer.parseInt(locationTeacherColor[2])));
 
-                                            } else if (Integer.parseInt(classStartTime) < Integer.parseInt(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
+                                            } else if (classStartTime.isBefore(currentClasses.get(index).getStartTime())) {
 
                                                 inserted = true;
 
                                                 currentClasses.add(index, new StandardClass(className,
-                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                        databaseHelper.getClassLocation(className),
-                                                        databaseHelper.getClassTeacher(className),
-                                                        databaseHelper.getClassColor(className)));
+                                                        classStartTime,
+                                                        classEndTime,
+                                                        dateTimeFormatterAMPM.print(classStartTime),
+                                                        dateTimeFormatterAMPM.print(classEndTime),
+                                                        locationTeacherColor[0],
+                                                        locationTeacherColor[1],
+                                                        Integer.parseInt(locationTeacherColor[2])));
 
                                             } else if ((currentClasses.size() - index) == 1) {
 
                                                 inserted = true;
 
                                                 currentClasses.add(new StandardClass(className,
-                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                        dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                        dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                        databaseHelper.getClassLocation(className),
-                                                        databaseHelper.getClassTeacher(className),
-                                                        databaseHelper.getClassColor(className)));
+                                                        classStartTime,
+                                                        classEndTime,
+                                                        dateTimeFormatterAMPM.print(classStartTime),
+                                                        dateTimeFormatterAMPM.print(classEndTime),
+                                                        locationTeacherColor[0],
+                                                        locationTeacherColor[1],
+                                                        Integer.parseInt(locationTeacherColor[2])));
 
                                             }
 
@@ -417,21 +419,19 @@ public class EditDay extends AppCompatActivity {
 
                                         }
 
-                                        databaseHelper.deleteAllClassesOfDay(day);
-
                                         databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
 
                                     } else {
 
                                         currentClasses = new ArrayList<>();
                                         currentClasses.add(new StandardClass(className,
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                databaseHelper.getClassLocation(className),
-                                                databaseHelper.getClassTeacher(className),
-                                                databaseHelper.getClassColor(className)));
+                                                classStartTime,
+                                                classEndTime,
+                                                dateTimeFormatterAMPM.print(classStartTime),
+                                                dateTimeFormatterAMPM.print(classEndTime),
+                                                locationTeacherColor[0],
+                                                locationTeacherColor[1],
+                                                Integer.parseInt(locationTeacherColor[2])));
 
                                         databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
 
@@ -1044,23 +1044,27 @@ public class EditDay extends AppCompatActivity {
                                 final TextView classStartTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_start_time);
                                 final TextView classEndTimeTextView = (TextView) materialDialog.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_end_time);
 
-                                String classStartTime;
-                                String classEndTime;
+                                final LocalTime classStartTime;
+                                final LocalTime classEndTime;
 
                                 if (is24Hour) {
 
-                                    classStartTime = classStartTimeTextView.getText().toString().replace(":", "");
-                                    classEndTime = classEndTimeTextView.getText().toString().replace(":", "");
+                                    classStartTime = dateTimeFormatter24HourNoColon.parseLocalTime(classStartTimeTextView.getText().toString().replace(":", ""));
+                                    classEndTime = dateTimeFormatter24HourNoColon.parseLocalTime(classEndTimeTextView.getText().toString().replace(":", ""));
 
                                 } else {
 
-                                    classStartTime = dateTimeFormatter24HourNoColon.print(dateTimeFormatterAMPM.parseLocalTime(classStartTimeTextView.getText().toString()));
-                                    classEndTime = dateTimeFormatter24HourNoColon.print(dateTimeFormatterAMPM.parseLocalTime(classEndTimeTextView.getText().toString()));
+                                    classStartTime = dateTimeFormatterAMPM.parseLocalTime(classStartTimeTextView.getText().toString());
+                                    classEndTime = dateTimeFormatterAMPM.parseLocalTime(classEndTimeTextView.getText().toString());
 
                                 }
 
                                 DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
                                 ArrayList<StandardClass> currentClasses = Utils.getClassesArrayListOfDay(day);
+
+                                final String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(className);
+
+                                currentClasses = Utils.getClassesArrayListOfDay(day);
 
                                 boolean inserted = false;
                                 int index = 0;
@@ -1069,69 +1073,70 @@ public class EditDay extends AppCompatActivity {
 
                                     while (!inserted) {
 
-                                        if (classStartTime.equals(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
+                                        if (classStartTime.isEqual(currentClasses.get(index).getStartTime())) {
 
                                             inserted = true;
+
                                             currentClasses.remove(index);
 
                                             currentClasses.add(index, new StandardClass(className,
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                    databaseHelper.getClassLocation(className),
-                                                    databaseHelper.getClassTeacher(className),
-                                                    databaseHelper.getClassColor(className)));
+                                                    classStartTime,
+                                                    classEndTime,
+                                                    dateTimeFormatterAMPM.print(classStartTime),
+                                                    dateTimeFormatterAMPM.print(classEndTime),
+                                                    locationTeacherColor[0],
+                                                    locationTeacherColor[1],
+                                                    Integer.parseInt(locationTeacherColor[2])));
 
-                                        } else if (classStartTime.equals(currentClasses.get(index).getEndTimeString(false).replace(":", ""))) {
+                                        } else if (classStartTime.isEqual(currentClasses.get(index).getEndTime())) {
 
                                             inserted = true;
                                             currentClasses.remove(index + 1);
 
                                             currentClasses.add(index + 1, new StandardClass(className,
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                    databaseHelper.getClassLocation(className),
-                                                    databaseHelper.getClassTeacher(className),
-                                                    databaseHelper.getClassColor(className)));
+                                                    classStartTime,
+                                                    classEndTime,
+                                                    dateTimeFormatterAMPM.print(classStartTime),
+                                                    dateTimeFormatterAMPM.print(classEndTime),
+                                                    locationTeacherColor[0],
+                                                    locationTeacherColor[1],
+                                                    Integer.parseInt(locationTeacherColor[2])));
 
-                                        } else if (Integer.parseInt(classStartTime) < Integer.parseInt(currentClasses.get(index).getStartTimeString(false).replace(":", ""))) {
+                                        } else if (classStartTime.isBefore(currentClasses.get(index).getStartTime())) {
 
                                             inserted = true;
+
                                             currentClasses.remove(index);
 
                                             currentClasses.add(index, new StandardClass(className,
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                    databaseHelper.getClassLocation(className),
-                                                    databaseHelper.getClassTeacher(className),
-                                                    databaseHelper.getClassColor(className)));
+                                                    classStartTime,
+                                                    classEndTime,
+                                                    dateTimeFormatterAMPM.print(classStartTime),
+                                                    dateTimeFormatterAMPM.print(classEndTime),
+                                                    locationTeacherColor[0],
+                                                    locationTeacherColor[1],
+                                                    Integer.parseInt(locationTeacherColor[2])));
 
                                         } else if ((currentClasses.size() - index) == 1) {
 
                                             inserted = true;
+
                                             currentClasses.remove(currentClasses.size() - 1);
 
                                             currentClasses.add(new StandardClass(className,
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime),
-                                                    dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classStartTime)),
-                                                    dateTimeFormatterAMPM.print(dateTimeFormatter24HourNoColon.parseLocalTime(classEndTime)),
-                                                    databaseHelper.getClassLocation(className),
-                                                    databaseHelper.getClassTeacher(className),
-                                                    databaseHelper.getClassColor(className)));
+                                                    classStartTime,
+                                                    classEndTime,
+                                                    dateTimeFormatterAMPM.print(classStartTime),
+                                                    dateTimeFormatterAMPM.print(classEndTime),
+                                                    locationTeacherColor[0],
+                                                    locationTeacherColor[1],
+                                                    Integer.parseInt(locationTeacherColor[2])));
 
                                         }
 
                                         index++;
 
                                     }
-
-                                    databaseHelper.deleteAllClassesOfDay(day);
 
                                     databaseHelper.insertClassesIntoDayStandard(currentClasses, day);
 
@@ -1541,14 +1546,16 @@ public class EditDay extends AppCompatActivity {
 
                                     while (classesCursor.moveToNext()) {
 
+                                        final String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(classesCursor.getString(1));
+
                                         classesArrayList.add(new StandardClass(classesCursor.getString(1),
                                                 LocalTime.parse(classesCursor.getString(2)),
                                                 LocalTime.parse(classesCursor.getString(3)),
                                                 dateTimeFormatterAMPM.print(LocalTime.parse(classesCursor.getString(2))),
                                                 dateTimeFormatterAMPM.print(LocalTime.parse(classesCursor.getString(3))),
-                                                databaseHelper.getClassLocation(classesCursor.getString(1)),
-                                                databaseHelper.getClassTeacher(classesCursor.getString(1)),
-                                                databaseHelper.getClassColor(classesCursor.getString(1))));
+                                                locationTeacherColor[0],
+                                                locationTeacherColor[1],
+                                                Integer.parseInt(locationTeacherColor[2])));
 
                                     }
 

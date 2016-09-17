@@ -288,14 +288,16 @@ public class Background extends Service {
 
             while (todayCursor.moveToNext()) {
 
+                final String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(todayCursor.getString(1));
+
                 final StandardClass standardClass = new StandardClass(todayCursor.getString(1),
                         LocalTime.parse(todayCursor.getString(2)),
                         LocalTime.parse(todayCursor.getString(3)),
                         dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(2))),
                         dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(3))),
-                        databaseHelper.getClassLocation(todayCursor.getString(1)),
-                        databaseHelper.getClassTeacher(todayCursor.getString(1)),
-                        databaseHelper.getClassColor(todayCursor.getString(1)));
+                        locationTeacherColor[0],
+                        locationTeacherColor[1],
+                        Integer.parseInt(locationTeacherColor[2]));
 
                 if (standardClass.getStartTime().isAfter(currentTime)) {
 
@@ -816,14 +818,16 @@ public class Background extends Service {
 
                 while (tomorrowCursor.moveToNext()) {
 
+                    final String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(tomorrowCursor.getString(1));
+
                     tomorrowClassesArrayList.add(new StandardClass(tomorrowCursor.getString(1),
                             LocalTime.parse(tomorrowCursor.getString(2)),
                             LocalTime.parse(tomorrowCursor.getString(3)),
                             dateTimeFormatterAMPM.print(LocalTime.parse(tomorrowCursor.getString(2))),
                             dateTimeFormatterAMPM.print(LocalTime.parse(tomorrowCursor.getString(3))),
-                            databaseHelper.getClassLocation(tomorrowCursor.getString(1)),
-                            databaseHelper.getClassTeacher(tomorrowCursor.getString(1)),
-                            databaseHelper.getClassColor(tomorrowCursor.getString(1))));
+                            locationTeacherColor[0],
+                            locationTeacherColor[1],
+                            Integer.parseInt(locationTeacherColor[2])));
 
                 }
 
@@ -1026,14 +1030,16 @@ public class Background extends Service {
 
                 while (timetableCursor.moveToNext()) {
 
+                    final String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(timetableCursor.getString(1));
+
                     classesArrayList.add(new StandardClass(timetableCursor.getString(1),
                             LocalTime.parse(timetableCursor.getString(2)),
                             LocalTime.parse(timetableCursor.getString(3)),
                             dateTimeFormatterAMPM.print(LocalTime.parse(timetableCursor.getString(2))),
                             dateTimeFormatterAMPM.print(LocalTime.parse(timetableCursor.getString(3))),
-                            databaseHelper.getClassLocation(timetableCursor.getString(1)),
-                            databaseHelper.getClassTeacher(timetableCursor.getString(1)),
-                            databaseHelper.getClassColor(timetableCursor.getString(1))));
+                            locationTeacherColor[0],
+                            locationTeacherColor[1],
+                            Integer.parseInt(locationTeacherColor[2])));
 
                 }
 

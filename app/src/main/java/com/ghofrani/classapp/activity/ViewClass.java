@@ -2,11 +2,14 @@ package com.ghofrani.classapp.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.module.Utils;
 
@@ -37,6 +40,45 @@ public class ViewClass extends AppCompatActivity {
         if (menuItem.getItemId() == android.R.id.home) {
 
             super.onBackPressed();
+
+            return true;
+
+        } else if (menuItem.getItemId() == R.id.toolbar_delete_edit_delete) {
+
+            final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
+
+            materialDialogBuilder.title("Delete class?");
+            materialDialogBuilder.content("All timetable entries and homework will be deleted for this class.");
+            materialDialogBuilder.positiveText("YES");
+            materialDialogBuilder.positiveColorRes(R.color.black);
+            materialDialogBuilder.negativeText("CANCEL");
+            materialDialogBuilder.negativeColorRes(R.color.black);
+
+            materialDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                @Override
+                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
+
+                    materialDialog.dismiss();
+
+                    //Delete class.
+
+                }
+
+            });
+
+            materialDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
+
+                @Override
+                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
+
+                    materialDialog.dismiss();
+
+                }
+
+            });
+
+            materialDialogBuilder.show();
 
             return true;
 
