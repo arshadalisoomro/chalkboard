@@ -6,12 +6,19 @@
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:dialogTheme">@style/dialog_theme</item>
+        <item name="android:actionButtonStyle">@style/action_button</item>
 
     </style>
 
     <style name="dialog_theme" parent="@style/Theme.AppCompat.Light.Dialog">
 
         <item name="android:windowNoTitle">false</item>
+
+    </style>
+
+    <style name="action_button" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="android:padding">12dp</item>
 
     </style>
 

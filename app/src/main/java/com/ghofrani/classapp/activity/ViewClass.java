@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ghofrani.classapp.R;
@@ -44,6 +45,15 @@ public class ViewClass extends AppCompatActivity {
             return super.onOptionsItemSelected(menuItem);
 
         }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.toolbar_delete_edit, menu);
+
+        return true;
 
     }
 

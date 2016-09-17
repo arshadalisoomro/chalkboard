@@ -53,7 +53,6 @@ public class Overview extends Fragment {
     private ArrayList<StandardClass> nextClassesArrayList;
     private ExpandableListView expandableListViewTomorrowClasses;
     private ArrayList<StandardClass> tomorrowClassesArrayList;
-    private boolean expandableListViewCollapsed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -133,8 +132,6 @@ public class Overview extends Fragment {
     public void onResume() {
 
         super.onResume();
-
-        expandableListViewCollapsed = false;
 
         updateUI();
 
@@ -492,7 +489,7 @@ public class Overview extends Fragment {
 
                     } else {
 
-                        expandableListViewCollapsed = true;
+                        DataSingleton.getInstance().setIsExpandableListViewCollapsed(true);
 
                         expandableListViewNextClasses.collapseGroup(0);
 
@@ -554,15 +551,19 @@ public class Overview extends Fragment {
 
         }
 
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_next_classes", true) && !expandableListViewCollapsed) {
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_next_classes", true) && !DataSingleton.getInstance().isExpandableListViewCollapsed()) {
 
             expandableListViewNextClasses.postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
 
-                    expandableListViewNextClasses.expandGroup(0);
-                    setListViewHeightBasedOnChildrenNext(true, true);
+                    if (expandableListViewNextClasses != null) {
+
+                        expandableListViewNextClasses.expandGroup(0);
+                        setListViewHeightBasedOnChildrenNext(true, true);
+
+                    }
 
                 }
 
@@ -594,7 +595,7 @@ public class Overview extends Fragment {
 
                     } else {
 
-                        expandableListViewCollapsed = true;
+                        DataSingleton.getInstance().setIsExpandableListViewCollapsed(true);
 
                         expandableListViewTomorrowClasses.collapseGroup(0);
 
@@ -656,16 +657,20 @@ public class Overview extends Fragment {
 
         }
 
-        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_tomorrow_classes", false) && !expandableListViewCollapsed) {
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("expand_tomorrow_classes", false) && !DataSingleton.getInstance().isExpandableListViewCollapsed()) {
 
             expandableListViewTomorrowClasses.postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
 
-                    expandableListViewTomorrowClasses.expandGroup(0);
+                    if (expandableListViewTomorrowClasses != null) {
 
-                    setListViewHeightBasedOnChildrenTomorrow(true, true);
+                        expandableListViewTomorrowClasses.expandGroup(0);
+
+                        setListViewHeightBasedOnChildrenTomorrow(true, true);
+
+                    }
 
                 }
 

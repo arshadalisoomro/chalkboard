@@ -10,7 +10,7 @@
     <include
 
         android:id="@+id/view_class_toolbar"
-        layout="@layout/view_toolbar" />
+        layout="@layout/view_toolbar_padded" />
 
     <ScrollView
 

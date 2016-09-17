@@ -47,6 +47,8 @@ public class DataSingleton {
     private boolean isAnimated;
     private int selectedTabPosition;
 
+    private boolean isExpandableListViewCollapsed;
+
     private boolean is24Hour;
 
     private boolean recreate;
@@ -81,6 +83,8 @@ public class DataSingleton {
 
         isAnimated = false;
         selectedTabPosition = 0;
+
+        isExpandableListViewCollapsed = false;
 
         is24Hour = true;
 
@@ -307,6 +311,14 @@ public class DataSingleton {
 
     public void setSelectedTabPosition(int selectedTabPosition) {
         this.selectedTabPosition = selectedTabPosition;
+    }
+
+    public boolean isExpandableListViewCollapsed() {
+        return isExpandableListViewCollapsed;
+    }
+
+    public void setIsExpandableListViewCollapsed(boolean isExpandableListViewCollapsed) {
+        this.isExpandableListViewCollapsed = isExpandableListViewCollapsed;
     }
 
     public boolean is24Hour() {
