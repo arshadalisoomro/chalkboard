@@ -11,7 +11,11 @@ import android.view.MenuItem;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.event.Update;
+import com.ghofrani.classapp.module.DatabaseHelper;
 import com.ghofrani.classapp.module.Utils;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class ViewClass extends AppCompatActivity {
 
@@ -24,7 +28,7 @@ public class ViewClass extends AppCompatActivity {
         setContentView(R.layout.activity_view_class);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
-        toolbar.setTitle(getIntent().getExtras().getString("class"));
+        toolbar.setTitle(getIntent().getStringExtra("class"));
         toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -61,7 +65,21 @@ public class ViewClass extends AppCompatActivity {
 
                     materialDialog.dismiss();
 
-                    //Delete class.
+                    DatabaseHelper databaseHelper = new DatabaseHelper(ViewClass.this);
+
+                    try {
+
+                        databaseHelper.deleteClass(getIntent().getStringExtra("class"));
+
+                    } finally {
+
+                        databaseHelper.close();
+
+                    }
+
+                    EventBus.getDefault().post(new Update(true, true, true, true));
+
+                    ViewClass.super.onBackPressed();
 
                 }
 

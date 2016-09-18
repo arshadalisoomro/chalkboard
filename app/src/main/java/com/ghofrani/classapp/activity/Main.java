@@ -487,6 +487,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         super.onNewIntent(intent);
 
+        onResume();
+
         switchToView((intent.hasExtra("fragment") ? intent.getIntExtra("fragment", ID_OVERVIEW) : ID_OVERVIEW));
 
     }

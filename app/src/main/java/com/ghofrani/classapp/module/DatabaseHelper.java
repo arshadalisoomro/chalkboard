@@ -318,6 +318,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void deleteClass(String className) {
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        try {
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Monday.TABLE_NAME + " where "
+                    + DatabaseContract.Monday.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Tuesday.TABLE_NAME + " where "
+                    + DatabaseContract.Tuesday.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Wednesday.TABLE_NAME + " where "
+                    + DatabaseContract.Wednesday.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Thursday.TABLE_NAME + " where "
+                    + DatabaseContract.Thursday.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Friday.TABLE_NAME + " where "
+                    + DatabaseContract.Friday.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Saturday.TABLE_NAME + " where "
+                    + DatabaseContract.Saturday.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Sunday.TABLE_NAME + " where "
+                    + DatabaseContract.Sunday.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Homework.TABLE_NAME + " where "
+                    + DatabaseContract.Homework.COLUMN_CLASS + "='"
+                    + className + "'");
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                    + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
+                    + className + "'");
+
+        } finally {
+
+            sqLiteDatabase.close();
+
+        }
+
+    }
+
     public void addClass(SlimClass classToAdd) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();

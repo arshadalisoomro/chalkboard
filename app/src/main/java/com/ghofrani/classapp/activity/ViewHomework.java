@@ -20,7 +20,7 @@ public class ViewHomework extends AppCompatActivity {
         setContentView(R.layout.activity_view_homework);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.view_homework_toolbar);
-        toolbar.setTitle(getIntent().getExtras().getString("homework"));
+        toolbar.setTitle(getIntent().getStringExtra("homework"));
         toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);
 
