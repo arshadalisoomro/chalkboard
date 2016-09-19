@@ -21,6 +21,181 @@
         android:fillViewport="true"
         android:scrollbars="none">
 
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <android.support.v7.widget.CardView
+
+                android:id="@+id/activity_view_class_no_classes_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:visibility="gone">
+
+                <TextView
+
+                    android:id="@+id/activity_view_class_no_classes_card_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="No classes to show."
+                    android:textSize="15sp" />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+
+                android:id="@+id/activity_view_classes_current_class_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:visibility="gone">
+
+                <RelativeLayout
+
+                    android:id="@+id/activity_view_classes_current_class_card_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <RelativeLayout
+
+                        android:id="@+id/activity_view_classes_current_class_card_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="14dp">
+
+                        <ImageView
+
+                            android:id="@+id/activity_view_classes_current_class_card_class_color_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="0.5dp"
+                            android:src="@drawable/color_indicator_class_card"
+                            android:translationY="-0.5dp" />
+
+                        <TextView
+
+                            android:id="@+id/activity_view_classes_current_class_card_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignRight="@id/activity_view_classes_current_class_card_class_color_indicator"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingRight="56dp"
+                            android:textSize="18sp" />
+
+                        <TextView
+
+                            android:id="@+id/activity_view_classes_current_class_card_teacher_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignRight="@id/activity_view_classes_current_class_card_class_color_indicator"
+                            android:layout_below="@id/activity_view_classes_current_class_card_title"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingRight="56dp"
+                            android:textSize="14sp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/activity_view_classes_current_class_card_header"
+                        android:layout_marginBottom="13dp">
+
+                        <ProgressBar
+
+                            android:id="@+id/activity_view_classes_current_class_card_progress_bar"
+                            style="@android:style/Widget.Material.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="0.75dp"
+                            android:layout_marginRight="0.75dp"
+                            android:progressTint="?attr/colorPrimary">
+
+                        </ProgressBar>
+
+                        <TextView
+
+                            android:id="@+id/activity_view_classes_current_class_card_start_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/activity_view_classes_current_class_card_progress_bar"
+                            android:textSize="14sp" />
+
+                        <TextView
+
+                            android:id="@+id/activity_view_classes_current_class_card_end_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/activity_view_classes_current_class_card_progress_bar"
+                            android:textSize="14sp" />
+
+                        <TextView
+
+                            android:id="@+id/activity_view_classes_current_class_card_progress_percentage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/activity_view_classes_current_class_card_progress_bar"
+                            android:layout_centerHorizontal="true"
+                            android:textSize="14sp" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+
+                android:id="@+id/activity_view_classes_next_classes_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_view_classes_current_class_card"
+                android:layout_margin="4dp"
+                android:visibility="gone">
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp">
+
+                    <ExpandableListView
+
+                        android:id="@+id/activity_view_classes_next_classes_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:childDivider="#d3d3d3"
+                        android:dividerHeight="1dp"
+                        android:layoutDirection="rtl"
+                        android:scrollbars="none">
+
+                    </ExpandableListView>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
+
     </ScrollView>
 
 </LinearLayout>

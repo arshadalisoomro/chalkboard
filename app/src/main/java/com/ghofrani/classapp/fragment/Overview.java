@@ -196,6 +196,8 @@ public class Overview extends Fragment {
 
     private void updateUI() {
 
+        int nullCount = 0;
+
         if (DataSingleton.getInstance().getCurrentClass() != null) {
 
             if (currentClassCardView == null) {
@@ -215,6 +217,8 @@ public class Overview extends Fragment {
                 });
 
             }
+
+            currentClassCardView.setVisibility(View.VISIBLE);
 
             StandardClass currentClass = DataSingleton.getInstance().getCurrentClass();
 
@@ -271,6 +275,12 @@ public class Overview extends Fragment {
 
             updateProgressBar();
 
+        } else {
+
+            getView().findViewById(R.id.overview_current_class_card).setVisibility(View.GONE);
+
+            nullCount++;
+
         }
 
         if (DataSingleton.getInstance().getNextClass() != null) {
@@ -279,9 +289,15 @@ public class Overview extends Fragment {
 
             configureExpandableListViewNextClasses();
 
+            getView().findViewById(R.id.overview_next_classes_card).setVisibility(View.VISIBLE);
+
         } else {
 
             expandableListViewNextClasses = null;
+
+            getView().findViewById(R.id.overview_next_classes_card).setVisibility(View.GONE);
+
+            nullCount++;
 
         }
 
@@ -291,9 +307,25 @@ public class Overview extends Fragment {
 
             configureExpandableListViewTomorrowClasses();
 
+            getView().findViewById(R.id.overview_tomorrow_classes_card).setVisibility(View.VISIBLE);
+
         } else {
 
             expandableListViewTomorrowClasses = null;
+
+            getView().findViewById(R.id.overview_tomorrow_classes_card).setVisibility(View.GONE);
+
+            nullCount++;
+
+        }
+
+        if (nullCount == 3) {
+
+            getView().findViewById(R.id.overview_no_classes_card).setVisibility(View.VISIBLE);
+
+        } else {
+
+            getView().findViewById(R.id.overview_no_classes_card).setVisibility(View.GONE);
 
         }
 
