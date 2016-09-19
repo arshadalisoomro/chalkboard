@@ -12,10 +12,13 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.Update;
+import com.ghofrani.classapp.event.UpdateClassesUI;
+import com.ghofrani.classapp.event.UpdateProgressUI;
 import com.ghofrani.classapp.module.DatabaseHelper;
 import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class ViewClass extends AppCompatActivity {
 
@@ -35,6 +38,37 @@ public class ViewClass extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    @Subscribe
+    public void OnEvent(UpdateProgressUI updateProgressUIEvent) {
+
+
+
+    }
+
+    @Subscribe
+    public void onEvent(UpdateClassesUI updateClassesUIEvent) {
+
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    protected void onPause() {
+
+        EventBus.getDefault().unregister(this);
+
+        super.onPause();
 
     }
 
