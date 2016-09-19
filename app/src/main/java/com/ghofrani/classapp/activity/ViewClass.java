@@ -25,10 +25,11 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.adapter.ClassList;
+import com.ghofrani.classapp.adapter.ViewClassList;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.event.UpdateClassesUI;
 import com.ghofrani.classapp.event.UpdateProgressUI;
+import com.ghofrani.classapp.model.DatedStandardClass;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
@@ -36,6 +37,9 @@ import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
 
@@ -43,8 +47,8 @@ public class ViewClass extends AppCompatActivity {
 
     private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION = 100;
     private final int EXPANDABLE_LIST_VIEW_HEIGHT = 36;
-    private ClassList classListAdapterNext;
-    private ExpandableListView expandableListViewNextClasses;
+
+    private ExpandableListView expandableListViewUpcomingClasses;
     private ProgressBar progressBar;
     private TextView progressTextView;
     private TextView currentClassTitleTextView;
@@ -53,7 +57,10 @@ public class ViewClass extends AppCompatActivity {
     private TextView currentClassEndTimeTextView;
     private ImageView currentClassColorIndicator;
     private CardView currentClassCardView;
-    private ArrayList<StandardClass> nextClassesArrayList;
+    private CardView noClassesCard;
+    private CardView upcomingClassesListCardView;
+    private ViewClassList viewClassListAdapterNext;
+    private ArrayList<DatedStandardClass> datedStandardClassArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +91,18 @@ public class ViewClass extends AppCompatActivity {
     @Subscribe
     public void onEvent(UpdateClassesUI updateClassesUIEvent) {
 
+        if (expandableListViewUpcomingClasses != null) {
+
+            if (expandableListViewUpcomingClasses.isGroupExpanded(0)) {
+
+                expandableListViewUpcomingClasses.collapseGroup(0);
+
+                setListViewHeightBasedOnChildrenNext(true, true);
+
+            }
+
+        }
+
         updateUI();
 
     }
@@ -92,6 +111,36 @@ public class ViewClass extends AppCompatActivity {
     protected void onResume() {
 
         super.onResume();
+
+        if (currentClassCardView == null)
+            currentClassCardView = (CardView) findViewById(R.id.activity_view_classes_current_class_card);
+
+        if (currentClassTitleTextView == null)
+            currentClassTitleTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_title);
+
+        if (currentClassLocationTeacherTextView == null)
+            currentClassLocationTeacherTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_teacher_location);
+
+        if (currentClassColorIndicator == null)
+            currentClassColorIndicator = (ImageView) findViewById(R.id.activity_view_classes_current_class_card_class_color_indicator);
+
+        if (currentClassStartTimeTextView == null)
+            currentClassStartTimeTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_start_time);
+
+        if (currentClassEndTimeTextView == null)
+            currentClassEndTimeTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_end_time);
+
+        if (progressBar == null)
+            progressBar = (ProgressBar) findViewById(R.id.activity_view_classes_current_class_card_progress_bar);
+
+        if (progressTextView == null)
+            progressTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_progress_percentage);
+
+        if (noClassesCard == null)
+            noClassesCard = (CardView) findViewById(R.id.activity_view_class_no_classes_card);
+
+        if (upcomingClassesListCardView == null)
+            upcomingClassesListCardView = (CardView) findViewById(R.id.activity_view_classes_next_classes_card);
 
         updateUI();
 
@@ -104,11 +153,11 @@ public class ViewClass extends AppCompatActivity {
 
         EventBus.getDefault().unregister(this);
 
-        if (expandableListViewNextClasses != null) {
+        if (expandableListViewUpcomingClasses != null) {
 
-            if (expandableListViewNextClasses.isGroupExpanded(0)) {
+            if (expandableListViewUpcomingClasses.isGroupExpanded(0)) {
 
-                expandableListViewNextClasses.collapseGroup(0);
+                expandableListViewUpcomingClasses.collapseGroup(0);
 
                 setListViewHeightBasedOnChildrenNext(true, false);
 
@@ -122,29 +171,15 @@ public class ViewClass extends AppCompatActivity {
 
     private void updateUI() {
 
-        int nullCount = 0;
-
         if (DataSingleton.getInstance().getCurrentClass() != null) {
 
             if (DataSingleton.getInstance().getCurrentClass().getName().equals(getIntent().getStringExtra("class"))) {
-
-                if (currentClassCardView == null)
-                    currentClassCardView = (CardView) findViewById(R.id.activity_view_classes_current_class_card);
 
                 currentClassCardView.setVisibility(View.VISIBLE);
 
                 StandardClass currentClass = DataSingleton.getInstance().getCurrentClass();
 
-                if (currentClassTitleTextView == null)
-                    currentClassTitleTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_title);
-
                 currentClassTitleTextView.setText(currentClass.getName());
-
-                if (currentClassLocationTeacherTextView == null)
-                    currentClassLocationTeacherTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_teacher_location);
-
-                if (currentClassColorIndicator == null)
-                    currentClassColorIndicator = (ImageView) findViewById(R.id.activity_view_classes_current_class_card_class_color_indicator);
 
                 if (currentClass.hasLocation()) {
 
@@ -169,20 +204,10 @@ public class ViewClass extends AppCompatActivity {
 
                 }
 
-                if (currentClassStartTimeTextView == null)
-                    currentClassStartTimeTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_start_time);
-
                 currentClassStartTimeTextView.setText(currentClass.getStartTimeString(true));
-
-                if (currentClassEndTimeTextView == null)
-                    currentClassEndTimeTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_end_time);
-
                 currentClassEndTimeTextView.setText(currentClass.getEndTimeString(true));
 
                 currentClassColorIndicator.setColorFilter(currentClass.getColor());
-
-                if (progressBar == null)
-                    progressBar = (ProgressBar) findViewById(R.id.activity_view_classes_current_class_card_progress_bar);
 
                 progressBar.setProgressTintList(ColorStateList.valueOf(currentClass.getColor()));
 
@@ -190,27 +215,142 @@ public class ViewClass extends AppCompatActivity {
 
             } else {
 
-                findViewById(R.id.activity_view_classes_current_class_card).setVisibility(View.GONE);
-
-                nullCount++;
+                currentClassCardView.setVisibility(View.GONE);
 
             }
 
         } else {
 
-            findViewById(R.id.activity_view_classes_current_class_card).setVisibility(View.GONE);
-
-            nullCount++;
+            currentClassCardView.setVisibility(View.GONE);
 
         }
 
-        if (nullCount == 2) {
+        final ArrayList<DatedStandardClass> datedStandardClassArrayListLocal = getNextClasses(5, getIntent().getStringExtra("class"));
 
+        if (datedStandardClassArrayListLocal != null) {
+
+            datedStandardClassArrayList = datedStandardClassArrayListLocal;
+
+            configureExpandableListViewNextClasses();
+
+            upcomingClassesListCardView.setVisibility(View.VISIBLE);
+
+            noClassesCard.setVisibility(View.GONE);
 
         } else {
 
+            expandableListViewUpcomingClasses = null;
+
+            upcomingClassesListCardView.setVisibility(View.GONE);
+
+            noClassesCard.setVisibility(View.VISIBLE);
 
         }
+
+    }
+
+    private void configureExpandableListViewNextClasses() {
+
+        if (expandableListViewUpcomingClasses == null) {
+
+            expandableListViewUpcomingClasses = (ExpandableListView) findViewById(R.id.activity_view_classes_next_classes_list);
+
+            expandableListViewUpcomingClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+                public boolean onGroupClick(ExpandableListView expandableListViewGroupListener, View view, int groupPosition, long id) {
+
+                    expandableListViewUpcomingClasses = expandableListViewGroupListener;
+
+                    if (!expandableListViewUpcomingClasses.isGroupExpanded(0))
+                        expandableListViewUpcomingClasses.expandGroup(0);
+                    else
+                        expandableListViewUpcomingClasses.collapseGroup(0);
+
+                    setListViewHeightBasedOnChildrenNext(true, true);
+
+                    return true;
+
+                }
+
+            });
+
+        }
+
+        if (viewClassListAdapterNext == null) {
+
+            viewClassListAdapterNext = new ViewClassList(this, datedStandardClassArrayList, "Upcoming classes");
+            expandableListViewUpcomingClasses.setAdapter(viewClassListAdapterNext);
+
+        } else {
+
+            viewClassListAdapterNext.updateLinkedList((ArrayList<DatedStandardClass>) datedStandardClassArrayList.clone());
+
+        }
+
+        expandableListViewUpcomingClasses.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (expandableListViewUpcomingClasses != null) {
+
+                    expandableListViewUpcomingClasses.expandGroup(0);
+                    setListViewHeightBasedOnChildrenNext(true, true);
+
+                }
+
+            }
+
+        }, 100);
+
+    }
+
+    private ArrayList<DatedStandardClass> getNextClasses(int count, String className) {
+
+        int day = new DateTime().getDayOfWeek();
+        int iterations = -1;
+
+        final LocalTime now = new LocalTime().withHourOfDay(LocalTime.now().getHourOfDay()).withMinuteOfHour(LocalTime.now().getMinuteOfHour()).withSecondOfMinute(0).withMillisOfSecond(0);
+        final ArrayList<DatedStandardClass> returnArrayList = new ArrayList<>();
+
+        while (returnArrayList.size() < count) {
+
+            iterations++;
+
+            if (Utils.getClassesArrayListOfDay(day) != null) {
+
+                for (final StandardClass standardClass : Utils.getClassesArrayListOfDay(day)) {
+
+                    if (standardClass.getName().equals(className)) {
+
+                        if (iterations == 0) {
+
+                            if (standardClass.getStartTime().isAfter(now))
+                                returnArrayList.add(new DatedStandardClass(standardClass, new DateTime().plusDays(iterations).withTimeAtStartOfDay()));
+
+                        } else {
+
+                            returnArrayList.add(new DatedStandardClass(standardClass, new DateTime().plusDays(iterations).withTimeAtStartOfDay()));
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            if (day == DateTimeConstants.SUNDAY)
+                day = DateTimeConstants.MONDAY;
+            else
+                day++;
+
+            if (iterations == 7 && returnArrayList.isEmpty())
+                return null;
+
+        }
+
+        return returnArrayList;
 
     }
 
@@ -219,10 +359,32 @@ public class ViewClass extends AppCompatActivity {
         progressBar.setIndeterminate(false);
         progressBar.setProgress(DataSingleton.getInstance().getProgressBarProgress());
 
-        if (progressTextView == null)
-            progressTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_progress_percentage);
-
         progressTextView.setText(DataSingleton.getInstance().getProgressBarText());
+
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
+
+            expandableListViewUpcomingClasses = null;
+            progressBar = null;
+            progressTextView = null;
+            currentClassTitleTextView = null;
+            currentClassLocationTeacherTextView = null;
+            currentClassStartTimeTextView = null;
+            currentClassEndTimeTextView = null;
+            currentClassColorIndicator = null;
+            currentClassCardView = null;
+            noClassesCard = null;
+            upcomingClassesListCardView = null;
+            viewClassListAdapterNext = null;
+            datedStandardClassArrayList = null;
+
+        }
+
+        super.onTrimMemory(level);
 
     }
 
@@ -265,6 +427,8 @@ public class ViewClass extends AppCompatActivity {
 
                     }
 
+                    EventBus.getDefault().unregister(ViewClass.this);
+
                     EventBus.getDefault().post(new Update(true, true, true, true));
 
                     ViewClass.super.onBackPressed();
@@ -298,7 +462,7 @@ public class ViewClass extends AppCompatActivity {
 
     private void setListViewHeightBasedOnChildrenNext(boolean changeParams, boolean animate) {
 
-        final ListAdapter listAdapter = expandableListViewNextClasses.getAdapter();
+        final ListAdapter listAdapter = expandableListViewUpcomingClasses.getAdapter();
 
         if (listAdapter == null)
             return;
@@ -307,23 +471,23 @@ public class ViewClass extends AppCompatActivity {
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
 
-            final View listItem = listAdapter.getView(i, null, expandableListViewNextClasses);
+            final View listItem = listAdapter.getView(i, null, expandableListViewUpcomingClasses);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
 
         }
 
-        final ViewGroup.LayoutParams listViewLayoutParams = expandableListViewNextClasses.getLayoutParams();
+        final ViewGroup.LayoutParams listViewLayoutParams = expandableListViewUpcomingClasses.getLayoutParams();
 
         if (changeParams) {
 
-            final TextView groupText = (TextView) expandableListViewNextClasses.findViewById(R.id.view_list_group_text);
+            final TextView groupText = (TextView) expandableListViewUpcomingClasses.findViewById(R.id.view_list_group_text);
             final LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
-            if (expandableListViewNextClasses.isGroupExpanded(0)) {
+            if (expandableListViewUpcomingClasses.isGroupExpanded(0)) {
 
-                final RelativeLayout parentLayout = (RelativeLayout) expandableListViewNextClasses.getParent();
-                final int listViewLayoutParamsHeight = totalHeight + getPixelFromDP(8) + (expandableListViewNextClasses.getDividerHeight() * (listAdapter.getCount() - 1));
+                final RelativeLayout parentLayout = (RelativeLayout) expandableListViewUpcomingClasses.getParent();
+                final int listViewLayoutParamsHeight = totalHeight + getPixelFromDP(8) + (expandableListViewUpcomingClasses.getDividerHeight() * (listAdapter.getCount() - 1));
                 final FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
 
                 if (animate) {
@@ -358,7 +522,7 @@ public class ViewClass extends AppCompatActivity {
 
             } else {
 
-                final RelativeLayout parentLayout = (RelativeLayout) expandableListViewNextClasses.getParent();
+                final RelativeLayout parentLayout = (RelativeLayout) expandableListViewUpcomingClasses.getParent();
                 final int listViewLayoutParamsHeight = listViewLayoutParams.height;
                 final FrameLayout.LayoutParams relativeLayoutParams = (FrameLayout.LayoutParams) parentLayout.getLayoutParams();
 
@@ -387,7 +551,7 @@ public class ViewClass extends AppCompatActivity {
 
                 }
 
-                listViewLayoutParams.height = totalHeight + (expandableListViewNextClasses.getDividerHeight() * (listAdapter.getCount() - 1));
+                listViewLayoutParams.height = totalHeight + (expandableListViewUpcomingClasses.getDividerHeight() * (listAdapter.getCount() - 1));
 
                 groupTextLayoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(8));
                 groupText.setLayoutParams(groupTextLayoutParams);
@@ -396,15 +560,15 @@ public class ViewClass extends AppCompatActivity {
 
         } else {
 
-            if (!expandableListViewNextClasses.isGroupExpanded(0))
-                listViewLayoutParams.height = totalHeight + (expandableListViewNextClasses.getDividerHeight() * (listAdapter.getCount() - 1));
+            if (!expandableListViewUpcomingClasses.isGroupExpanded(0))
+                listViewLayoutParams.height = totalHeight + (expandableListViewUpcomingClasses.getDividerHeight() * (listAdapter.getCount() - 1));
             else
-                listViewLayoutParams.height = totalHeight + getPixelFromDP(8) + (expandableListViewNextClasses.getDividerHeight() * (listAdapter.getCount() - 1));
+                listViewLayoutParams.height = totalHeight + getPixelFromDP(8) + (expandableListViewUpcomingClasses.getDividerHeight() * (listAdapter.getCount() - 1));
 
         }
 
-        expandableListViewNextClasses.setLayoutParams(listViewLayoutParams);
-        expandableListViewNextClasses.requestLayout();
+        expandableListViewUpcomingClasses.setLayoutParams(listViewLayoutParams);
+        expandableListViewUpcomingClasses.requestLayout();
 
     }
 

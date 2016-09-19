@@ -261,36 +261,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         super.onResume();
 
-        if (toolbar == null)
-            toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-
-        if (floatingActionButton == null)
-            floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
-
-        if (scrollView == null)
-            scrollView = (ScrollView) findViewById(R.id.main_scroll_view);
-
-        if (navigationView == null)
-            navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
-
-        if (drawerLayout == null)
-            drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
-
-        if (tabLayout == null)
-            tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-
-        if (viewPager == null)
-            viewPager = (ViewPager) findViewById(R.id.main_view_pager);
-
-        if (DataSingleton.getInstance().isRecreate()) {
-
-            performRecreate();
-
-        } else if (DataSingleton.getInstance().isChangedFirstDay()) {
-
-            performRecreate();
-
-        }
+        performOnResume();
 
     }
 
@@ -368,7 +339,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             if (resultIntent.getStringExtra("class").equals("AddClass")) {
 
-                onResume();
+                performOnResume();
 
                 switchToView(resultIntent.getIntExtra("switch_to_timetable", requestCode));
                 Toast.makeText(this, "Add your class into the timetable!", Toast.LENGTH_LONG).show();
@@ -487,9 +458,54 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         super.onNewIntent(intent);
 
-        onResume();
+        if (intent.hasExtra("fragment")) {
 
-        switchToView((intent.hasExtra("fragment") ? intent.getIntExtra("fragment", ID_OVERVIEW) : ID_OVERVIEW));
+            if (intent.getIntExtra("fragment", ID_OVERVIEW) != currentView) {
+
+                performOnResume();
+
+                switchToView(intent.getIntExtra("fragment", ID_OVERVIEW));
+
+            }
+
+        }
+
+        setIntent(intent);
+
+    }
+
+    private void performOnResume() {
+
+        if (toolbar == null)
+            toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+
+        if (floatingActionButton == null)
+            floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
+
+        if (scrollView == null)
+            scrollView = (ScrollView) findViewById(R.id.main_scroll_view);
+
+        if (navigationView == null)
+            navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+
+        if (drawerLayout == null)
+            drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+
+        if (tabLayout == null)
+            tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+
+        if (viewPager == null)
+            viewPager = (ViewPager) findViewById(R.id.main_view_pager);
+
+        if (DataSingleton.getInstance().isRecreate()) {
+
+            performRecreate();
+
+        } else if (DataSingleton.getInstance().isChangedFirstDay()) {
+
+            performRecreate();
+
+        }
 
     }
 

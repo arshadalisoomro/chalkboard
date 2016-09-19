@@ -133,6 +133,30 @@ public class Overview extends Fragment {
 
         super.onResume();
 
+        if (currentClassCardView == null)
+            currentClassCardView = (CardView) getView().findViewById(R.id.overview_current_class_card);
+
+        if (currentClassTitleTextView == null)
+            currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
+
+        if (currentClassLocationTeacherTextView == null)
+            currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_teacher_location);
+
+        if (currentClassColorIndicator == null)
+            currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
+
+        if (currentClassStartTimeTextView == null)
+            currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
+
+        if (currentClassEndTimeTextView == null)
+            currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
+
+        if (progressBar == null)
+            progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
+
+        if (progressTextView == null)
+            progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
+
         updateUI();
 
         EventBus.getDefault().register(this);
@@ -200,9 +224,8 @@ public class Overview extends Fragment {
 
         if (DataSingleton.getInstance().getCurrentClass() != null) {
 
-            if (currentClassCardView == null) {
+            if (!currentClassCardView.hasOnClickListeners()) {
 
-                currentClassCardView = (CardView) getView().findViewById(R.id.overview_current_class_card);
                 currentClassCardView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -222,16 +245,7 @@ public class Overview extends Fragment {
 
             StandardClass currentClass = DataSingleton.getInstance().getCurrentClass();
 
-            if (currentClassTitleTextView == null)
-                currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
-
             currentClassTitleTextView.setText(currentClass.getName());
-
-            if (currentClassLocationTeacherTextView == null)
-                currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_teacher_location);
-
-            if (currentClassColorIndicator == null)
-                currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
 
             if (currentClass.hasLocation()) {
 
@@ -256,20 +270,10 @@ public class Overview extends Fragment {
 
             }
 
-            if (currentClassStartTimeTextView == null)
-                currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
-
             currentClassStartTimeTextView.setText(currentClass.getStartTimeString(true));
-
-            if (currentClassEndTimeTextView == null)
-                currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
-
             currentClassEndTimeTextView.setText(currentClass.getEndTimeString(true));
 
             currentClassColorIndicator.setColorFilter(currentClass.getColor());
-
-            if (progressBar == null)
-                progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
 
             progressBar.setProgressTintList(ColorStateList.valueOf(currentClass.getColor()));
 
@@ -293,6 +297,7 @@ public class Overview extends Fragment {
 
         } else {
 
+            classListAdapterNext = null;
             expandableListViewNextClasses = null;
 
             getView().findViewById(R.id.overview_next_classes_card).setVisibility(View.GONE);
@@ -311,6 +316,7 @@ public class Overview extends Fragment {
 
         } else {
 
+            classListAdapterTomorrow = null;
             expandableListViewTomorrowClasses = null;
 
             getView().findViewById(R.id.overview_tomorrow_classes_card).setVisibility(View.GONE);
@@ -335,9 +341,6 @@ public class Overview extends Fragment {
 
         progressBar.setIndeterminate(false);
         progressBar.setProgress(DataSingleton.getInstance().getProgressBarProgress());
-
-        if (progressTextView == null)
-            progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
 
         progressTextView.setText(DataSingleton.getInstance().getProgressBarText());
 

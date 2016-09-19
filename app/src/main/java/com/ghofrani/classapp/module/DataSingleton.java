@@ -42,6 +42,7 @@ public class DataSingleton {
     private ArrayList<Homework> beyondThisMonthHomeworkArrayList;
     private ArrayList<Homework> pastHomeworkArrayList;
 
+    private DateTime thisWeekEnd;
     private DateTime nextWeekEnd;
 
     private boolean isAnimated;
@@ -289,6 +290,14 @@ public class DataSingleton {
 
     public void setPastHomeworkArrayList(ArrayList<Homework> pastHomeworkArrayList) {
         this.pastHomeworkArrayList = pastHomeworkArrayList;
+    }
+
+    public DateTime getThisWeekEnd() {
+        return thisWeekEnd;
+    }
+
+    public void setThisWeekEnd(DateTime thisWeekEnd) {
+        this.thisWeekEnd = thisWeekEnd;
     }
 
     public DateTime getNextWeekEnd() {

@@ -181,7 +181,7 @@ public class AddHomework extends AppCompatActivity {
 
     private boolean isClassInTimetable(String className) {
 
-        for (int i = 1; i < 8; i++) {
+        for (int i = DateTimeConstants.MONDAY; i <= DateTimeConstants.SUNDAY; i++) {
 
             if (Utils.getClassesArrayListOfDay(i) != null) {
 
@@ -211,7 +211,7 @@ public class AddHomework extends AppCompatActivity {
                     listItemClasses.clear();
                     listItemTitles.clear();
 
-                    for (int i = 1; i < 8; i++) {
+                    for (int i = DateTimeConstants.MONDAY; i <= DateTimeConstants.SUNDAY; i++) {
 
                         if (Utils.getClassesArrayListOfDay(i) != null) {
 
@@ -398,13 +398,17 @@ public class AddHomework extends AppCompatActivity {
         if (level == TRIM_MEMORY_UI_HIDDEN) {
 
             classNameSpinner = null;
+
             nextClassRadioButton = null;
             specificClassRadioButton = null;
             customTimeRadioButton = null;
+
             homeworkNameEditText = null;
+
             listItemClasses = null;
             listItemTitles = null;
             daySwitches = null;
+
             priorityCheckBox = null;
 
         }
@@ -448,8 +452,8 @@ public class AddHomework extends AppCompatActivity {
 
             }
 
-            if (day == 7)
-                day = 1;
+            if (day == DateTimeConstants.SUNDAY)
+                day = DateTimeConstants.MONDAY;
             else
                 day++;
 

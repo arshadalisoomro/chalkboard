@@ -56,6 +56,7 @@
         <activity
 
             android:name=".activity.ViewClass"
+            android:hardwareAccelerated="true"
             android:parentActivityName=".activity.Main"
             android:screenOrientation="portrait">
 

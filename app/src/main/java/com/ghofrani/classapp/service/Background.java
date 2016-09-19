@@ -807,8 +807,8 @@ public class Background extends Service {
 
             int day = new DateTime().getDayOfWeek();
 
-            if (day == 7)
-                day = 1;
+            if (day == DateTimeConstants.SUNDAY)
+                day = DateTimeConstants.MONDAY;
             else
                 day++;
 
@@ -923,7 +923,7 @@ public class Background extends Service {
 
         }
 
-        final DateTime thisWeekEndDateTime = new DateTime().plusDays(Utils.getPlusDaysTill(Integer.parseInt(sharedPreferences.getString("first_day_of_week", "1"))));
+        final DateTime thisWeekEndDateTime = new DateTime().plusDays(Utils.getPlusDaysTill(Integer.parseInt(sharedPreferences.getString("first_day_of_week", "1")))).withTimeAtStartOfDay();
 
         if (today.getDayOfWeek() == secondLastDayOfWeek) {
 
@@ -939,7 +939,7 @@ public class Background extends Service {
 
         } else {
 
-            thisWeek = new Interval(tomorrow.plusDays(1).withTimeAtStartOfDay(), thisWeekEndDateTime.withTimeAtStartOfDay());
+            thisWeek = new Interval(tomorrow.plusDays(1).withTimeAtStartOfDay(), thisWeekEndDateTime);
             nextWeek = new Interval(thisWeek.getEnd(), thisWeek.getEnd().plusDays(7));
 
         }
@@ -1012,6 +1012,7 @@ public class Background extends Service {
         DataSingleton.getInstance().setBeyondThisMonthHomeworkArrayList(beyondThisMonthHomeworkArrayList);
         DataSingleton.getInstance().setPastHomeworkArrayList(pastHomeworkArrayList);
 
+        DataSingleton.getInstance().setThisWeekEnd(thisWeekEndDateTime);
         DataSingleton.getInstance().setNextWeekEnd(nextWeek.getEnd());
 
         EventBus.getDefault().post(new UpdateHomeworkUI());
