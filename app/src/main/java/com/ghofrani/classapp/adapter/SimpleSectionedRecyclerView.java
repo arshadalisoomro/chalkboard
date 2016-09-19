@@ -121,7 +121,7 @@ public class SimpleSectionedRecyclerView extends RecyclerView.Adapter<RecyclerVi
 
         int offset = 0;
 
-        for (Section section : sections) {
+        for (final Section section : sections) {
 
             section.sectionedPosition = section.firstPosition + offset;
             sectionsSparseArray.append(section.sectionedPosition, section);

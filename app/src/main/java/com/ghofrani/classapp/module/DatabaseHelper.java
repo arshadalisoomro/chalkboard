@@ -202,7 +202,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL("delete from " + tableName);
 
-            for (StandardClass standardClass : classesToInsert) {
+            for (final StandardClass standardClass : classesToInsert) {
 
                 contentValues.clear();
 
@@ -537,7 +537,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL("delete from " + DatabaseContract.Homework.TABLE_NAME);
 
-            for (Homework homework : homeworkToAdd) {
+            for (final Homework homework : homeworkToAdd) {
 
                 contentValues.clear();
 
