@@ -36,7 +36,7 @@ import java.util.ArrayList;
 
 public class Overview extends Fragment {
 
-    private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION = 100;
+    private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE = 25;
     private final int EXPANDABLE_LIST_VIEW_HEIGHT = 36;
 
     private ClassList classListAdapterTomorrow;
@@ -442,7 +442,7 @@ public class Overview extends Fragment {
 
                 }
 
-            }, 100);
+            }, 200);
 
         } else {
 
@@ -549,7 +549,7 @@ public class Overview extends Fragment {
 
                 }
 
-            }, 100);
+            }, 200);
 
         } else {
 
@@ -603,7 +603,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
+                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() : 100);
                     parentLayout.startAnimation(expandAnimation);
 
                 } else {
@@ -639,7 +639,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
+                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() : 100);
                     parentLayout.startAnimation(collapseAnimation);
 
                 } else {
@@ -715,7 +715,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
+                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() : 100);
                     parentLayout.startAnimation(expandAnimation);
 
                 } else {
@@ -751,7 +751,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
+                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() : 100);
                     parentLayout.startAnimation(collapseAnimation);
 
                 } else {

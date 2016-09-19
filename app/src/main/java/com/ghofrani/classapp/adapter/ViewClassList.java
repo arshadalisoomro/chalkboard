@@ -117,9 +117,17 @@ public class ViewClassList extends BaseExpandableListAdapter {
 
             listChildTitleTextView.setVisibility(View.VISIBLE);
 
-            if (standardClassDateTime.isBefore(DataSingleton.getInstance().getThisWeekEnd())) {
+            if (new DateTime().withTimeAtStartOfDay().isEqual(standardClassDateTime.withTimeAtStartOfDay())) {
 
-                listChildTitleTextView.setText("This " + dayOfWeekString.print(standardClassDateTime));
+                listChildTitleTextView.setText("Today");
+
+            } else if (new DateTime().plusDays(1).withTimeAtStartOfDay().isEqual(standardClassDateTime.withTimeAtStartOfDay())) {
+
+                listChildTitleTextView.setText("Tomorrow");
+
+            } else if (standardClassDateTime.isBefore(DataSingleton.getInstance().getThisWeekEnd())) {
+
+                listChildTitleTextView.setText(dayOfWeekString.print(standardClassDateTime));
 
             } else if (standardClassDateTime.isBefore(DataSingleton.getInstance().getNextWeekEnd())) {
 
@@ -146,9 +154,17 @@ public class ViewClassList extends BaseExpandableListAdapter {
 
             listChildTitleTextView.setVisibility(View.VISIBLE);
 
-            if (standardClassDateTime.isBefore(DataSingleton.getInstance().getThisWeekEnd())) {
+            if (new DateTime().withTimeAtStartOfDay().isEqual(standardClassDateTime.withTimeAtStartOfDay())) {
 
-                listChildTitleTextView.setText("This " + dayOfWeekString.print(standardClassDateTime));
+                listChildTitleTextView.setText("Today");
+
+            } else if (new DateTime().plusDays(1).withTimeAtStartOfDay().isEqual(standardClassDateTime.withTimeAtStartOfDay())) {
+
+                listChildTitleTextView.setText("Tomorrow");
+
+            } else if (standardClassDateTime.isBefore(DataSingleton.getInstance().getThisWeekEnd())) {
+
+                listChildTitleTextView.setText(dayOfWeekString.print(standardClassDateTime));
 
             } else if (standardClassDateTime.isBefore(DataSingleton.getInstance().getNextWeekEnd())) {
 
@@ -172,9 +188,17 @@ public class ViewClassList extends BaseExpandableListAdapter {
 
             listChildTitleTextViewCentered.setVisibility(View.VISIBLE);
 
-            if (standardClassDateTime.isBefore(DataSingleton.getInstance().getThisWeekEnd())) {
+            if (new DateTime().withTimeAtStartOfDay().isEqual(standardClassDateTime.withTimeAtStartOfDay())) {
 
-                listChildTitleTextViewCentered.setText("This " + dayOfWeekString.print(standardClassDateTime));
+                listChildTitleTextViewCentered.setText("Today");
+
+            } else if (new DateTime().plusDays(1).withTimeAtStartOfDay().isEqual(standardClassDateTime.withTimeAtStartOfDay())) {
+
+                listChildTitleTextViewCentered.setText("Tomorrow");
+
+            } else if (standardClassDateTime.isBefore(DataSingleton.getInstance().getThisWeekEnd())) {
+
+                listChildTitleTextViewCentered.setText(dayOfWeekString.print(standardClassDateTime));
 
             } else if (standardClassDateTime.isBefore(DataSingleton.getInstance().getNextWeekEnd())) {
 

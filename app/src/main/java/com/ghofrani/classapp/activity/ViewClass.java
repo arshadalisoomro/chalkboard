@@ -45,7 +45,7 @@ import java.util.ArrayList;
 
 public class ViewClass extends AppCompatActivity {
 
-    private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION = 100;
+    private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE = 25;
     private final int EXPANDABLE_LIST_VIEW_HEIGHT = 36;
 
     private ExpandableListView expandableListViewUpcomingClasses;
@@ -301,7 +301,7 @@ public class ViewClass extends AppCompatActivity {
 
             }
 
-        }, 100);
+        }, 200);
 
     }
 
@@ -504,7 +504,7 @@ public class ViewClass extends AppCompatActivity {
                         }
                     };
 
-                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
+                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * datedStandardClassArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * datedStandardClassArrayList.size() : 100);
                     parentLayout.startAnimation(expandAnimation);
 
                 } else {
@@ -540,7 +540,7 @@ public class ViewClass extends AppCompatActivity {
                         }
                     };
 
-                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION);
+                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * datedStandardClassArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * datedStandardClassArrayList.size() : 100);
                     parentLayout.startAnimation(collapseAnimation);
 
                 } else {
