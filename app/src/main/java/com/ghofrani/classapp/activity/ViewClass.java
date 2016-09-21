@@ -334,6 +334,9 @@ public class ViewClass extends AppCompatActivity {
 
                         }
 
+                        if (returnArrayList.size() == count)
+                            return returnArrayList;
+
                     }
 
                 }
