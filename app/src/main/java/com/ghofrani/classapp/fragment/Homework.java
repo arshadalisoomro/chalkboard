@@ -1,9 +1,7 @@
 package com.ghofrani.classapp.fragment;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -15,19 +13,25 @@ import android.view.ViewGroup;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.HomeworkList;
-import com.ghofrani.classapp.adapter.SimpleSectionedRecyclerView;
 import com.ghofrani.classapp.module.DataSingleton;
+import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Homework extends Fragment {
 
     private RecyclerView recyclerView;
     private CardView noHomeworkCardView;
+    private HomeworkList homeworkList;
+    private RecyclerViewSwipeManager recyclerViewSwipeManager;
+    private RecyclerView.Adapter wrappedAdapter;
+    private GeneralItemAnimator generalItemAnimator;
+    private Snackbar snackbar;
 
     @Subscribe
     public void onEvent(com.ghofrani.classapp.event.UpdateHomeworkUI updateHomeworkUI) {
@@ -63,87 +67,73 @@ public class Homework extends Fragment {
     @Override
     public void onPause() {
 
+        if (snackbar != null)
+            if (snackbar.isShown())
+                snackbar.dismiss();
+
         EventBus.getDefault().unregister(this);
 
         super.onPause();
 
     }
 
+    @Override
+    public void onDestroyView() {
+
+        if (recyclerViewSwipeManager != null)
+            recyclerViewSwipeManager.release();
+
+        recyclerView.setItemAnimator(null);
+        recyclerView.setAdapter(null);
+
+        if (wrappedAdapter != null)
+            WrapperAdapterUtils.releaseAll(wrappedAdapter);
+
+        recyclerView = null;
+        recyclerViewSwipeManager = null;
+        wrappedAdapter = null;
+        homeworkList = null;
+        generalItemAnimator = null;
+        snackbar = null;
+
+        noHomeworkCardView = null;
+
+        super.onDestroyView();
+
+    }
+
     private void updateUI() {
 
-        ArrayList<com.ghofrani.classapp.model.Homework> homeworkArrayList = new ArrayList<>();
-
-        homeworkArrayList.addAll(DataSingleton.getInstance().getTodayHomeworkArrayList());
-        homeworkArrayList.addAll(DataSingleton.getInstance().getTomorrowHomeworkArrayList());
-        homeworkArrayList.addAll(DataSingleton.getInstance().getThisWeekHomeworkArrayList());
-        homeworkArrayList.addAll(DataSingleton.getInstance().getNextWeekHomeworkArrayList());
-        homeworkArrayList.addAll(DataSingleton.getInstance().getThisMonthHomeworkArrayList());
-        homeworkArrayList.addAll(DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList());
-        homeworkArrayList.addAll(DataSingleton.getInstance().getPastHomeworkArrayList());
-
-        if (!homeworkArrayList.isEmpty()) {
+        if (!DataSingleton.getInstance().getDataArrayList().isEmpty()) {
 
             noHomeworkCardView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
 
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
-            List<SimpleSectionedRecyclerView.Section> sections = new ArrayList<>();
+            homeworkList = new HomeworkList(getContext());
+            homeworkList.setEventListener(new HomeworkList.EventListener() {
 
-            int nextSectionIndex = 0;
+                @Override
+                public void onItemRemoved(int position) {
 
-            if (!DataSingleton.getInstance().getTodayHomeworkArrayList().isEmpty()) {
+                    showSnackbar();
 
-                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due today"));
-                nextSectionIndex += DataSingleton.getInstance().getTodayHomeworkArrayList().size();
+                }
 
-            }
+            });
 
-            if (!DataSingleton.getInstance().getTomorrowHomeworkArrayList().isEmpty()) {
+            wrappedAdapter = recyclerViewSwipeManager.createWrappedAdapter(homeworkList);
 
-                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due tomorrow"));
-                nextSectionIndex += DataSingleton.getInstance().getTomorrowHomeworkArrayList().size();
+            generalItemAnimator = new SwipeDismissItemAnimator();
+            generalItemAnimator.setSupportsChangeAnimations(false);
 
-            }
+            recyclerView.setAdapter(wrappedAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.line_divider), true));
+            recyclerView.setItemAnimator(generalItemAnimator);
 
-            if (!DataSingleton.getInstance().getThisWeekHomeworkArrayList().isEmpty()) {
-
-                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due this week"));
-                nextSectionIndex += DataSingleton.getInstance().getThisWeekHomeworkArrayList().size();
-
-            }
-
-            if (!DataSingleton.getInstance().getNextWeekHomeworkArrayList().isEmpty()) {
-
-                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due next week"));
-                nextSectionIndex += DataSingleton.getInstance().getNextWeekHomeworkArrayList().size();
-
-            }
-
-            if (!DataSingleton.getInstance().getThisMonthHomeworkArrayList().isEmpty()) {
-
-                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due this month"));
-                nextSectionIndex += DataSingleton.getInstance().getThisMonthHomeworkArrayList().size();
-
-            }
-
-            if (!DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList().isEmpty()) {
-
-                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due after this month"));
-                nextSectionIndex += DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList().size();
-
-            }
-
-            if (!DataSingleton.getInstance().getPastHomeworkArrayList().isEmpty())
-                sections.add(new SimpleSectionedRecyclerView.Section(nextSectionIndex, "Due in the past"));
-
-            SimpleSectionedRecyclerView.Section[] sectionArray = new SimpleSectionedRecyclerView.Section[sections.size()];
-            SimpleSectionedRecyclerView sectionedAdapter = new SimpleSectionedRecyclerView(getContext(), R.layout.view_homework_list_section, R.id.view_homework_list_section_text_view, new HomeworkList(getContext(), homeworkArrayList));
-            sectionedAdapter.setSections(sections.toArray(sectionArray));
-
-            recyclerView.setAdapter(sectionedAdapter);
-            recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
+            recyclerViewSwipeManager.attachRecyclerView(recyclerView);
 
         } else {
 
@@ -154,49 +144,29 @@ public class Homework extends Fragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
+    private void showSnackbar() {
 
-        recyclerView = null;
-        noHomeworkCardView = null;
+        snackbar = Snackbar.make(getView().findViewById(R.id.homework_container), "1 homework done!", Snackbar.LENGTH_LONG);
 
-        super.onDestroyView();
+        snackbar.setAction("UNDO", new View.OnClickListener() {
 
-    }
+            @Override
+            public void onClick(View v) {
 
-    public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
-
-        private final Drawable dividerDrawable;
-
-        public SimpleDividerItemDecoration(Context context) {
-
-            dividerDrawable = ContextCompat.getDrawable(context, R.drawable.line_divider);
-
-        }
-
-        @Override
-        public void onDrawOver(Canvas c, RecyclerView parentView, RecyclerView.State recyclerViewState) {
-
-            int left = parentView.getPaddingLeft();
-            int right = parentView.getWidth() - parentView.getPaddingRight();
-
-            int childCount = parentView.getChildCount();
-
-            for (int i = 0; i < childCount; i++) {
-
-                final View childView = parentView.getChildAt(i);
-
-                final RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
-
-                int top = childView.getBottom() + layoutParams.bottomMargin;
-                int bottom = top + dividerDrawable.getIntrinsicHeight();
-
-                dividerDrawable.setBounds(left, top, right, bottom);
-                dividerDrawable.draw(c);
+                undoLastItemRemoved();
 
             }
 
-        }
+        });
+
+        snackbar.setActionTextColor(ContextCompat.getColor(getContext(), R.color.snackbar_action_color_done));
+        snackbar.show();
+
+    }
+
+    private void undoLastItemRemoved() {
+
+        //Implement undo behaviour.
 
     }
 

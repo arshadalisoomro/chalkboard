@@ -36,7 +36,7 @@
             android:entryValues="@array/days_of_week_values"
             android:key="first_day_of_week"
             android:negativeButtonText=""
-            android:summary="Choose the first day working day of your week"
+            android:summary="Choose the first working day of your week"
             android:title="First day of week" />
 
         <CheckBoxPreference

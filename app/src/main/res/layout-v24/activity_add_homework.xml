@@ -125,7 +125,7 @@
                         android:layout_marginBottom="8dp"
                         android:onClick="onRadioButtonClicked"
                         android:paddingLeft="27.75dp"
-                        android:text="Next class"
+                        android:text="Due next class"
                         android:textSize="16sp" />
 
                     <RadioButton
@@ -136,7 +136,7 @@
                         android:layout_marginBottom="8dp"
                         android:onClick="onRadioButtonClicked"
                         android:paddingLeft="27.75dp"
-                        android:text="Specific class"
+                        android:text="Due specific class"
                         android:textSize="16sp" />
 
                     <RadioButton
@@ -146,7 +146,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonClicked"
                         android:paddingLeft="27.75dp"
-                        android:text="Custom date and time"
+                        android:text="Due custom date and time"
                         android:textSize="16sp" />
 
                 </RadioGroup>

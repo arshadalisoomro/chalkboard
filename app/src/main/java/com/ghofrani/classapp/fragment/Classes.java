@@ -17,6 +17,7 @@ public class Classes extends Fragment {
 
     private RecyclerView recyclerView;
     private CardView noClassesCardView;
+    private AllClassesList allClassesListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class Classes extends Fragment {
 
         recyclerView = null;
         noClassesCardView = null;
+        allClassesListAdapter = null;
 
         super.onDestroyView();
 
@@ -57,10 +59,9 @@ public class Classes extends Fragment {
             noClassesCardView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
 
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            AllClassesList allClassesListAdapter = new AllClassesList(DataSingleton.getInstance().getAllClassesArrayList(), getContext());
+            allClassesListAdapter = new AllClassesList(getContext());
             recyclerView.setAdapter(allClassesListAdapter);
 
         } else {

@@ -42,6 +42,8 @@ public class DataSingleton {
     private ArrayList<Homework> beyondThisMonthHomeworkArrayList;
     private ArrayList<Homework> pastHomeworkArrayList;
 
+    private ArrayList<Object> dataArrayList;
+
     private DateTime thisWeekEnd;
     private DateTime nextWeekEnd;
 
@@ -54,6 +56,8 @@ public class DataSingleton {
 
     private boolean recreate;
     private boolean isChangedFirstDay;
+
+    private boolean reactToBroadcast;
 
     private DataSingleton() {
 
@@ -83,6 +87,8 @@ public class DataSingleton {
         beyondThisMonthHomeworkArrayList = new ArrayList<>();
         pastHomeworkArrayList = new ArrayList<>();
 
+        dataArrayList = new ArrayList<>();
+
         isAnimated = false;
         selectedTabPosition = 0;
 
@@ -92,6 +98,8 @@ public class DataSingleton {
 
         recreate = false;
         isChangedFirstDay = false;
+
+        reactToBroadcast = true;
 
     }
 
@@ -292,6 +300,14 @@ public class DataSingleton {
         this.pastHomeworkArrayList = pastHomeworkArrayList;
     }
 
+    public ArrayList<Object> getDataArrayList() {
+        return dataArrayList;
+    }
+
+    public void setDataArrayList(ArrayList<Object> dataArrayList) {
+        this.dataArrayList = dataArrayList;
+    }
+
     public DateTime getThisWeekEnd() {
         return thisWeekEnd;
     }
@@ -354,6 +370,14 @@ public class DataSingleton {
 
     public void setChangedFirstDay(boolean changedFirstDay) {
         isChangedFirstDay = changedFirstDay;
+    }
+
+    public boolean isReactToBroadcast() {
+        return reactToBroadcast;
+    }
+
+    public void setReactToBroadcast(boolean reactToBroadcast) {
+        this.reactToBroadcast = reactToBroadcast;
     }
 
 }

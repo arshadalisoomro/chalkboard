@@ -72,8 +72,7 @@
 
         <activity
 
-            android:name=".activity.AddClass"
-            android:parentActivityName=".activity.Main"
+            android:name=".activity.ChangeClass"
             android:screenOrientation="portrait">
 
         </activity>
@@ -89,6 +88,7 @@
         <service
 
             android:name=".service.Background"
+            android:exported="false"
             android:icon="@mipmap/ic_launcher"
             android:label="BackgroundService">
 

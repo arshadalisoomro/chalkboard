@@ -30,11 +30,16 @@ import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class AddClass extends AppCompatActivity {
+public class ChangeClass extends AppCompatActivity {
 
     private final int ID_TIMETABLE = 1;
-    private final int RESULT_OK = 0;
-    private final int RESULT_NO_CLASS_ADDED = 1;
+    private final int RESULT_CHANGED = 0;
+    private final int RESULT_NO_CHANGES = 1;
+    private final int MODE_ADD = 0;
+    private final int MODE_EDIT = 1;
+
+    private int mode;
+    private String className;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +49,62 @@ public class AddClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
 
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         final Toolbar toolbar = (Toolbar) findViewById(R.id.add_class_toolbar);
-        toolbar.setTitle("Add New Class");
         toolbar.setTitleTextColor(Color.WHITE);
+
+        mode = getIntent().getIntExtra("mode", MODE_ADD);
+
+        if (mode == MODE_ADD) {
+
+            toolbar.setTitle("Add New Class");
+
+            if (!sharedPreferences.contains("show_toast_add_to_timetable")) {
+
+                sharedPreferences.edit().putBoolean("show_toast_add_to_timetable", true).commit();
+
+            }
+
+        } else {
+
+            className = getIntent().getStringExtra("class");
+
+            toolbar.setTitle("Edit " + className);
+
+        }
 
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (mode == MODE_EDIT) {
+
+            DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+            String[] classLocationTeacherColor;
+
+            try {
+
+                classLocationTeacherColor = databaseHelper.getClassLocationTeacherColor(className);
+
+            } finally {
+
+                databaseHelper.close();
+
+            }
+
+            final EditText inputNameEditText = (EditText) findViewById(R.id.add_class_input_name);
+            final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
+            final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+
+            inputNameEditText.setText(className);
+            inputLocationEditText.setText(classLocationTeacherColor[0].equals("no-location") ? "" : classLocationTeacherColor[0]);
+            inputTeacherEditText.setText(classLocationTeacherColor[1].equals("no-teacher") ? "" : classLocationTeacherColor[1]);
+
+            sharedPreferences.edit().putInt("add_class_color", Integer.parseInt(classLocationTeacherColor[2])).commit();
+
+        }
 
         getFragmentManager().beginTransaction().replace(R.id.add_class_color_frame_layout, new ColorFragment()).commit();
 
@@ -66,7 +120,12 @@ public class AddClass extends AppCompatActivity {
             final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
 
             materialDialogBuilder.title("Discard changes?");
-            materialDialogBuilder.content("This class will be deleted.");
+
+            if (mode == MODE_ADD)
+                materialDialogBuilder.content("This class will be deleted.");
+            else
+                materialDialogBuilder.content("Your changes won't be saved.");
+
             materialDialogBuilder.positiveText("YES");
             materialDialogBuilder.positiveColorRes(R.color.black);
             materialDialogBuilder.negativeText("CANCEL");
@@ -79,9 +138,9 @@ public class AddClass extends AppCompatActivity {
 
                     materialDialog.dismiss();
 
-                    setResult(RESULT_NO_CLASS_ADDED, new Intent());
+                    setResult(RESULT_NO_CHANGES, new Intent());
 
-                    AddClass.super.onBackPressed();
+                    ChangeClass.super.onBackPressed();
 
                 }
 
@@ -106,7 +165,7 @@ public class AddClass extends AppCompatActivity {
 
             final EditText inputNameEditText = (EditText) findViewById(R.id.add_class_input_name);
 
-            if (!inputNameEditText.getText().toString().isEmpty()) {
+            if (!inputNameEditText.getText().toString().trim().isEmpty()) {
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
@@ -115,9 +174,103 @@ public class AddClass extends AppCompatActivity {
 
                 final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-                if (DataSingleton.getInstance().getAllClassNamesArrayList() != null) {
+                if (mode == MODE_EDIT) {
 
-                    if (!DataSingleton.getInstance().getAllClassNamesArrayList().contains(inputNameEditText.getText().toString().trim())) {
+                    if (!className.equals(inputNameEditText.getText().toString().trim())) {
+
+                        if (DataSingleton.getInstance().getAllClassNamesArrayList() != null) {
+
+                            if (DataSingleton.getInstance().getAllClassNamesArrayList().contains(inputNameEditText.getText().toString().trim())) {
+
+                                databaseHelper.close();
+
+                                Toast.makeText(this, "A class with this name exists already!", Toast.LENGTH_LONG).show();
+
+                                return true;
+
+                            }
+
+                        }
+
+                    }
+
+                    try {
+
+                        databaseHelper.updateClass(className, new SlimClass(inputNameEditText.getText().toString().trim(),
+                                (inputLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : inputLocationEditText.getText().toString().trim()),
+                                (inputTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : inputTeacherEditText.getText().toString().trim()),
+                                sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
+
+                    } finally {
+
+                        databaseHelper.close();
+
+                    }
+
+                    EventBus.getDefault().post(new Update(true, true, true, true));
+
+                    final View currentFocus = this.getCurrentFocus();
+
+                    if (currentFocus != null) {
+
+                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+
+                    }
+
+                    setResult(RESULT_CHANGED, new Intent().putExtra("class_name", inputNameEditText.getText().toString().trim()));
+
+                    finish();
+
+                    return true;
+
+                } else {
+
+                    if (DataSingleton.getInstance().getAllClassNamesArrayList() != null) {
+
+                        if (!DataSingleton.getInstance().getAllClassNamesArrayList().contains(inputNameEditText.getText().toString().trim())) {
+
+                            try {
+
+                                databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
+                                        (inputLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : inputLocationEditText.getText().toString().trim()),
+                                        (inputTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : inputTeacherEditText.getText().toString().trim()),
+                                        sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
+
+                            } finally {
+
+                                databaseHelper.close();
+
+                            }
+
+                            EventBus.getDefault().post(new Update(false, false, false, true));
+
+                            final View currentFocus = this.getCurrentFocus();
+
+                            if (currentFocus != null) {
+
+                                final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+
+                            }
+
+                            setResult(RESULT_CHANGED, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE));
+
+                            finish();
+
+                            return true;
+
+                        } else {
+
+                            databaseHelper.close();
+
+                            Toast.makeText(this, "A class with this name exists already!", Toast.LENGTH_LONG).show();
+
+                            return true;
+
+                        }
+
+                    } else {
 
                         try {
 
@@ -143,53 +296,13 @@ public class AddClass extends AppCompatActivity {
 
                         }
 
-                        setResult(RESULT_OK, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE).putExtra("class", "AddClass"));
+                        setResult(RESULT_CHANGED, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE));
 
                         finish();
 
                         return true;
 
-                    } else {
-
-                        databaseHelper.close();
-
-                        Toast.makeText(this, "A class with this name exists already!", Toast.LENGTH_LONG).show();
-
-                        return true;
-
                     }
-
-                } else {
-
-                    try {
-
-                        databaseHelper.addClass(new SlimClass(inputNameEditText.getText().toString().trim(),
-                                (inputLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : inputLocationEditText.getText().toString().trim()),
-                                (inputTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : inputTeacherEditText.getText().toString().trim()),
-                                sharedPreferences.getInt("add_class_color", ContextCompat.getColor(this, R.color.teal))));
-
-                    } finally {
-
-                        databaseHelper.close();
-
-                    }
-
-                    EventBus.getDefault().post(new Update(false, false, false, true));
-
-                    final View currentFocus = this.getCurrentFocus();
-
-                    if (currentFocus != null) {
-
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
-
-                    }
-
-                    setResult(RESULT_OK, new Intent().putExtra("switch_to_timetable", ID_TIMETABLE).putExtra("class", "AddClass"));
-
-                    finish();
-
-                    return true;
 
                 }
 
@@ -215,7 +328,12 @@ public class AddClass extends AppCompatActivity {
         final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
 
         materialDialogBuilder.title("Discard changes?");
-        materialDialogBuilder.content("This class will be deleted.");
+
+        if (mode == MODE_ADD)
+            materialDialogBuilder.content("This class will be deleted.");
+        else
+            materialDialogBuilder.content("Your changes won't be saved.");
+
         materialDialogBuilder.positiveText("YES");
         materialDialogBuilder.positiveColorRes(R.color.black);
         materialDialogBuilder.negativeText("CANCEL");
@@ -228,9 +346,9 @@ public class AddClass extends AppCompatActivity {
 
                 materialDialog.dismiss();
 
-                setResult(RESULT_NO_CLASS_ADDED, new Intent());
+                setResult(RESULT_NO_CHANGES, new Intent());
 
-                AddClass.super.onBackPressed();
+                ChangeClass.super.onBackPressed();
 
             }
 

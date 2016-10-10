@@ -50,9 +50,7 @@ public class Overview extends Fragment {
     private TextView currentClassEndTimeTextView;
     private ImageView currentClassColorIndicator;
     private CardView currentClassCardView;
-    private ArrayList<StandardClass> nextClassesArrayList;
     private ExpandableListView expandableListViewTomorrowClasses;
-    private ArrayList<StandardClass> tomorrowClassesArrayList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -200,10 +198,8 @@ public class Overview extends Fragment {
     public void onDestroyView() {
 
         expandableListViewNextClasses = null;
-        nextClassesArrayList = null;
         classListAdapterNext = null;
         expandableListViewTomorrowClasses = null;
-        tomorrowClassesArrayList = null;
         classListAdapterTomorrow = null;
         progressBar = null;
         progressTextView = null;
@@ -289,8 +285,6 @@ public class Overview extends Fragment {
 
         if (DataSingleton.getInstance().getNextClass() != null) {
 
-            nextClassesArrayList = DataSingleton.getInstance().getNextClassesArrayList();
-
             configureExpandableListViewNextClasses();
 
             getView().findViewById(R.id.overview_next_classes_card).setVisibility(View.VISIBLE);
@@ -307,8 +301,6 @@ public class Overview extends Fragment {
         }
 
         if (!DataSingleton.getInstance().getTomorrowClassesArrayList().isEmpty()) {
-
-            tomorrowClassesArrayList = DataSingleton.getInstance().getTomorrowClassesArrayList();
 
             configureExpandableListViewTomorrowClasses();
 
@@ -328,6 +320,11 @@ public class Overview extends Fragment {
         if (nullCount == 3) {
 
             getView().findViewById(R.id.overview_no_classes_card).setVisibility(View.VISIBLE);
+
+            if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true))
+                ((TextView) getView().findViewById(R.id.overview_no_classes_card_text)).setText("No further classes today or tomorrow.");
+            else
+                ((TextView) getView().findViewById(R.id.overview_no_classes_card_text)).setText("No further classes today.");
 
         } else {
 
@@ -417,12 +414,12 @@ public class Overview extends Fragment {
 
         if (classListAdapterNext == null) {
 
-            classListAdapterNext = new ClassList(getContext(), nextClassesArrayList, "Next classes");
+            classListAdapterNext = new ClassList(getContext(), DataSingleton.getInstance().getNextClassesArrayList(), "Next classes");
             expandableListViewNextClasses.setAdapter(classListAdapterNext);
 
         } else {
 
-            classListAdapterNext.updateLinkedList((ArrayList<StandardClass>) nextClassesArrayList.clone());
+            classListAdapterNext.updateLinkedList((ArrayList<StandardClass>) DataSingleton.getInstance().getNextClassesArrayList().clone());
 
         }
 
@@ -523,12 +520,12 @@ public class Overview extends Fragment {
 
         if (classListAdapterTomorrow == null) {
 
-            classListAdapterTomorrow = new ClassList(getContext(), tomorrowClassesArrayList, "Tomorrow's classes");
+            classListAdapterTomorrow = new ClassList(getContext(), DataSingleton.getInstance().getTomorrowClassesArrayList(), "Tomorrow's classes");
             expandableListViewTomorrowClasses.setAdapter(classListAdapterTomorrow);
 
         } else {
 
-            classListAdapterTomorrow.updateLinkedList((ArrayList<StandardClass>) tomorrowClassesArrayList.clone());
+            classListAdapterTomorrow.updateLinkedList((ArrayList<StandardClass>) DataSingleton.getInstance().getTomorrowClassesArrayList().clone());
 
         }
 
@@ -603,7 +600,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() : 100);
+                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getNextClassesArrayList().size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getNextClassesArrayList().size() : 100);
                     parentLayout.startAnimation(expandAnimation);
 
                 } else {
@@ -639,7 +636,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * nextClassesArrayList.size() : 100);
+                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getNextClassesArrayList().size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getNextClassesArrayList().size() : 100);
                     parentLayout.startAnimation(collapseAnimation);
 
                 } else {
@@ -715,7 +712,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() : 100);
+                    expandAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getTomorrowClassesArrayList().size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getTomorrowClassesArrayList().size() : 100);
                     parentLayout.startAnimation(expandAnimation);
 
                 } else {
@@ -751,7 +748,7 @@ public class Overview extends Fragment {
                         }
                     };
 
-                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * tomorrowClassesArrayList.size() : 100);
+                    collapseAnimation.setDuration(EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getTomorrowClassesArrayList().size() > 100 ? EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE * DataSingleton.getInstance().getTomorrowClassesArrayList().size() : 100);
                     parentLayout.startAnimation(collapseAnimation);
 
                 } else {

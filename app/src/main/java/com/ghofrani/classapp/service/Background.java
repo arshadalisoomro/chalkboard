@@ -28,8 +28,10 @@ import com.ghofrani.classapp.event.UpdateClassesUI;
 import com.ghofrani.classapp.event.UpdateHomeworkUI;
 import com.ghofrani.classapp.event.UpdateProgressUI;
 import com.ghofrani.classapp.model.Homework;
+import com.ghofrani.classapp.model.HomeworkWithID;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
+import com.ghofrani.classapp.model.StringWithID;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
 import com.ghofrani.classapp.module.Utils;
@@ -52,6 +54,9 @@ public class Background extends Service {
 
     private static IntentFilter backgroundIntentFilter;
     private static BroadcastReceiver backgroundBroadcastReceiver;
+
+    private final int NOTIFICATION_CURRENT_CLASS_ID = 0;
+    private final int NOTIFICATION_NEXT_CLASS_ID = 1;
 
     private int progressBarId;
     private int progressTextId;
@@ -224,38 +229,16 @@ public class Background extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                switch (intent.getAction()) {
+                if (DataSingleton.getInstance().isReactToBroadcast()) {
 
-                    case Intent.ACTION_TIME_TICK:
+                    getData();
+                    getHomework();
 
-                        getData();
-                        getHomework();
+                }
 
-                        break;
+                if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_DATE_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
 
-                    case Intent.ACTION_TIMEZONE_CHANGED:
-
-                        getData();
-                        getHomework();
-                        getTimetable();
-
-                        break;
-
-                    case Intent.ACTION_TIME_CHANGED:
-
-                        getData();
-                        getHomework();
-                        getTimetable();
-
-                        break;
-
-                    case Intent.ACTION_DATE_CHANGED:
-
-                        getData();
-                        getHomework();
-                        getTimetable();
-
-                        break;
+                    getTimetable();
 
                 }
 
@@ -547,7 +530,7 @@ public class Background extends Service {
 
                             EventBus.getDefault().post(new UpdateProgressUI());
 
-                            notificationManager.notify(0, notificationCompatBuilder.build());
+                            notificationManager.notify(NOTIFICATION_CURRENT_CLASS_ID, notificationCompatBuilder.build());
 
                             handler.postDelayed(this, 15000);
 
@@ -648,7 +631,7 @@ public class Background extends Service {
 
                             EventBus.getDefault().post(new UpdateProgressUI());
 
-                            notificationManager.notify(0, notificationCompatBuilder.build());
+                            notificationManager.notify(NOTIFICATION_CURRENT_CLASS_ID, notificationCompatBuilder.build());
 
                             handler.postDelayed(this, 15000);
 
@@ -778,7 +761,7 @@ public class Background extends Service {
                 else
                     notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
 
-                notificationManager.notify(1, notificationCompatBuilder.build());
+                notificationManager.notify(NOTIFICATION_NEXT_CLASS_ID, notificationCompatBuilder.build());
 
             } else {
 
@@ -1011,6 +994,52 @@ public class Background extends Service {
         DataSingleton.getInstance().setThisMonthHomeworkArrayList(thisMonthHomeworkArrayList);
         DataSingleton.getInstance().setBeyondThisMonthHomeworkArrayList(beyondThisMonthHomeworkArrayList);
         DataSingleton.getInstance().setPastHomeworkArrayList(pastHomeworkArrayList);
+
+        ArrayList<Object> dataArrayList = new ArrayList<>();
+
+        if (!DataSingleton.getInstance().getPastHomeworkArrayList().isEmpty())
+            dataArrayList.add(new StringWithID("Late", dataArrayList.size()));
+
+        for (final Homework homework : DataSingleton.getInstance().getPastHomeworkArrayList())
+            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+
+        if (!DataSingleton.getInstance().getTodayHomeworkArrayList().isEmpty())
+            dataArrayList.add(new StringWithID("Due today", dataArrayList.size()));
+
+        for (final Homework homework : DataSingleton.getInstance().getTodayHomeworkArrayList())
+            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+
+        if (!DataSingleton.getInstance().getTomorrowHomeworkArrayList().isEmpty())
+            dataArrayList.add(new StringWithID("Due tomorrow", dataArrayList.size()));
+
+        for (final Homework homework : DataSingleton.getInstance().getTomorrowHomeworkArrayList())
+            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+
+        if (!DataSingleton.getInstance().getThisWeekHomeworkArrayList().isEmpty())
+            dataArrayList.add(new StringWithID("Due this week", dataArrayList.size()));
+
+        for (final Homework homework : DataSingleton.getInstance().getThisWeekHomeworkArrayList())
+            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+
+        if (!DataSingleton.getInstance().getNextWeekHomeworkArrayList().isEmpty())
+            dataArrayList.add(new StringWithID("Due next week", dataArrayList.size()));
+
+        for (final Homework homework : DataSingleton.getInstance().getNextWeekHomeworkArrayList())
+            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+
+        if (!DataSingleton.getInstance().getThisMonthHomeworkArrayList().isEmpty())
+            dataArrayList.add(new StringWithID("Due this month", dataArrayList.size()));
+
+        for (final Homework homework : DataSingleton.getInstance().getThisMonthHomeworkArrayList())
+            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+
+        if (!DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList().isEmpty())
+            dataArrayList.add(new StringWithID("Due after this month", dataArrayList.size()));
+
+        for (final Homework homework : DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList())
+            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+
+        DataSingleton.getInstance().setDataArrayList(dataArrayList);
 
         DataSingleton.getInstance().setThisWeekEnd(thisWeekEndDateTime);
         DataSingleton.getInstance().setNextWeekEnd(nextWeek.getEnd());

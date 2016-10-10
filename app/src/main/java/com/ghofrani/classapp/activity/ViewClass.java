@@ -1,6 +1,6 @@
 package com.ghofrani.classapp.activity;
 
-import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,10 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,10 +26,8 @@ import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.ViewClassList;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.event.UpdateClassesUI;
-import com.ghofrani.classapp.event.UpdateProgressUI;
 import com.ghofrani.classapp.model.DatedStandardClass;
 import com.ghofrani.classapp.model.StandardClass;
-import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
 import com.ghofrani.classapp.module.Utils;
 
@@ -47,20 +43,17 @@ public class ViewClass extends AppCompatActivity {
 
     private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE = 25;
     private final int EXPANDABLE_LIST_VIEW_HEIGHT = 36;
+    private final int MODE_EDIT = 1;
+    private final int CHANGE_CLASS_REQUEST = 0;
+    private final int RESULT_CHANGED = 0;
 
     private ExpandableListView expandableListViewUpcomingClasses;
-    private ProgressBar progressBar;
-    private TextView progressTextView;
-    private TextView currentClassTitleTextView;
-    private TextView currentClassLocationTeacherTextView;
-    private TextView currentClassStartTimeTextView;
-    private TextView currentClassEndTimeTextView;
-    private ImageView currentClassColorIndicator;
-    private CardView currentClassCardView;
     private CardView noClassesCard;
     private CardView upcomingClassesListCardView;
     private ViewClassList viewClassListAdapterNext;
     private ArrayList<DatedStandardClass> datedStandardClassArrayList;
+    private Toolbar toolbar;
+    private String className;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,21 +63,16 @@ public class ViewClass extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_class);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
-        toolbar.setTitle(getIntent().getStringExtra("class"));
+        className = getIntent().getStringExtra("class");
+
+        toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
+        toolbar.setTitle(className);
         toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-    }
-
-    @Subscribe
-    public void OnEvent(UpdateProgressUI updateProgressUIEvent) {
-
-        updateProgressBar();
 
     }
 
@@ -112,29 +100,14 @@ public class ViewClass extends AppCompatActivity {
 
         super.onResume();
 
-        if (currentClassCardView == null)
-            currentClassCardView = (CardView) findViewById(R.id.activity_view_classes_current_class_card);
+        performOnResume();
 
-        if (currentClassTitleTextView == null)
-            currentClassTitleTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_title);
+    }
 
-        if (currentClassLocationTeacherTextView == null)
-            currentClassLocationTeacherTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_teacher_location);
+    private void performOnResume() {
 
-        if (currentClassColorIndicator == null)
-            currentClassColorIndicator = (ImageView) findViewById(R.id.activity_view_classes_current_class_card_class_color_indicator);
-
-        if (currentClassStartTimeTextView == null)
-            currentClassStartTimeTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_start_time);
-
-        if (currentClassEndTimeTextView == null)
-            currentClassEndTimeTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_end_time);
-
-        if (progressBar == null)
-            progressBar = (ProgressBar) findViewById(R.id.activity_view_classes_current_class_card_progress_bar);
-
-        if (progressTextView == null)
-            progressTextView = (TextView) findViewById(R.id.activity_view_classes_current_class_card_progress_percentage);
+        if (toolbar == null)
+            toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
 
         if (noClassesCard == null)
             noClassesCard = (CardView) findViewById(R.id.activity_view_class_no_classes_card);
@@ -171,61 +144,7 @@ public class ViewClass extends AppCompatActivity {
 
     private void updateUI() {
 
-        if (DataSingleton.getInstance().getCurrentClass() != null) {
-
-            if (DataSingleton.getInstance().getCurrentClass().getName().equals(getIntent().getStringExtra("class"))) {
-
-                currentClassCardView.setVisibility(View.VISIBLE);
-
-                StandardClass currentClass = DataSingleton.getInstance().getCurrentClass();
-
-                currentClassTitleTextView.setText(currentClass.getName());
-
-                if (currentClass.hasLocation()) {
-
-                    if (currentClass.hasTeacher())
-                        currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + currentClass.getLocation() + " • " + DataSingleton.getInstance().getMinutesLeftText());
-                    else
-                        currentClassLocationTeacherTextView.setText(currentClass.getLocation() + " • " + DataSingleton.getInstance().getMinutesLeftText());
-
-                    currentClassColorIndicator.setTranslationY(getPixelFromDP(-1.5f));
-
-                } else if (currentClass.hasTeacher()) {
-
-                    currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + DataSingleton.getInstance().getMinutesLeftText());
-
-                    currentClassColorIndicator.setTranslationY(getPixelFromDP(-1.5f));
-
-                } else {
-
-                    currentClassLocationTeacherTextView.setText(DataSingleton.getInstance().getMinutesLeftText());
-
-                    currentClassColorIndicator.setTranslationY(getPixelFromDP(0));
-
-                }
-
-                currentClassStartTimeTextView.setText(currentClass.getStartTimeString(true));
-                currentClassEndTimeTextView.setText(currentClass.getEndTimeString(true));
-
-                currentClassColorIndicator.setColorFilter(currentClass.getColor());
-
-                progressBar.setProgressTintList(ColorStateList.valueOf(currentClass.getColor()));
-
-                updateProgressBar();
-
-            } else {
-
-                currentClassCardView.setVisibility(View.GONE);
-
-            }
-
-        } else {
-
-            currentClassCardView.setVisibility(View.GONE);
-
-        }
-
-        final ArrayList<DatedStandardClass> datedStandardClassArrayListLocal = getNextClasses(5, getIntent().getStringExtra("class"));
+        final ArrayList<DatedStandardClass> datedStandardClassArrayListLocal = getNextClasses(5, className);
 
         if (datedStandardClassArrayListLocal != null) {
 
@@ -357,33 +276,17 @@ public class ViewClass extends AppCompatActivity {
 
     }
 
-    private void updateProgressBar() {
-
-        progressBar.setIndeterminate(false);
-        progressBar.setProgress(DataSingleton.getInstance().getProgressBarProgress());
-
-        progressTextView.setText(DataSingleton.getInstance().getProgressBarText());
-
-    }
-
     @Override
     public void onTrimMemory(int level) {
 
         if (level == TRIM_MEMORY_UI_HIDDEN) {
 
             expandableListViewUpcomingClasses = null;
-            progressBar = null;
-            progressTextView = null;
-            currentClassTitleTextView = null;
-            currentClassLocationTeacherTextView = null;
-            currentClassStartTimeTextView = null;
-            currentClassEndTimeTextView = null;
-            currentClassColorIndicator = null;
-            currentClassCardView = null;
             noClassesCard = null;
             upcomingClassesListCardView = null;
             viewClassListAdapterNext = null;
             datedStandardClassArrayList = null;
+            toolbar = null;
 
         }
 
@@ -422,7 +325,7 @@ public class ViewClass extends AppCompatActivity {
 
                     try {
 
-                        databaseHelper.deleteClass(getIntent().getStringExtra("class"));
+                        databaseHelper.deleteClass(className);
 
                     } finally {
 
@@ -455,9 +358,34 @@ public class ViewClass extends AppCompatActivity {
 
             return true;
 
+        } else if (menuItem.getItemId() == R.id.toolbar_delete_edit_edit) {
+
+            startActivityForResult(new Intent(ViewClass.this, ChangeClass.class).putExtra("mode", MODE_EDIT).putExtra("class", className), CHANGE_CLASS_REQUEST);
+
+            return true;
+
         } else {
 
             return super.onOptionsItemSelected(menuItem);
+
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+
+        super.onActivityResult(requestCode, resultCode, resultIntent);
+
+        if (requestCode == CHANGE_CLASS_REQUEST) {
+
+            if (resultCode == RESULT_CHANGED) {
+
+                className = resultIntent.getStringExtra("class_name");
+
+                toolbar.setTitle(className);
+
+            }
 
         }
 

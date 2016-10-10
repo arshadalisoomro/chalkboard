@@ -52,12 +52,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
     private final float TAB_LAYOUT_LAYOUT_LEFT_MARGIN = 60.5f;
     private final int TAB_LAYOUT_LAYOUT_ANIMATION_DURATION = 200;
-    private final int RESULT_OK = 0;
+    private final int CHANGE_CLASS_REQUEST = 0;
+    private final int RESULT_CHANGED = 0;
     private final int ID_OVERVIEW = 0;
     private final int ID_TIMETABLE = 1;
     private final int ID_CLASSES = 2;
     private final int ID_HOMEWORK = 3;
     private final int ID_SETTINGS = 4;
+    private final int MODE_ADD = 0;
 
     private FloatingActionButton floatingActionButton;
     private DrawerLayout drawerLayout;
@@ -230,21 +232,35 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 if (currentView == ID_TIMETABLE) {
 
-                    if (!DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty())
+                    if (!DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty()) {
+
                         startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataSingleton.getInstance().getSelectedTabPosition()));
-                    else
-                        Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
+
+                    } else {
+
+                        Toast.makeText(Main.this, "Add a class first!", Toast.LENGTH_LONG).show();
+
+                        startActivityForResult(new Intent(Main.this, ChangeClass.class).putExtra("mode", MODE_ADD), CHANGE_CLASS_REQUEST);
+
+                    }
 
                 } else if (currentView == ID_CLASSES) {
 
-                    startActivityForResult(new Intent(Main.this, AddClass.class), RESULT_OK);
+                    startActivityForResult(new Intent(Main.this, ChangeClass.class).putExtra("mode", MODE_ADD), CHANGE_CLASS_REQUEST);
 
                 } else if (currentView == ID_HOMEWORK) {
 
-                    if (DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty())
-                        Toast.makeText(Main.this, "Add classes first!", Toast.LENGTH_LONG).show();
-                    else
+                    if (DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty()) {
+
+                        Toast.makeText(Main.this, "Add a class first!", Toast.LENGTH_LONG).show();
+
+                        startActivityForResult(new Intent(Main.this, ChangeClass.class).putExtra("mode", MODE_ADD), CHANGE_CLASS_REQUEST);
+
+                    } else {
+
                         startActivity(new Intent(Main.this, AddHomework.class));
+
+                    }
 
                 }
 
@@ -335,14 +351,22 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         super.onActivityResult(requestCode, resultCode, resultIntent);
 
-        if (resultCode == RESULT_OK) {
+        if (requestCode == CHANGE_CLASS_REQUEST) {
 
-            if (resultIntent.getStringExtra("class").equals("AddClass")) {
+            if (resultCode == RESULT_CHANGED) {
 
                 performOnResume();
 
-                switchToView(resultIntent.getIntExtra("switch_to_timetable", requestCode));
-                Toast.makeText(this, "Add your class into the timetable!", Toast.LENGTH_LONG).show();
+                final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                if (sharedPreferences.getBoolean("show_toast_add_to_timetable", true)) {
+
+                    switchToView(resultIntent.getIntExtra("switch_to_timetable", requestCode));
+                    Toast.makeText(this, "Add your class into the timetable!", Toast.LENGTH_LONG).show();
+
+                    sharedPreferences.edit().putBoolean("show_toast_add_to_timetable", false).commit();
+
+                }
 
             }
 

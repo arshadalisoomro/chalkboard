@@ -14,19 +14,15 @@ import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.ViewClass;
-import com.ghofrani.classapp.model.SlimClass;
-
-import java.util.ArrayList;
+import com.ghofrani.classapp.module.DataSingleton;
 
 public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassViewHolder> {
 
-    private final ArrayList<SlimClass> slimClassArrayList;
     private final Context context;
     private final View.OnClickListener onClickListener;
 
-    public AllClassesList(ArrayList<SlimClass> slimClassArrayList, Context context) {
+    public AllClassesList(Context context) {
 
-        this.slimClassArrayList = slimClassArrayList;
         this.context = context;
 
         onClickListener = new View.OnClickListener() {
@@ -48,11 +44,10 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
 
     }
 
-
     @Override
     public int getItemCount() {
 
-        return slimClassArrayList.size();
+        return DataSingleton.getInstance().getAllClassesArrayList().size();
 
     }
 
@@ -68,7 +63,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
 
         final FrameLayout.LayoutParams relativeParams = (FrameLayout.LayoutParams) classViewHolder.rootRelativeLayout.getLayoutParams();
 
-        if (slimClassArrayList.get(position).hasLocation()) {
+        if (DataSingleton.getInstance().getAllClassesArrayList().get(position).hasLocation()) {
 
             relativeParams.setMargins(getPixelFromDP(16), getPixelFromDP(14), getPixelFromDP(16), getPixelFromDP(14));
             classViewHolder.rootRelativeLayout.setLayoutParams(relativeParams);
@@ -78,18 +73,18 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             classViewHolder.relativeLayout.setVisibility(View.VISIBLE);
 
             classViewHolder.titleTextView.setVisibility(View.VISIBLE);
-            classViewHolder.titleTextView.setText(slimClassArrayList.get(position).getName());
+            classViewHolder.titleTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getName());
 
             classViewHolder.teacherLocationTextView.setVisibility(View.VISIBLE);
 
-            if (slimClassArrayList.get(position).hasTeacher())
-                classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getTeacher() + " • " + slimClassArrayList.get(position).getLocation());
+            if (DataSingleton.getInstance().getAllClassesArrayList().get(position).hasTeacher())
+                classViewHolder.teacherLocationTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getTeacher() + " • " + DataSingleton.getInstance().getAllClassesArrayList().get(position).getLocation());
             else
-                classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getLocation());
+                classViewHolder.teacherLocationTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getLocation());
 
             classViewHolder.colorIndicatorImageView.setTranslationY(getPixelFromDP(-1));
 
-        } else if (slimClassArrayList.get(position).hasTeacher()) {
+        } else if (DataSingleton.getInstance().getAllClassesArrayList().get(position).hasTeacher()) {
 
             relativeParams.setMargins(getPixelFromDP(16), getPixelFromDP(14), getPixelFromDP(16), getPixelFromDP(14));
             classViewHolder.rootRelativeLayout.setLayoutParams(relativeParams);
@@ -99,10 +94,10 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             classViewHolder.relativeLayout.setVisibility(View.VISIBLE);
 
             classViewHolder.titleTextView.setVisibility(View.VISIBLE);
-            classViewHolder.titleTextView.setText(slimClassArrayList.get(position).getName());
+            classViewHolder.titleTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getName());
 
             classViewHolder.teacherLocationTextView.setVisibility(View.VISIBLE);
-            classViewHolder.teacherLocationTextView.setText(slimClassArrayList.get(position).getTeacher());
+            classViewHolder.teacherLocationTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getTeacher());
 
             classViewHolder.colorIndicatorImageView.setTranslationY(getPixelFromDP(-1));
 
@@ -117,13 +112,13 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             classViewHolder.teacherLocationTextView.setVisibility(View.GONE);
 
             classViewHolder.titleTextViewCentered.setVisibility(View.VISIBLE);
-            classViewHolder.titleTextViewCentered.setText(slimClassArrayList.get(position).getName());
+            classViewHolder.titleTextViewCentered.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getName());
 
             classViewHolder.colorIndicatorImageView.setTranslationY(0);
 
         }
 
-        classViewHolder.colorIndicatorImageView.setColorFilter(slimClassArrayList.get(position).getColor());
+        classViewHolder.colorIndicatorImageView.setColorFilter(DataSingleton.getInstance().getAllClassesArrayList().get(position).getColor());
         classViewHolder.cardView.setOnClickListener(onClickListener);
 
     }

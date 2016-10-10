@@ -559,6 +559,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void updateClass(String oldClassName, SlimClass classToUpdate) {
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        ContentValues contentValuesClassInfo = new ContentValues();
+
+        contentValuesClassInfo.put(DatabaseContract.ClassInfo.COLUMN_NAME, classToUpdate.getName());
+        contentValuesClassInfo.put(DatabaseContract.ClassInfo.COLUMN_LOCATION, classToUpdate.getLocation());
+        contentValuesClassInfo.put(DatabaseContract.ClassInfo.COLUMN_TEACHER, classToUpdate.getTeacher());
+        contentValuesClassInfo.put(DatabaseContract.ClassInfo.COLUMN_COLOR, String.valueOf(classToUpdate.getColor()));
+
+        try {
+
+            sqLiteDatabase.update(DatabaseContract.ClassInfo.TABLE_NAME, contentValuesClassInfo, DatabaseContract.ClassInfo.COLUMN_NAME + "=?", new String[]{oldClassName});
+
+            if (!oldClassName.equals(classToUpdate.getName())) {
+
+                ContentValues contentValuesOtherTables = new ContentValues();
+
+                contentValuesOtherTables.put(DatabaseContract.Monday.COLUMN_CLASS, classToUpdate.getName());
+
+                sqLiteDatabase.update(DatabaseContract.Monday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Monday.COLUMN_CLASS + "=?", new String[]{oldClassName});
+                sqLiteDatabase.update(DatabaseContract.Tuesday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Tuesday.COLUMN_CLASS + "=?", new String[]{oldClassName});
+                sqLiteDatabase.update(DatabaseContract.Wednesday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Wednesday.COLUMN_CLASS + "=?", new String[]{oldClassName});
+                sqLiteDatabase.update(DatabaseContract.Thursday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Thursday.COLUMN_CLASS + "=?", new String[]{oldClassName});
+                sqLiteDatabase.update(DatabaseContract.Friday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Friday.COLUMN_CLASS + "=?", new String[]{oldClassName});
+                sqLiteDatabase.update(DatabaseContract.Saturday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Saturday.COLUMN_CLASS + "=?", new String[]{oldClassName});
+                sqLiteDatabase.update(DatabaseContract.Sunday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Sunday.COLUMN_CLASS + "=?", new String[]{oldClassName});
+
+                sqLiteDatabase.update(DatabaseContract.Homework.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Homework.COLUMN_CLASS + "=?", new String[]{oldClassName});
+
+            }
+
+        } finally {
+
+            sqLiteDatabase.close();
+
+        }
+
+    }
+
     public Cursor getHomeworkCursor() {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
