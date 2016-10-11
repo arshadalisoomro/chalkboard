@@ -1,5 +1,7 @@
 package com.ghofrani.classapp.module;
 
+import android.util.SparseArray;
+
 import com.ghofrani.classapp.model.Homework;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
@@ -43,6 +45,7 @@ public class DataSingleton {
     private ArrayList<Homework> pastHomeworkArrayList;
 
     private ArrayList<Object> dataArrayList;
+    private SparseArray<Object> dataSparseArrayLastRemoved;
 
     private DateTime thisWeekEnd;
     private DateTime nextWeekEnd;
@@ -306,6 +309,14 @@ public class DataSingleton {
 
     public void setDataArrayList(ArrayList<Object> dataArrayList) {
         this.dataArrayList = dataArrayList;
+    }
+
+    public SparseArray<Object> getDataSparseArrayLastRemoved() {
+        return dataSparseArrayLastRemoved;
+    }
+
+    public void setDataSparseArrayLastRemoved(SparseArray<Object> dataSparseArrayLastRemoved) {
+        this.dataSparseArrayLastRemoved = dataSparseArrayLastRemoved;
     }
 
     public DateTime getThisWeekEnd() {

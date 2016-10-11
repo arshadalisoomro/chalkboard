@@ -234,11 +234,11 @@ public class Background extends Service {
                     getData();
                     getHomework();
 
-                }
+                    if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_DATE_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
 
-                if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_DATE_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
+                        getTimetable();
 
-                    getTimetable();
+                    }
 
                 }
 

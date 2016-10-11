@@ -146,6 +146,10 @@ public class Homework extends Fragment {
 
     private void showSnackbar() {
 
+        if (snackbar != null)
+            if (snackbar.isShown())
+                snackbar.dismiss();
+
         snackbar = Snackbar.make(getView().findViewById(R.id.homework_container), "1 homework done!", Snackbar.LENGTH_LONG);
 
         snackbar.setAction("UNDO", new View.OnClickListener() {

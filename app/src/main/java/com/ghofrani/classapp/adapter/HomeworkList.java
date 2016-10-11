@@ -300,11 +300,27 @@ public class HomeworkList extends RecyclerView.Adapter<AbstractSwipeableItemView
         @Override
         protected void onPerformAction() {
 
+            boolean triggerSectionRemoved = false;
+            final int viewType = adapter.getItemViewType(position);
+
+            if (viewType == adapter.VIEW_TYPE_HOMEWORK) {
+
+                //Check whether to remove any sections and set triggerSectionRemoved to true if yes.
+
+            } else {
+
+
+            }
+
             DataSingleton.getInstance().getDataArrayList().remove(position);
             adapter.notifyItemRemoved(position);
 
-            if (adapter.eventListener != null)
-                adapter.eventListener.onItemRemoved(position);
+            if (viewType == adapter.VIEW_TYPE_HOMEWORK)
+                if (adapter.eventListener != null)
+                    adapter.eventListener.onItemRemoved(position);
+
+            if (triggerSectionRemoved)
+                new HomeworkSwipeResultActionRemoveItem(adapter, position - 1);
 
         }
 
