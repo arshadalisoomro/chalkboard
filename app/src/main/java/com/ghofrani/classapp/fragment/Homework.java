@@ -5,15 +5,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.HomeworkList;
+import com.ghofrani.classapp.event.Update;
+import com.ghofrani.classapp.model.HomeworkWithID;
 import com.ghofrani.classapp.module.DataSingleton;
+import com.ghofrani.classapp.module.DatabaseHelper;
+import com.ghofrani.classapp.module.LinearLayoutManagerSmoothScroller;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
@@ -22,6 +27,8 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 
 public class Homework extends Fragment {
 
@@ -32,11 +39,14 @@ public class Homework extends Fragment {
     private RecyclerView.Adapter wrappedAdapter;
     private GeneralItemAnimator generalItemAnimator;
     private Snackbar snackbar;
+    private LinearLayoutManagerSmoothScroller linearLayoutManager;
+    private SparseArray<Object> lastItemRemoved;
 
     @Subscribe
     public void onEvent(com.ghofrani.classapp.event.UpdateHomeworkUI updateHomeworkUI) {
 
-        updateUI();
+        if (homeworkList != null)
+            homeworkList.notifyDataSetChanged();
 
     }
 
@@ -73,6 +83,9 @@ public class Homework extends Fragment {
 
         EventBus.getDefault().unregister(this);
 
+        DataSingleton.getInstance().setReactToBroadcastHomework(true);
+        EventBus.getDefault().post(new Update(false, false, false, true));
+
         super.onPause();
 
     }
@@ -95,6 +108,7 @@ public class Homework extends Fragment {
         homeworkList = null;
         generalItemAnimator = null;
         snackbar = null;
+        linearLayoutManager = null;
 
         noHomeworkCardView = null;
 
@@ -115,7 +129,9 @@ public class Homework extends Fragment {
             homeworkList.setEventListener(new HomeworkList.EventListener() {
 
                 @Override
-                public void onItemRemoved(int position) {
+                public void onItemRemoved() {
+
+                    //linearLayoutManager.smoothScrollToPosition(recyclerView, null, 0);
 
                     showSnackbar();
 
@@ -128,10 +144,12 @@ public class Homework extends Fragment {
             generalItemAnimator = new SwipeDismissItemAnimator();
             generalItemAnimator.setSupportsChangeAnimations(false);
 
+            linearLayoutManager = new LinearLayoutManagerSmoothScroller(getContext());
+
             recyclerView.setAdapter(wrappedAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.line_divider), true));
+            recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setItemAnimator(generalItemAnimator);
+            recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.line_divider), true));
 
             recyclerViewSwipeManager.attachRecyclerView(recyclerView);
 
@@ -146,16 +164,28 @@ public class Homework extends Fragment {
 
     private void showSnackbar() {
 
+        DataSingleton.getInstance().setReactToBroadcastHomework(false);
+
+        Log.d("POINT", "1");
+
         if (snackbar != null)
             if (snackbar.isShown())
                 snackbar.dismiss();
 
+        Log.d("POINT", "2");
+
+        lastItemRemoved = DataSingleton.getInstance().getDataSparseArrayLastRemoved();
+
         snackbar = Snackbar.make(getView().findViewById(R.id.homework_container), "1 homework done!", Snackbar.LENGTH_LONG);
+
+        Log.d("POINT", "3");
 
         snackbar.setAction("UNDO", new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
+                snackbar.setCallback(null);
 
                 undoLastItemRemoved();
 
@@ -163,14 +193,75 @@ public class Homework extends Fragment {
 
         });
 
+        Log.d("POINT", "4");
+
+        snackbar.setCallback(new Snackbar.Callback() {
+
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+
+                super.onDismissed(snackbar, event);
+
+                executeHomeworkDeletion();
+
+            }
+
+        });
+
+        Log.d("POINT", "5");
+
         snackbar.setActionTextColor(ContextCompat.getColor(getContext(), R.color.snackbar_action_color_done));
         snackbar.show();
+
+        Log.d("POINT", "6");
+
+    }
+
+    private void executeHomeworkDeletion() {
+
+        if (lastItemRemoved.size() != 0) {
+
+            DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+
+            try {
+
+                if (lastItemRemoved.size() == 2)
+                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.get(lastItemRemoved.keyAt(1))).getHomework());
+                else
+                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.get(lastItemRemoved.keyAt(0))).getHomework());
+
+            } finally {
+
+                databaseHelper.close();
+
+            }
+
+        }
 
     }
 
     private void undoLastItemRemoved() {
 
-        //Implement undo behaviour.
+        if (DataSingleton.getInstance().getDataSparseArrayLastRemoved().size() == 2) {
+
+            ArrayList<Object> dataArrayList = new ArrayList<>();
+
+            dataArrayList.add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().get(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0)));
+            dataArrayList.add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().get(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(1)));
+
+            DataSingleton.getInstance().getDataArrayList().addAll(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0), dataArrayList);
+
+            homeworkList.notifyItemRangeInserted(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0), DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0) + 1);
+
+        } else {
+
+            DataSingleton.getInstance().getDataArrayList().add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0), DataSingleton.getInstance().getDataSparseArrayLastRemoved().get(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0)));
+
+            homeworkList.notifyItemInserted(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0));
+
+        }
+
+        DataSingleton.getInstance().setDataSparseArrayLastRemoved(new SparseArray<>());
 
     }
 

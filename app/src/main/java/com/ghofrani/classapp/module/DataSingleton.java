@@ -60,7 +60,8 @@ public class DataSingleton {
     private boolean recreate;
     private boolean isChangedFirstDay;
 
-    private boolean reactToBroadcast;
+    private boolean reactToBroadcastData;
+    private boolean reactToBroadcastHomework;
 
     private DataSingleton() {
 
@@ -102,7 +103,7 @@ public class DataSingleton {
         recreate = false;
         isChangedFirstDay = false;
 
-        reactToBroadcast = true;
+        reactToBroadcastData = true;
 
     }
 
@@ -383,12 +384,20 @@ public class DataSingleton {
         isChangedFirstDay = changedFirstDay;
     }
 
-    public boolean isReactToBroadcast() {
-        return reactToBroadcast;
+    public boolean isReactToBroadcastData() {
+        return reactToBroadcastData;
     }
 
-    public void setReactToBroadcast(boolean reactToBroadcast) {
-        this.reactToBroadcast = reactToBroadcast;
+    public void setReactToBroadcastData(boolean reactToBroadcastData) {
+        this.reactToBroadcastData = reactToBroadcastData;
+    }
+
+    public boolean isReactToBroadcastHomework() {
+        return reactToBroadcastHomework;
+    }
+
+    public void setReactToBroadcastHomework(boolean reactToBroadcastHomework) {
+        this.reactToBroadcastHomework = reactToBroadcastHomework;
     }
 
 }

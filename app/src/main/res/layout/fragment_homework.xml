@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/homework_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
@@ -34,10 +34,10 @@
 
         android:id="@+id/homework_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
-        android:paddingBottom="92dp"
+        android:paddingBottom="116dp"
         android:visibility="gone" />
 
 </RelativeLayout>

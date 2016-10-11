@@ -3,6 +3,7 @@ package com.ghofrani.classapp.adapter;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,9 +79,9 @@ public class HomeworkList extends RecyclerView.Adapter<AbstractSwipeableItemView
         if (DataSingleton.getInstance().getDataArrayList().get(position) instanceof HomeworkWithID) {
 
             final Homework homework = ((HomeworkWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getHomework();
-            final ListItemViewHolder homeworkViewHolder = (ListItemViewHolder) viewHolder;
+            final ListItemViewHolder listItemViewHolder = (ListItemViewHolder) viewHolder;
 
-            homeworkViewHolder.titleTextView.setText(homework.getClassName() + " • " + homework.getName());
+            listItemViewHolder.titleTextView.setText(homework.getClassName() + " • " + homework.getName());
 
             String subtitleTextViewText = "";
 
@@ -171,44 +172,44 @@ public class HomeworkList extends RecyclerView.Adapter<AbstractSwipeableItemView
 
                 if (homework.getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
 
-                    homeworkViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                    listItemViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
 
                 } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
-                    homeworkViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                    listItemViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
 
                 } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
 
                     if (homework.getDateTime().isBefore(tomorrow.minusDays(1)) || homework.getDateTime().isEqual(tomorrow.minusDays(1)))
-                        homeworkViewHolder.subtitleTextView.setText("Today • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                        listItemViewHolder.subtitleTextView.setText("Today • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
                     else
-                        homeworkViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                        listItemViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
 
                 } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(homework.getDateTime())) {
 
                     if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay()))
-                        homeworkViewHolder.subtitleTextView.setText("Yesterday • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                        listItemViewHolder.subtitleTextView.setText("Yesterday • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
                     else
-                        homeworkViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                        listItemViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
 
                 } else {
 
-                    homeworkViewHolder.subtitleTextView.setText(dayOfWeekString.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                    listItemViewHolder.subtitleTextView.setText(dayOfWeekString.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
 
                 }
 
             } else {
 
-                homeworkViewHolder.subtitleTextView.setText(subtitleTextViewText);
+                listItemViewHolder.subtitleTextView.setText(subtitleTextViewText);
 
             }
 
-            homeworkViewHolder.colorIndicatorImageView.setColorFilter(homework.getColor());
+            listItemViewHolder.colorIndicatorImageView.setColorFilter(homework.getColor());
 
             if (homework.isHighPriority())
-                homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.VISIBLE);
+                listItemViewHolder.priorityIndicatorImageView.setVisibility(View.VISIBLE);
             else
-                homeworkViewHolder.priorityIndicatorImageView.setVisibility(View.GONE);
+                listItemViewHolder.priorityIndicatorImageView.setVisibility(View.GONE);
 
 
         } else {
@@ -278,7 +279,7 @@ public class HomeworkList extends RecyclerView.Adapter<AbstractSwipeableItemView
 
     public interface EventListener {
 
-        void onItemRemoved(int position);
+        void onItemRemoved();
 
     }
 
@@ -301,35 +302,55 @@ public class HomeworkList extends RecyclerView.Adapter<AbstractSwipeableItemView
         protected void onPerformAction() {
 
             boolean triggerSectionRemoved = false;
-            final int viewType = adapter.getItemViewType(position);
 
-            if (viewType == adapter.VIEW_TYPE_HOMEWORK) {
+            if (DataSingleton.getInstance().getDataArrayList().size() == 2) {
 
-                //Check whether to remove any sections and set triggerSectionRemoved to true if yes.
+                triggerSectionRemoved = true;
+
+            } else if (position == DataSingleton.getInstance().getDataArrayList().size() - 1) {
+
+                if (adapter.getItemViewType(position - 1) == adapter.VIEW_TYPE_SECTION)
+                    triggerSectionRemoved = true;
 
             } else {
 
+                if (adapter.getItemViewType(position - 1) == adapter.VIEW_TYPE_SECTION)
+                    if (adapter.getItemViewType(position + 1) == adapter.VIEW_TYPE_SECTION)
+                        triggerSectionRemoved = true;
 
             }
 
-            DataSingleton.getInstance().getDataArrayList().remove(position);
-            adapter.notifyItemRemoved(position);
+            SparseArray<Object> newLastRemovedSparseArray = new SparseArray<>();
+            newLastRemovedSparseArray.put(position, DataSingleton.getInstance().getDataArrayList().get(position));
 
-            if (viewType == adapter.VIEW_TYPE_HOMEWORK)
-                if (adapter.eventListener != null)
-                    adapter.eventListener.onItemRemoved(position);
+            if (triggerSectionRemoved) {
 
-            if (triggerSectionRemoved)
-                new HomeworkSwipeResultActionRemoveItem(adapter, position - 1);
+                newLastRemovedSparseArray.put(position - 1, DataSingleton.getInstance().getDataArrayList().get(position - 1));
+
+                DataSingleton.getInstance().getDataArrayList().remove(position);
+                DataSingleton.getInstance().getDataArrayList().remove(position - 1);
+                adapter.notifyItemRangeRemoved(position - 1, position);
+
+            } else {
+
+                DataSingleton.getInstance().getDataArrayList().remove(position);
+                adapter.notifyItemRemoved(position);
+
+            }
+
+            DataSingleton.getInstance().setDataSparseArrayLastRemoved(newLastRemovedSparseArray);
+
+            if (adapter.eventListener != null)
+                adapter.eventListener.onItemRemoved();
 
         }
 
         @Override
         protected void onCleanUp() {
 
-            super.onCleanUp();
-
             adapter = null;
+
+            super.onCleanUp();
 
         }
 

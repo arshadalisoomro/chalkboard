@@ -229,10 +229,12 @@ public class Background extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (DataSingleton.getInstance().isReactToBroadcast()) {
+                if (DataSingleton.getInstance().isReactToBroadcastData()) {
 
                     getData();
-                    getHomework();
+
+                    if (DataSingleton.getInstance().isReactToBroadcastHomework())
+                        getHomework();
 
                     if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_DATE_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
 

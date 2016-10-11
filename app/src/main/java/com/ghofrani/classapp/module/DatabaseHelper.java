@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.DatabaseContract;
@@ -115,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void insertClassesIntoDay(ArrayList<StandardClass> classesToInsert, int day) {
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -225,7 +226,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void removeClassOutOfDay(int day, String classToRemove, LocalTime startTime) {
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         try {
 
@@ -320,7 +321,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteClass(String className) {
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         try {
 
@@ -379,7 +380,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void addClass(SlimClass classToAdd) {
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -402,7 +403,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String[] getClassLocationTeacherColor(String className) {
 
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
@@ -437,7 +438,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int getClassColor(String className) {
 
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
@@ -468,7 +469,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getClassesCursor(int day) {
 
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor;
 
         switch (day) {
@@ -527,9 +528,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void deleteHomework(Homework homework) {
+
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+
+        try {
+
+            Log.d("HOMEWORK", homework.getName());
+
+            sqLiteDatabase.execSQL("delete from "
+                    + DatabaseContract.Homework.TABLE_NAME + " where "
+                    + DatabaseContract.Homework.COLUMN_DATE_TIME + "='"
+                    + homework.getDateTime().toString() + "' and "
+                    + DatabaseContract.Homework.COLUMN_NAME + "='"
+                    + homework.getName() + "'");
+
+        } finally {
+
+            sqLiteDatabase.close();
+
+        }
+
+    }
+
     public void flushHomework(ArrayList<Homework> homeworkToAdd) {
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -561,7 +585,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void updateClass(String oldClassName, SlimClass classToUpdate) {
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
         ContentValues contentValuesClassInfo = new ContentValues();
 
@@ -602,7 +626,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getHomeworkCursor() {
 
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
         return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Homework.TABLE_NAME + " order by rowid", null);
 
@@ -610,7 +634,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getClassesCursor() {
 
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
         return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.ClassInfo.TABLE_NAME + " order by rowid", null);
 
