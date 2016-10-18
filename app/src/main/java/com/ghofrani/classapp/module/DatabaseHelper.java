@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.DatabaseContract;
@@ -534,8 +533,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         try {
-
-            Log.d("HOMEWORK", homework.getName());
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Homework.TABLE_NAME + " where "

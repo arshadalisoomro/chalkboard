@@ -1,5 +1,6 @@
 package com.ghofrani.classapp.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ public class Homework extends Fragment {
     private Snackbar snackbar;
     private LinearLayoutManagerSmoothScroller linearLayoutManager;
     private SparseArray<Object> lastItemRemoved;
+    private Context context;
 
     @Subscribe
     public void onEvent(com.ghofrani.classapp.event.UpdateHomeworkUI updateHomeworkUI) {
@@ -57,6 +59,15 @@ public class Homework extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+
+        super.onAttach(context);
+
+        this.context = context;
+
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();
@@ -67,6 +78,8 @@ public class Homework extends Fragment {
         if (noHomeworkCardView == null)
             noHomeworkCardView = (CardView) getView().findViewById(R.id.homework_no_homework_card);
 
+        lastItemRemoved = new SparseArray<>();
+
         updateUI();
 
         EventBus.getDefault().register(this);
@@ -76,14 +89,22 @@ public class Homework extends Fragment {
     @Override
     public void onPause() {
 
-        if (snackbar != null)
-            if (snackbar.isShown())
+        if (snackbar != null) {
+
+            if (snackbar.isShown()) {
+
                 snackbar.dismiss();
 
-        EventBus.getDefault().unregister(this);
+            } else {
 
-        DataSingleton.getInstance().setReactToBroadcastHomework(true);
-        EventBus.getDefault().post(new Update(false, false, false, true));
+                DataSingleton.getInstance().setReactToBroadcastHomework(true);
+                EventBus.getDefault().post(new Update(false, true, false, false));
+
+            }
+
+        }
+
+        EventBus.getDefault().unregister(this);
 
         super.onPause();
 
@@ -130,7 +151,7 @@ public class Homework extends Fragment {
                 @Override
                 public void onItemRemoved() {
 
-                    //linearLayoutManager.smoothScrollToPosition(recyclerView, null, 0);
+                    //Scroll here.
 
                     showSnackbar();
 
@@ -165,17 +186,13 @@ public class Homework extends Fragment {
 
         DataSingleton.getInstance().setReactToBroadcastHomework(false);
 
-        if (snackbar != null)
-            if (snackbar.isShown())
-                snackbar.dismiss();
+        deleteHomework();
 
         snackbar = Snackbar.make(getView().findViewById(R.id.homework_container), "1 homework done!", Snackbar.LENGTH_LONG);
         snackbar.setAction("UNDO", new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-                snackbar.setCallback(null);
 
                 undoLastItemRemoved();
 
@@ -190,7 +207,8 @@ public class Homework extends Fragment {
 
                 super.onDismissed(snackbar, event);
 
-                deleteHomework();
+                if (event != DISMISS_EVENT_ACTION)
+                    deleteHomework();
 
             }
 
@@ -207,20 +225,36 @@ public class Homework extends Fragment {
 
         if (lastItemRemoved.size() != 0) {
 
-            DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+            DatabaseHelper databaseHelper = new DatabaseHelper(context);
 
             try {
 
                 if (lastItemRemoved.size() == 2)
-                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.get(lastItemRemoved.keyAt(1))).getHomework());
+                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.valueAt(1)).getHomework());
                 else
-                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.get(lastItemRemoved.keyAt(0))).getHomework());
+                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.valueAt(0)).getHomework());
 
             } finally {
 
                 databaseHelper.close();
 
+                if (!isVisible()) {
+
+                    context = null;
+
+                    DataSingleton.getInstance().setReactToBroadcastHomework(true);
+                    EventBus.getDefault().post(new Update(false, true, false, false));
+
+                } else {
+
+                    if (DataSingleton.getInstance().getDataArrayList().isEmpty())
+                        updateUI();
+
+                }
+
             }
+
+            lastItemRemoved = new SparseArray<>();
 
         }
 
@@ -232,8 +266,8 @@ public class Homework extends Fragment {
 
             ArrayList<Object> dataArrayList = new ArrayList<>();
 
-            dataArrayList.add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().get(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0)));
-            dataArrayList.add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().get(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(1)));
+            dataArrayList.add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().valueAt(0));
+            dataArrayList.add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().valueAt(1));
 
             DataSingleton.getInstance().getDataArrayList().addAll(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0), dataArrayList);
 
@@ -241,13 +275,13 @@ public class Homework extends Fragment {
 
         } else {
 
-            DataSingleton.getInstance().getDataArrayList().add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0), DataSingleton.getInstance().getDataSparseArrayLastRemoved().get(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0)));
+            DataSingleton.getInstance().getDataArrayList().add(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0), DataSingleton.getInstance().getDataSparseArrayLastRemoved().valueAt(0));
 
             homeworkList.notifyItemInserted(DataSingleton.getInstance().getDataSparseArrayLastRemoved().keyAt(0));
 
         }
 
-        DataSingleton.getInstance().setDataSparseArrayLastRemoved(new SparseArray<>());
+        lastItemRemoved = new SparseArray<>();
 
     }
 
