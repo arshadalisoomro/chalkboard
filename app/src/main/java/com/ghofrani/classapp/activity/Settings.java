@@ -100,7 +100,7 @@ public class Settings extends AppCompatActivity {
             if (key.equals("detailed_notification") && DataSingleton.getInstance().getCurrentClass() != null
                     || key.equals("flip_colors") && DataSingleton.getInstance().getCurrentClass() != null
                     || key.equals("class_notification") && DataSingleton.getInstance().getCurrentClass() != null
-                    || key.equals("next_class_notification_minutes") && DataSingleton.getInstance().getCurrentClass() != null
+                    || key.equals("next_class_notification_minutes")
                     || key.equals("tomorrow_classes")) {
 
                 EventBus.getDefault().post(new Update(true, false, false, false));

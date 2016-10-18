@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,20 +165,11 @@ public class Homework extends Fragment {
 
         DataSingleton.getInstance().setReactToBroadcastHomework(false);
 
-        Log.d("POINT", "1");
-
         if (snackbar != null)
             if (snackbar.isShown())
                 snackbar.dismiss();
 
-        Log.d("POINT", "2");
-
-        lastItemRemoved = DataSingleton.getInstance().getDataSparseArrayLastRemoved();
-
         snackbar = Snackbar.make(getView().findViewById(R.id.homework_container), "1 homework done!", Snackbar.LENGTH_LONG);
-
-        Log.d("POINT", "3");
-
         snackbar.setAction("UNDO", new View.OnClickListener() {
 
             @Override
@@ -193,8 +183,6 @@ public class Homework extends Fragment {
 
         });
 
-        Log.d("POINT", "4");
-
         snackbar.setCallback(new Snackbar.Callback() {
 
             @Override
@@ -202,22 +190,20 @@ public class Homework extends Fragment {
 
                 super.onDismissed(snackbar, event);
 
-                executeHomeworkDeletion();
+                deleteHomework();
 
             }
 
         });
 
-        Log.d("POINT", "5");
-
         snackbar.setActionTextColor(ContextCompat.getColor(getContext(), R.color.snackbar_action_color_done));
         snackbar.show();
 
-        Log.d("POINT", "6");
+        lastItemRemoved = DataSingleton.getInstance().getDataSparseArrayLastRemoved();
 
     }
 
-    private void executeHomeworkDeletion() {
+    private void deleteHomework() {
 
         if (lastItemRemoved.size() != 0) {
 

@@ -18,13 +18,6 @@
 
         <item
 
-            android:id="@+id/timetable"
-            android:checked="false"
-            android:icon="@drawable/timetable"
-            android:title="Timetable" />
-
-        <item
-
             android:id="@+id/classes"
             android:checked="false"
             android:icon="@drawable/classes"
@@ -36,6 +29,13 @@
             android:checked="false"
             android:icon="@drawable/homework"
             android:title="Homework" />
+
+        <item
+
+            android:id="@+id/timetable"
+            android:checked="false"
+            android:icon="@drawable/timetable"
+            android:title="Timetable" />
 
     </group>
 

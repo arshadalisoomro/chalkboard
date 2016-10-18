@@ -116,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void insertClassesIntoDay(ArrayList<StandardClass> classesToInsert, int day) {
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -226,7 +226,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void removeClassOutOfDay(int day, String classToRemove, LocalTime startTime) {
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         try {
 
@@ -321,7 +321,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteClass(String className) {
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         try {
 
@@ -380,7 +380,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void addClass(SlimClass classToAdd) {
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -403,7 +403,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String[] getClassLocationTeacherColor(String className) {
 
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
@@ -438,7 +438,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int getClassColor(String className) {
 
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
@@ -469,7 +469,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getClassesCursor(int day) {
 
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
         Cursor cursor;
 
         switch (day) {
@@ -530,7 +531,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteHomework(Homework homework) {
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         try {
 
@@ -553,7 +554,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void flushHomework(ArrayList<Homework> homeworkToAdd) {
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
 
@@ -585,7 +586,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void updateClass(String oldClassName, SlimClass classToUpdate) {
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValuesClassInfo = new ContentValues();
 
@@ -626,7 +627,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getHomeworkCursor() {
 
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Homework.TABLE_NAME + " order by rowid", null);
 
@@ -634,7 +635,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getClassesCursor() {
 
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.ClassInfo.TABLE_NAME + " order by rowid", null);
 
