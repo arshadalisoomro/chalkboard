@@ -104,6 +104,7 @@ public class DataSingleton {
         isChangedFirstDay = false;
 
         reactToBroadcastData = true;
+        reactToBroadcastHomework = true;
 
     }
 

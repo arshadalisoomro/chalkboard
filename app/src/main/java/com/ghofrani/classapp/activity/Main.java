@@ -531,6 +531,9 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         }
 
+        if (currentView == ID_HOMEWORK)
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_scroll_view, new Homework(), "homework_fragment").commitAllowingStateLoss();
+
     }
 
     private void performExpensiveSwitchOperations(int viewID, final FragmentTransaction fragmentTransaction) {

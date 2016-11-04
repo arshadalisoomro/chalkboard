@@ -91,20 +91,15 @@ public class Homework extends Fragment {
 
         if (snackbar != null) {
 
-            if (snackbar.isShown()) {
-
+            if (snackbar.isShown())
                 snackbar.dismiss();
-
-            } else {
-
-                DataSingleton.getInstance().setReactToBroadcastHomework(true);
+            else
                 EventBus.getDefault().post(new Update(false, true, false, false));
-
-            }
 
         }
 
         EventBus.getDefault().unregister(this);
+        DataSingleton.getInstance().setReactToBroadcastHomework(true);
 
         super.onPause();
 

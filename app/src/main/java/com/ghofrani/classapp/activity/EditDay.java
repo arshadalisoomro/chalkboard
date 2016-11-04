@@ -343,6 +343,8 @@ public class EditDay extends AppCompatActivity {
 
         super.onResume();
 
+        DataSingleton.getInstance().setReactToBroadcastData(false);
+
         if (listView == null)
             listView = (ListView) findViewById(R.id.edit_day_list_view);
 
@@ -399,6 +401,8 @@ public class EditDay extends AppCompatActivity {
 
         if (menuItem.getItemId() == android.R.id.home) {
 
+            DataSingleton.getInstance().setReactToBroadcastData(true);
+
             super.onBackPressed();
 
             return true;
@@ -408,6 +412,15 @@ public class EditDay extends AppCompatActivity {
             return super.onOptionsItemSelected(menuItem);
 
         }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        DataSingleton.getInstance().setReactToBroadcastData(true);
+
+        super.onBackPressed();
 
     }
 
@@ -452,7 +465,7 @@ public class EditDay extends AppCompatActivity {
                     } else {
 
                         startTimeStringForPosition.add("00:00");
-                        endTimeStringForPosition.add(i, standardClassArrayList.get(i).getEndTimeString(false));
+                        endTimeStringForPosition.add(standardClassArrayList.get(0).getEndTimeString(false));
 
                     }
 
@@ -511,6 +524,7 @@ public class EditDay extends AppCompatActivity {
             standardClassArrayList.add(null);
 
             noClassIndexList.add(0);
+
             startTimeStringForPosition.add(FIRST_LESSON_ASSUMED_START_TIME);
             endTimeStringForPosition.add(FIRST_LESSON_ASSUMED_END_TIME);
 
