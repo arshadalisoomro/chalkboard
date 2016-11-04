@@ -51,6 +51,13 @@
             android:icon="@drawable/settings"
             android:title="Settings" />
 
+        <item
+
+            android:id="@+id/about"
+            android:checked="false"
+            android:icon="@drawable/about"
+            android:title="About" />
+
     </group>
 
 </menu>

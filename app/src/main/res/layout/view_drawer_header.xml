@@ -4,20 +4,32 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="128dp"
+    android:layout_height="148dp"
     android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
     <TextView
 
+        android:id="@+id/drawer_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="18dp"
-        android:layout_marginLeft="18dp"
-        android:text="Chalkboard (A0.0.5)"
+        android:layout_marginBottom="19dp"
+        android:layout_marginLeft="19dp"
+        android:text="School &#038; Homework Planner"
         android:textColor="@color/white"
-        android:textSize="24sp" />
+        android:textSize="15sp" />
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/drawer_subtitle"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="18dp"
+        android:text="Chalkboard"
+        android:textColor="@color/white"
+        android:textSize="26sp" />
 
 </RelativeLayout>

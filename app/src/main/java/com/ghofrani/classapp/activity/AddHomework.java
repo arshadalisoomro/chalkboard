@@ -305,7 +305,7 @@ public class AddHomework extends AppCompatActivity {
 
                         }
 
-                    }, 100);
+                    }, 75);
 
                     break;
 

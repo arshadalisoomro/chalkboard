@@ -3,8 +3,10 @@ package com.ghofrani.classapp.activity;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -58,6 +60,7 @@ public class EditDay extends AppCompatActivity {
     private DateTimeFormatter dateTimeFormatter24HourNoColon;
     private boolean is24Hour;
     private int day;
+    private ArrayList<String> days;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -290,11 +293,31 @@ public class EditDay extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        days = new ArrayList<>();
+
         switch (toolbar.getTitle().toString()) {
 
             case "Edit Monday's Classes":
 
                 day = DateTimeConstants.MONDAY;
+
+                if (DataSingleton.getInstance().getTuesdayClasses() != null)
+                    days.add("Tuesday's timetable");
+
+                if (DataSingleton.getInstance().getWednesdayClasses() != null)
+                    days.add("Wednesday's timetable");
+
+                if (DataSingleton.getInstance().getThursdayClasses() != null)
+                    days.add("Thursday's timetable");
+
+                if (DataSingleton.getInstance().getFridayClasses() != null)
+                    days.add("Friday's timetable");
+
+                if (DataSingleton.getInstance().getSaturdayClasses() != null)
+                    days.add("Saturday's timetable");
+
+                if (DataSingleton.getInstance().getSundayClasses() != null)
+                    days.add("Sunday's timetable");
 
                 break;
 
@@ -302,11 +325,47 @@ public class EditDay extends AppCompatActivity {
 
                 day = DateTimeConstants.TUESDAY;
 
+                if (DataSingleton.getInstance().getWednesdayClasses() != null)
+                    days.add("Wednesday's timetable");
+
+                if (DataSingleton.getInstance().getThursdayClasses() != null)
+                    days.add("Thursday's timetable");
+
+                if (DataSingleton.getInstance().getFridayClasses() != null)
+                    days.add("Friday's timetable");
+
+                if (DataSingleton.getInstance().getSaturdayClasses() != null)
+                    days.add("Saturday's timetable");
+
+                if (DataSingleton.getInstance().getSundayClasses() != null)
+                    days.add("Sunday's timetable");
+
+                if (DataSingleton.getInstance().getMondayClasses() != null)
+                    days.add("Monday's timetable");
+
                 break;
 
             case "Edit Wednesday's Classes":
 
                 day = DateTimeConstants.WEDNESDAY;
+
+                if (DataSingleton.getInstance().getThursdayClasses() != null)
+                    days.add("Thursday's timetable");
+
+                if (DataSingleton.getInstance().getFridayClasses() != null)
+                    days.add("Friday's timetable");
+
+                if (DataSingleton.getInstance().getSaturdayClasses() != null)
+                    days.add("Saturday's timetable");
+
+                if (DataSingleton.getInstance().getSundayClasses() != null)
+                    days.add("Sunday's timetable");
+
+                if (DataSingleton.getInstance().getMondayClasses() != null)
+                    days.add("Monday's timetable");
+
+                if (DataSingleton.getInstance().getTuesdayClasses() != null)
+                    days.add("Tuesday's timetable");
 
                 break;
 
@@ -314,11 +373,47 @@ public class EditDay extends AppCompatActivity {
 
                 day = DateTimeConstants.THURSDAY;
 
+                if (DataSingleton.getInstance().getFridayClasses() != null)
+                    days.add("Friday's timetable");
+
+                if (DataSingleton.getInstance().getSaturdayClasses() != null)
+                    days.add("Saturday's timetable");
+
+                if (DataSingleton.getInstance().getSundayClasses() != null)
+                    days.add("Sunday's timetable");
+
+                if (DataSingleton.getInstance().getMondayClasses() != null)
+                    days.add("Monday's timetable");
+
+                if (DataSingleton.getInstance().getTuesdayClasses() != null)
+                    days.add("Tuesday's timetable");
+
+                if (DataSingleton.getInstance().getWednesdayClasses() != null)
+                    days.add("Wednesday's timetable");
+
                 break;
 
             case "Edit Friday's Classes":
 
                 day = DateTimeConstants.FRIDAY;
+
+                if (DataSingleton.getInstance().getSaturdayClasses() != null)
+                    days.add("Saturday's timetable");
+
+                if (DataSingleton.getInstance().getSundayClasses() != null)
+                    days.add("Sunday's timetable");
+
+                if (DataSingleton.getInstance().getMondayClasses() != null)
+                    days.add("Monday's timetable");
+
+                if (DataSingleton.getInstance().getTuesdayClasses() != null)
+                    days.add("Tuesday's timetable");
+
+                if (DataSingleton.getInstance().getWednesdayClasses() != null)
+                    days.add("Wednesday's timetable");
+
+                if (DataSingleton.getInstance().getThursdayClasses() != null)
+                    days.add("Thursday's timetable");
 
                 break;
 
@@ -326,13 +421,136 @@ public class EditDay extends AppCompatActivity {
 
                 day = DateTimeConstants.SATURDAY;
 
+                if (DataSingleton.getInstance().getSundayClasses() != null)
+                    days.add("Sunday's timetable");
+
+                if (DataSingleton.getInstance().getMondayClasses() != null)
+                    days.add("Monday's timetable");
+
+                if (DataSingleton.getInstance().getTuesdayClasses() != null)
+                    days.add("Tuesday's timetable");
+
+                if (DataSingleton.getInstance().getWednesdayClasses() != null)
+                    days.add("Wednesday's timetable");
+
+                if (DataSingleton.getInstance().getThursdayClasses() != null)
+                    days.add("Thursday's timetable");
+
+                if (DataSingleton.getInstance().getFridayClasses() != null)
+                    days.add("Friday's timetable");
+
                 break;
 
             case "Edit Sunday's Classes":
 
                 day = DateTimeConstants.SUNDAY;
 
+                if (DataSingleton.getInstance().getMondayClasses() != null)
+                    days.add("Monday's timetable");
+
+                if (DataSingleton.getInstance().getTuesdayClasses() != null)
+                    days.add("Tuesday's timetable");
+
+                if (DataSingleton.getInstance().getWednesdayClasses() != null)
+                    days.add("Wednesday's timetable");
+
+                if (DataSingleton.getInstance().getThursdayClasses() != null)
+                    days.add("Thursday's timetable");
+
+                if (DataSingleton.getInstance().getFridayClasses() != null)
+                    days.add("Friday's timetable");
+
+                if (DataSingleton.getInstance().getSaturdayClasses() != null)
+                    days.add("Saturday's timetable");
+
                 break;
+
+        }
+
+        if (!days.isEmpty()) {
+
+            final FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.edit_day_floating_action_button);
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    final String[] daysArray = new String[days.size()];
+
+                    for (int i = 0; i < days.size(); i++)
+                        daysArray[i] = days.get(i);
+
+                    new Handler().postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            new MaterialDialog.Builder(EditDay.this)
+                                    .title("Copy from...")
+                                    .items(daysArray)
+                                    .itemsCallback(new MaterialDialog.ListCallback() {
+
+                                        @Override
+                                        public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+
+                                            ArrayList<StandardClass> currentClasses = new ArrayList<>();
+
+                                            switch (text.toString()) {
+
+                                                case "Monday's timetable":
+                                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.MONDAY);
+                                                    break;
+                                                case "Tuesday's timetable":
+                                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.TUESDAY);
+                                                    break;
+                                                case "Wednesday's timetable":
+                                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.WEDNESDAY);
+                                                    break;
+                                                case "Thursday's timetable":
+                                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.THURSDAY);
+                                                    break;
+                                                case "Friday's timetable":
+                                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.FRIDAY);
+                                                    break;
+                                                case "Saturday's timetable":
+                                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.SATURDAY);
+                                                    break;
+                                                case "Sunday's timetable":
+                                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.SUNDAY);
+                                                    break;
+
+                                            }
+
+                                            DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
+
+                                            try {
+
+                                                databaseHelper.insertClassesIntoDay(currentClasses, day);
+
+                                            } finally {
+
+                                                databaseHelper.close();
+
+                                            }
+
+                                            Utils.setClassesArrayListOfDay(day, currentClasses);
+
+                                            updateUI();
+
+                                        }
+
+                                    })
+                                    .show();
+
+                        }
+
+                    }, 75);
+
+                }
+
+            });
+
+            floatingActionButton.setVisibility(View.VISIBLE);
 
         }
 

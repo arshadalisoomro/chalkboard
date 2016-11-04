@@ -567,8 +567,8 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    //final Intent homeworkActivityIntent = new Intent(this, AddHomework.class).putExtra("origin_notification", true);
-                    //final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent homeworkActivityIntent = new Intent(this, AddHomework.class).putExtra("origin_notification", true);
+                    final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.mipmap.ic_launcher)
@@ -576,6 +576,8 @@ public class Background extends Service {
                             .setColor(finalCurrentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
                             .setPriority(Notification.PRIORITY_MAX)
+                            .addAction(R.drawable.homework, "ADD HOMEWORK", addHomeworkActivityIntent)
+                            .setContentTitle(finalCurrentClass.getName())
                             .setWhen(0);
 
                     notificationRunnable = new Runnable() {
@@ -604,7 +606,6 @@ public class Background extends Service {
                             else
                                 remainingNotificationText += " • No further classes";
 
-                            notificationCompatBuilder.setContentTitle(finalCurrentClass.getName());
                             notificationCompatBuilder.setContentText(remainingNotificationText);
 
                             String progressBarText = "";

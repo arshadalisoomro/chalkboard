@@ -77,6 +77,14 @@
 
         </activity>
 
+        <activity
+
+            android:name=".activity.About"
+            android:parentActivityName=".activity.Main"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <service
 
             android:name=".service.Background"

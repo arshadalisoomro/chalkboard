@@ -12,44 +12,61 @@
         android:id="@+id/edit_day_toolbar"
         layout="@layout/view_toolbar" />
 
-    <ScrollView
+    <FrameLayout
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:orientation="vertical"
-        android:scrollbars="none">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusableInTouchMode="true">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:scrollbars="none">
 
-            <android.support.v7.widget.CardView
+            <LinearLayout
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp">
+                android:focusableInTouchMode="true">
 
-                <ListView
+                <android.support.v7.widget.CardView
 
-                    android:id="@+id/edit_day_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:childDivider="#d3d3d3"
-                    android:dividerHeight="1dp">
+                    android:layout_margin="16dp">
 
-                </ListView>
+                    <ListView
 
-            </android.support.v7.widget.CardView>
+                        android:id="@+id/edit_day_list_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="8dp"
+                        android:childDivider="#d3d3d3"
+                        android:dividerHeight="1dp">
 
-        </LinearLayout>
+                    </ListView>
 
-    </ScrollView>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+
+            android:id="@+id/edit_day_floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/copy"
+            android:visibility="invisible" />
+
+    </FrameLayout>
 
 </LinearLayout>

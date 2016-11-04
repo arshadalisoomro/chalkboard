@@ -59,6 +59,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     private final int ID_CLASSES = 2;
     private final int ID_HOMEWORK = 3;
     private final int ID_SETTINGS = 4;
+    private final int ID_ABOUT = 5;
     private final int MODE_ADD = 0;
 
     private FloatingActionButton floatingActionButton;
@@ -119,6 +120,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                             EventBus.getDefault().post(new CollapseLists());
 
                         drawerViewToSwitchTo = ID_SETTINGS;
+
+                    } else if (menuItem.getItemId() == R.id.about) {
+
+                        if (currentView == ID_OVERVIEW)
+                            EventBus.getDefault().post(new CollapseLists());
+
+                        drawerViewToSwitchTo = ID_ABOUT;
 
                     } else {
 
@@ -471,6 +479,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 break;
 
+            case ID_ABOUT:
+
+                if (currentView == ID_OVERVIEW)
+                    EventBus.getDefault().post(new CollapseLists());
+
+                break;
+
         }
 
         performExpensiveSwitchOperations(viewToSwitchTo, fragmentTransaction);
@@ -799,6 +814,12 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             case ID_SETTINGS:
 
                 startActivity(new Intent(this, Settings.class));
+
+                break;
+
+            case ID_ABOUT:
+
+                startActivity(new Intent(this, About.class));
 
                 break;
 
