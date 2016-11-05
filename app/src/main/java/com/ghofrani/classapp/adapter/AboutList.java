@@ -16,17 +16,19 @@ public class AboutList extends BaseAdapter {
 
     private final LayoutInflater layoutInflater;
     private final ArrayList<String> aboutTitlesArrayList;
+    private final Context context;
 
     public AboutList(Context context) {
 
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         aboutTitlesArrayList = new ArrayList<>();
+        this.context = context;
 
     }
 
     @Override
     public int getCount() {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class AboutList extends BaseAdapter {
             case 1:
 
                 listChildIconImageView.setImageResource(R.drawable.version);
-                listChildTitleTextView.setText("Version 0.0.5 (Alpha)");
+                listChildTitleTextView.setText("Version " + context.getString(R.string.app_version));
 
                 break;
 
@@ -94,6 +96,15 @@ public class AboutList extends BaseAdapter {
 
                 listChildIconImageView.setImageResource(R.drawable.rate);
                 listChildTitleTextView.setText("Rate on Google Play");
+
+                break;
+
+            case 5:
+
+                listChildIconImageView.setImageResource(R.drawable.bugs);
+                listChildTitleTextView.setText("Report Bugs on GitHub");
+
+                break;
 
         }
 

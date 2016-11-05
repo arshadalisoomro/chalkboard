@@ -1,10 +1,15 @@
 package com.ghofrani.classapp.activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.AboutList;
@@ -85,6 +91,41 @@ public class About extends AppCompatActivity {
                         } catch (ActivityNotFoundException exception) {
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
                         }
+
+                        break;
+
+                    case 5:
+
+                        String deviceInformation = "Version: " + getString(R.string.app_version);
+                        deviceInformation += "\nVersion Code: " + getString(R.string.app_version_code);
+                        deviceInformation += "\nAndroid SDK: " + Build.VERSION.SDK_INT;
+                        deviceInformation += "\nAndroid Build: " + Build.VERSION.INCREMENTAL;
+                        deviceInformation += "\nDevice Manufacturer: " + Build.MANUFACTURER;
+                        deviceInformation += "\nDevice Model: " + Build.MODEL;
+                        deviceInformation += "\nDevice Hardware: " + Build.HARDWARE;
+
+                        final ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        final ClipData clip = ClipData.newPlainText("Device Information", deviceInformation);
+                        clipboard.setPrimaryClip(clip);
+
+                        new MaterialDialog.Builder(About.this)
+                                .title("Report bugs")
+                                .content("Your device information has been copied to the clipboard, you will now be redirected to the issue tracker.")
+                                .contentColorRes(R.color.black)
+                                .positiveText("OK")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                        final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/chalkboard-issue-tracker"));
+                                        startActivity(browserIntent);
+
+                                    }
+
+                                })
+                                .positiveColorRes(R.color.black)
+                                .show();
 
                         break;
 
