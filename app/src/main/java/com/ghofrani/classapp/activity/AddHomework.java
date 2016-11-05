@@ -446,6 +446,8 @@ public class AddHomework extends AppCompatActivity {
 
                         }
 
+                        break;
+
                     }
 
                 }
@@ -484,16 +486,14 @@ public class AddHomework extends AppCompatActivity {
 
                     materialDialog.dismiss();
 
-                    if (originNotification) {
+                    pickedDateTime = null;
 
-                        pickedDateTime = null;
+                    if (originNotification) {
 
                         finish();
                         startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
 
                     } else {
-
-                        pickedDateTime = null;
 
                         AddHomework.super.onBackPressed();
 
@@ -714,16 +714,14 @@ public class AddHomework extends AppCompatActivity {
 
                 materialDialog.dismiss();
 
-                if (originNotification) {
+                pickedDateTime = null;
 
-                    pickedDateTime = null;
+                if (originNotification) {
 
                     finish();
                     startActivity(new Intent(AddHomework.this, Main.class).putExtra("fragment", 3));
 
                 } else {
-
-                    pickedDateTime = null;
 
                     AddHomework.super.onBackPressed();
 

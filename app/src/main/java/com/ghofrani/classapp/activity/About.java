@@ -109,7 +109,7 @@ public class About extends AppCompatActivity {
                         clipboard.setPrimaryClip(clip);
 
                         new MaterialDialog.Builder(About.this)
-                                .title("Report bugs")
+                                .title("Report Bugs")
                                 .content("Your device information has been copied to the clipboard, you will now be redirected to the issue tracker.")
                                 .contentColorRes(R.color.black)
                                 .positiveText("OK")
