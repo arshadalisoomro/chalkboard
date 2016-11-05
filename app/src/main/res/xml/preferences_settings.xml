@@ -29,16 +29,6 @@
             tools:columns="5"
             tools:dialogTitle="Choose a color" />
 
-        <com.afollestad.materialdialogs.prefs.MaterialListPreference
-
-            android:defaultValue="1"
-            android:entries="@array/days_of_week"
-            android:entryValues="@array/days_of_week_values"
-            android:key="first_day_of_week"
-            android:negativeButtonText=""
-            android:summary="Choose the first working day of your week"
-            android:title="First day of week" />
-
         <CheckBoxPreference
 
             android:defaultValue="true"
@@ -119,6 +109,38 @@
             android:negativeButtonText=""
             android:summary="Choose when a notification for the next class appears"
             android:title="Next class notification timing" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+
+        android:title="Timetable">
+
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+
+            android:defaultValue="1"
+            android:entries="@array/days_of_week"
+            android:entryValues="@array/days_of_week_values"
+            android:key="first_day_of_week"
+            android:negativeButtonText=""
+            android:summary="Choose the first working day of your week"
+            android:title="First day of week" />
+
+        <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
+
+            android:defaultValue="08:00"
+            android:key="first_lesson_time"
+            android:summary="Enter when your day starts in the format HH:mm"
+            android:title="First lesson time" />
+
+        <EditTextPreference
+
+            android:defaultValue="60"
+            android:hint="HH:mm"
+            android:key="default_lesson_length"
+            android:numeric="integer"
+            android:summary="Choose how long a lesson is by default"
+            android:title="Default lesson length" />
 
     </PreferenceCategory>
 

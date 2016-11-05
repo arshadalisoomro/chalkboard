@@ -7,6 +7,7 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.Update;
@@ -14,6 +15,7 @@ import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.joda.time.format.DateTimeFormat;
 
 public class Settings extends AppCompatActivity {
 
@@ -121,6 +123,35 @@ public class Settings extends AppCompatActivity {
                 EventBus.getDefault().post(new Update(false, true, false, false));
 
                 DataSingleton.getInstance().setChangedFirstDay(true);
+
+            } else if (key.equals("default_lesson_length")) {
+
+                if (Integer.parseInt(sharedPreferences.getString(key, "60")) < 1 || Integer.parseInt(sharedPreferences.getString(key, "60")) > 1439) {
+
+                    sharedPreferences.edit().putString(key, "60").commit();
+
+                    getActivity().recreate();
+
+                    Toast.makeText(getActivity(), "Please choose a value between 1 and 1439!", Toast.LENGTH_LONG).show();
+
+                }
+
+            } else if (key.equals("first_lesson_time")) {
+
+                try {
+
+                    DateTimeFormat.forPattern("HH:mm").parseLocalTime(sharedPreferences.getString(key, "08:00"));
+                    sharedPreferences.edit().putString(key, DateTimeFormat.forPattern("HH:mm").print(DateTimeFormat.forPattern("HH:mm").parseLocalTime(sharedPreferences.getString(key, "08:00")))).commit();
+
+                } catch (Exception ex) {
+
+                    sharedPreferences.edit().putString(key, "08:00").commit();
+
+                    getActivity().recreate();
+
+                    Toast.makeText(getActivity(), "Please enter the time in the format HH:mm!", Toast.LENGTH_LONG).show();
+
+                }
 
             }
 
