@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -56,6 +57,7 @@ public class EditDay extends AppCompatActivity {
     private boolean is24Hour;
     private int day;
     private ArrayList<String> days;
+    private boolean skip = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -759,31 +761,62 @@ public class EditDay extends AppCompatActivity {
 
                         }
 
-                        final MaterialDialog.Builder materialDialogBuilderAdd = new MaterialDialog.Builder(EditDay.this);
+                        final MaterialDialog.Builder materialDialogBuilderAddClass = new MaterialDialog.Builder(EditDay.this);
 
-                        materialDialogBuilderAdd.title("Add Class");
-                        materialDialogBuilderAdd.customView(R.layout.dialog_edit_day_add_class, false);
-                        materialDialogBuilderAdd.positiveText("Done");
-                        materialDialogBuilderAdd.positiveColorRes(R.color.black);
-                        materialDialogBuilderAdd.negativeText("Edit Times");
-                        materialDialogBuilderAdd.negativeColorRes(R.color.black);
-                        materialDialogBuilderAdd.autoDismiss(false);
+                        materialDialogBuilderAddClass.title("Add Class");
+                        materialDialogBuilderAddClass.customView(R.layout.dialog_edit_day_add_class, false);
+                        materialDialogBuilderAddClass.positiveText("Done");
+                        materialDialogBuilderAddClass.positiveColorRes(R.color.black);
+                        materialDialogBuilderAddClass.negativeText("Edit Times");
+                        materialDialogBuilderAddClass.negativeColorRes(R.color.black);
+                        materialDialogBuilderAddClass.autoDismiss(false);
 
-                        final MaterialDialog materialDialogAdd = materialDialogBuilderAdd.show();
+                        final MaterialDialog materialDialogAddClass = materialDialogBuilderAddClass.show();
 
-                        final Spinner classNameSpinner = (Spinner) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_spinner);
+                        final EditText dialogAddClassCustomLocationEditText = (EditText) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_location);
+                        final EditText dialogAddClassCustomTeacherEditText = (EditText) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_teacher);
+
+                        final Spinner classNameSpinner = (Spinner) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_spinner);
                         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, DataSingleton.getInstance().getAllClassNamesArrayList());
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);
 
-                        final TextView dialogAddClassStartTimeTextView = (TextView) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
-                        final TextView dialogAddClassEndTimeTextView = (TextView) materialDialogAdd.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
+                        classNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                                DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
+
+                                try {
+
+                                    String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(classNameSpinner.getSelectedItem().toString());
+
+                                    dialogAddClassCustomLocationEditText.setText(locationTeacherColor[0].equals("no-location") ? "" : locationTeacherColor[0]);
+                                    dialogAddClassCustomTeacherEditText.setText(locationTeacherColor[1].equals("no-teacher") ? "" : locationTeacherColor[1]);
+
+                                } finally {
+
+                                    databaseHelper.close();
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+                            }
+
+                        });
+
+                        final TextView dialogAddClassStartTimeTextView = (TextView) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
+                        final TextView dialogAddClassEndTimeTextView = (TextView) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
 
                         dialogAddClassStartTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(startTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(startTimeForPosition.get(position)));
                         dialogAddClassEndTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(endTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(endTimeForPosition.get(position)));
 
-                        materialDialogBuilderAdd.onPositive(new MaterialDialog.SingleButtonCallback() {
+                        materialDialogBuilderAddClass.onPositive(new MaterialDialog.SingleButtonCallback() {
 
                             @Override
                             public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
@@ -807,8 +840,8 @@ public class EditDay extends AppCompatActivity {
                                             classEndTime,
                                             dateTimeFormatterAMPM.print(classStartTime),
                                             dateTimeFormatterAMPM.print(classEndTime),
-                                            locationTeacherColor[0],
-                                            locationTeacherColor[1],
+                                            dialogAddClassCustomLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : dialogAddClassCustomLocationEditText.getText().toString().trim(),
+                                            dialogAddClassCustomTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : dialogAddClassCustomTeacherEditText.getText().toString().trim(),
                                             Integer.parseInt(locationTeacherColor[2])));
 
                                     for (int i = 0; i < currentClasses.size(); i++) {
@@ -827,8 +860,8 @@ public class EditDay extends AppCompatActivity {
                                             classEndTime,
                                             dateTimeFormatterAMPM.print(classStartTime),
                                             dateTimeFormatterAMPM.print(classEndTime),
-                                            locationTeacherColor[0],
-                                            locationTeacherColor[1],
+                                            dialogAddClassCustomLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : dialogAddClassCustomLocationEditText.getText().toString().trim(),
+                                            dialogAddClassCustomTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : dialogAddClassCustomTeacherEditText.getText().toString().trim(),
                                             Integer.parseInt(locationTeacherColor[2])));
 
                                     databaseHelper.insertClassesIntoDay(currentClasses, day);
@@ -849,7 +882,7 @@ public class EditDay extends AppCompatActivity {
 
                         });
 
-                        materialDialogBuilderAdd.onNegative(new MaterialDialog.SingleButtonCallback() {
+                        materialDialogBuilderAddClass.onNegative(new MaterialDialog.SingleButtonCallback() {
 
                             @Override
                             public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
@@ -1086,11 +1119,56 @@ public class EditDay extends AppCompatActivity {
                         dialogEditClassStartTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(startTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(startTimeForPosition.get(position)));
                         dialogEditClassEndTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(endTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(endTimeForPosition.get(position)));
 
+                        final EditText dialogEditClassCustomLocationEditText = (EditText) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_location);
+                        final EditText dialogEditClassCustomTeacherEditText = (EditText) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_teacher);
+
                         final Spinner classNameSpinner = (Spinner) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_spinner);
                         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, classNameList);
 
                         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classNameSpinner.setAdapter(classNameSpinnerAdapter);
+
+                        if (!skip)
+                            skip = true;
+
+                        classNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                                if (!skip) {
+
+                                    DatabaseHelper databaseHelper = new DatabaseHelper(EditDay.this);
+
+                                    try {
+
+                                        String[] locationTeacherColor = databaseHelper.getClassLocationTeacherColor(classNameSpinner.getSelectedItem().toString());
+
+                                        dialogEditClassCustomLocationEditText.setText(locationTeacherColor[0].equals("no-location") ? "" : locationTeacherColor[0]);
+                                        dialogEditClassCustomTeacherEditText.setText(locationTeacherColor[1].equals("no-teacher") ? "" : locationTeacherColor[1]);
+
+                                    } finally {
+
+                                        databaseHelper.close();
+
+                                    }
+
+                                } else {
+
+                                    dialogEditClassCustomLocationEditText.setText(standardClassArrayList.get(position).getLocation());
+                                    dialogEditClassCustomTeacherEditText.setText(standardClassArrayList.get(position).getTeacher());
+
+                                    skip = false;
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+                            }
+
+                        });
 
                         materialDialogBuilderEditClass.onPositive(new MaterialDialog.SingleButtonCallback() {
 
@@ -1117,8 +1195,8 @@ public class EditDay extends AppCompatActivity {
                                             classEndTime,
                                             dateTimeFormatterAMPM.print(classStartTime),
                                             dateTimeFormatterAMPM.print(classEndTime),
-                                            locationTeacherColor[0],
-                                            locationTeacherColor[1],
+                                            dialogEditClassCustomLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : dialogEditClassCustomLocationEditText.getText().toString().trim(),
+                                            dialogEditClassCustomTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : dialogEditClassCustomTeacherEditText.getText().toString().trim(),
                                             Integer.parseInt(locationTeacherColor[2])));
 
                                     for (int i = 0; i < currentClasses.size(); i++) {
@@ -1138,8 +1216,8 @@ public class EditDay extends AppCompatActivity {
                                             classEndTime,
                                             dateTimeFormatterAMPM.print(classStartTime),
                                             dateTimeFormatterAMPM.print(classEndTime),
-                                            locationTeacherColor[0],
-                                            locationTeacherColor[1],
+                                            dialogEditClassCustomLocationEditText.getText().toString().trim().isEmpty() ? "no-location" : dialogEditClassCustomLocationEditText.getText().toString().trim(),
+                                            dialogEditClassCustomTeacherEditText.getText().toString().trim().isEmpty() ? "no-teacher" : dialogEditClassCustomTeacherEditText.getText().toString().trim(),
                                             Integer.parseInt(locationTeacherColor[2])));
 
                                     databaseHelper.insertClassesIntoDay(currentClasses, day);
@@ -1300,7 +1378,6 @@ public class EditDay extends AppCompatActivity {
                             }
 
                         });
-
 
                     }
 

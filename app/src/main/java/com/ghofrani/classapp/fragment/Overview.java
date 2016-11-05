@@ -138,7 +138,7 @@ public class Overview extends Fragment {
             currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
 
         if (currentClassLocationTeacherTextView == null)
-            currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_teacher_location);
+            currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_location_teacher);
 
         if (currentClassColorIndicator == null)
             currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
@@ -246,7 +246,7 @@ public class Overview extends Fragment {
             if (currentClass.hasLocation()) {
 
                 if (currentClass.hasTeacher())
-                    currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + currentClass.getLocation() + " • " + DataSingleton.getInstance().getMinutesLeftText());
+                    currentClassLocationTeacherTextView.setText(currentClass.getLocation() + " • " + currentClass.getTeacher() + " • " + DataSingleton.getInstance().getMinutesLeftText());
                 else
                     currentClassLocationTeacherTextView.setText(currentClass.getLocation() + " • " + DataSingleton.getInstance().getMinutesLeftText());
 

@@ -22,54 +22,68 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "database.db";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String CREATE_SUNDAY = "create table "
-            + DatabaseContract.Sunday.TABLE_NAME + " ("
-            + DatabaseContract.Sunday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Sunday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Sunday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Sunday.COLUMN_END_TIME + " TEXT)";
-
     private static final String CREATE_MONDAY = "create table "
             + DatabaseContract.Monday.TABLE_NAME + " ("
             + DatabaseContract.Monday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.Monday.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Monday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Monday.COLUMN_END_TIME + " TEXT)";
+            + DatabaseContract.Monday.COLUMN_END_TIME + " TEXT,"
+            + DatabaseContract.Monday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Monday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_TUESDAY = "create table "
             + DatabaseContract.Tuesday.TABLE_NAME + " ("
             + DatabaseContract.Tuesday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.Tuesday.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Tuesday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Tuesday.COLUMN_END_TIME + " TEXT)";
+            + DatabaseContract.Tuesday.COLUMN_END_TIME + " TEXT,"
+            + DatabaseContract.Tuesday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Tuesday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_WEDNESDAY = "create table "
             + DatabaseContract.Wednesday.TABLE_NAME + " ("
             + DatabaseContract.Wednesday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.Wednesday.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Wednesday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Wednesday.COLUMN_END_TIME + " TEXT)";
+            + DatabaseContract.Wednesday.COLUMN_END_TIME + " TEXT,"
+            + DatabaseContract.Wednesday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Wednesday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_THURSDAY = "create table "
             + DatabaseContract.Thursday.TABLE_NAME + " ("
             + DatabaseContract.Thursday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.Thursday.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Thursday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Thursday.COLUMN_END_TIME + " TEXT)";
+            + DatabaseContract.Thursday.COLUMN_END_TIME + " TEXT,"
+            + DatabaseContract.Thursday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Thursday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_FRIDAY = "create table "
             + DatabaseContract.Friday.TABLE_NAME + " ("
             + DatabaseContract.Friday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.Friday.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Friday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Friday.COLUMN_END_TIME + " TEXT)";
+            + DatabaseContract.Friday.COLUMN_END_TIME + " TEXT,"
+            + DatabaseContract.Friday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Friday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_SATURDAY = "create table "
             + DatabaseContract.Saturday.TABLE_NAME + " ("
             + DatabaseContract.Saturday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + DatabaseContract.Saturday.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Saturday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Saturday.COLUMN_END_TIME + " TEXT)";
+            + DatabaseContract.Saturday.COLUMN_END_TIME + " TEXT,"
+            + DatabaseContract.Saturday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Saturday.COLUMN_CUSTOM_TEACHER + " TEXT)";
+
+    private static final String CREATE_SUNDAY = "create table "
+            + DatabaseContract.Sunday.TABLE_NAME + " ("
+            + DatabaseContract.Sunday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + DatabaseContract.Sunday.COLUMN_CLASS + " TEXT,"
+            + DatabaseContract.Sunday.COLUMN_START_TIME + " TEXT,"
+            + DatabaseContract.Sunday.COLUMN_END_TIME + " TEXT,"
+            + DatabaseContract.Sunday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Sunday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_CLASSINFO = "create table "
             + DatabaseContract.ClassInfo.TABLE_NAME + " ("
@@ -115,13 +129,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void insertClassesIntoDay(ArrayList<StandardClass> classesToInsert, int day) {
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
 
         final String columnClass;
         final String columnStartTime;
         final String columnEndTime;
+        final String columnCustomLocation;
+        final String columnCustomTeacher;
         final String tableName;
 
         switch (day) {
@@ -131,6 +145,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = DatabaseContract.Monday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Monday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Monday.COLUMN_END_TIME;
+                columnCustomLocation = DatabaseContract.Monday.COLUMN_CUSTOM_LOCATION;
+                columnCustomTeacher = DatabaseContract.Monday.COLUMN_CUSTOM_TEACHER;
                 tableName = DatabaseContract.Monday.TABLE_NAME;
 
                 break;
@@ -140,6 +156,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = DatabaseContract.Tuesday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Tuesday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Tuesday.COLUMN_END_TIME;
+                columnCustomLocation = DatabaseContract.Tuesday.COLUMN_CUSTOM_LOCATION;
+                columnCustomTeacher = DatabaseContract.Tuesday.COLUMN_CUSTOM_TEACHER;
                 tableName = DatabaseContract.Tuesday.TABLE_NAME;
 
                 break;
@@ -149,6 +167,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = DatabaseContract.Wednesday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Wednesday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Wednesday.COLUMN_END_TIME;
+                columnCustomLocation = DatabaseContract.Wednesday.COLUMN_CUSTOM_LOCATION;
+                columnCustomTeacher = DatabaseContract.Wednesday.COLUMN_CUSTOM_TEACHER;
                 tableName = DatabaseContract.Wednesday.TABLE_NAME;
 
                 break;
@@ -158,6 +178,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = DatabaseContract.Thursday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Thursday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Thursday.COLUMN_END_TIME;
+                columnCustomLocation = DatabaseContract.Thursday.COLUMN_CUSTOM_LOCATION;
+                columnCustomTeacher = DatabaseContract.Thursday.COLUMN_CUSTOM_TEACHER;
                 tableName = DatabaseContract.Thursday.TABLE_NAME;
 
                 break;
@@ -167,6 +189,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = DatabaseContract.Friday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Friday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Friday.COLUMN_END_TIME;
+                columnCustomLocation = DatabaseContract.Friday.COLUMN_CUSTOM_LOCATION;
+                columnCustomTeacher = DatabaseContract.Friday.COLUMN_CUSTOM_TEACHER;
                 tableName = DatabaseContract.Friday.TABLE_NAME;
 
                 break;
@@ -176,6 +200,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = DatabaseContract.Saturday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Saturday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Saturday.COLUMN_END_TIME;
+                columnCustomLocation = DatabaseContract.Saturday.COLUMN_CUSTOM_LOCATION;
+                columnCustomTeacher = DatabaseContract.Saturday.COLUMN_CUSTOM_TEACHER;
                 tableName = DatabaseContract.Saturday.TABLE_NAME;
 
                 break;
@@ -185,6 +211,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = DatabaseContract.Sunday.COLUMN_CLASS;
                 columnStartTime = DatabaseContract.Sunday.COLUMN_START_TIME;
                 columnEndTime = DatabaseContract.Sunday.COLUMN_END_TIME;
+                columnCustomLocation = DatabaseContract.Sunday.COLUMN_CUSTOM_LOCATION;
+                columnCustomTeacher = DatabaseContract.Sunday.COLUMN_CUSTOM_TEACHER;
                 tableName = DatabaseContract.Sunday.TABLE_NAME;
 
                 break;
@@ -194,13 +222,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 columnClass = "";
                 columnStartTime = "";
                 columnEndTime = "";
+                columnCustomLocation = "";
+                columnCustomTeacher = "";
                 tableName = "";
 
         }
 
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
         try {
 
+            ArrayList<String[]> classesLocationTeacher = new ArrayList<>();
+
+            Cursor cursor = null;
+
+            for (int i = 0; i < classesToInsert.size(); i++) {
+
+                cursor = sqLiteDatabase.rawQuery("select * from "
+                        + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                        + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
+                        + classesToInsert.get(i).getName() + "'", null);
+
+                cursor.moveToFirst();
+
+                final String[] locationTeacherColor = new String[3];
+
+                locationTeacherColor[0] = cursor.getString(2);
+                locationTeacherColor[1] = cursor.getString(3);
+
+                classesLocationTeacher.add(locationTeacherColor);
+
+            }
+
+            cursor.close();
+
             sqLiteDatabase.execSQL("delete from " + tableName);
+
+            int i = 0;
 
             for (final StandardClass standardClass : classesToInsert) {
 
@@ -210,7 +268,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(columnStartTime, standardClass.getStartTime().toString());
                 contentValues.put(columnEndTime, standardClass.getEndTime().toString());
 
+                final String[] classLocationTeacher = classesLocationTeacher.get(i);
+
+                contentValues.put(columnCustomLocation, standardClass.hasLocation() ? (standardClass.getLocation().equals(classLocationTeacher[0]) ? "default" : standardClass.getLocation()) : "no-location");
+                contentValues.put(columnCustomTeacher, standardClass.hasTeacher() ? (standardClass.getTeacher().equals(classLocationTeacher[1]) ? "default" : standardClass.getTeacher()) : "no-teacher");
+
                 sqLiteDatabase.insert(tableName, null, contentValues);
+
+                i++;
 
             }
 

@@ -63,7 +63,7 @@
 
         <TextView
 
-            android:id="@+id/view_edit_day_list_child_teacher_location"
+            android:id="@+id/view_edit_day_list_child_location_teacher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/view_edit_day_list_child_text"

@@ -4,16 +4,6 @@ import android.provider.BaseColumns;
 
 public final class DatabaseContract {
 
-    public static abstract class Sunday implements BaseColumns {
-
-        public static final String TABLE_NAME = "sunday";
-        public static final String COLUMN_ID = "classid";
-        public static final String COLUMN_CLASS = "class";
-        public static final String COLUMN_START_TIME = "classstarttime";
-        public static final String COLUMN_END_TIME = "classendtime";
-
-    }
-
     public static abstract class Monday implements BaseColumns {
 
         public static final String TABLE_NAME = "monday";
@@ -21,6 +11,8 @@ public final class DatabaseContract {
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_START_TIME = "classstarttime";
         public static final String COLUMN_END_TIME = "classendtime";
+        public static final String COLUMN_CUSTOM_LOCATION = "classcustomlocation";
+        public static final String COLUMN_CUSTOM_TEACHER = "classcustomteacher";
 
     }
 
@@ -31,6 +23,8 @@ public final class DatabaseContract {
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_START_TIME = "classstarttime";
         public static final String COLUMN_END_TIME = "classendtime";
+        public static final String COLUMN_CUSTOM_LOCATION = "classcustomlocation";
+        public static final String COLUMN_CUSTOM_TEACHER = "classcustomteacher";
 
     }
 
@@ -41,6 +35,8 @@ public final class DatabaseContract {
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_START_TIME = "classstarttime";
         public static final String COLUMN_END_TIME = "classendtime";
+        public static final String COLUMN_CUSTOM_LOCATION = "classcustomlocation";
+        public static final String COLUMN_CUSTOM_TEACHER = "classcustomteacher";
 
     }
 
@@ -51,6 +47,8 @@ public final class DatabaseContract {
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_START_TIME = "classstarttime";
         public static final String COLUMN_END_TIME = "classendtime";
+        public static final String COLUMN_CUSTOM_LOCATION = "classcustomlocation";
+        public static final String COLUMN_CUSTOM_TEACHER = "classcustomteacher";
 
     }
 
@@ -61,6 +59,8 @@ public final class DatabaseContract {
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_START_TIME = "classstarttime";
         public static final String COLUMN_END_TIME = "classendtime";
+        public static final String COLUMN_CUSTOM_LOCATION = "classcustomlocation";
+        public static final String COLUMN_CUSTOM_TEACHER = "classcustomteacher";
 
     }
 
@@ -71,6 +71,20 @@ public final class DatabaseContract {
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_START_TIME = "classstarttime";
         public static final String COLUMN_END_TIME = "classendtime";
+        public static final String COLUMN_CUSTOM_LOCATION = "classcustomlocation";
+        public static final String COLUMN_CUSTOM_TEACHER = "classcustomteacher";
+
+    }
+
+    public static abstract class Sunday implements BaseColumns {
+
+        public static final String TABLE_NAME = "sunday";
+        public static final String COLUMN_ID = "classid";
+        public static final String COLUMN_CLASS = "class";
+        public static final String COLUMN_START_TIME = "classstarttime";
+        public static final String COLUMN_END_TIME = "classendtime";
+        public static final String COLUMN_CUSTOM_LOCATION = "classcustomlocation";
+        public static final String COLUMN_CUSTOM_TEACHER = "classcustomteacher";
 
     }
 

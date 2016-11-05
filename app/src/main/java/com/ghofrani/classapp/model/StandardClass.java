@@ -37,7 +37,6 @@ public class StandardClass {
         this.color = color;
 
         hasLocation = !location.equals("no-location");
-
         hasTeacher = !teacher.equals("no-teacher");
 
     }

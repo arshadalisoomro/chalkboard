@@ -61,7 +61,7 @@ public class EditDayList extends BaseAdapter {
         final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text);
         final TextView listChildTitleTextViewCentered = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text_centered);
         final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_time);
-        final TextView listChildTeacherLocationTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_teacher_location);
+        final TextView listChildLocationTeacherTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_location_teacher);
 
         if (classesArrayList.get(position) == null) {
 
@@ -71,7 +71,7 @@ public class EditDayList extends BaseAdapter {
             listChildTitleTextView.setVisibility(View.GONE);
             listChildTitleTextViewCentered.setVisibility(View.GONE);
             listChildTimeTextView.setVisibility(View.GONE);
-            listChildTeacherLocationTextView.setVisibility(View.GONE);
+            listChildLocationTeacherTextView.setVisibility(View.GONE);
 
             return convertView;
 
@@ -88,12 +88,12 @@ public class EditDayList extends BaseAdapter {
                 listChildTitleTextView.setVisibility(View.VISIBLE);
                 listChildTitleTextView.setText(classesArrayList.get(position).getName());
 
-                listChildTeacherLocationTextView.setVisibility(View.VISIBLE);
+                listChildLocationTeacherTextView.setVisibility(View.VISIBLE);
 
                 if (classesArrayList.get(position).hasTeacher())
-                    listChildTeacherLocationTextView.setText(classesArrayList.get(position).getTeacher() + " • " + classesArrayList.get(position).getLocation());
+                    listChildLocationTeacherTextView.setText(classesArrayList.get(position).getLocation() + " • " + classesArrayList.get(position).getTeacher());
                 else
-                    listChildTeacherLocationTextView.setText(classesArrayList.get(position).getLocation());
+                    listChildLocationTeacherTextView.setText(classesArrayList.get(position).getLocation());
 
             } else if (classesArrayList.get(position).hasTeacher()) {
 
@@ -104,15 +104,15 @@ public class EditDayList extends BaseAdapter {
                 listChildTitleTextView.setVisibility(View.VISIBLE);
                 listChildTitleTextView.setText(classesArrayList.get(position).getName());
 
-                listChildTeacherLocationTextView.setVisibility(View.VISIBLE);
-                listChildTeacherLocationTextView.setText(classesArrayList.get(position).getTeacher());
+                listChildLocationTeacherTextView.setVisibility(View.VISIBLE);
+                listChildLocationTeacherTextView.setText(classesArrayList.get(position).getTeacher());
 
             } else {
 
                 listChildRelativeLayout.setVisibility(View.GONE);
 
                 listChildTitleTextView.setVisibility(View.GONE);
-                listChildTeacherLocationTextView.setVisibility(View.GONE);
+                listChildLocationTeacherTextView.setVisibility(View.GONE);
 
                 listChildTitleTextViewCentered.setVisibility(View.VISIBLE);
                 listChildTitleTextViewCentered.setText(classesArrayList.get(position).getName());

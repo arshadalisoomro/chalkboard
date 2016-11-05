@@ -68,7 +68,7 @@
 
                 <TextView
 
-                    android:id="@+id/view_class_card_teacher_location"
+                    android:id="@+id/view_class_card_location_teacher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/view_class_card_title"

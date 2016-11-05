@@ -129,6 +129,7 @@
         <com.afollestad.materialdialogs.prefs.MaterialEditTextPreference
 
             android:defaultValue="08:00"
+            android:hint="HH:mm"
             android:key="first_lesson_time"
             android:summary="Enter when your day starts in the format HH:mm"
             android:title="First lesson time" />
@@ -136,7 +137,6 @@
         <EditTextPreference
 
             android:defaultValue="60"
-            android:hint="HH:mm"
             android:key="default_lesson_length"
             android:numeric="integer"
             android:summary="Choose how long a lesson is by default"

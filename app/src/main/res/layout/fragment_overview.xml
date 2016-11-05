@@ -82,7 +82,7 @@
 
                     <TextView
 
-                        android:id="@+id/overview_current_class_card_teacher_location"
+                        android:id="@+id/overview_current_class_card_location_teacher"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignRight="@id/overview_current_class_card_class_color_indicator"

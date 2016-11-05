@@ -94,7 +94,7 @@ public class ClassList extends BaseExpandableListAdapter {
 
         final RelativeLayout listChildRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.view_list_child_relative_layout);
         final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_list_child_text);
-        final TextView listChildTeacherLocationTextView = (TextView) convertView.findViewById(R.id.view_list_child_teacher_location);
+        final TextView listChildLocationTeacherTextView = (TextView) convertView.findViewById(R.id.view_list_child_location_teacher);
         final TextView listChildTitleTextViewCentered = (TextView) convertView.findViewById(R.id.view_list_child_text_centered);
 
         if (standardClass.hasLocation()) {
@@ -106,12 +106,12 @@ public class ClassList extends BaseExpandableListAdapter {
             listChildTitleTextView.setVisibility(View.VISIBLE);
             listChildTitleTextView.setText(standardClass.getName());
 
-            listChildTeacherLocationTextView.setVisibility(View.VISIBLE);
+            listChildLocationTeacherTextView.setVisibility(View.VISIBLE);
 
             if (standardClass.hasTeacher())
-                listChildTeacherLocationTextView.setText(standardClass.getTeacher() + " • " + standardClass.getLocation());
+                listChildLocationTeacherTextView.setText(standardClass.getLocation() + " • " + standardClass.getTeacher());
             else
-                listChildTeacherLocationTextView.setText(standardClass.getLocation());
+                listChildLocationTeacherTextView.setText(standardClass.getLocation());
 
         } else if (standardClass.hasTeacher()) {
 
@@ -122,15 +122,15 @@ public class ClassList extends BaseExpandableListAdapter {
             listChildTitleTextView.setVisibility(View.VISIBLE);
             listChildTitleTextView.setText(standardClass.getName());
 
-            listChildTeacherLocationTextView.setVisibility(View.VISIBLE);
-            listChildTeacherLocationTextView.setText(standardClass.getTeacher());
+            listChildLocationTeacherTextView.setVisibility(View.VISIBLE);
+            listChildLocationTeacherTextView.setText(standardClass.getTeacher());
 
         } else {
 
             listChildRelativeLayout.setVisibility(View.GONE);
 
             listChildTitleTextView.setVisibility(View.GONE);
-            listChildTeacherLocationTextView.setVisibility(View.GONE);
+            listChildLocationTeacherTextView.setVisibility(View.GONE);
 
             listChildTitleTextViewCentered.setVisibility(View.VISIBLE);
             listChildTitleTextViewCentered.setText(standardClass.getName());

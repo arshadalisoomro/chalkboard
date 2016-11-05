@@ -280,8 +280,8 @@ public class Background extends Service {
                         LocalTime.parse(todayCursor.getString(3)),
                         dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(2))),
                         dateTimeFormatterAMPM.print(LocalTime.parse(todayCursor.getString(3))),
-                        locationTeacherColor[0],
-                        locationTeacherColor[1],
+                        todayCursor.getString(4).equals("no-location") ? "no-location" : (todayCursor.getString(4).equals("default") ? locationTeacherColor[0] : todayCursor.getString(4)),
+                        todayCursor.getString(5).equals("no-teacher") ? "no-teacher" : (todayCursor.getString(5).equals("default") ? locationTeacherColor[1] : todayCursor.getString(5)),
                         Integer.parseInt(locationTeacherColor[2]));
 
                 if (standardClass.getStartTime().isAfter(currentTime)) {
@@ -811,8 +811,8 @@ public class Background extends Service {
                             LocalTime.parse(tomorrowCursor.getString(3)),
                             dateTimeFormatterAMPM.print(LocalTime.parse(tomorrowCursor.getString(2))),
                             dateTimeFormatterAMPM.print(LocalTime.parse(tomorrowCursor.getString(3))),
-                            locationTeacherColor[0],
-                            locationTeacherColor[1],
+                            tomorrowCursor.getString(4).equals("no-location") ? "no-location" : (tomorrowCursor.getString(4).equals("default") ? locationTeacherColor[0] : tomorrowCursor.getString(4)),
+                            tomorrowCursor.getString(5).equals("no-teacher") ? "no-teacher" : (tomorrowCursor.getString(5).equals("default") ? locationTeacherColor[1] : tomorrowCursor.getString(5)),
                             Integer.parseInt(locationTeacherColor[2])));
 
                 }
@@ -1072,8 +1072,8 @@ public class Background extends Service {
                             LocalTime.parse(timetableCursor.getString(3)),
                             dateTimeFormatterAMPM.print(LocalTime.parse(timetableCursor.getString(2))),
                             dateTimeFormatterAMPM.print(LocalTime.parse(timetableCursor.getString(3))),
-                            locationTeacherColor[0],
-                            locationTeacherColor[1],
+                            timetableCursor.getString(4).equals("no-location") ? "no-location" : (timetableCursor.getString(4).equals("default") ? locationTeacherColor[0] : timetableCursor.getString(4)),
+                            timetableCursor.getString(5).equals("no-teacher") ? "no-teacher" : (timetableCursor.getString(5).equals("default") ? locationTeacherColor[1] : timetableCursor.getString(5)),
                             Integer.parseInt(locationTeacherColor[2])));
 
                 }

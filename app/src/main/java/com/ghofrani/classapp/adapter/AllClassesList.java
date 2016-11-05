@@ -75,12 +75,12 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             classViewHolder.titleTextView.setVisibility(View.VISIBLE);
             classViewHolder.titleTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getName());
 
-            classViewHolder.teacherLocationTextView.setVisibility(View.VISIBLE);
+            classViewHolder.locationTeacherTextView.setVisibility(View.VISIBLE);
 
             if (DataSingleton.getInstance().getAllClassesArrayList().get(position).hasTeacher())
-                classViewHolder.teacherLocationTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getTeacher() + " • " + DataSingleton.getInstance().getAllClassesArrayList().get(position).getLocation());
+                classViewHolder.locationTeacherTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getLocation() + " • " + DataSingleton.getInstance().getAllClassesArrayList().get(position).getTeacher());
             else
-                classViewHolder.teacherLocationTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getLocation());
+                classViewHolder.locationTeacherTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getLocation());
 
             classViewHolder.colorIndicatorImageView.setTranslationY(getPixelFromDP(-1));
 
@@ -96,8 +96,8 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             classViewHolder.titleTextView.setVisibility(View.VISIBLE);
             classViewHolder.titleTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getName());
 
-            classViewHolder.teacherLocationTextView.setVisibility(View.VISIBLE);
-            classViewHolder.teacherLocationTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getTeacher());
+            classViewHolder.locationTeacherTextView.setVisibility(View.VISIBLE);
+            classViewHolder.locationTeacherTextView.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getTeacher());
 
             classViewHolder.colorIndicatorImageView.setTranslationY(getPixelFromDP(-1));
 
@@ -109,7 +109,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             classViewHolder.relativeLayout.setVisibility(View.GONE);
 
             classViewHolder.titleTextView.setVisibility(View.GONE);
-            classViewHolder.teacherLocationTextView.setVisibility(View.GONE);
+            classViewHolder.locationTeacherTextView.setVisibility(View.GONE);
 
             classViewHolder.titleTextViewCentered.setVisibility(View.VISIBLE);
             classViewHolder.titleTextViewCentered.setText(DataSingleton.getInstance().getAllClassesArrayList().get(position).getName());
@@ -137,7 +137,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
         final RelativeLayout relativeLayout;
         final TextView titleTextView;
         final TextView titleTextViewCentered;
-        final TextView teacherLocationTextView;
+        final TextView locationTeacherTextView;
         final ImageView colorIndicatorImageView;
 
         ClassViewHolder(View itemView) {
@@ -149,7 +149,7 @@ public class AllClassesList extends RecyclerView.Adapter<AllClassesList.ClassVie
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.view_class_card_relative_layout);
             titleTextView = (TextView) itemView.findViewById(R.id.view_class_card_title);
             titleTextViewCentered = (TextView) itemView.findViewById(R.id.view_class_card_title_centered);
-            teacherLocationTextView = (TextView) itemView.findViewById(R.id.view_class_card_teacher_location);
+            locationTeacherTextView = (TextView) itemView.findViewById(R.id.view_class_card_location_teacher);
             colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_class_color_indicator);
 
         }

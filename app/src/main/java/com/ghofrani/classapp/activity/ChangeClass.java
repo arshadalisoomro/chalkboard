@@ -47,11 +47,11 @@ public class ChangeClass extends AppCompatActivity {
         Utils.setTheme(this);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_class);
+        setContentView(R.layout.activity_change_class);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_class_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.change_class_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
 
         mode = getIntent().getIntExtra("mode", MODE_ADD);
@@ -94,9 +94,9 @@ public class ChangeClass extends AppCompatActivity {
 
             }
 
-            final EditText inputNameEditText = (EditText) findViewById(R.id.add_class_input_name);
-            final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
-            final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+            final EditText inputNameEditText = (EditText) findViewById(R.id.change_class_input_name);
+            final EditText inputLocationEditText = (EditText) findViewById(R.id.change_class_input_location);
+            final EditText inputTeacherEditText = (EditText) findViewById(R.id.change_class_input_teacher);
 
             inputNameEditText.setText(className);
             inputLocationEditText.setText(classLocationTeacherColor[0].equals("no-location") ? "" : classLocationTeacherColor[0]);
@@ -106,7 +106,7 @@ public class ChangeClass extends AppCompatActivity {
 
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.add_class_color_frame_layout, new ColorFragment()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.change_class_color_frame_layout, new ColorFragment()).commit();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -163,14 +163,14 @@ public class ChangeClass extends AppCompatActivity {
 
         } else if (menuItem.getItemId() == R.id.toolbar_check_check) {
 
-            final EditText inputNameEditText = (EditText) findViewById(R.id.add_class_input_name);
+            final EditText inputNameEditText = (EditText) findViewById(R.id.change_class_input_name);
 
             if (!inputNameEditText.getText().toString().trim().isEmpty()) {
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
-                final EditText inputTeacherEditText = (EditText) findViewById(R.id.add_class_input_teacher);
-                final EditText inputLocationEditText = (EditText) findViewById(R.id.add_class_input_location);
+                final EditText inputLocationEditText = (EditText) findViewById(R.id.change_class_input_location);
+                final EditText inputTeacherEditText = (EditText) findViewById(R.id.change_class_input_teacher);
 
                 final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 

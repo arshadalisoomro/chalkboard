@@ -65,4 +65,32 @@
         android:textColor="#000000"
         android:textSize="15sp" />
 
+    <EditText
+
+        android:id="@+id/dialog_edit_day_edit_class_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_edit_day_edit_class_end_time_label"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginTop="8dp"
+        android:hint="Custom Location (Optional)"
+        android:inputType="textCapWords"
+        android:maxLines="1"
+        android:textSize="15sp" />
+
+    <EditText
+
+        android:id="@+id/dialog_edit_day_edit_class_teacher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_edit_day_edit_class_location"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="26dp"
+        android:hint="Custom Teacher (Optional)"
+        android:inputType="textCapWords"
+        android:maxLines="1"
+        android:textSize="15sp" />
+
 </RelativeLayout>
