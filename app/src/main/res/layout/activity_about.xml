@@ -63,7 +63,7 @@
                     android:layout_marginLeft="19dp"
                     android:layout_marginRight="19dp"
                     android:layout_marginTop="16dp"
-                    android:text="Special thanks to Oliver, Anki, Mado, Ishaan, Rayan, Karan and Emmanuel."
+                    android:text="Special thanks to Oliver, Anki, Vivek, Mado, Ishaan, Rayan, Karan and Emmanuel."
                     android:textColor="#000000"
                     android:textSize="16sp">
 

@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="19dp"
-        android:layout_marginLeft="19dp"
+        android:layout_marginBottom="19.25dp"
+        android:layout_marginLeft="19.25dp"
         android:text="School &#038; Homework Planner"
         android:textColor="@color/white"
         android:textSize="15sp" />

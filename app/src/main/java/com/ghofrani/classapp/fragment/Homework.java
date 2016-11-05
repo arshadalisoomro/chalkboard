@@ -146,8 +146,6 @@ public class Homework extends Fragment {
                 @Override
                 public void onItemRemoved() {
 
-                    //Scroll here.
-
                     showSnackbar();
 
                 }
@@ -233,23 +231,30 @@ public class Homework extends Fragment {
 
                 databaseHelper.close();
 
-                if (!isVisible()) {
+            }
 
-                    context = null;
+            if (!isVisible()) {
 
-                    DataSingleton.getInstance().setReactToBroadcastHomework(true);
-                    EventBus.getDefault().post(new Update(false, true, false, false));
+                context = null;
 
-                } else {
+                DataSingleton.getInstance().setReactToBroadcastHomework(true);
+                EventBus.getDefault().post(new Update(false, true, false, false));
 
-                    if (DataSingleton.getInstance().getDataArrayList().isEmpty())
+            } else {
+
+                if (DataSingleton.getInstance().getDataArrayList().isEmpty() && snackbar != null)
+                    if (!snackbar.isShown())
                         updateUI();
-
-                }
 
             }
 
             lastItemRemoved = new SparseArray<>();
+
+        } else {
+
+            if (snackbar != null)
+                if (!snackbar.isShown())
+                    updateUI();
 
         }
 
