@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -138,7 +139,10 @@ public class ClassList extends BaseExpandableListAdapter {
         }
 
         final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_list_child_time);
-        listChildTimeTextView.setText(standardClass.getStartTimeString(true) + " - " + standardClass.getEndTimeString(true));
+        listChildTimeTextView.setText(standardClass.getStartTimeString(true) + "\n" + standardClass.getEndTimeString(true));
+
+        final ImageView listChildColorIndicator = (ImageView) convertView.findViewById(R.id.view_list_child_color_indicator);
+        listChildColorIndicator.setColorFilter(standardClass.getColor());
 
         return convertView;
 

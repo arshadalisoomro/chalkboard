@@ -1155,8 +1155,8 @@ public class EditDay extends AppCompatActivity {
 
                                 } else {
 
-                                    dialogEditClassCustomLocationEditText.setText(standardClassArrayList.get(position).getLocation());
-                                    dialogEditClassCustomTeacherEditText.setText(standardClassArrayList.get(position).getTeacher());
+                                    dialogEditClassCustomLocationEditText.setText(standardClassArrayList.get(position).hasLocation() ? standardClassArrayList.get(position).getLocation() : "");
+                                    dialogEditClassCustomTeacherEditText.setText(standardClassArrayList.get(position).hasTeacher() ? standardClassArrayList.get(position).getTeacher() : "");
 
                                     skip = false;
 

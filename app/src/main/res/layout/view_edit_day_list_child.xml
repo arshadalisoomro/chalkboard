@@ -18,13 +18,25 @@
         android:tint="@color/grey"
         android:visibility="gone" />
 
+    <ImageView
+
+        android:id="@+id/view_edit_day_list_child_color_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/color_indicator_list"
+        android:visibility="gone" />
+
     <TextView
 
         android:id="@+id/view_edit_day_list_child_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@id/view_edit_day_list_child_color_indicator"
+        android:gravity="right"
         android:textSize="12sp"
         android:visibility="gone" />
 

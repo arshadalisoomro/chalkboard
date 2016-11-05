@@ -62,6 +62,7 @@ public class EditDayList extends BaseAdapter {
         final TextView listChildTitleTextViewCentered = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_text_centered);
         final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_time);
         final TextView listChildLocationTeacherTextView = (TextView) convertView.findViewById(R.id.view_edit_day_list_child_location_teacher);
+        final ImageView listChildColorIndicator = (ImageView) convertView.findViewById(R.id.view_edit_day_list_child_color_indicator);
 
         if (classesArrayList.get(position) == null) {
 
@@ -72,6 +73,7 @@ public class EditDayList extends BaseAdapter {
             listChildTitleTextViewCentered.setVisibility(View.GONE);
             listChildTimeTextView.setVisibility(View.GONE);
             listChildLocationTeacherTextView.setVisibility(View.GONE);
+            listChildColorIndicator.setVisibility(View.GONE);
 
             return convertView;
 
@@ -120,7 +122,10 @@ public class EditDayList extends BaseAdapter {
             }
 
             listChildTimeTextView.setVisibility(View.VISIBLE);
-            listChildTimeTextView.setText(classesArrayList.get(position).getStartTimeString(true) + " - " + classesArrayList.get(position).getEndTimeString(true));
+            listChildTimeTextView.setText(classesArrayList.get(position).getStartTimeString(true) + "\n" + classesArrayList.get(position).getEndTimeString(true));
+
+            listChildColorIndicator.setVisibility(View.VISIBLE);
+            listChildColorIndicator.setColorFilter(classesArrayList.get(position).getColor());
 
             return convertView;
 

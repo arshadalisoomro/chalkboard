@@ -18,17 +18,17 @@
 
         <item
 
-            android:id="@+id/classes"
-            android:checked="false"
-            android:icon="@drawable/classes"
-            android:title="Classes" />
-
-        <item
-
             android:id="@+id/homework"
             android:checked="false"
             android:icon="@drawable/homework"
             android:title="Homework" />
+
+        <item
+
+            android:id="@+id/classes"
+            android:checked="false"
+            android:icon="@drawable/classes"
+            android:title="Classes" />
 
         <item
 
