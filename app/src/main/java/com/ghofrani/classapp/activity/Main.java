@@ -6,69 +6,58 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.CollapseLists;
 import com.ghofrani.classapp.fragment.Classes;
-import com.ghofrani.classapp.fragment.Homework;
+import com.ghofrani.classapp.fragment.Day;
+import com.ghofrani.classapp.fragment.Events;
 import com.ghofrani.classapp.fragment.Overview;
-import com.ghofrani.classapp.fragment.timetable.Friday;
-import com.ghofrani.classapp.fragment.timetable.Monday;
-import com.ghofrani.classapp.fragment.timetable.Saturday;
-import com.ghofrani.classapp.fragment.timetable.Sunday;
-import com.ghofrani.classapp.fragment.timetable.Thursday;
-import com.ghofrani.classapp.fragment.timetable.Tuesday;
-import com.ghofrani.classapp.fragment.timetable.Wednesday;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.Utils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.joda.time.DateTimeConstants;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
 public class Main extends AppCompatActivity implements DrawerLayout.DrawerListener {
 
-    private final float TAB_LAYOUT_LAYOUT_LEFT_MARGIN = 60.5f;
-    private final int TAB_LAYOUT_LAYOUT_ANIMATION_DURATION = 200;
     private final int CHANGE_CLASS_REQUEST = 0;
     private final int RESULT_CHANGED = 0;
     private final int ID_OVERVIEW = 0;
-    private final int ID_TIMETABLE = 1;
     private final int ID_CLASSES = 2;
-    private final int ID_HOMEWORK = 3;
+    private final int ID_TIMETABLE = 3;
     private final int ID_SETTINGS = 4;
     private final int ID_ABOUT = 5;
+    private final int ID_EVENTS = 6;
     private final int MODE_ADD = 0;
 
     private FloatingActionButton floatingActionButton;
     private DrawerLayout drawerLayout;
-    private ScrollView scrollView;
+    private LinearLayout linearLayout;
     private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private NavigationView navigationView;
+
+    private TabLayout overviewTabLayout;
+    private ViewPager overviewViewPager;
+
+    private TabLayout timetableTabLayout;
+    private ViewPager timetableViewPager;
+
     private int currentView = ID_OVERVIEW;
     private boolean operateOnDrawerClosed;
     private int drawerViewToSwitchTo;
@@ -82,7 +71,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setTitle("Overview");
         setSupportActionBar(toolbar);
@@ -96,13 +85,16 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         actionBarDrawerToggle.syncState();
 
-        scrollView = (ScrollView) findViewById(R.id.main_scroll_view);
+        linearLayout = (LinearLayout) findViewById(R.id.activity_main_linear_layout);
 
-        tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
-        viewPager = (ViewPager) findViewById(R.id.main_view_pager);
+        overviewTabLayout = (TabLayout) findViewById(R.id.activity_main_overview_tab_layout);
+        overviewViewPager = (ViewPager) findViewById(R.id.activity_main_overview_view_pager);
 
-        navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
-        navigationView.setCheckedItem(R.id.overview);
+        timetableTabLayout = (TabLayout) findViewById(R.id.activity_main_timetable_tab_layout);
+        timetableViewPager = (ViewPager) findViewById(R.id.activity_main_timetable_view_pager);
+
+        navigationView = (NavigationView) findViewById(R.id.activity_main_navigation_view);
+        navigationView.setCheckedItem(R.id.drawer_overview_item);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
             @Override
@@ -114,14 +106,14 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     operateOnDrawerClosed = true;
 
-                    if (menuItem.getItemId() == R.id.settings) {
+                    if (menuItem.getItemId() == R.id.drawer_settings_item) {
 
                         if (currentView == ID_OVERVIEW)
                             EventBus.getDefault().post(new CollapseLists());
 
                         drawerViewToSwitchTo = ID_SETTINGS;
 
-                    } else if (menuItem.getItemId() == R.id.about) {
+                    } else if (menuItem.getItemId() == R.id.drawer_about_item) {
 
                         if (currentView == ID_OVERVIEW)
                             EventBus.getDefault().post(new CollapseLists());
@@ -132,47 +124,23 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                         switch (menuItem.getItemId()) {
 
-                            case R.id.overview:
+                            case R.id.drawer_overview_item:
 
                                 if (floatingActionButton.isShown())
                                     floatingActionButton.hide();
 
                                 toolbar.setTitle("Overview");
 
-                                tabLayout.setVisibility(AppBarLayout.GONE);
-                                viewPager.setVisibility(LinearLayout.GONE);
+                                linearLayout.setVisibility(View.GONE);
 
-                                scrollView.setVisibility(LinearLayout.VISIBLE);
-
-                                navigationView.setCheckedItem(R.id.overview);
+                                navigationView.setCheckedItem(R.id.drawer_overview_item);
 
                                 currentView = ID_OVERVIEW;
                                 drawerViewToSwitchTo = ID_OVERVIEW;
 
                                 break;
 
-                            case R.id.timetable:
-
-                                if (!floatingActionButton.isShown())
-                                    floatingActionButton.show();
-
-                                if (floatingActionButtonContrast)
-                                    floatingActionButton.setImageResource(R.drawable.edit_black);
-                                else
-                                    floatingActionButton.setImageResource(R.drawable.edit_white);
-
-                                toolbar.setTitle("Timetable");
-
-                                scrollView.setVisibility(LinearLayout.GONE);
-
-                                navigationView.setCheckedItem(R.id.timetable);
-
-                                currentView = ID_TIMETABLE;
-                                drawerViewToSwitchTo = ID_TIMETABLE;
-
-                                break;
-
-                            case R.id.classes:
+                            case R.id.drawer_classes_item:
 
                                 if (!floatingActionButton.isShown())
                                     floatingActionButton.show();
@@ -184,39 +152,34 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                                 toolbar.setTitle("Classes");
 
-                                tabLayout.setVisibility(AppBarLayout.GONE);
-                                viewPager.setVisibility(LinearLayout.GONE);
+                                overviewTabLayout.setVisibility(View.GONE);
+                                overviewViewPager.setVisibility(View.GONE);
 
-                                scrollView.setVisibility(LinearLayout.VISIBLE);
+                                timetableTabLayout.setVisibility(View.GONE);
+                                timetableViewPager.setVisibility(View.GONE);
 
-                                navigationView.setCheckedItem(R.id.classes);
+                                linearLayout.setVisibility(View.VISIBLE);
+
+                                navigationView.setCheckedItem(R.id.drawer_classes_item);
 
                                 currentView = ID_CLASSES;
                                 drawerViewToSwitchTo = ID_CLASSES;
 
                                 break;
 
-                            case R.id.homework:
+                            case R.id.drawer_timetable_item:
 
-                                if (!floatingActionButton.isShown())
-                                    floatingActionButton.show();
+                                if (floatingActionButton.isShown())
+                                    floatingActionButton.hide();
 
-                                if (floatingActionButtonContrast)
-                                    floatingActionButton.setImageResource(R.drawable.add_black);
-                                else
-                                    floatingActionButton.setImageResource(R.drawable.add_white);
+                                toolbar.setTitle("Timetable");
 
-                                toolbar.setTitle("Homework");
+                                linearLayout.setVisibility(View.GONE);
 
-                                tabLayout.setVisibility(AppBarLayout.GONE);
-                                viewPager.setVisibility(LinearLayout.GONE);
+                                navigationView.setCheckedItem(R.id.drawer_timetable_item);
 
-                                scrollView.setVisibility(LinearLayout.VISIBLE);
-
-                                navigationView.setCheckedItem(R.id.homework);
-
-                                currentView = ID_HOMEWORK;
-                                drawerViewToSwitchTo = ID_HOMEWORK;
+                                currentView = ID_TIMETABLE;
+                                drawerViewToSwitchTo = ID_TIMETABLE;
 
                                 break;
 
@@ -232,31 +195,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         });
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.activity_main_floating_action_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                if (currentView == ID_TIMETABLE) {
-
-                    if (!DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty()) {
-
-                        startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataSingleton.getInstance().getSelectedTabPosition()));
-
-                    } else {
-
-                        Toast.makeText(Main.this, "Add a class first!", Toast.LENGTH_LONG).show();
-
-                        startActivityForResult(new Intent(Main.this, ChangeClass.class).putExtra("mode", MODE_ADD), CHANGE_CLASS_REQUEST);
-
-                    }
-
-                } else if (currentView == ID_CLASSES) {
-
-                    startActivityForResult(new Intent(Main.this, ChangeClass.class).putExtra("mode", MODE_ADD), CHANGE_CLASS_REQUEST);
-
-                } else if (currentView == ID_HOMEWORK) {
+                if (currentView == ID_OVERVIEW) {
 
                     if (DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty()) {
 
@@ -266,9 +211,13 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     } else {
 
-                        startActivity(new Intent(Main.this, AddHomework.class));
+                        startActivity(new Intent(Main.this, AddEvent.class));
 
                     }
+
+                } else if (currentView == ID_CLASSES) {
+
+                    startActivityForResult(new Intent(Main.this, ChangeClass.class).putExtra("mode", MODE_ADD), CHANGE_CLASS_REQUEST);
 
                 }
 
@@ -277,6 +226,33 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
         });
 
         switchToView((getIntent().hasExtra("fragment") ? getIntent().getIntExtra("fragment", ID_OVERVIEW) : ID_OVERVIEW));
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+
+        if (menuItem.getItemId() == R.id.toolbar_edit_edit_item) {
+
+            if (!DataSingleton.getInstance().getAllClassNamesArrayList().isEmpty()) {
+
+                startActivity(new Intent(Main.this, EditDay.class).putExtra("day", DataSingleton.getInstance().getSelectedTabPosition()));
+
+            } else {
+
+                Toast.makeText(Main.this, "Add a class first!", Toast.LENGTH_LONG).show();
+
+                startActivityForResult(new Intent(Main.this, ChangeClass.class).putExtra("mode", MODE_ADD), CHANGE_CLASS_REQUEST);
+
+            }
+
+            return true;
+
+        } else {
+
+            return super.onOptionsItemSelected(menuItem);
+
+        }
 
     }
 
@@ -298,11 +274,15 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         drawerLayout = null;
         toolbar = null;
-        tabLayout = null;
-        viewPager = null;
-        scrollView = null;
+        linearLayout = null;
         navigationView = null;
         floatingActionButton = null;
+
+        overviewTabLayout = null;
+        overviewViewPager = null;
+
+        timetableTabLayout = null;
+        timetableViewPager = null;
 
         finish();
 
@@ -317,11 +297,15 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             drawerLayout = null;
             toolbar = null;
-            tabLayout = null;
-            viewPager = null;
-            scrollView = null;
+            linearLayout = null;
             navigationView = null;
             floatingActionButton = null;
+
+            overviewTabLayout = null;
+            overviewViewPager = null;
+
+            timetableTabLayout = null;
+            timetableViewPager = null;
 
         }
 
@@ -352,6 +336,16 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
     @Override
     public void onDrawerStateChanged(int newState) {
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        if (currentView == ID_TIMETABLE)
+            getMenuInflater().inflate(R.menu.toolbar_edit, menu);
+
+        return true;
+
     }
 
     @Override
@@ -395,32 +389,9 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 toolbar.setTitle("Overview");
 
-                tabLayout.setVisibility(AppBarLayout.GONE);
-                viewPager.setVisibility(LinearLayout.GONE);
+                linearLayout.setVisibility(View.GONE);
 
-                scrollView.setVisibility(LinearLayout.VISIBLE);
-
-                navigationView.setCheckedItem(R.id.overview);
-
-                currentView = viewToSwitchTo;
-
-                break;
-
-            case ID_TIMETABLE:
-
-                if (!floatingActionButton.isShown())
-                    floatingActionButton.show();
-
-                if (floatingActionButtonContrast)
-                    floatingActionButton.setImageResource(R.drawable.edit_black);
-                else
-                    floatingActionButton.setImageResource(R.drawable.edit_white);
-
-                toolbar.setTitle("Timetable");
-
-                scrollView.setVisibility(LinearLayout.GONE);
-
-                navigationView.setCheckedItem(R.id.timetable);
+                navigationView.setCheckedItem(R.id.drawer_overview_item);
 
                 currentView = viewToSwitchTo;
 
@@ -438,48 +409,51 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 toolbar.setTitle("Classes");
 
-                tabLayout.setVisibility(AppBarLayout.GONE);
-                viewPager.setVisibility(LinearLayout.GONE);
+                overviewTabLayout.setVisibility(View.GONE);
+                overviewViewPager.setVisibility(View.GONE);
 
-                scrollView.setVisibility(LinearLayout.VISIBLE);
+                timetableTabLayout.setVisibility(View.GONE);
+                timetableViewPager.setVisibility(View.GONE);
 
-                navigationView.setCheckedItem(R.id.classes);
+                linearLayout.setVisibility(View.VISIBLE);
 
-                currentView = viewToSwitchTo;
-
-                break;
-
-            case ID_HOMEWORK:
-
-                if (!floatingActionButton.isShown())
-                    floatingActionButton.show();
-
-                if (floatingActionButtonContrast)
-                    floatingActionButton.setImageResource(R.drawable.add_black);
-                else
-                    floatingActionButton.setImageResource(R.drawable.add_white);
-
-                toolbar.setTitle("Homework");
-
-                tabLayout.setVisibility(AppBarLayout.GONE);
-                viewPager.setVisibility(LinearLayout.GONE);
-
-                scrollView.setVisibility(LinearLayout.VISIBLE);
-
-                navigationView.setCheckedItem(R.id.homework);
+                navigationView.setCheckedItem(R.id.drawer_classes_item);
 
                 currentView = viewToSwitchTo;
 
                 break;
 
-            case ID_SETTINGS:
+            case ID_TIMETABLE:
 
-                if (currentView == ID_OVERVIEW)
-                    EventBus.getDefault().post(new CollapseLists());
+                if (floatingActionButton.isShown())
+                    floatingActionButton.hide();
+
+                toolbar.setTitle("Timetable");
+
+                linearLayout.setVisibility(View.GONE);
+
+                navigationView.setCheckedItem(R.id.drawer_timetable_item);
+
+                currentView = viewToSwitchTo;
 
                 break;
 
-            case ID_ABOUT:
+            case ID_EVENTS:
+
+                if (floatingActionButton.isShown())
+                    floatingActionButton.hide();
+
+                toolbar.setTitle("Overview");
+
+                linearLayout.setVisibility(View.GONE);
+
+                navigationView.setCheckedItem(R.id.drawer_overview_item);
+
+                currentView = viewToSwitchTo;
+
+                break;
+
+            default:
 
                 if (currentView == ID_OVERVIEW)
                     EventBus.getDefault().post(new CollapseLists());
@@ -516,38 +490,36 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     private void performOnResume() {
 
         if (toolbar == null)
-            toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+            toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
 
         if (floatingActionButton == null)
-            floatingActionButton = (FloatingActionButton) findViewById(R.id.main_floating_action_button);
-
-        if (scrollView == null)
-            scrollView = (ScrollView) findViewById(R.id.main_scroll_view);
+            floatingActionButton = (FloatingActionButton) findViewById(R.id.activity_main_floating_action_button);
 
         if (navigationView == null)
-            navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+            navigationView = (NavigationView) findViewById(R.id.activity_main_navigation_view);
 
         if (drawerLayout == null)
             drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 
-        if (tabLayout == null)
-            tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        if (overviewTabLayout == null)
+            overviewTabLayout = (TabLayout) findViewById(R.id.activity_main_overview_tab_layout);
 
-        if (viewPager == null)
-            viewPager = (ViewPager) findViewById(R.id.main_view_pager);
+        if (overviewViewPager == null)
+            overviewViewPager = (ViewPager) findViewById(R.id.activity_main_overview_view_pager);
 
-        if (DataSingleton.getInstance().isRecreate()) {
+        if (timetableTabLayout == null)
+            timetableTabLayout = (TabLayout) findViewById(R.id.activity_main_timetable_tab_layout);
 
+        if (timetableViewPager == null)
+            timetableViewPager = (ViewPager) findViewById(R.id.activity_main_timetable_view_pager);
+
+        if (linearLayout == null)
+            linearLayout = (LinearLayout) findViewById(R.id.activity_main_linear_layout);
+
+        if (DataSingleton.getInstance().isRecreate())
             performRecreate();
-
-        } else if (DataSingleton.getInstance().isChangedFirstDay()) {
-
+        else if (DataSingleton.getInstance().isChangedFirstDay())
             performRecreate();
-
-        }
-
-        if (currentView == ID_HOMEWORK)
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_scroll_view, new Homework(), "homework_fragment").commitAllowingStateLoss();
 
     }
 
@@ -557,261 +529,197 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_OVERVIEW:
 
-                final Overview overviewFragment = new Overview();
-                fragmentTransaction.replace(R.id.main_scroll_view, overviewFragment, "overview_fragment");
+                invalidateOptionsMenu();
+
+                timetableTabLayout.setVisibility(View.GONE);
+                timetableViewPager.setVisibility(View.GONE);
+
+                overviewTabLayout.clearOnTabSelectedListeners();
+                overviewTabLayout.removeAllTabs();
+
+                overviewTabLayout.setVisibility(View.VISIBLE);
+                overviewViewPager.setVisibility(View.VISIBLE);
+
+                if (getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout) != null)
+                    fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout)).commitAllowingStateLoss();
+
+                final com.ghofrani.classapp.adapter.ViewPager overviewAdapter = new com.ghofrani.classapp.adapter.ViewPager(getSupportFragmentManager());
+
+                overviewAdapter.addFragment(new Overview(), "CLASSES");
+                overviewAdapter.addFragment(new Events(), "EVENTS");
+
+                overviewViewPager.setAdapter(overviewAdapter);
+                overviewTabLayout.setupWithViewPager(overviewViewPager);
+                overviewTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+
+                        if (tab.getPosition() == 0) {
+
+                            if (floatingActionButton.isShown())
+                                floatingActionButton.hide();
+
+                        } else {
+
+                            if (!floatingActionButton.isShown()) {
+
+                                floatingActionButton.show();
+
+                                if (floatingActionButtonContrast)
+                                    floatingActionButton.setImageResource(R.drawable.add_black);
+                                else
+                                    floatingActionButton.setImageResource(R.drawable.add_white);
+
+                            }
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                    }
+
+                });
+
+                break;
+
+            case ID_CLASSES:
+
+                invalidateOptionsMenu();
+
+                final Classes classesFragment = new Classes();
+                fragmentTransaction.replace(R.id.activity_main_linear_layout, classesFragment, "classes_fragment");
                 fragmentTransaction.commit();
 
                 break;
 
             case ID_TIMETABLE:
 
-                tabLayout.setVisibility(AppBarLayout.VISIBLE);
-                viewPager.setVisibility(LinearLayout.VISIBLE);
+                invalidateOptionsMenu();
 
-                if (getSupportFragmentManager().findFragmentById(R.id.main_scroll_view) != null)
-                    fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.main_scroll_view)).commit();
+                overviewTabLayout.setVisibility(View.GONE);
+                overviewViewPager.setVisibility(View.GONE);
 
-                final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+                timetableTabLayout.clearOnTabSelectedListeners();
+                timetableTabLayout.removeAllTabs();
+
+                timetableTabLayout.setVisibility(View.VISIBLE);
+                timetableViewPager.setVisibility(View.VISIBLE);
+
+                if (getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout) != null)
+                    fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout)).commitAllowingStateLoss();
+
+                final com.ghofrani.classapp.adapter.ViewPager timetableAdapter = new com.ghofrani.classapp.adapter.ViewPager(getSupportFragmentManager());
 
                 final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-                switch (Integer.parseInt(sharedPreferences.getString("first_day_of_week", "1"))) {
+                int day = Integer.parseInt(sharedPreferences.getString("first_day_of_week", "1"));
 
-                    case DateTimeConstants.MONDAY:
+                for (int i = 0; i < 7; i++) {
 
-                        adapter.addFragment(new Monday(), "MONDAY");
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-                        adapter.addFragment(new Friday(), "FRIDAY");
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-
-                        break;
-
-                    case DateTimeConstants.TUESDAY:
-
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-                        adapter.addFragment(new Friday(), "FRIDAY");
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-                        adapter.addFragment(new Monday(), "MONDAY");
-
-                        break;
-
-                    case DateTimeConstants.WEDNESDAY:
-
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-                        adapter.addFragment(new Friday(), "FRIDAY");
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-                        adapter.addFragment(new Monday(), "MONDAY");
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-
-                        break;
-
-                    case DateTimeConstants.THURSDAY:
-
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-                        adapter.addFragment(new Friday(), "FRIDAY");
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-                        adapter.addFragment(new Monday(), "MONDAY");
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-
-                        break;
-
-                    case DateTimeConstants.FRIDAY:
-
-                        adapter.addFragment(new Friday(), "FRIDAY");
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-                        adapter.addFragment(new Monday(), "MONDAY");
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-
-                        break;
-
-                    case DateTimeConstants.SATURDAY:
-
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-                        adapter.addFragment(new Monday(), "MONDAY");
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-                        adapter.addFragment(new Friday(), "FRIDAY");
-
-                        break;
-
-                    case DateTimeConstants.SUNDAY:
-
-                        adapter.addFragment(new Sunday(), "SUNDAY");
-                        adapter.addFragment(new Monday(), "MONDAY");
-                        adapter.addFragment(new Tuesday(), "TUESDAY");
-                        adapter.addFragment(new Wednesday(), "WEDNESDAY");
-                        adapter.addFragment(new Thursday(), "THURSDAY");
-                        adapter.addFragment(new Friday(), "FRIDAY");
-                        adapter.addFragment(new Saturday(), "SATURDAY");
-
-                        break;
+                    if (day + i < 8)
+                        timetableAdapter.addFragment(Day.newInstance(day + i), DateTimeFormat.forPattern("EEEE").print(new LocalDate().withDayOfWeek(day + i)));
+                    else
+                        timetableAdapter.addFragment(Day.newInstance(day + i - 7), DateTimeFormat.forPattern("EEEE").print(new LocalDate().withDayOfWeek(day + i - 7)));
 
                 }
 
-                viewPager.setAdapter(adapter);
-
-                tabLayout.clearOnTabSelectedListeners();
-                tabLayout.removeAllTabs();
-
-                tabLayout.setupWithViewPager(viewPager);
-
-                tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                timetableViewPager.setAdapter(timetableAdapter);
+                timetableTabLayout.setupWithViewPager(timetableViewPager);
+                timetableTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
                     @Override
-                    public void onTabSelected(TabLayout.Tab tabLayoutTab) {
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        DataSingleton.getInstance().setSelectedTabPosition(tab.getPosition());
+                    }
 
-                        super.onTabSelected(tabLayoutTab);
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                    }
 
-                        if (tabLayoutTab.getPosition() != 0) {
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                    }
 
-                            if (!DataSingleton.getInstance().isAnimated()) {
+                });
 
-                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+                break;
 
-                                final Animation animation = new Animation() {
+            case ID_EVENTS:
 
-                                    @Override
-                                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+                invalidateOptionsMenu();
 
-                                        params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
+                timetableTabLayout.setVisibility(View.GONE);
+                timetableViewPager.setVisibility(View.GONE);
 
-                                        mainTabLayoutLayout.setLayoutParams(params);
+                overviewTabLayout.clearOnTabSelectedListeners();
+                overviewTabLayout.removeAllTabs();
 
-                                    }
-                                };
+                overviewTabLayout.setVisibility(View.VISIBLE);
+                overviewViewPager.setVisibility(View.VISIBLE);
 
-                                animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                                drawerLayout.startAnimation(animation);
+                if (getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout) != null)
+                    fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout)).commitAllowingStateLoss();
 
-                                DataSingleton.getInstance().setAnimated(true);
+                final com.ghofrani.classapp.adapter.ViewPager homeworkAdapter = new com.ghofrani.classapp.adapter.ViewPager(getSupportFragmentManager());
 
-                            }
+                homeworkAdapter.addFragment(new Overview(), "CLASSES");
+                homeworkAdapter.addFragment(new Events(), "EVENTS");
+
+                overviewViewPager.setAdapter(homeworkAdapter);
+                overviewTabLayout.setupWithViewPager(overviewViewPager);
+                overviewTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+
+                        if (tab.getPosition() == 0) {
+
+                            if (floatingActionButton.isShown())
+                                floatingActionButton.hide();
 
                         } else {
 
-                            if (DataSingleton.getInstance().isAnimated()) {
+                            if (!floatingActionButton.isShown()) {
 
-                                final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                                final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
+                                floatingActionButton.show();
 
-                                final Animation animation = new Animation() {
-
-                                    @Override
-                                    protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                        params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
-
-                                        mainTabLayoutLayout.setLayoutParams(params);
-
-                                    }
-                                };
-
-                                animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                                drawerLayout.startAnimation(animation);
-
-                                DataSingleton.getInstance().setAnimated(false);
+                                if (floatingActionButtonContrast)
+                                    floatingActionButton.setImageResource(R.drawable.add_black);
+                                else
+                                    floatingActionButton.setImageResource(R.drawable.add_white);
 
                             }
 
                         }
 
-                        DataSingleton.getInstance().setSelectedTabPosition(tabLayoutTab.getPosition());
+                    }
 
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
                     }
 
                 });
 
-                tabLayout.getTabAt(DataSingleton.getInstance().getSelectedTabPosition()).select();
+                overviewViewPager.setCurrentItem(1);
 
-                if (DataSingleton.getInstance().getSelectedTabPosition() != 0) {
-
-                    if (!DataSingleton.getInstance().isAnimated()) {
-
-                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                        final Animation animation = new Animation() {
-
-                            @Override
-                            protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) - (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime));
-
-                                mainTabLayoutLayout.setLayoutParams(params);
-
-                            }
-                        };
-
-                        animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                        drawerLayout.startAnimation(animation);
-
-                        DataSingleton.getInstance().setAnimated(true);
-
-                    }
-
-                } else {
-
-                    if (DataSingleton.getInstance().isAnimated()) {
-
-                        final LinearLayout mainTabLayoutLayout = (LinearLayout) findViewById(R.id.main_tab_layout_layout);
-                        final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainTabLayoutLayout.getLayoutParams();
-
-                        final Animation animation = new Animation() {
-
-                            @Override
-                            protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-                                params.leftMargin = (int) (getPixelFromDP(TAB_LAYOUT_LAYOUT_LEFT_MARGIN) * interpolatedTime);
-
-                                mainTabLayoutLayout.setLayoutParams(params);
-
-                            }
-                        };
-
-                        animation.setDuration(TAB_LAYOUT_LAYOUT_ANIMATION_DURATION);
-                        drawerLayout.startAnimation(animation);
-
-                        DataSingleton.getInstance().setAnimated(false);
-
-                    }
-
-                }
-
-                break;
-
-            case ID_CLASSES:
-
-                final Classes classesFragment = new Classes();
-                fragmentTransaction.replace(R.id.main_scroll_view, classesFragment, "classes_fragment");
-                fragmentTransaction.commit();
-
-                break;
-
-            case ID_HOMEWORK:
-
-                final Homework homeworkFragment = new Homework();
-                fragmentTransaction.replace(R.id.main_scroll_view, homeworkFragment, "homework_fragment");
-                fragmentTransaction.commit();
+                currentView = ID_OVERVIEW;
 
                 break;
 
             case ID_SETTINGS:
+
+                invalidateOptionsMenu();
 
                 startActivity(new Intent(this, Settings.class));
 
@@ -819,57 +727,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_ABOUT:
 
+                invalidateOptionsMenu();
+
                 startActivity(new Intent(this, About.class));
 
                 break;
-
-        }
-
-    }
-
-    private int getPixelFromDP(float dPtoConvert) {
-
-        final float scale = getResources().getDisplayMetrics().density;
-        return (int) (dPtoConvert * scale + 0.5f);
-
-    }
-
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-
-        private final List<Fragment> fragmentList = new ArrayList<>();
-        private final List<String> fragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager fragmentManager) {
-
-            super(fragmentManager);
-
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            return fragmentList.get(position);
-
-        }
-
-        @Override
-        public int getCount() {
-
-            return fragmentList.size();
-
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-
-            fragmentList.add(fragment);
-            fragmentTitleList.add(title);
-
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            return fragmentTitleList.get(position);
 
         }
 

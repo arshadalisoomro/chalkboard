@@ -33,7 +33,6 @@ public class Settings extends AppCompatActivity {
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getFragmentManager().beginTransaction().replace(R.id.settings_frame_layout, new SettingsFragment()).commit();
@@ -102,6 +101,7 @@ public class Settings extends AppCompatActivity {
             if (key.equals("detailed_notification") && DataSingleton.getInstance().getCurrentClass() != null
                     || key.equals("flip_colors") && DataSingleton.getInstance().getCurrentClass() != null
                     || key.equals("class_notification") && DataSingleton.getInstance().getCurrentClass() != null
+                    || key.equals("next_class_notification") && !DataSingleton.getInstance().getNextClassesArrayList().isEmpty()
                     || key.equals("next_class_notification_minutes")
                     || key.equals("tomorrow_classes")) {
 
@@ -124,6 +124,10 @@ public class Settings extends AppCompatActivity {
 
                 DataSingleton.getInstance().setChangedFirstDay(true);
 
+            } else if (key.equals("expand_next_classes") || key.equals("expand_tomorrow_classes")) {
+
+                DataSingleton.getInstance().setIsExpandableListViewCollapsed(false);
+
             } else if (key.equals("default_lesson_length")) {
 
                 if (Integer.parseInt(sharedPreferences.getString(key, "60")) < 1 || Integer.parseInt(sharedPreferences.getString(key, "60")) > 1439) {
@@ -143,7 +147,7 @@ public class Settings extends AppCompatActivity {
                     DateTimeFormat.forPattern("HH:mm").parseLocalTime(sharedPreferences.getString(key, "08:00"));
                     sharedPreferences.edit().putString(key, DateTimeFormat.forPattern("HH:mm").print(DateTimeFormat.forPattern("HH:mm").parseLocalTime(sharedPreferences.getString(key, "08:00")))).commit();
 
-                } catch (Exception ex) {
+                } catch (Exception exception) {
 
                     sharedPreferences.edit().putString(key, "08:00").commit();
 

@@ -3,14 +3,14 @@
 <RelativeLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/view_notification_layout"
+    android:id="@+id/view_notification_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:minHeight="72dp">
 
     <RelativeLayout
 
-        android:id="@+id/view_notification_progress_layout"
+        android:id="@+id/view_notification_progress_relative_layout"
         android:layout_width="54dp"
         android:layout_height="54dp"
         android:layout_centerVertical="true"
@@ -258,7 +258,7 @@
 
         <TextView
 
-            android:id="@+id/view_notification_progress_text"
+            android:id="@+id/view_notification_progress_text_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -268,7 +268,7 @@
 
         <TextView
 
-            android:id="@+id/view_notification_progress_text_white"
+            android:id="@+id/view_notification_progress_text_white_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -282,16 +282,16 @@
 
         android:layout_width="wrap_content"
         android:layout_height="54dp"
-        android:layout_alignRight="@+id/view_notification_button"
+        android:layout_alignRight="@+id/view_notification_add_event_image_button"
         android:layout_centerVertical="true"
         android:layout_marginLeft="12dp"
-        android:layout_toRightOf="@id/view_notification_progress_layout"
+        android:layout_toRightOf="@id/view_notification_progress_relative_layout"
         android:paddingRight="60dp"
         android:paddingTop="7.25dp">
 
         <TextView
 
-            android:id="@+id/view_notification_header"
+            android:id="@+id/view_notification_title_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -302,7 +302,7 @@
 
         <TextView
 
-            android:id="@+id/view_notification_header_black"
+            android:id="@+id/view_notification_title_black_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -313,7 +313,7 @@
 
         <TextView
 
-            android:id="@+id/view_notification_header_white"
+            android:id="@+id/view_notification_title_white_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -324,10 +324,10 @@
 
         <TextView
 
-            android:id="@+id/view_notification_text"
+            android:id="@+id/view_notification_subtitle_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/view_notification_header"
+            android:layout_below="@id/view_notification_title_text_view"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#757575"
@@ -336,10 +336,10 @@
 
         <TextView
 
-            android:id="@+id/view_notification_text_black"
+            android:id="@+id/view_notification_subtitle_black_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/view_notification_header_black"
+            android:layout_below="@id/view_notification_title_black_text_view"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#000000"
@@ -348,10 +348,10 @@
 
         <TextView
 
-            android:id="@+id/view_notification_text_white"
+            android:id="@+id/view_notification_subtitle_white_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/view_notification_header_white"
+            android:layout_below="@id/view_notification_title_white_text_view"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#d0ffffff"
@@ -362,7 +362,7 @@
 
     <ImageButton
 
-        android:id="@+id/view_notification_button"
+        android:id="@+id/view_notification_add_event_image_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
@@ -370,6 +370,6 @@
         android:layout_marginRight="12dp"
         android:background="#00000000"
         android:clickable="true"
-        android:src="@drawable/homework" />
+        android:src="@drawable/event" />
 
 </RelativeLayout>

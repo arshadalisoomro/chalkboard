@@ -37,7 +37,6 @@ public class About extends AppCompatActivity {
         Utils.setTheme(this);
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_about);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.about_toolbar);
@@ -46,7 +45,6 @@ public class About extends AppCompatActivity {
         toolbar.setElevation(getPixelFromDP(4));
 
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         listView = (ListView) findViewById(R.id.about_top_list_view);

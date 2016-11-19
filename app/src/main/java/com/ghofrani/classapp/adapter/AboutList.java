@@ -59,8 +59,8 @@ public class AboutList extends BaseAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_about_list_child, null);
 
-        final ImageView listChildIconImageView = (ImageView) convertView.findViewById(R.id.view_about_list_child_icon);
-        final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_about_list_child_title);
+        final ImageView listChildIconImageView = (ImageView) convertView.findViewById(R.id.view_about_list_child_icon_image_view);
+        final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_about_list_child_title_text_view);
 
         switch (position) {
 

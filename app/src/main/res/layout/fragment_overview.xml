@@ -1,40 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<RelativeLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="none">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
 
-        android:layout_width="match_parent"
+        android:id="@+id/fragment_overview_no_classes_relative_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:layout_centerInParent="true"
+        android:translationY="-32dp"
+        android:visibility="gone">
 
-        <android.support.v7.widget.CardView
+        <ImageView
 
-            android:id="@+id/overview_no_classes_card"
+            android:layout_width="192dp"
+            android:layout_height="192dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/color_indicator_class_card"
+            android:tint="?attr/colorPrimary" />
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text=" No classes."
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+
+        android:id="@+id/fragment_overview_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <RelativeLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:visibility="gone">
+            android:orientation="vertical"
+            android:padding="12dp">
 
-            <TextView
+            <android.support.v7.widget.CardView
 
-                android:id="@+id/overview_no_classes_card_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:textSize="15sp" />
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-
-            android:id="@+id/overview_current_class_card"
+                android:id="@+id/fragment_overview_current_class_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -44,7 +61,7 @@
 
             <RelativeLayout
 
-                android:id="@+id/overview_current_class_card_info"
+                android:id="@+id/fragment_overview_current_class_card_info_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
@@ -52,7 +69,7 @@
 
                 <RelativeLayout
 
-                    android:id="@+id/overview_current_class_card_header"
+                    android:id="@+id/fragment_overview_current_class_card_header_relative_layout"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     android:layout_marginBottom="6dp"
@@ -60,7 +77,7 @@
 
                     <ImageView
 
-                        android:id="@+id/overview_current_class_card_class_color_indicator"
+                        android:id="@+id/fragment_overview_current_class_card_class_color_indicator_image_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -71,10 +88,10 @@
 
                     <TextView
 
-                        android:id="@+id/overview_current_class_card_title"
+                        android:id="@+id/fragment_overview_current_class_card_title_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignRight="@id/overview_current_class_card_class_color_indicator"
+                        android:layout_alignRight="@id/fragment_overview_current_class_card_class_color_indicator_image_view"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:paddingRight="56dp"
@@ -82,11 +99,11 @@
 
                     <TextView
 
-                        android:id="@+id/overview_current_class_card_location_teacher"
+                        android:id="@+id/fragment_overview_current_class_card_location_teacher_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignRight="@id/overview_current_class_card_class_color_indicator"
-                        android:layout_below="@id/overview_current_class_card_title"
+                        android:layout_alignRight="@id/fragment_overview_current_class_card_class_color_indicator_image_view"
+                        android:layout_below="@id/fragment_overview_current_class_card_title_text_view"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:paddingRight="56dp"
@@ -98,12 +115,12 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/overview_current_class_card_header"
+                    android:layout_below="@id/fragment_overview_current_class_card_header_relative_layout"
                     android:layout_marginBottom="13dp">
 
                     <ProgressBar
 
-                        android:id="@+id/overview_current_class_card_progress_bar"
+                        android:id="@+id/fragment_overview_current_class_card_progress_bar"
                         style="@android:style/Widget.Material.ProgressBar.Horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -115,27 +132,27 @@
 
                     <TextView
 
-                        android:id="@+id/overview_current_class_card_start_time"
+                        android:id="@+id/fragment_overview_current_class_card_start_time_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/overview_current_class_card_progress_bar"
+                        android:layout_below="@id/fragment_overview_current_class_card_progress_bar"
                         android:textSize="14sp" />
 
                     <TextView
 
-                        android:id="@+id/overview_current_class_card_end_time"
+                        android:id="@+id/fragment_overview_current_class_card_end_time_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@id/overview_current_class_card_progress_bar"
+                        android:layout_below="@id/fragment_overview_current_class_card_progress_bar"
                         android:textSize="14sp" />
 
                     <TextView
 
-                        android:id="@+id/overview_current_class_card_progress_percentage"
+                        android:id="@+id/fragment_overview_current_class_card_progress_percentage_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/overview_current_class_card_progress_bar"
+                        android:layout_below="@id/fragment_overview_current_class_card_progress_bar"
                         android:layout_centerHorizontal="true"
                         android:textSize="14sp" />
 
@@ -147,17 +164,17 @@
 
         <android.support.v7.widget.CardView
 
-            android:id="@+id/overview_next_classes_card"
+            android:id="@+id/fragment_overview_next_classes_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/overview_current_class_card"
+            android:layout_below="@id/fragment_overview_current_class_card_view"
             android:layout_margin="4dp"
             android:visibility="gone">
 
             <RelativeLayout
 
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -165,7 +182,7 @@
 
                 <ExpandableListView
 
-                    android:id="@+id/overview_next_classes_list"
+                    android:id="@+id/fragment_overview_next_classes_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:childDivider="#d3d3d3"
@@ -181,17 +198,17 @@
 
         <android.support.v7.widget.CardView
 
-            android:id="@+id/overview_tomorrow_classes_card"
+            android:id="@+id/fragment_overview_tomorrow_classes_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/overview_next_classes_card"
+            android:layout_below="@id/fragment_overview_next_classes_card_view"
             android:layout_margin="4dp"
             android:visibility="gone">
 
             <RelativeLayout
 
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -199,7 +216,7 @@
 
                 <ExpandableListView
 
-                    android:id="@+id/overview_tomorrow_classes_list"
+                    android:id="@+id/fragment_overview_tomorrow_classes_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:childDivider="#d3d3d3"
@@ -215,4 +232,6 @@
 
     </RelativeLayout>
 
-</ScrollView>
+    </ScrollView>
+
+</RelativeLayout>

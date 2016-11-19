@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.adapter.ViewClassList;
+import com.ghofrani.classapp.adapter.ViewClassExpandableList;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.event.UpdateClassesUI;
 import com.ghofrani.classapp.model.DatedStandardClass;
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 public class ViewClass extends AppCompatActivity {
 
     private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE = 25;
-    private final int EXPANDABLE_LIST_VIEW_HEIGHT = 36;
+    private final int EXPANDABLE_LIST_VIEW_HEIGHT = 40;
     private final int MODE_EDIT = 1;
     private final int CHANGE_CLASS_REQUEST = 0;
     private final int RESULT_CHANGED = 0;
@@ -50,7 +50,7 @@ public class ViewClass extends AppCompatActivity {
     private ExpandableListView expandableListViewUpcomingClasses;
     private CardView noClassesCard;
     private CardView upcomingClassesListCardView;
-    private ViewClassList viewClassListAdapterNext;
+    private ViewClassExpandableList viewClassListAdapterNext;
     private ArrayList<DatedStandardClass> datedStandardClassArrayList;
     private Toolbar toolbar;
     private String className;
@@ -71,7 +71,6 @@ public class ViewClass extends AppCompatActivity {
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
@@ -197,30 +196,30 @@ public class ViewClass extends AppCompatActivity {
 
         if (viewClassListAdapterNext == null) {
 
-            viewClassListAdapterNext = new ViewClassList(this, datedStandardClassArrayList, "Upcoming classes");
+            viewClassListAdapterNext = new ViewClassExpandableList(this, datedStandardClassArrayList, "Upcoming classes");
             expandableListViewUpcomingClasses.setAdapter(viewClassListAdapterNext);
 
         } else {
 
-            viewClassListAdapterNext.updateLinkedList((ArrayList<DatedStandardClass>) datedStandardClassArrayList.clone());
+            viewClassListAdapterNext.updateArrayList((ArrayList<DatedStandardClass>) datedStandardClassArrayList.clone());
 
-        }
+            expandableListViewUpcomingClasses.postDelayed(new Runnable() {
 
-        expandableListViewUpcomingClasses.postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-            @Override
-            public void run() {
+                    if (expandableListViewUpcomingClasses != null) {
 
-                if (expandableListViewUpcomingClasses != null) {
+                        expandableListViewUpcomingClasses.expandGroup(0);
+                        setListViewHeightBasedOnChildrenNext(true, true);
 
-                    expandableListViewUpcomingClasses.expandGroup(0);
-                    setListViewHeightBasedOnChildrenNext(true, true);
+                    }
 
                 }
 
-            }
+            }, 200);
 
-        }, 200);
+        }
 
     }
 
@@ -303,12 +302,12 @@ public class ViewClass extends AppCompatActivity {
 
             return true;
 
-        } else if (menuItem.getItemId() == R.id.toolbar_delete_edit_delete) {
+        } else if (menuItem.getItemId() == R.id.toolbar_delete_edit_delete_item) {
 
             final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
 
             materialDialogBuilder.title("Delete class?");
-            materialDialogBuilder.content("All timetable entries and homework will be deleted for this class.");
+            materialDialogBuilder.content("All timetable entries and event will be deleted for this class.");
             materialDialogBuilder.positiveText("YES");
             materialDialogBuilder.positiveColorRes(R.color.black);
             materialDialogBuilder.negativeText("CANCEL");
@@ -358,7 +357,7 @@ public class ViewClass extends AppCompatActivity {
 
             return true;
 
-        } else if (menuItem.getItemId() == R.id.toolbar_delete_edit_edit) {
+        } else if (menuItem.getItemId() == R.id.toolbar_delete_edit_edit_item) {
 
             startActivityForResult(new Intent(ViewClass.this, ChangeClass.class).putExtra("mode", MODE_EDIT).putExtra("class", className), CHANGE_CLASS_REQUEST);
 
@@ -412,7 +411,7 @@ public class ViewClass extends AppCompatActivity {
 
         if (changeParams) {
 
-            final TextView groupText = (TextView) expandableListViewUpcomingClasses.findViewById(R.id.view_list_group_text);
+            final TextView groupText = (TextView) expandableListViewUpcomingClasses.findViewById(R.id.view_expandable_list_group_title_text_view);
             final LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
             if (expandableListViewUpcomingClasses.isGroupExpanded(0)) {

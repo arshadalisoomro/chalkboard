@@ -6,33 +6,26 @@
 
     <group
 
-        android:id="@+id/menu_top"
+        android:id="@+id/drawer_menu_top_group"
         android:checkableBehavior="single">
 
         <item
 
-            android:id="@+id/overview"
+            android:id="@+id/drawer_overview_item"
             android:checked="false"
             android:icon="@drawable/overview"
             android:title="Overview" />
 
         <item
 
-            android:id="@+id/homework"
-            android:checked="false"
-            android:icon="@drawable/homework"
-            android:title="Homework" />
-
-        <item
-
-            android:id="@+id/classes"
+            android:id="@+id/drawer_classes_item"
             android:checked="false"
             android:icon="@drawable/classes"
             android:title="Classes" />
 
         <item
 
-            android:id="@+id/timetable"
+            android:id="@+id/drawer_timetable_item"
             android:checked="false"
             android:icon="@drawable/timetable"
             android:title="Timetable" />
@@ -41,19 +34,19 @@
 
     <group
 
-        android:id="@+id/menu_bottom"
+        android:id="@+id/drawer_menu_bottom_group"
         android:checkableBehavior="none">
 
         <item
 
-            android:id="@+id/settings"
+            android:id="@+id/drawer_settings_item"
             android:checked="false"
             android:icon="@drawable/settings"
             android:title="Settings" />
 
         <item
 
-            android:id="@+id/about"
+            android:id="@+id/drawer_about_item"
             android:checked="false"
             android:icon="@drawable/about"
             android:title="About" />

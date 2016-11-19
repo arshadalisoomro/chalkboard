@@ -9,7 +9,7 @@
 
     <ImageView
 
-        android:id="@+id/view_about_list_child_icon"
+        android:id="@+id/view_about_list_child_icon_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -18,12 +18,12 @@
 
     <TextView
 
-        android:id="@+id/view_about_list_child_title"
+        android:id="@+id/view_about_list_child_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="32dp"
-        android:layout_toRightOf="@id/view_about_list_child_icon"
+        android:layout_toRightOf="@id/view_about_list_child_icon_image_view"
         android:textColor="#000000"
         android:textSize="16sp" />
 

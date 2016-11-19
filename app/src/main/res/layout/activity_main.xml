@@ -28,26 +28,26 @@
 
                 <include
 
-                    android:id="@+id/main_toolbar"
-                    layout="@layout/view_toolbar" />
+                    android:id="@+id/activity_main_toolbar"
+                    layout="@layout/view_toolbar_padded_without_elevation" />
 
-                <LinearLayout
+                <android.support.design.widget.TabLayout
 
-                    android:id="@+id/main_tab_layout_layout"
+                    android:id="@+id/activity_main_overview_tab_layout"
+                    style="@style/tab_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="60.5dp">
+                    app:tabGravity="fill"
+                    app:tabMode="fixed" />
 
                     <android.support.design.widget.TabLayout
 
-                        android:id="@+id/main_tab_layout"
+                        android:id="@+id/activity_main_timetable_tab_layout"
                         style="@style/tab_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
                         app:tabMode="scrollable" />
-
-                </LinearLayout>
 
             </android.support.design.widget.AppBarLayout>
 
@@ -59,29 +59,38 @@
 
                 <android.support.v4.view.ViewPager
 
-                    android:id="@+id/main_view_pager"
+                    android:id="@+id/activity_main_overview_view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="104dp"
+                    android:layout_weight="1" />
+
+                <android.support.v4.view.ViewPager
+
+                    android:id="@+id/activity_main_timetable_view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="104dp"
                     android:layout_weight="1"
                     android:visibility="gone" />
 
-                <ScrollView
+                <LinearLayout
 
-                    android:id="@+id/main_scroll_view"
+                    android:id="@+id/activity_main_linear_layout"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="56dp"
                     android:layout_weight="1"
-                    android:scrollbars="none">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                </ScrollView>
+                </LinearLayout>
 
             </LinearLayout>
 
             <android.support.design.widget.FloatingActionButton
 
-                android:id="@+id/main_floating_action_button"
+                android:id="@+id/activity_main_floating_action_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
@@ -100,7 +109,7 @@
 
         <android.support.design.widget.NavigationView
 
-            android:id="@+id/main_navigation_view"
+            android:id="@+id/activity_main_navigation_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:headerLayout="@layout/view_drawer_header"

@@ -7,10 +7,10 @@
 
     <item
 
-        android:id="@+id/toolbar_check_check_item"
-        android:icon="@drawable/check"
+        android:id="@+id/toolbar_edit_edit_item"
+        android:icon="@drawable/edit"
         android:orderInCategory="1"
-        android:title="Done"
+        android:title="Edit"
         app:showAsAction="always" />
 
 </menu>

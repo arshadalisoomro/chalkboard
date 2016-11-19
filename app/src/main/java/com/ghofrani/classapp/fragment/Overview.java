@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.activity.ViewClass;
-import com.ghofrani.classapp.adapter.ClassList;
+import com.ghofrani.classapp.adapter.ClassExpandableList;
 import com.ghofrani.classapp.event.CollapseLists;
 import com.ghofrani.classapp.event.UpdateClassesUI;
 import com.ghofrani.classapp.event.UpdateProgressUI;
@@ -37,10 +37,10 @@ import java.util.ArrayList;
 public class Overview extends Fragment {
 
     private final int EXPANDABLE_LIST_VIEW_ANIMATION_DURATION_SCALE = 25;
-    private final int EXPANDABLE_LIST_VIEW_HEIGHT = 36;
+    private final int EXPANDABLE_LIST_VIEW_HEIGHT = 40;
 
-    private ClassList classListAdapterTomorrow;
-    private ClassList classListAdapterNext;
+    private ClassExpandableList classListAdapterTomorrow;
+    private ClassExpandableList classListAdapterNext;
     private ExpandableListView expandableListViewNextClasses;
     private ProgressBar progressBar;
     private TextView progressTextView;
@@ -132,28 +132,28 @@ public class Overview extends Fragment {
         super.onResume();
 
         if (currentClassCardView == null)
-            currentClassCardView = (CardView) getView().findViewById(R.id.overview_current_class_card);
+            currentClassCardView = (CardView) getView().findViewById(R.id.fragment_overview_current_class_card_view);
 
         if (currentClassTitleTextView == null)
-            currentClassTitleTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_title);
+            currentClassTitleTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_title_text_view);
 
         if (currentClassLocationTeacherTextView == null)
-            currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_location_teacher);
+            currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_location_teacher_text_view);
 
         if (currentClassColorIndicator == null)
-            currentClassColorIndicator = (ImageView) getView().findViewById(R.id.overview_current_class_card_class_color_indicator);
+            currentClassColorIndicator = (ImageView) getView().findViewById(R.id.fragment_overview_current_class_card_class_color_indicator_image_view);
 
         if (currentClassStartTimeTextView == null)
-            currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_start_time);
+            currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_start_time_text_view);
 
         if (currentClassEndTimeTextView == null)
-            currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_end_time);
+            currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_end_time_text_view);
 
         if (progressBar == null)
-            progressBar = (ProgressBar) getView().findViewById(R.id.overview_current_class_card_progress_bar);
+            progressBar = (ProgressBar) getView().findViewById(R.id.fragment_overview_current_class_card_progress_bar);
 
         if (progressTextView == null)
-            progressTextView = (TextView) getView().findViewById(R.id.overview_current_class_card_progress_percentage);
+            progressTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_progress_percentage_text_view);
 
         updateUI();
 
@@ -227,7 +227,7 @@ public class Overview extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                        final TextView titleTextView = (TextView) view.findViewById(R.id.overview_current_class_card_title);
+                        final TextView titleTextView = (TextView) view.findViewById(R.id.fragment_overview_current_class_card_title_text_view);
 
                         startActivity(new Intent(Overview.this.getContext(), ViewClass.class).putExtra("class", titleTextView.getText()));
 
@@ -255,13 +255,11 @@ public class Overview extends Fragment {
             } else if (currentClass.hasTeacher()) {
 
                 currentClassLocationTeacherTextView.setText(currentClass.getTeacher() + " • " + DataSingleton.getInstance().getMinutesLeftText());
-
                 currentClassColorIndicator.setTranslationY(getPixelFromDP(-1.5f));
 
             } else {
 
                 currentClassLocationTeacherTextView.setText(DataSingleton.getInstance().getMinutesLeftText());
-
                 currentClassColorIndicator.setTranslationY(getPixelFromDP(0));
 
             }
@@ -277,7 +275,7 @@ public class Overview extends Fragment {
 
         } else {
 
-            getView().findViewById(R.id.overview_current_class_card).setVisibility(View.GONE);
+            getView().findViewById(R.id.fragment_overview_current_class_card_view).setVisibility(View.GONE);
 
             nullCount++;
 
@@ -287,14 +285,14 @@ public class Overview extends Fragment {
 
             configureExpandableListViewNextClasses();
 
-            getView().findViewById(R.id.overview_next_classes_card).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.fragment_overview_next_classes_card_view).setVisibility(View.VISIBLE);
 
         } else {
 
             classListAdapterNext = null;
             expandableListViewNextClasses = null;
 
-            getView().findViewById(R.id.overview_next_classes_card).setVisibility(View.GONE);
+            getView().findViewById(R.id.fragment_overview_next_classes_card_view).setVisibility(View.GONE);
 
             nullCount++;
 
@@ -304,14 +302,14 @@ public class Overview extends Fragment {
 
             configureExpandableListViewTomorrowClasses();
 
-            getView().findViewById(R.id.overview_tomorrow_classes_card).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.fragment_overview_tomorrow_classes_card_view).setVisibility(View.VISIBLE);
 
         } else {
 
             classListAdapterTomorrow = null;
             expandableListViewTomorrowClasses = null;
 
-            getView().findViewById(R.id.overview_tomorrow_classes_card).setVisibility(View.GONE);
+            getView().findViewById(R.id.fragment_overview_tomorrow_classes_card_view).setVisibility(View.GONE);
 
             nullCount++;
 
@@ -319,16 +317,13 @@ public class Overview extends Fragment {
 
         if (nullCount == 3) {
 
-            getView().findViewById(R.id.overview_no_classes_card).setVisibility(View.VISIBLE);
-
-            if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("tomorrow_classes", true))
-                ((TextView) getView().findViewById(R.id.overview_no_classes_card_text)).setText("No further classes today or tomorrow.");
-            else
-                ((TextView) getView().findViewById(R.id.overview_no_classes_card_text)).setText("No further classes today.");
+            getView().findViewById(R.id.fragment_overview_scroll_view).setVisibility(View.GONE);
+            getView().findViewById(R.id.fragment_overview_no_classes_relative_layout).setVisibility(View.VISIBLE);
 
         } else {
 
-            getView().findViewById(R.id.overview_no_classes_card).setVisibility(View.GONE);
+            getView().findViewById(R.id.fragment_overview_no_classes_relative_layout).setVisibility(View.GONE);
+            getView().findViewById(R.id.fragment_overview_scroll_view).setVisibility(View.VISIBLE);
 
         }
 
@@ -347,7 +342,7 @@ public class Overview extends Fragment {
 
         if (expandableListViewNextClasses == null) {
 
-            expandableListViewNextClasses = (ExpandableListView) getView().findViewById(R.id.overview_next_classes_list);
+            expandableListViewNextClasses = (ExpandableListView) getView().findViewById(R.id.fragment_overview_next_classes_list_view);
 
             expandableListViewNextClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
@@ -380,8 +375,8 @@ public class Overview extends Fragment {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
 
-                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
+                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_text_view);
+                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
 
                     if (DataSingleton.getInstance().getNextClassesArrayList().get(childPosition).hasLocation())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
@@ -414,12 +409,12 @@ public class Overview extends Fragment {
 
         if (classListAdapterNext == null) {
 
-            classListAdapterNext = new ClassList(getContext(), DataSingleton.getInstance().getNextClassesArrayList(), "Next classes");
+            classListAdapterNext = new ClassExpandableList(getContext(), DataSingleton.getInstance().getNextClassesArrayList(), "Next classes");
             expandableListViewNextClasses.setAdapter(classListAdapterNext);
 
         } else {
 
-            classListAdapterNext.updateLinkedList((ArrayList<StandardClass>) DataSingleton.getInstance().getNextClassesArrayList().clone());
+            classListAdapterNext.updateArrayList((ArrayList<StandardClass>) DataSingleton.getInstance().getNextClassesArrayList().clone());
 
         }
 
@@ -453,7 +448,7 @@ public class Overview extends Fragment {
 
         if (expandableListViewTomorrowClasses == null) {
 
-            expandableListViewTomorrowClasses = (ExpandableListView) getView().findViewById(R.id.overview_tomorrow_classes_list);
+            expandableListViewTomorrowClasses = (ExpandableListView) getView().findViewById(R.id.fragment_overview_tomorrow_classes_list_view);
 
             expandableListViewTomorrowClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
@@ -486,8 +481,8 @@ public class Overview extends Fragment {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
 
-                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_list_child_text);
-                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_list_child_text_centered);
+                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_text_view);
+                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
 
                     if (DataSingleton.getInstance().getTomorrowClassesArrayList().get(childPosition).hasLocation())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
@@ -520,12 +515,12 @@ public class Overview extends Fragment {
 
         if (classListAdapterTomorrow == null) {
 
-            classListAdapterTomorrow = new ClassList(getContext(), DataSingleton.getInstance().getTomorrowClassesArrayList(), "Tomorrow's classes");
+            classListAdapterTomorrow = new ClassExpandableList(getContext(), DataSingleton.getInstance().getTomorrowClassesArrayList(), "Tomorrow's classes");
             expandableListViewTomorrowClasses.setAdapter(classListAdapterTomorrow);
 
         } else {
 
-            classListAdapterTomorrow.updateLinkedList((ArrayList<StandardClass>) DataSingleton.getInstance().getTomorrowClassesArrayList().clone());
+            classListAdapterTomorrow.updateArrayList((ArrayList<StandardClass>) DataSingleton.getInstance().getTomorrowClassesArrayList().clone());
 
         }
 
@@ -558,6 +553,9 @@ public class Overview extends Fragment {
 
     private void setListViewHeightBasedOnChildrenNext(boolean changeParams, boolean animate) {
 
+        if (expandableListViewNextClasses == null)
+            return;
+
         final ListAdapter listAdapter = expandableListViewNextClasses.getAdapter();
 
         if (listAdapter == null)
@@ -577,7 +575,11 @@ public class Overview extends Fragment {
 
         if (changeParams) {
 
-            final TextView groupText = (TextView) expandableListViewNextClasses.findViewById(R.id.view_list_group_text);
+            final TextView groupText = (TextView) expandableListViewNextClasses.findViewById(R.id.view_expandable_list_group_title_text_view);
+
+            if (groupText == null)
+                return;
+
             final LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
             if (expandableListViewNextClasses.isGroupExpanded(0)) {
@@ -613,7 +615,7 @@ public class Overview extends Fragment {
 
                 listViewLayoutParams.height = listViewLayoutParamsHeight;
 
-                groupTextLayoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(16));
+                groupTextLayoutParams.setMargins(0, getPixelFromDP(10), 0, getPixelFromDP(18));
                 groupText.setLayoutParams(groupTextLayoutParams);
 
             } else {
@@ -649,7 +651,7 @@ public class Overview extends Fragment {
 
                 listViewLayoutParams.height = totalHeight + (expandableListViewNextClasses.getDividerHeight() * (listAdapter.getCount() - 1));
 
-                groupTextLayoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(8));
+                groupTextLayoutParams.setMargins(0, getPixelFromDP(10), 0, getPixelFromDP(10));
                 groupText.setLayoutParams(groupTextLayoutParams);
 
             }
@@ -670,6 +672,9 @@ public class Overview extends Fragment {
 
     private void setListViewHeightBasedOnChildrenTomorrow(boolean changeParams, boolean animate) {
 
+        if (expandableListViewTomorrowClasses == null)
+            return;
+
         final ListAdapter listAdapter = expandableListViewTomorrowClasses.getAdapter();
 
         if (listAdapter == null)
@@ -689,7 +694,11 @@ public class Overview extends Fragment {
 
         if (changeParams) {
 
-            final TextView groupText = (TextView) expandableListViewTomorrowClasses.findViewById(R.id.view_list_group_text);
+            final TextView groupText = (TextView) expandableListViewTomorrowClasses.findViewById(R.id.view_expandable_list_group_title_text_view);
+
+            if (groupText == null)
+                return;
+
             final LinearLayout.LayoutParams groupTextLayoutParams = (LinearLayout.LayoutParams) groupText.getLayoutParams();
 
             if (expandableListViewTomorrowClasses.isGroupExpanded(0)) {
@@ -725,7 +734,7 @@ public class Overview extends Fragment {
 
                 listViewLayoutParams.height = listViewLayoutParamsHeight;
 
-                groupTextLayoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(16));
+                groupTextLayoutParams.setMargins(0, getPixelFromDP(10), 0, getPixelFromDP(18));
                 groupText.setLayoutParams(groupTextLayoutParams);
 
             } else {
@@ -761,7 +770,7 @@ public class Overview extends Fragment {
 
                 listViewLayoutParams.height = totalHeight + (expandableListViewTomorrowClasses.getDividerHeight() * (listAdapter.getCount() - 1));
 
-                groupTextLayoutParams.setMargins(0, getPixelFromDP(8), 0, getPixelFromDP(8));
+                groupTextLayoutParams.setMargins(0, getPixelFromDP(10), 0, getPixelFromDP(10));
                 groupText.setLayoutParams(groupTextLayoutParams);
 
             }

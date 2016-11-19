@@ -21,7 +21,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.activity.AddHomework;
+import com.ghofrani.classapp.activity.AddEvent;
 import com.ghofrani.classapp.activity.Main;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.event.UpdateClassesUI;
@@ -127,9 +127,9 @@ public class Background extends Service {
         remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
 
         progressBarId = R.id.view_notification_progress_bar_red;
-        textId = R.id.view_notification_text;
-        headerId = R.id.view_notification_header;
-        progressTextId = R.id.view_notification_progress_text;
+        textId = R.id.view_notification_subtitle_text_view;
+        headerId = R.id.view_notification_title_text_view;
+        progressTextId = R.id.view_notification_progress_text_text_view;
 
         dateTimeFormatterAMPM = DateTimeFormat.forPattern("h:mm a");
 
@@ -338,10 +338,10 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    final Intent homeworkActivityIntent = new Intent(this, AddHomework.class).putExtra("origin_notification", true);
+                    final Intent homeworkActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
                     final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    remoteViews.setOnClickPendingIntent(R.id.view_notification_button, addHomeworkActivityIntent);
+                    remoteViews.setOnClickPendingIntent(R.id.view_notification_add_event_image_button, addHomeworkActivityIntent);
 
                     remoteViews.setInt(progressBarId, "setVisibility", View.GONE);
                     remoteViews.setInt(textId, "setVisibility", View.GONE);
@@ -350,33 +350,33 @@ public class Background extends Service {
 
                     if (sharedPreferences.getBoolean("flip_colors", false)) {
 
-                        remoteViews.setInt(R.id.view_notification_layout, "setBackgroundColor", finalCurrentClass.getColor());
+                        remoteViews.setInt(R.id.view_notification_relative_layout, "setBackgroundColor", finalCurrentClass.getColor());
 
                         if (finalCurrentClass.getColor() == lime || finalCurrentClass.getColor() == yellow || finalCurrentClass.getColor() == amber) {
 
-                            remoteViews.setInt(R.id.view_notification_button, "setColorFilter", Color.BLACK);
+                            remoteViews.setInt(R.id.view_notification_add_event_image_button, "setColorFilter", Color.BLACK);
 
                             progressBarId = R.id.view_notification_progress_bar_black_contrast;
-                            textId = R.id.view_notification_text_black;
-                            progressTextId = R.id.view_notification_progress_text;
-                            headerId = R.id.view_notification_header_black;
+                            textId = R.id.view_notification_subtitle_black_text_view;
+                            progressTextId = R.id.view_notification_progress_text_text_view;
+                            headerId = R.id.view_notification_title_black_text_view;
 
                         } else {
 
-                            remoteViews.setInt(R.id.view_notification_button, "setColorFilter", Color.WHITE);
+                            remoteViews.setInt(R.id.view_notification_add_event_image_button, "setColorFilter", Color.WHITE);
 
                             progressBarId = R.id.view_notification_progress_bar_white;
-                            textId = R.id.view_notification_text_white;
-                            progressTextId = R.id.view_notification_progress_text_white;
-                            headerId = R.id.view_notification_header_white;
+                            textId = R.id.view_notification_subtitle_white_text_view;
+                            progressTextId = R.id.view_notification_progress_text_white_text_view;
+                            headerId = R.id.view_notification_title_white_text_view;
 
                         }
 
 
                     } else {
 
-                        remoteViews.setInt(R.id.view_notification_button, "setColorFilter", finalCurrentClass.getColor());
-                        remoteViews.setInt(R.id.view_notification_layout, "setBackgroundColor", Color.TRANSPARENT);
+                        remoteViews.setInt(R.id.view_notification_add_event_image_button, "setColorFilter", finalCurrentClass.getColor());
+                        remoteViews.setInt(R.id.view_notification_relative_layout, "setBackgroundColor", Color.TRANSPARENT);
 
                         if (finalCurrentClass.getColor() == red) {
 
@@ -452,9 +452,9 @@ public class Background extends Service {
 
                         }
 
-                        textId = R.id.view_notification_text;
-                        progressTextId = R.id.view_notification_progress_text;
-                        headerId = R.id.view_notification_header;
+                        textId = R.id.view_notification_subtitle_text_view;
+                        progressTextId = R.id.view_notification_progress_text_text_view;
+                        headerId = R.id.view_notification_title_text_view;
 
                     }
 
@@ -567,7 +567,7 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    final Intent homeworkActivityIntent = new Intent(this, AddHomework.class).putExtra("origin_notification", true);
+                    final Intent homeworkActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
                     final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this)
@@ -576,7 +576,7 @@ public class Background extends Service {
                             .setColor(finalCurrentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
                             .setPriority(Notification.PRIORITY_MAX)
-                            .addAction(R.drawable.homework, "ADD HOMEWORK", addHomeworkActivityIntent)
+                            .addAction(R.drawable.event, "ADD EVENT", addHomeworkActivityIntent)
                             .setContentTitle(finalCurrentClass.getName())
                             .setWhen(0);
 
@@ -720,7 +720,7 @@ public class Background extends Service {
 
             }
 
-        } else if (nextClass != null) {
+        } else if (nextClass != null && sharedPreferences.getBoolean("next_class_notification", true)) {
 
             if (audioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT)
                 if (sharedPreferences.getBoolean("vibrate_only_during_classes", true))

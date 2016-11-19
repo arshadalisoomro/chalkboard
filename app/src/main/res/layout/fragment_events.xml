@@ -3,13 +3,14 @@
 <RelativeLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_events_container_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
     <RelativeLayout
 
-        android:id="@+id/fragment_classes_no_classes_relative_layout"
+        android:id="@+id/fragment_events_no_events_relative_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -37,12 +38,11 @@
 
     <android.support.v7.widget.RecyclerView
 
-        android:id="@+id/fragment_classes_recycler_view"
+        android:id="@+id/fragment_events_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
-        android:paddingBottom="84dp"
-        android:paddingTop="12dp" />
+        android:paddingBottom="116dp" />
 
 </RelativeLayout>

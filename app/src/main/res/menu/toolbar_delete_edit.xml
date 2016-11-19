@@ -7,7 +7,7 @@
 
     <item
 
-        android:id="@+id/toolbar_delete_edit_delete"
+        android:id="@+id/toolbar_delete_edit_delete_item"
         android:icon="@drawable/delete"
         android:orderInCategory="1"
         android:title="Delete"
@@ -15,8 +15,8 @@
 
     <item
 
-        android:id="@+id/toolbar_delete_edit_edit"
-        android:icon="@drawable/edit_white"
+        android:id="@+id/toolbar_delete_edit_edit_item"
+        android:icon="@drawable/edit"
         android:orderInCategory="2"
         android:title="Edit"
         app:showAsAction="always" />

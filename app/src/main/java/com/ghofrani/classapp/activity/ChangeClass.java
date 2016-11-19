@@ -161,7 +161,7 @@ public class ChangeClass extends AppCompatActivity {
 
             return true;
 
-        } else if (menuItem.getItemId() == R.id.toolbar_check_check) {
+        } else if (menuItem.getItemId() == R.id.toolbar_check_check_item) {
 
             final EditText inputNameEditText = (EditText) findViewById(R.id.change_class_input_name);
 

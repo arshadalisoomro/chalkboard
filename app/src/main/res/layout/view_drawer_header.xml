@@ -10,7 +10,7 @@
 
     <TextView
 
-        android:id="@+id/drawer_subtitle"
+        android:id="@+id/view_drawer_header_subtitle_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -25,7 +25,7 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/drawer_subtitle"
+        android:layout_above="@id/view_drawer_header_subtitle_text_view"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="18dp"
         android:text="Chalkboard"
