@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.model.Homework;
-import com.ghofrani.classapp.model.HomeworkWithID;
+import com.ghofrani.classapp.model.Event;
+import com.ghofrani.classapp.model.EventWithID;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.model.StringWithID;
 import com.ghofrani.classapp.module.DataSingleton;
@@ -69,7 +69,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
         if (DataSingleton.getInstance().getDataArrayList().get(position) instanceof StringWithID)
             return ((StringWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getID();
         else
-            return ((HomeworkWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getID();
+            return ((EventWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getID();
 
     }
 
@@ -78,16 +78,16 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
         if (getItemViewType(position) == VIEW_TYPE_HOMEWORK) {
 
-            final Homework homework = ((HomeworkWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getHomework();
-            final ListHomeworkViewHolder listHomeworkViewHolder = (ListHomeworkViewHolder) viewHolder;
+            final Event event = ((EventWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getEvent();
+            final ListEventViewHolder listEventViewHolder = (ListEventViewHolder) viewHolder;
 
-            listHomeworkViewHolder.titleTextView.setText(homework.getClassName() + " • " + homework.getName());
+            listEventViewHolder.titleTextView.setText(event.getClassName() + " • " + event.getName());
 
             String subtitleTextViewText = "";
 
-            if (homework.isAttach()) {
+            if (event.isAttach()) {
 
-                ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(homework.getDateTime().getDayOfWeek());
+                ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(event.getDateTime().getDayOfWeek());
 
                 if (classesList != null) {
 
@@ -96,31 +96,31 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
                     while (index < classesList.size() && !completed) {
 
-                        if (classesList.get(index).getName().equals(homework.getClassName())) {
+                        if (classesList.get(index).getName().equals(event.getClassName())) {
 
-                            if (classesList.get(index).getStartTime().equals(homework.getDateTime().toLocalTime())) {
+                            if (classesList.get(index).getStartTime().equals(event.getDateTime().toLocalTime())) {
 
-                                if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                                if (tomorrow.withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                                    subtitleTextViewText = "Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                    subtitleTextViewText = "Class at " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
-                                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                                    if (homework.getDateTime().isBefore(tomorrow.minusDays(1)) || homework.getDateTime().isEqual(tomorrow.minusDays(1)))
-                                        subtitleTextViewText = "Today • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                    if (event.getDateTime().isBefore(tomorrow.minusDays(1)) || event.getDateTime().isEqual(tomorrow.minusDays(1)))
+                                        subtitleTextViewText = "Today • Class at " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
                                     else
-                                        subtitleTextViewText = "Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                        subtitleTextViewText = "Class at " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
-                                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(homework.getDateTime())) {
+                                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(event.getDateTime())) {
 
-                                    if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay()))
-                                        subtitleTextViewText = "Yesterday • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                    if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay()))
+                                        subtitleTextViewText = "Yesterday • Class at " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
                                     else
-                                        subtitleTextViewText = shortDate.print(homework.getDateTime()) + " • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                        subtitleTextViewText = shortDate.print(event.getDateTime()) + " • Class at " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
                                 } else {
 
-                                    subtitleTextViewText = dayOfWeekString.print(homework.getDateTime()) + " • Class at " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                                    subtitleTextViewText = dayOfWeekString.print(event.getDateTime()) + " • Class at " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
                                 }
 
@@ -138,31 +138,31 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
             } else {
 
-                if (homework.getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
+                if (event.getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
 
-                    subtitleTextViewText = shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                    subtitleTextViewText = shortDate.print(event.getDateTime()) + " • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
-                } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                } else if (tomorrow.withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                    subtitleTextViewText = is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime());
+                    subtitleTextViewText = is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime());
 
-                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                    if (homework.getDateTime().isBefore(tomorrow.minusDays(1)) || homework.getDateTime().isEqual(tomorrow.minusDays(1)))
-                        subtitleTextViewText = "Today • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                    if (event.getDateTime().isBefore(tomorrow.minusDays(1)) || event.getDateTime().isEqual(tomorrow.minusDays(1)))
+                        subtitleTextViewText = "Today • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
                     else
-                        subtitleTextViewText = is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime());
+                        subtitleTextViewText = is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime());
 
-                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(homework.getDateTime())) {
+                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(event.getDateTime())) {
 
-                    if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay()))
-                        subtitleTextViewText = "Yesterday • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                    if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay()))
+                        subtitleTextViewText = "Yesterday • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
                     else
-                        subtitleTextViewText = shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                        subtitleTextViewText = shortDate.print(event.getDateTime()) + " • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
                 } else {
 
-                    subtitleTextViewText = dayOfWeekString.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                    subtitleTextViewText = dayOfWeekString.print(event.getDateTime()) + " • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
                 }
 
@@ -170,46 +170,41 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
             if (subtitleTextViewText.isEmpty()) {
 
-                if (homework.getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
+                if (event.getDateTime().isAfter(DataSingleton.getInstance().getNextWeekEnd())) {
 
-                    listHomeworkViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                    listEventViewHolder.subtitleTextView.setText(shortDate.print(event.getDateTime()) + " • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime())));
 
-                } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                } else if (tomorrow.withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                    listHomeworkViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                    listEventViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
-                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                    if (homework.getDateTime().isBefore(tomorrow.minusDays(1)) || homework.getDateTime().isEqual(tomorrow.minusDays(1)))
-                        listHomeworkViewHolder.subtitleTextView.setText("Today • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                    if (event.getDateTime().isBefore(tomorrow.minusDays(1)) || event.getDateTime().isEqual(tomorrow.minusDays(1)))
+                        listEventViewHolder.subtitleTextView.setText("Today • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime())));
                     else
-                        listHomeworkViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime()));
+                        listEventViewHolder.subtitleTextView.setText(is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime()));
 
-                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(homework.getDateTime())) {
+                } else if (tomorrow.minusDays(1).withTimeAtStartOfDay().isAfter(event.getDateTime())) {
 
-                    if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay()))
-                        listHomeworkViewHolder.subtitleTextView.setText("Yesterday • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                    if (tomorrow.minusDays(2).withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay()))
+                        listEventViewHolder.subtitleTextView.setText("Yesterday • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime())));
                     else
-                        listHomeworkViewHolder.subtitleTextView.setText(shortDate.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                        listEventViewHolder.subtitleTextView.setText(shortDate.print(event.getDateTime()) + " • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime())));
 
                 } else {
 
-                    listHomeworkViewHolder.subtitleTextView.setText(dayOfWeekString.print(homework.getDateTime()) + " • " + (is24Hour ? time24Hour.print(homework.getDateTime()) : timeAMPM.print(homework.getDateTime())));
+                    listEventViewHolder.subtitleTextView.setText(dayOfWeekString.print(event.getDateTime()) + " • " + (is24Hour ? time24Hour.print(event.getDateTime()) : timeAMPM.print(event.getDateTime())));
 
                 }
 
             } else {
 
-                listHomeworkViewHolder.subtitleTextView.setText(subtitleTextViewText);
+                listEventViewHolder.subtitleTextView.setText(subtitleTextViewText);
 
             }
 
-            listHomeworkViewHolder.colorIndicatorImageView.setColorFilter(homework.getColor());
-
-            if (homework.isHighPriority())
-                listHomeworkViewHolder.priorityIndicatorImageView.setVisibility(View.VISIBLE);
-            else
-                listHomeworkViewHolder.priorityIndicatorImageView.setVisibility(View.GONE);
+            listEventViewHolder.colorIndicatorImageView.setColorFilter(event.getColor());
 
 
         } else {
@@ -227,7 +222,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     @Override
     public int getItemViewType(int position) {
 
-        if (DataSingleton.getInstance().getDataArrayList().get(position) instanceof HomeworkWithID)
+        if (DataSingleton.getInstance().getDataArrayList().get(position) instanceof EventWithID)
             return VIEW_TYPE_HOMEWORK;
         else
             return VIEW_TYPE_SECTION;
@@ -238,7 +233,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     public AbstractSwipeableItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         if (viewType == VIEW_TYPE_HOMEWORK)
-            return new ListHomeworkViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_event_recycler_homework, parent, false));
+            return new ListEventViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_event_recycler_event, parent, false));
         else
             return new ListSectionViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_event_recycler_section, parent, false));
 
@@ -356,23 +351,21 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
     }
 
-    class ListHomeworkViewHolder extends AbstractSwipeableItemViewHolder {
+    class ListEventViewHolder extends AbstractSwipeableItemViewHolder {
 
         final FrameLayout frameLayout;
         final TextView titleTextView;
         final TextView subtitleTextView;
         final ImageView colorIndicatorImageView;
-        final ImageView priorityIndicatorImageView;
 
-        ListHomeworkViewHolder(View itemView) {
+        ListEventViewHolder(View itemView) {
 
             super(itemView);
 
-            frameLayout = (FrameLayout) itemView.findViewById(R.id.view_event_recycler_homework_frame_layout);
-            titleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_homework_name_text_view);
-            subtitleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_homework_due_text_view);
-            colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_event_recycler_homework_color_indicator_image_view);
-            priorityIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_event_recycler_homework_priority_indicator_image_view);
+            frameLayout = (FrameLayout) itemView.findViewById(R.id.view_event_recycler_event_frame_layout);
+            titleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_name_text_view);
+            subtitleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_due_text_view);
+            colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_event_recycler_event_color_indicator_image_view);
 
         }
 

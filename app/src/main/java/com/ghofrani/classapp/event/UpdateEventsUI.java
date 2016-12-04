@@ -1,4 +1,4 @@
 package com.ghofrani.classapp.event;
 
-public class UpdateHomeworkUI {
+public class UpdateEventsUI {
 }

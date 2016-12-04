@@ -268,7 +268,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     private void performRecreate() {
 
         DataSingleton.getInstance().setRecreate(false);
-        DataSingleton.getInstance().setAnimated(false);
         DataSingleton.getInstance().setChangedFirstDay(false);
         DataSingleton.getInstance().setSelectedTabPosition(0);
 
@@ -667,12 +666,12 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                 if (getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout) != null)
                     fragmentTransaction.remove(getSupportFragmentManager().findFragmentById(R.id.activity_main_linear_layout)).commitAllowingStateLoss();
 
-                final com.ghofrani.classapp.adapter.ViewPager homeworkAdapter = new com.ghofrani.classapp.adapter.ViewPager(getSupportFragmentManager());
+                final com.ghofrani.classapp.adapter.ViewPager eventsAdapter = new com.ghofrani.classapp.adapter.ViewPager(getSupportFragmentManager());
 
-                homeworkAdapter.addFragment(new Overview(), "CLASSES");
-                homeworkAdapter.addFragment(new Events(), "EVENTS");
+                eventsAdapter.addFragment(new Overview(), "CLASSES");
+                eventsAdapter.addFragment(new Events(), "EVENTS");
 
-                overviewViewPager.setAdapter(homeworkAdapter);
+                overviewViewPager.setAdapter(eventsAdapter);
                 overviewTabLayout.setupWithViewPager(overviewViewPager);
                 overviewTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 

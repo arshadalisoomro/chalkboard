@@ -9,7 +9,7 @@
 
     <FrameLayout
 
-        android:id="@+id/view_event_recycler_homework_frame_layout"
+        android:id="@+id/view_event_recycler_event_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -30,14 +30,14 @@
 
                 <ImageView
 
-                    android:id="@+id/view_event_recycler_homework_color_indicator_image_view"
+                    android:id="@+id/view_event_recycler_event_color_indicator_image_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/color_indicator_homework" />
 
                 <ImageView
 
-                    android:id="@+id/view_event_recycler_homework_priority_indicator_image_view"
+                    android:id="@+id/view_event_recycler_event_priority_indicator_image_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -56,7 +56,7 @@
 
                 <TextView
 
-                    android:id="@+id/view_event_recycler_homework_name_text_view"
+                    android:id="@+id/view_event_recycler_event_name_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
@@ -66,10 +66,10 @@
 
                 <TextView
 
-                    android:id="@+id/view_event_recycler_homework_due_text_view"
+                    android:id="@+id/view_event_recycler_event_due_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/view_event_recycler_homework_name_text_view"
+                    android:layout_below="@id/view_event_recycler_event_name_text_view"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textSize="14sp" />

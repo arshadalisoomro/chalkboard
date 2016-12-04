@@ -99,15 +99,17 @@ public final class DatabaseContract {
 
     }
 
-    public static abstract class Homework implements BaseColumns {
+    public static abstract class Events implements BaseColumns {
 
-        public static final String TABLE_NAME = "homework";
-        public static final String COLUMN_ID = "homeworkid";
+        public static final String TABLE_NAME = "events";
+        public static final String COLUMN_ID = "eventid";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_TYPE = "type";
         public static final String COLUMN_CLASS = "class";
         public static final String COLUMN_DATE_TIME = "datetime";
         public static final String COLUMN_ATTACH = "attach";
-        public static final String COLUMN_PRIORITY = "priority";
+        public static final String COLUMN_REMINDERS = "reminders";
 
     }
 

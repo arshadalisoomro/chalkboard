@@ -27,7 +27,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.Update;
-import com.ghofrani.classapp.model.Homework;
+import com.ghofrani.classapp.model.Event;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
@@ -49,7 +49,7 @@ public class AddEvent extends AppCompatActivity {
     private RadioButton specificClassRadioButton;
     private RadioButton customTimeRadioButton;
     private MutableDateTime pickedDateTime;
-    private EditText homeworkNameEditText;
+    private EditText eventNameEditText;
     private boolean firstRunSpecific = true;
     private int selectedIndex;
     private ArrayList<StandardClass> listItemClasses;
@@ -65,7 +65,7 @@ public class AddEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_homework_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_event_toolbar);
         toolbar.setTitle("Add Event");
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -84,7 +84,7 @@ public class AddEvent extends AppCompatActivity {
 
         }
 
-        classNameSpinner = (Spinner) findViewById(R.id.add_homework_class_spinner);
+        classNameSpinner = (Spinner) findViewById(R.id.add_event_class_spinner);
 
         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, allClassNamesArrayList);
 
@@ -135,7 +135,7 @@ public class AddEvent extends AppCompatActivity {
         super.onResume();
 
         if (classNameSpinner == null)
-            classNameSpinner = (Spinner) findViewById(R.id.add_homework_class_spinner);
+            classNameSpinner = (Spinner) findViewById(R.id.add_event_class_spinner);
 
         if (listItemClasses == null)
             listItemClasses = new ArrayList<>();
@@ -155,11 +155,11 @@ public class AddEvent extends AppCompatActivity {
         if (customTimeRadioButton == null)
             customTimeRadioButton = (RadioButton) findViewById(R.id.radio_custom);
 
-        if (homeworkNameEditText == null)
-            homeworkNameEditText = (EditText) findViewById(R.id.add_homework_input_name);
+        if (eventNameEditText == null)
+            eventNameEditText = (EditText) findViewById(R.id.add_event_input_name);
 
         if (priorityCheckBox == null)
-            priorityCheckBox = (CheckBox) findViewById(R.id.add_homework_high_priority_check_box);
+            priorityCheckBox = (CheckBox) findViewById(R.id.add_event_high_priority_check_box);
 
         if (pickedDateTime == null) {
 
@@ -402,7 +402,7 @@ public class AddEvent extends AppCompatActivity {
             specificClassRadioButton = null;
             customTimeRadioButton = null;
 
-            homeworkNameEditText = null;
+            eventNameEditText = null;
 
             listItemClasses = null;
             listItemTitles = null;
@@ -519,16 +519,16 @@ public class AddEvent extends AppCompatActivity {
 
         } else if (menuItem.getItemId() == R.id.toolbar_check_check_item) {
 
-            if (!homeworkNameEditText.getText().toString().isEmpty()) {
+            if (!eventNameEditText.getText().toString().isEmpty()) {
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
-                Homework homeworkToAdd;
+                Event eventToAdd;
 
                 if (nextClassRadioButton.isChecked()) {
 
                     daySwitches.clear();
 
-                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), getDateTimeOfNextClass(classNameSpinner.getSelectedItem().toString()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
+                    eventToAdd = new Event(eventNameEditText.getText().toString(), "", Event.TYPE_HOMEWORK, classNameSpinner.getSelectedItem().toString(), getDateTimeOfNextClass(classNameSpinner.getSelectedItem().toString()), true, new ArrayList<DateTime>(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else if (specificClassRadioButton.isChecked()) {
 
@@ -565,11 +565,11 @@ public class AddEvent extends AppCompatActivity {
 
                     }
 
-                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
+                    eventToAdd = new Event(eventNameEditText.getText().toString(), "", Event.TYPE_HOMEWORK, classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, new ArrayList<DateTime>(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else if (customTimeRadioButton.isChecked()) {
 
-                    homeworkToAdd = new Homework(homeworkNameEditText.getText().toString(), classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()), priorityCheckBox.isChecked());
+                    eventToAdd = new Event(eventNameEditText.getText().toString(), "", Event.TYPE_HOMEWORK, classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, new ArrayList<DateTime>(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else {
 
@@ -584,44 +584,44 @@ public class AddEvent extends AppCompatActivity {
                 boolean inserted = false;
                 int index;
 
-                ArrayList<Homework> homeworkArrayList = new ArrayList<>();
+                ArrayList<Event> eventArrayList = new ArrayList<>();
 
-                homeworkArrayList.addAll(DataSingleton.getInstance().getTodayHomeworkArrayList());
-                homeworkArrayList.addAll(DataSingleton.getInstance().getTomorrowHomeworkArrayList());
-                homeworkArrayList.addAll(DataSingleton.getInstance().getThisWeekHomeworkArrayList());
-                homeworkArrayList.addAll(DataSingleton.getInstance().getNextWeekHomeworkArrayList());
-                homeworkArrayList.addAll(DataSingleton.getInstance().getThisMonthHomeworkArrayList());
-                homeworkArrayList.addAll(DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList());
-                homeworkArrayList.addAll(DataSingleton.getInstance().getPastHomeworkArrayList());
+                eventArrayList.addAll(DataSingleton.getInstance().getTodayEventArrayList());
+                eventArrayList.addAll(DataSingleton.getInstance().getTomorrowEventArrayList());
+                eventArrayList.addAll(DataSingleton.getInstance().getThisWeekEventArrayList());
+                eventArrayList.addAll(DataSingleton.getInstance().getNextWeekEventArrayList());
+                eventArrayList.addAll(DataSingleton.getInstance().getThisMonthEventArrayList());
+                eventArrayList.addAll(DataSingleton.getInstance().getBeyondThisMonthEventArrayList());
+                eventArrayList.addAll(DataSingleton.getInstance().getPastEventArrayList());
 
-                if (!homeworkArrayList.isEmpty()) {
+                if (!eventArrayList.isEmpty()) {
 
                     index = 0;
 
-                    while (!inserted && index < homeworkArrayList.size()) {
+                    while (!inserted && index < eventArrayList.size()) {
 
                         if (index == 0) {
 
-                            if (homeworkToAdd.getDateTime().isBefore(homeworkArrayList.get(index).getDateTime()) || homeworkToAdd.getDateTime().isEqual(homeworkArrayList.get(index).getDateTime())) {
+                            if (eventToAdd.getDateTime().isBefore(eventArrayList.get(index).getDateTime()) || eventToAdd.getDateTime().isEqual(eventArrayList.get(index).getDateTime())) {
 
                                 inserted = true;
-                                homeworkArrayList.add(0, homeworkToAdd);
+                                eventArrayList.add(0, eventToAdd);
 
-                            } else if (homeworkArrayList.size() == 1) {
+                            } else if (eventArrayList.size() == 1) {
 
                                 inserted = true;
-                                homeworkArrayList.add(homeworkToAdd);
+                                eventArrayList.add(eventToAdd);
 
                             }
 
-                        } else if (homeworkToAdd.getDateTime().isBefore(homeworkArrayList.get(index).getDateTime()) || homeworkToAdd.getDateTime().isEqual(homeworkArrayList.get(index).getDateTime())) {
+                        } else if (eventToAdd.getDateTime().isBefore(eventArrayList.get(index).getDateTime()) || eventToAdd.getDateTime().isEqual(eventArrayList.get(index).getDateTime())) {
 
-                            homeworkArrayList.add(index, homeworkToAdd);
+                            eventArrayList.add(index, eventToAdd);
                             inserted = true;
 
-                        } else if (index + 1 == homeworkArrayList.size()) {
+                        } else if (index + 1 == eventArrayList.size()) {
 
-                            homeworkArrayList.add(homeworkToAdd);
+                            eventArrayList.add(eventToAdd);
                             inserted = true;
 
                         }
@@ -632,13 +632,13 @@ public class AddEvent extends AppCompatActivity {
 
                 } else {
 
-                    homeworkArrayList.add(homeworkToAdd);
+                    eventArrayList.add(eventToAdd);
 
                 }
 
                 try {
 
-                    databaseHelper.flushHomework(homeworkArrayList);
+                    databaseHelper.flushEvents(eventArrayList);
 
                 } finally {
 

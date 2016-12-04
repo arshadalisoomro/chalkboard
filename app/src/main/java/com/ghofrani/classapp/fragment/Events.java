@@ -16,7 +16,8 @@ import android.widget.RelativeLayout;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.EventRecycler;
 import com.ghofrani.classapp.event.Update;
-import com.ghofrani.classapp.model.HomeworkWithID;
+import com.ghofrani.classapp.event.UpdateEventsUI;
+import com.ghofrani.classapp.model.EventWithID;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
@@ -44,7 +45,7 @@ public class Events extends Fragment {
     private Context context;
 
     @Subscribe
-    public void onEvent(com.ghofrani.classapp.event.UpdateHomeworkUI updateHomeworkUI) {
+    public void onEvent(UpdateEventsUI updateEventsUI) {
 
         if (recyclerView.getVisibility() == View.VISIBLE)
             eventRecycler.notifyDataSetChanged();
@@ -99,7 +100,7 @@ public class Events extends Fragment {
         }
 
         EventBus.getDefault().unregister(this);
-        DataSingleton.getInstance().setReactToBroadcastHomework(true);
+        DataSingleton.getInstance().setReactToBroadcastEvents(true);
 
         super.onPause();
 
@@ -176,7 +177,7 @@ public class Events extends Fragment {
 
     private void showSnackbar() {
 
-        DataSingleton.getInstance().setReactToBroadcastHomework(false);
+        DataSingleton.getInstance().setReactToBroadcastEvents(false);
 
         deleteEvent();
 
@@ -222,9 +223,9 @@ public class Events extends Fragment {
             try {
 
                 if (lastItemRemoved.size() == 2)
-                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.valueAt(1)).getHomework());
+                    databaseHelper.deleteEvent(((EventWithID) lastItemRemoved.valueAt(1)).getEvent());
                 else
-                    databaseHelper.deleteHomework(((HomeworkWithID) lastItemRemoved.valueAt(0)).getHomework());
+                    databaseHelper.deleteEvent(((EventWithID) lastItemRemoved.valueAt(0)).getEvent());
 
             } finally {
 
@@ -236,7 +237,7 @@ public class Events extends Fragment {
 
                 context = null;
 
-                DataSingleton.getInstance().setReactToBroadcastHomework(true);
+                DataSingleton.getInstance().setReactToBroadcastEvents(true);
                 EventBus.getDefault().post(new Update(false, true, false, false));
 
             } else {

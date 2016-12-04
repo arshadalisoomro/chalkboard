@@ -25,10 +25,10 @@ import com.ghofrani.classapp.activity.AddEvent;
 import com.ghofrani.classapp.activity.Main;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.event.UpdateClassesUI;
-import com.ghofrani.classapp.event.UpdateHomeworkUI;
+import com.ghofrani.classapp.event.UpdateEventsUI;
 import com.ghofrani.classapp.event.UpdateProgressUI;
-import com.ghofrani.classapp.model.Homework;
-import com.ghofrani.classapp.model.HomeworkWithID;
+import com.ghofrani.classapp.model.Event;
+import com.ghofrani.classapp.model.EventWithID;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.model.StringWithID;
@@ -155,7 +155,7 @@ public class Background extends Service {
         blueGrey = ContextCompat.getColor(this, R.color.blue_grey);
 
         getData();
-        getHomework();
+        getEvents();
         getTimetable();
         getClasses();
 
@@ -177,8 +177,8 @@ public class Background extends Service {
         if (updateEvent.isData())
             getData();
 
-        if (updateEvent.isHomework())
-            getHomework();
+        if (updateEvent.isEvents())
+            getEvents();
 
         if (updateEvent.isTimetable())
             getTimetable();
@@ -233,8 +233,8 @@ public class Background extends Service {
 
                     getData();
 
-                    if (DataSingleton.getInstance().isReactToBroadcastHomework())
-                        getHomework();
+                    if (DataSingleton.getInstance().isReactToBroadcastEvents())
+                        getEvents();
 
                     if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_DATE_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
 
@@ -338,10 +338,10 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    final Intent homeworkActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
-                    final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent eventActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
+                    final PendingIntent addEventActivityEvent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    remoteViews.setOnClickPendingIntent(R.id.view_notification_add_event_image_button, addHomeworkActivityIntent);
+                    remoteViews.setOnClickPendingIntent(R.id.view_notification_add_event_image_button, addEventActivityEvent);
 
                     remoteViews.setInt(progressBarId, "setVisibility", View.GONE);
                     remoteViews.setInt(textId, "setVisibility", View.GONE);
@@ -567,8 +567,8 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    final Intent homeworkActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
-                    final PendingIntent addHomeworkActivityIntent = PendingIntent.getActivity(this, 0, homeworkActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Intent eventActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
+                    final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.mipmap.ic_launcher)
@@ -576,7 +576,7 @@ public class Background extends Service {
                             .setColor(finalCurrentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
                             .setPriority(Notification.PRIORITY_MAX)
-                            .addAction(R.drawable.event, "ADD EVENT", addHomeworkActivityIntent)
+                            .addAction(R.drawable.event, "ADD EVENT", addEventActivityIntent)
                             .setContentTitle(finalCurrentClass.getName())
                             .setWhen(0);
 
@@ -834,17 +834,17 @@ public class Background extends Service {
 
     }
 
-    private void getHomework() {
+    private void getEvents() {
 
-        Cursor homeworkCursor = databaseHelper.getHomeworkCursor();
+        Cursor eventsCursor = databaseHelper.getEventsCursor();
 
-        final ArrayList<Homework> todayHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> tomorrowHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> thisWeekHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> nextWeekHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> thisMonthHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> beyondThisMonthHomeworkArrayList = new ArrayList<>();
-        final ArrayList<Homework> pastHomeworkArrayList = new ArrayList<>();
+        final ArrayList<Event> todayEventArrayList = new ArrayList<>();
+        final ArrayList<Event> tomorrowEventArrayList = new ArrayList<>();
+        final ArrayList<Event> thisWeekEventArrayList = new ArrayList<>();
+        final ArrayList<Event> nextWeekEventArrayList = new ArrayList<>();
+        final ArrayList<Event> thisMonthEventArrayList = new ArrayList<>();
+        final ArrayList<Event> beyondThisMonthEventArrayList = new ArrayList<>();
+        final ArrayList<Event> pastEventArrayList = new ArrayList<>();
 
         final DateTime today = DateTime.now().withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
         final DateTime tomorrow = today.plusDays(1);
@@ -948,37 +948,43 @@ public class Background extends Service {
 
         try {
 
-            while (homeworkCursor.moveToNext()) {
+            while (eventsCursor.moveToNext()) {
 
-                final Homework homework = new Homework(homeworkCursor.getString(1), homeworkCursor.getString(2), DateTime.parse(homeworkCursor.getString(3)).withZone(dateTimeZone), homeworkCursor.getInt(4) == 1, databaseHelper.getClassColor(homeworkCursor.getString(2)), homeworkCursor.getInt(5) == 1);
+                String[] remindersArray = eventsCursor.getString(7).split(":");
+                final ArrayList<DateTime> remindersDateTimeArrayList = new ArrayList<>();
 
-                if (homework.getDateTime().isBefore(today) || homework.getDateTime().isEqual(today)) {
+                for (int i = 0; i < remindersArray.length - 1; i++)
+                    remindersDateTimeArrayList.add(DateTime.parse(remindersArray[i]).withZone(dateTimeZone));
 
-                    pastHomeworkArrayList.add(homework);
+                final Event event = new Event(eventsCursor.getString(1), eventsCursor.getString(2), Integer.parseInt(eventsCursor.getString(3)), eventsCursor.getString(4), DateTime.parse(eventsCursor.getString(5)).withZone(dateTimeZone), eventsCursor.getInt(6) == 1, remindersDateTimeArrayList, databaseHelper.getClassColor(eventsCursor.getString(4)));
 
-                } else if (today.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                if (event.getDateTime().isBefore(today) || event.getDateTime().isEqual(today)) {
 
-                    todayHomeworkArrayList.add(homework);
+                    pastEventArrayList.add(event);
 
-                } else if (tomorrow.withTimeAtStartOfDay().isEqual(homework.getDateTime().withTimeAtStartOfDay())) {
+                } else if (today.withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                    tomorrowHomeworkArrayList.add(homework);
+                    todayEventArrayList.add(event);
 
-                } else if (thisWeek.contains(homework.getDateTime()) && thisWeekEnabled) {
+                } else if (tomorrow.withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
-                    thisWeekHomeworkArrayList.add(homework);
+                    tomorrowEventArrayList.add(event);
 
-                } else if (nextWeek.contains(homework.getDateTime())) {
+                } else if (thisWeek.contains(event.getDateTime()) && thisWeekEnabled) {
 
-                    nextWeekHomeworkArrayList.add(homework);
+                    thisWeekEventArrayList.add(event);
 
-                } else if (thisMonth.contains(homework.getDateTime()) && thisMonthEnabled) {
+                } else if (nextWeek.contains(event.getDateTime())) {
 
-                    thisMonthHomeworkArrayList.add(homework);
+                    nextWeekEventArrayList.add(event);
+
+                } else if (thisMonth.contains(event.getDateTime()) && thisMonthEnabled) {
+
+                    thisMonthEventArrayList.add(event);
 
                 } else {
 
-                    beyondThisMonthHomeworkArrayList.add(homework);
+                    beyondThisMonthEventArrayList.add(event);
 
                 }
 
@@ -986,68 +992,68 @@ public class Background extends Service {
 
         } finally {
 
-            homeworkCursor.close();
+            eventsCursor.close();
 
         }
 
-        DataSingleton.getInstance().setTodayHomeworkArrayList(todayHomeworkArrayList);
-        DataSingleton.getInstance().setTomorrowHomeworkArrayList(tomorrowHomeworkArrayList);
-        DataSingleton.getInstance().setThisWeekHomeworkArrayList(thisWeekHomeworkArrayList);
-        DataSingleton.getInstance().setNextWeekHomeworkArrayList(nextWeekHomeworkArrayList);
-        DataSingleton.getInstance().setThisMonthHomeworkArrayList(thisMonthHomeworkArrayList);
-        DataSingleton.getInstance().setBeyondThisMonthHomeworkArrayList(beyondThisMonthHomeworkArrayList);
-        DataSingleton.getInstance().setPastHomeworkArrayList(pastHomeworkArrayList);
+        DataSingleton.getInstance().setTodayEventArrayList(todayEventArrayList);
+        DataSingleton.getInstance().setTomorrowEventArrayList(tomorrowEventArrayList);
+        DataSingleton.getInstance().setThisWeekEventArrayList(thisWeekEventArrayList);
+        DataSingleton.getInstance().setNextWeekEventArrayList(nextWeekEventArrayList);
+        DataSingleton.getInstance().setThisMonthEventArrayList(thisMonthEventArrayList);
+        DataSingleton.getInstance().setBeyondThisMonthEventArrayList(beyondThisMonthEventArrayList);
+        DataSingleton.getInstance().setPastEventArrayList(pastEventArrayList);
 
-        ArrayList<Object> dataArrayList = new ArrayList<>();
+        ArrayList<Object> eventDataArrayList = new ArrayList<>();
 
-        if (!DataSingleton.getInstance().getPastHomeworkArrayList().isEmpty())
-            dataArrayList.add(new StringWithID("Late", dataArrayList.size()));
+        if (!DataSingleton.getInstance().getPastEventArrayList().isEmpty())
+            eventDataArrayList.add(new StringWithID("Late", eventDataArrayList.size()));
 
-        for (final Homework homework : DataSingleton.getInstance().getPastHomeworkArrayList())
-            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+        for (final Event event : DataSingleton.getInstance().getPastEventArrayList())
+            eventDataArrayList.add(new EventWithID(event, eventDataArrayList.size()));
 
-        if (!DataSingleton.getInstance().getTodayHomeworkArrayList().isEmpty())
-            dataArrayList.add(new StringWithID("Due today", dataArrayList.size()));
+        if (!DataSingleton.getInstance().getTodayEventArrayList().isEmpty())
+            eventDataArrayList.add(new StringWithID("Due today", eventDataArrayList.size()));
 
-        for (final Homework homework : DataSingleton.getInstance().getTodayHomeworkArrayList())
-            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+        for (final Event event : DataSingleton.getInstance().getTodayEventArrayList())
+            eventDataArrayList.add(new EventWithID(event, eventDataArrayList.size()));
 
-        if (!DataSingleton.getInstance().getTomorrowHomeworkArrayList().isEmpty())
-            dataArrayList.add(new StringWithID("Due tomorrow", dataArrayList.size()));
+        if (!DataSingleton.getInstance().getTomorrowEventArrayList().isEmpty())
+            eventDataArrayList.add(new StringWithID("Due tomorrow", eventDataArrayList.size()));
 
-        for (final Homework homework : DataSingleton.getInstance().getTomorrowHomeworkArrayList())
-            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+        for (final Event event : DataSingleton.getInstance().getTomorrowEventArrayList())
+            eventDataArrayList.add(new EventWithID(event, eventDataArrayList.size()));
 
-        if (!DataSingleton.getInstance().getThisWeekHomeworkArrayList().isEmpty())
-            dataArrayList.add(new StringWithID("Due this week", dataArrayList.size()));
+        if (!DataSingleton.getInstance().getThisWeekEventArrayList().isEmpty())
+            eventDataArrayList.add(new StringWithID("Due this week", eventDataArrayList.size()));
 
-        for (final Homework homework : DataSingleton.getInstance().getThisWeekHomeworkArrayList())
-            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+        for (final Event event : DataSingleton.getInstance().getThisWeekEventArrayList())
+            eventDataArrayList.add(new EventWithID(event, eventDataArrayList.size()));
 
-        if (!DataSingleton.getInstance().getNextWeekHomeworkArrayList().isEmpty())
-            dataArrayList.add(new StringWithID("Due next week", dataArrayList.size()));
+        if (!DataSingleton.getInstance().getNextWeekEventArrayList().isEmpty())
+            eventDataArrayList.add(new StringWithID("Due next week", eventDataArrayList.size()));
 
-        for (final Homework homework : DataSingleton.getInstance().getNextWeekHomeworkArrayList())
-            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+        for (final Event event : DataSingleton.getInstance().getNextWeekEventArrayList())
+            eventDataArrayList.add(new EventWithID(event, eventDataArrayList.size()));
 
-        if (!DataSingleton.getInstance().getThisMonthHomeworkArrayList().isEmpty())
-            dataArrayList.add(new StringWithID("Due this month", dataArrayList.size()));
+        if (!DataSingleton.getInstance().getThisMonthEventArrayList().isEmpty())
+            eventDataArrayList.add(new StringWithID("Due this month", eventDataArrayList.size()));
 
-        for (final Homework homework : DataSingleton.getInstance().getThisMonthHomeworkArrayList())
-            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+        for (final Event event : DataSingleton.getInstance().getThisMonthEventArrayList())
+            eventDataArrayList.add(new EventWithID(event, eventDataArrayList.size()));
 
-        if (!DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList().isEmpty())
-            dataArrayList.add(new StringWithID("Due after this month", dataArrayList.size()));
+        if (!DataSingleton.getInstance().getBeyondThisMonthEventArrayList().isEmpty())
+            eventDataArrayList.add(new StringWithID("Due after this month", eventDataArrayList.size()));
 
-        for (final Homework homework : DataSingleton.getInstance().getBeyondThisMonthHomeworkArrayList())
-            dataArrayList.add(new HomeworkWithID(homework, dataArrayList.size()));
+        for (final Event event : DataSingleton.getInstance().getBeyondThisMonthEventArrayList())
+            eventDataArrayList.add(new EventWithID(event, eventDataArrayList.size()));
 
-        DataSingleton.getInstance().setDataArrayList(dataArrayList);
+        DataSingleton.getInstance().setEventDataArrayList(eventDataArrayList);
 
         DataSingleton.getInstance().setThisWeekEnd(thisWeekEndDateTime);
         DataSingleton.getInstance().setNextWeekEnd(nextWeek.getEnd());
 
-        EventBus.getDefault().post(new UpdateHomeworkUI());
+        EventBus.getDefault().post(new UpdateEventsUI());
 
     }
 

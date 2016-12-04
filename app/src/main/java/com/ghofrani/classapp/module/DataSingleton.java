@@ -2,7 +2,7 @@ package com.ghofrani.classapp.module;
 
 import android.util.SparseArray;
 
-import com.ghofrani.classapp.model.Homework;
+import com.ghofrani.classapp.model.Event;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 
@@ -36,13 +36,13 @@ public class DataSingleton {
     private ArrayList<SlimClass> allClassesArrayList;
     private ArrayList<String> allClassNamesArrayList;
 
-    private ArrayList<Homework> todayHomeworkArrayList;
-    private ArrayList<Homework> tomorrowHomeworkArrayList;
-    private ArrayList<Homework> thisWeekHomeworkArrayList;
-    private ArrayList<Homework> nextWeekHomeworkArrayList;
-    private ArrayList<Homework> thisMonthHomeworkArrayList;
-    private ArrayList<Homework> beyondThisMonthHomeworkArrayList;
-    private ArrayList<Homework> pastHomeworkArrayList;
+    private ArrayList<Event> todayEventArrayList;
+    private ArrayList<Event> tomorrowEventArrayList;
+    private ArrayList<Event> thisWeekEventArrayList;
+    private ArrayList<Event> nextWeekEventArrayList;
+    private ArrayList<Event> thisMonthEventArrayList;
+    private ArrayList<Event> beyondThisMonthEventArrayList;
+    private ArrayList<Event> pastEventArrayList;
 
     private ArrayList<Object> dataArrayList;
     private SparseArray<Object> dataSparseArrayLastRemoved;
@@ -50,7 +50,6 @@ public class DataSingleton {
     private DateTime thisWeekEnd;
     private DateTime nextWeekEnd;
 
-    private boolean isAnimated;
     private int selectedTabPosition;
 
     private boolean isExpandableListViewCollapsed;
@@ -61,7 +60,7 @@ public class DataSingleton {
     private boolean isChangedFirstDay;
 
     private boolean reactToBroadcastData;
-    private boolean reactToBroadcastHomework;
+    private boolean reactToBroadcastEvents;
 
     private DataSingleton() {
 
@@ -83,17 +82,16 @@ public class DataSingleton {
         allClassesArrayList = new ArrayList<>();
         allClassNamesArrayList = new ArrayList<>();
 
-        todayHomeworkArrayList = new ArrayList<>();
-        tomorrowHomeworkArrayList = new ArrayList<>();
-        thisWeekHomeworkArrayList = new ArrayList<>();
-        nextWeekHomeworkArrayList = new ArrayList<>();
-        thisMonthHomeworkArrayList = new ArrayList<>();
-        beyondThisMonthHomeworkArrayList = new ArrayList<>();
-        pastHomeworkArrayList = new ArrayList<>();
+        todayEventArrayList = new ArrayList<>();
+        tomorrowEventArrayList = new ArrayList<>();
+        thisWeekEventArrayList = new ArrayList<>();
+        nextWeekEventArrayList = new ArrayList<>();
+        thisMonthEventArrayList = new ArrayList<>();
+        beyondThisMonthEventArrayList = new ArrayList<>();
+        pastEventArrayList = new ArrayList<>();
 
         dataArrayList = new ArrayList<>();
 
-        isAnimated = false;
         selectedTabPosition = 0;
 
         isExpandableListViewCollapsed = false;
@@ -104,7 +102,7 @@ public class DataSingleton {
         isChangedFirstDay = false;
 
         reactToBroadcastData = true;
-        reactToBroadcastHomework = true;
+        reactToBroadcastEvents = true;
 
     }
 
@@ -249,67 +247,67 @@ public class DataSingleton {
         this.allClassNamesArrayList = allClassNamesArrayList;
     }
 
-    public ArrayList<Homework> getTodayHomeworkArrayList() {
-        return todayHomeworkArrayList;
+    public ArrayList<Event> getTodayEventArrayList() {
+        return todayEventArrayList;
     }
 
-    public void setTodayHomeworkArrayList(ArrayList<Homework> todayHomeworkArrayList) {
-        this.todayHomeworkArrayList = todayHomeworkArrayList;
+    public void setTodayEventArrayList(ArrayList<Event> todayEventArrayList) {
+        this.todayEventArrayList = todayEventArrayList;
     }
 
-    public ArrayList<Homework> getTomorrowHomeworkArrayList() {
-        return tomorrowHomeworkArrayList;
+    public ArrayList<Event> getTomorrowEventArrayList() {
+        return tomorrowEventArrayList;
     }
 
-    public void setTomorrowHomeworkArrayList(ArrayList<Homework> tomorrowHomeworkArrayList) {
-        this.tomorrowHomeworkArrayList = tomorrowHomeworkArrayList;
+    public void setTomorrowEventArrayList(ArrayList<Event> tomorrowEventArrayList) {
+        this.tomorrowEventArrayList = tomorrowEventArrayList;
     }
 
-    public ArrayList<Homework> getThisWeekHomeworkArrayList() {
-        return thisWeekHomeworkArrayList;
+    public ArrayList<Event> getThisWeekEventArrayList() {
+        return thisWeekEventArrayList;
     }
 
-    public void setThisWeekHomeworkArrayList(ArrayList<Homework> thisWeekHomeworkArrayList) {
-        this.thisWeekHomeworkArrayList = thisWeekHomeworkArrayList;
+    public void setThisWeekEventArrayList(ArrayList<Event> thisWeekEventArrayList) {
+        this.thisWeekEventArrayList = thisWeekEventArrayList;
     }
 
-    public ArrayList<Homework> getNextWeekHomeworkArrayList() {
-        return nextWeekHomeworkArrayList;
+    public ArrayList<Event> getNextWeekEventArrayList() {
+        return nextWeekEventArrayList;
     }
 
-    public void setNextWeekHomeworkArrayList(ArrayList<Homework> nextWeekHomeworkArrayList) {
-        this.nextWeekHomeworkArrayList = nextWeekHomeworkArrayList;
+    public void setNextWeekEventArrayList(ArrayList<Event> nextWeekEventArrayList) {
+        this.nextWeekEventArrayList = nextWeekEventArrayList;
     }
 
-    public ArrayList<Homework> getThisMonthHomeworkArrayList() {
-        return thisMonthHomeworkArrayList;
+    public ArrayList<Event> getThisMonthEventArrayList() {
+        return thisMonthEventArrayList;
     }
 
-    public void setThisMonthHomeworkArrayList(ArrayList<Homework> thisMonthHomeworkArrayList) {
-        this.thisMonthHomeworkArrayList = thisMonthHomeworkArrayList;
+    public void setThisMonthEventArrayList(ArrayList<Event> thisMonthEventArrayList) {
+        this.thisMonthEventArrayList = thisMonthEventArrayList;
     }
 
-    public ArrayList<Homework> getBeyondThisMonthHomeworkArrayList() {
-        return beyondThisMonthHomeworkArrayList;
+    public ArrayList<Event> getBeyondThisMonthEventArrayList() {
+        return beyondThisMonthEventArrayList;
     }
 
-    public void setBeyondThisMonthHomeworkArrayList(ArrayList<Homework> beyondThisMonthHomeworkArrayList) {
-        this.beyondThisMonthHomeworkArrayList = beyondThisMonthHomeworkArrayList;
+    public void setBeyondThisMonthEventArrayList(ArrayList<Event> beyondThisMonthEventArrayList) {
+        this.beyondThisMonthEventArrayList = beyondThisMonthEventArrayList;
     }
 
-    public ArrayList<Homework> getPastHomeworkArrayList() {
-        return pastHomeworkArrayList;
+    public ArrayList<Event> getPastEventArrayList() {
+        return pastEventArrayList;
     }
 
-    public void setPastHomeworkArrayList(ArrayList<Homework> pastHomeworkArrayList) {
-        this.pastHomeworkArrayList = pastHomeworkArrayList;
+    public void setPastEventArrayList(ArrayList<Event> pastEventArrayList) {
+        this.pastEventArrayList = pastEventArrayList;
     }
 
     public ArrayList<Object> getDataArrayList() {
         return dataArrayList;
     }
 
-    public void setDataArrayList(ArrayList<Object> dataArrayList) {
+    public void setEventDataArrayList(ArrayList<Object> dataArrayList) {
         this.dataArrayList = dataArrayList;
     }
 
@@ -335,14 +333,6 @@ public class DataSingleton {
 
     public void setNextWeekEnd(DateTime nextWeekEnd) {
         this.nextWeekEnd = nextWeekEnd;
-    }
-
-    public boolean isAnimated() {
-        return isAnimated;
-    }
-
-    public void setAnimated(boolean animated) {
-        isAnimated = animated;
     }
 
     public int getSelectedTabPosition() {
@@ -393,12 +383,12 @@ public class DataSingleton {
         this.reactToBroadcastData = reactToBroadcastData;
     }
 
-    public boolean isReactToBroadcastHomework() {
-        return reactToBroadcastHomework;
+    public boolean isReactToBroadcastEvents() {
+        return reactToBroadcastEvents;
     }
 
-    public void setReactToBroadcastHomework(boolean reactToBroadcastHomework) {
-        this.reactToBroadcastHomework = reactToBroadcastHomework;
+    public void setReactToBroadcastEvents(boolean reactToBroadcastEvents) {
+        this.reactToBroadcastEvents = reactToBroadcastEvents;
     }
 
 }

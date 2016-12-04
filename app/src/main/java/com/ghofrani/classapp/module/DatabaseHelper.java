@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.model.DatabaseContract;
-import com.ghofrani.classapp.model.Homework;
+import com.ghofrani.classapp.model.Event;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 
@@ -93,14 +94,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.ClassInfo.COLUMN_TEACHER + " TEXT,"
             + DatabaseContract.ClassInfo.COLUMN_COLOR + " INTEGER)";
 
-    private static final String CREATE_HOMEWORK = "create table "
-            + DatabaseContract.Homework.TABLE_NAME + " ("
-            + DatabaseContract.Homework.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Homework.COLUMN_NAME + " TEXT,"
-            + DatabaseContract.Homework.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Homework.COLUMN_DATE_TIME + " TEXT,"
-            + DatabaseContract.Homework.COLUMN_ATTACH + " BOOLEAN,"
-            + DatabaseContract.Homework.COLUMN_PRIORITY + " BOOLEAN)";
+    private static final String CREATE_EVENTS = "create table "
+            + DatabaseContract.Events.TABLE_NAME + " ("
+            + DatabaseContract.Events.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + DatabaseContract.Events.COLUMN_NAME + " TEXT,"
+            + DatabaseContract.Events.COLUMN_DESCRIPTION + " TEXT,"
+            + DatabaseContract.Events.COLUMN_TYPE + " TEXT,"
+            + DatabaseContract.Events.COLUMN_CLASS + " TEXT,"
+            + DatabaseContract.Events.COLUMN_DATE_TIME + " TEXT,"
+            + DatabaseContract.Events.COLUMN_ATTACH + " BOOLEAN,"
+            + DatabaseContract.Events.COLUMN_REMINDERS + " TEXT)";
 
     public DatabaseHelper(Context context) {
 
@@ -119,7 +122,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_FRIDAY);
         db.execSQL(CREATE_SATURDAY);
         db.execSQL(CREATE_CLASSINFO);
-        db.execSQL(CREATE_HOMEWORK);
+        db.execSQL(CREATE_EVENTS);
 
     }
 
@@ -425,13 +428,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + className + "'");
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Homework.TABLE_NAME + " where "
-                    + DatabaseContract.Homework.COLUMN_CLASS + "='"
+                    + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                    + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
                     + className + "'");
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.ClassInfo.TABLE_NAME + " where "
-                    + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
+                    + DatabaseContract.Events.TABLE_NAME + " where "
+                    + DatabaseContract.Events.COLUMN_CLASS + "='"
                     + className + "'");
 
         } finally {
@@ -593,18 +596,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void deleteHomework(Homework homework) {
+    public void deleteEvent(Event event) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         try {
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Homework.TABLE_NAME + " where "
-                    + DatabaseContract.Homework.COLUMN_DATE_TIME + "='"
-                    + homework.getDateTime().toString() + "' and "
-                    + DatabaseContract.Homework.COLUMN_NAME + "='"
-                    + homework.getName() + "'");
+                    + DatabaseContract.Events.TABLE_NAME + " where "
+                    + DatabaseContract.Events.COLUMN_DATE_TIME + "='"
+                    + event.getDateTime().toString() + "' and "
+                    + DatabaseContract.Events.COLUMN_NAME + "='"
+                    + event.getName() + "'");
 
         } finally {
 
@@ -614,7 +617,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void flushHomework(ArrayList<Homework> homeworkToAdd) {
+    public void flushEvents(ArrayList<Event> eventsToAdd) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -622,19 +625,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
 
-            sqLiteDatabase.execSQL("delete from " + DatabaseContract.Homework.TABLE_NAME);
+            sqLiteDatabase.execSQL("delete from " + DatabaseContract.Events.TABLE_NAME);
 
-            for (final Homework homework : homeworkToAdd) {
+            for (final Event event : eventsToAdd) {
 
                 contentValues.clear();
 
-                contentValues.put(DatabaseContract.Homework.COLUMN_NAME, homework.getName());
-                contentValues.put(DatabaseContract.Homework.COLUMN_CLASS, homework.getClassName());
-                contentValues.put(DatabaseContract.Homework.COLUMN_DATE_TIME, homework.getDateTime().toString());
-                contentValues.put(DatabaseContract.Homework.COLUMN_ATTACH, homework.isAttach() ? 1 : 0);
-                contentValues.put(DatabaseContract.Homework.COLUMN_PRIORITY, homework.isHighPriority() ? 1 : 0);
+                contentValues.put(DatabaseContract.Events.COLUMN_NAME, event.getName());
+                contentValues.put(DatabaseContract.Events.COLUMN_DESCRIPTION, event.getDescription());
+                contentValues.put(DatabaseContract.Events.COLUMN_TYPE, String.valueOf(event.getType()));
+                contentValues.put(DatabaseContract.Events.COLUMN_CLASS, event.getClassName());
+                contentValues.put(DatabaseContract.Events.COLUMN_DATE_TIME, event.getDateTime().toString());
+                contentValues.put(DatabaseContract.Events.COLUMN_ATTACH, event.isAttach() ? 1 : 0);
 
-                sqLiteDatabase.insert(DatabaseContract.Homework.TABLE_NAME, null, contentValues);
+                String reminders = "";
+
+                for (final DateTime dateTime : event.getReminders())
+                    reminders += dateTime.toString() + ":";
+
+                contentValues.put(DatabaseContract.Events.COLUMN_REMINDERS, reminders);
+
+                sqLiteDatabase.insert(DatabaseContract.Events.TABLE_NAME, null, contentValues);
 
             }
 
@@ -675,7 +686,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 sqLiteDatabase.update(DatabaseContract.Saturday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Saturday.COLUMN_CLASS + "=?", new String[]{oldClassName});
                 sqLiteDatabase.update(DatabaseContract.Sunday.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Sunday.COLUMN_CLASS + "=?", new String[]{oldClassName});
 
-                sqLiteDatabase.update(DatabaseContract.Homework.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Homework.COLUMN_CLASS + "=?", new String[]{oldClassName});
+                sqLiteDatabase.update(DatabaseContract.Events.TABLE_NAME, contentValuesOtherTables, DatabaseContract.Events.COLUMN_CLASS + "=?", new String[]{oldClassName});
 
             }
 
@@ -687,11 +698,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Cursor getHomeworkCursor() {
+    public Cursor getEventsCursor() {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
-        return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Homework.TABLE_NAME + " order by rowid", null);
+        return sqLiteDatabase.rawQuery("select * from " + DatabaseContract.Events.TABLE_NAME + " order by rowid", null);
 
     }
 

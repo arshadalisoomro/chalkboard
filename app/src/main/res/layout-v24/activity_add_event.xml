@@ -9,7 +9,7 @@
 
     <include
 
-        android:id="@+id/add_homework_toolbar"
+        android:id="@+id/add_event_toolbar"
         layout="@layout/view_toolbar_padded" />
 
     <ScrollView
@@ -49,7 +49,7 @@
 
                 <EditText
 
-                    android:id="@+id/add_homework_input_name"
+                    android:id="@+id/add_event_input_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -87,7 +87,7 @@
 
                 <Spinner
 
-                    android:id="@+id/add_homework_class_spinner"
+                    android:id="@+id/add_event_class_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -155,7 +155,7 @@
 
             <CheckBox
 
-                android:id="@+id/add_homework_high_priority_check_box"
+                android:id="@+id/add_event_high_priority_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/add_homework_radio_group_layout"
