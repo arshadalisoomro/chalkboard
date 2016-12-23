@@ -66,7 +66,7 @@ public class EditDay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_day);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.edit_day_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_edit_day_toolbar);
 
         switch (Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("first_day_of_week", "1"))) {
 
@@ -473,7 +473,7 @@ public class EditDay extends AppCompatActivity {
         DataSingleton.getInstance().setReactToBroadcastData(false);
 
         if (listView == null)
-            listView = (ListView) findViewById(R.id.edit_day_list_view);
+            listView = (ListView) findViewById(R.id.activity_edit_day_list_view);
 
         if (standardClassArrayList == null)
             standardClassArrayList = new ArrayList<>();
@@ -764,8 +764,8 @@ public class EditDay extends AppCompatActivity {
 
                         final MaterialDialog materialDialogAddClass = materialDialogBuilderAddClass.show();
 
-                        final EditText dialogAddClassCustomLocationEditText = (EditText) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_location);
-                        final EditText dialogAddClassCustomTeacherEditText = (EditText) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_teacher);
+                        final EditText dialogAddClassCustomLocationEditText = (EditText) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_location_edit_text);
+                        final EditText dialogAddClassCustomTeacherEditText = (EditText) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_teacher_edit_text);
 
                         final Spinner classNameSpinner = (Spinner) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_spinner);
                         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, DataSingleton.getInstance().getAllClassNamesArrayList());
@@ -801,8 +801,8 @@ public class EditDay extends AppCompatActivity {
 
                         });
 
-                        final TextView dialogAddClassStartTimeTextView = (TextView) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time);
-                        final TextView dialogAddClassEndTimeTextView = (TextView) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time);
+                        final TextView dialogAddClassStartTimeTextView = (TextView) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_start_time_text_view);
+                        final TextView dialogAddClassEndTimeTextView = (TextView) materialDialogAddClass.getCustomView().findViewById(R.id.dialog_edit_day_add_class_end_time_text_view);
 
                         dialogAddClassStartTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(startTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(startTimeForPosition.get(position)));
                         dialogAddClassEndTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(endTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(endTimeForPosition.get(position)));
@@ -1107,14 +1107,14 @@ public class EditDay extends AppCompatActivity {
 
                         final MaterialDialog materialDialogEditClass = materialDialogBuilderEditClass.show();
 
-                        final TextView dialogEditClassStartTimeTextView = (TextView) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_start_time);
-                        final TextView dialogEditClassEndTimeTextView = (TextView) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_end_time);
+                        final TextView dialogEditClassStartTimeTextView = (TextView) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_start_time_text_view);
+                        final TextView dialogEditClassEndTimeTextView = (TextView) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_end_time_text_view);
 
                         dialogEditClassStartTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(startTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(startTimeForPosition.get(position)));
                         dialogEditClassEndTimeTextView.setText(is24Hour ? dateTimeFormatter24Hour.print(endTimeForPosition.get(position)) : dateTimeFormatterAMPM.print(endTimeForPosition.get(position)));
 
-                        final EditText dialogEditClassCustomLocationEditText = (EditText) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_location);
-                        final EditText dialogEditClassCustomTeacherEditText = (EditText) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_teacher);
+                        final EditText dialogEditClassCustomLocationEditText = (EditText) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_location_edit_text);
+                        final EditText dialogEditClassCustomTeacherEditText = (EditText) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_teacher_edit_text);
 
                         final Spinner classNameSpinner = (Spinner) materialDialogEditClass.getCustomView().findViewById(R.id.dialog_edit_day_edit_class_spinner);
                         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(EditDay.this, R.layout.view_spinner_item, classNameList);

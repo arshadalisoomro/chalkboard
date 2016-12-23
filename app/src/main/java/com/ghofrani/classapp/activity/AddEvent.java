@@ -45,6 +45,7 @@ public class AddEvent extends AppCompatActivity {
 
     private boolean originNotification = false;
     private Spinner classNameSpinner;
+    private Spinner typeSpinner;
     private RadioButton nextClassRadioButton;
     private RadioButton specificClassRadioButton;
     private RadioButton customTimeRadioButton;
@@ -55,7 +56,8 @@ public class AddEvent extends AppCompatActivity {
     private ArrayList<StandardClass> listItemClasses;
     private ArrayList<String> listItemTitles;
     private ArrayList<Integer> daySwitches;
-    private CheckBox priorityCheckBox;
+    private CheckBox remindMeCheckBox;
+    private EditText descriptionEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class AddEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.add_event_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_add_event_toolbar);
         toolbar.setTitle("Add Event");
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -75,18 +77,16 @@ public class AddEvent extends AppCompatActivity {
         if (getIntent().hasExtra("origin_notification"))
             originNotification = true;
 
-        ArrayList<String> allClassNamesArrayList = DataSingleton.getInstance().getAllClassNamesArrayList();
-
         if (DataSingleton.getInstance().getCurrentClass() != null) {
 
-            allClassNamesArrayList.remove(DataSingleton.getInstance().getCurrentClass().getName());
-            allClassNamesArrayList.add(0, DataSingleton.getInstance().getCurrentClass().getName());
+            DataSingleton.getInstance().getAllClassNamesArrayList().remove(DataSingleton.getInstance().getCurrentClass().getName());
+            DataSingleton.getInstance().getAllClassNamesArrayList().add(0, DataSingleton.getInstance().getCurrentClass().getName());
 
         }
 
-        classNameSpinner = (Spinner) findViewById(R.id.add_event_class_spinner);
+        classNameSpinner = (Spinner) findViewById(R.id.activity_add_event_class_spinner);
 
-        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, allClassNamesArrayList);
+        final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, DataSingleton.getInstance().getAllClassNamesArrayList());
 
         classNameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         classNameSpinner.setAdapter(classNameSpinnerAdapter);
@@ -122,7 +122,20 @@ public class AddEvent extends AppCompatActivity {
 
         });
 
-        nextClassRadioButton = (RadioButton) findViewById(R.id.radio_next);
+        typeSpinner = (Spinner) findViewById(R.id.activity_add_event_type_spinner);
+
+        final ArrayList<String> typeArrayList = new ArrayList<>();
+
+        typeArrayList.add("Homework");
+        typeArrayList.add("Task");
+        typeArrayList.add("Exam");
+
+        final ArrayAdapter<String> typeSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, typeArrayList);
+
+        typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(typeSpinnerAdapter);
+
+        nextClassRadioButton = (RadioButton) findViewById(R.id.activity_add_event_next_radio_button);
 
         if (DataSingleton.getInstance().getCurrentClass() != null)
             nextClassRadioButton.setChecked(true);
@@ -135,7 +148,10 @@ public class AddEvent extends AppCompatActivity {
         super.onResume();
 
         if (classNameSpinner == null)
-            classNameSpinner = (Spinner) findViewById(R.id.add_event_class_spinner);
+            classNameSpinner = (Spinner) findViewById(R.id.activity_add_event_class_spinner);
+
+        if (typeSpinner == null)
+            typeSpinner = (Spinner) findViewById(R.id.activity_add_event_type_spinner);
 
         if (listItemClasses == null)
             listItemClasses = new ArrayList<>();
@@ -147,19 +163,22 @@ public class AddEvent extends AppCompatActivity {
             daySwitches = new ArrayList<>();
 
         if (nextClassRadioButton == null)
-            nextClassRadioButton = (RadioButton) findViewById(R.id.radio_next);
+            nextClassRadioButton = (RadioButton) findViewById(R.id.activity_add_event_next_radio_button);
 
         if (specificClassRadioButton == null)
-            specificClassRadioButton = (RadioButton) findViewById(R.id.radio_specific);
+            specificClassRadioButton = (RadioButton) findViewById(R.id.activity_add_event_specific_radio_button);
 
         if (customTimeRadioButton == null)
-            customTimeRadioButton = (RadioButton) findViewById(R.id.radio_custom);
+            customTimeRadioButton = (RadioButton) findViewById(R.id.activity_add_event_custom_radio_button);
 
         if (eventNameEditText == null)
-            eventNameEditText = (EditText) findViewById(R.id.add_event_input_name);
+            eventNameEditText = (EditText) findViewById(R.id.activity_add_event_name_edit_text);
 
-        if (priorityCheckBox == null)
-            priorityCheckBox = (CheckBox) findViewById(R.id.add_event_high_priority_check_box);
+        if (remindMeCheckBox == null)
+            remindMeCheckBox = (CheckBox) findViewById(R.id.activity_add_event_remind_me_check_box);
+
+        if (descriptionEditText == null)
+            descriptionEditText = (EditText) findViewById(R.id.activity_add_event_description_edit_text);
 
         if (pickedDateTime == null) {
 
@@ -205,20 +224,30 @@ public class AddEvent extends AppCompatActivity {
 
             switch (view.getId()) {
 
-                case R.id.radio_specific:
+                case R.id.activity_add_event_specific_radio_button:
 
                     listItemClasses.clear();
                     listItemTitles.clear();
 
-                    for (int i = DateTimeConstants.MONDAY; i <= DateTimeConstants.SUNDAY; i++) {
+                    int currentDay = new DateTime().getDayOfWeek();
 
-                        if (Utils.getClassesArrayListOfDay(i) != null) {
+                    for (int i = 0; i < 8; i++) {
 
-                            for (final StandardClass standardClass : Utils.getClassesArrayListOfDay(i)) {
+                        int dayToInspect = currentDay + i > 7 ? currentDay + i - 7 : currentDay + i;
+
+                        if (Utils.getClassesArrayListOfDay(dayToInspect) != null) {
+
+                            for (final StandardClass standardClass : Utils.getClassesArrayListOfDay(dayToInspect)) {
 
                                 if (standardClass.getName().equals(classNameSpinner.getSelectedItem().toString())) {
 
-                                    switch (i) {
+                                    if (i == 0 && !standardClass.getStartTime().isAfter(new LocalTime().withSecondOfMinute(0).withMillisOfSecond(0)))
+                                        continue;
+
+                                    if (i == 7 && !standardClass.getStartTime().isBefore(new LocalTime().withSecondOfMinute(0).withMillisOfSecond(0)))
+                                        break;
+
+                                    switch (dayToInspect) {
 
                                         case DateTimeConstants.MONDAY:
 
@@ -308,7 +337,7 @@ public class AddEvent extends AppCompatActivity {
 
                     break;
 
-                case R.id.radio_custom:
+                case R.id.activity_add_event_custom_radio_button:
 
                     final View currentFocus = this.getCurrentFocus();
 
@@ -397,6 +426,7 @@ public class AddEvent extends AppCompatActivity {
         if (level == TRIM_MEMORY_UI_HIDDEN) {
 
             classNameSpinner = null;
+            typeSpinner = null;
 
             nextClassRadioButton = null;
             specificClassRadioButton = null;
@@ -408,7 +438,7 @@ public class AddEvent extends AppCompatActivity {
             listItemTitles = null;
             daySwitches = null;
 
-            priorityCheckBox = null;
+            remindMeCheckBox = null;
 
         }
 
@@ -524,11 +554,30 @@ public class AddEvent extends AppCompatActivity {
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
                 Event eventToAdd;
 
+                int type;
+
+                switch (typeSpinner.getSelectedItem().toString()) {
+
+                    case "Homework":
+                        type = Event.TYPE_HOMEWORK;
+                        break;
+                    case "Task":
+                        type = Event.TYPE_TASK;
+                        break;
+                    case "Exam":
+                        type = Event.TYPE_EXAM;
+                        break;
+                    default:
+                        type = Event.TYPE_HOMEWORK;
+                        break;
+
+                }
+
                 if (nextClassRadioButton.isChecked()) {
 
                     daySwitches.clear();
 
-                    eventToAdd = new Event(eventNameEditText.getText().toString(), "", Event.TYPE_HOMEWORK, classNameSpinner.getSelectedItem().toString(), getDateTimeOfNextClass(classNameSpinner.getSelectedItem().toString()), true, new ArrayList<DateTime>(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), getDateTimeOfNextClass(classNameSpinner.getSelectedItem().toString()), true, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else if (specificClassRadioButton.isChecked()) {
 
@@ -565,11 +614,11 @@ public class AddEvent extends AppCompatActivity {
 
                     }
 
-                    eventToAdd = new Event(eventNameEditText.getText().toString(), "", Event.TYPE_HOMEWORK, classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, new ArrayList<DateTime>(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else if (customTimeRadioButton.isChecked()) {
 
-                    eventToAdd = new Event(eventNameEditText.getText().toString(), "", Event.TYPE_HOMEWORK, classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, new ArrayList<DateTime>(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else {
 

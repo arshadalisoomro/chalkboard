@@ -9,7 +9,8 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <string name="spinner_prompt">Choose your class</string>
+    <string name="spinner_prompt_class">Choose your class</string>
+    <string name="spinner_prompt_type">Choose your type</string>
 
     <string name="changelog"><b>0.0.5 (Beta)</b>\nNo changelog available for this first version.</string>
 

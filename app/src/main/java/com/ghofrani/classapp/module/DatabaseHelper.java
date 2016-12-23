@@ -12,7 +12,6 @@ import com.ghofrani.classapp.model.Event;
 import com.ghofrani.classapp.model.SlimClass;
 import com.ghofrani.classapp.model.StandardClass;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 
@@ -103,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.Events.COLUMN_CLASS + " TEXT,"
             + DatabaseContract.Events.COLUMN_DATE_TIME + " TEXT,"
             + DatabaseContract.Events.COLUMN_ATTACH + " BOOLEAN,"
-            + DatabaseContract.Events.COLUMN_REMINDERS + " TEXT)";
+            + DatabaseContract.Events.COLUMN_REMIND + " BOOLEAN)";
 
     public DatabaseHelper(Context context) {
 
@@ -637,14 +636,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 contentValues.put(DatabaseContract.Events.COLUMN_CLASS, event.getClassName());
                 contentValues.put(DatabaseContract.Events.COLUMN_DATE_TIME, event.getDateTime().toString());
                 contentValues.put(DatabaseContract.Events.COLUMN_ATTACH, event.isAttach() ? 1 : 0);
-
-                String reminders = "";
-
-                if (!event.getReminders().isEmpty())
-                    for (final DateTime dateTime : event.getReminders())
-                        reminders += dateTime.toString() + ":";
-
-                contentValues.put(DatabaseContract.Events.COLUMN_REMINDERS, reminders);
+                contentValues.put(DatabaseContract.Events.COLUMN_REMIND, event.isRemind() ? 1 : 0);
 
                 sqLiteDatabase.insert(DatabaseContract.Events.TABLE_NAME, null, contentValues);
 

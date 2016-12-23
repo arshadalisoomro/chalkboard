@@ -29,7 +29,7 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_settings_toolbar);
         toolbar.setTitle("Settings");
         toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);
@@ -37,7 +37,7 @@ public class Settings extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getFragmentManager().beginTransaction().replace(R.id.settings_frame_layout, new SettingsFragment()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.activity_settings_frame_layout, new SettingsFragment()).commit();
 
     }
 

@@ -9,7 +9,7 @@
 
     <include
 
-        android:id="@+id/change_class_toolbar"
+        android:id="@+id/activity_change_class_toolbar"
         layout="@layout/view_toolbar_padded" />
 
     <ScrollView
@@ -27,7 +27,7 @@
 
             <RelativeLayout
 
-                android:id="@+id/change_class_name_layout"
+                android:id="@+id/activity_change_class_name_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
@@ -38,7 +38,7 @@
 
                 <ImageView
 
-                    android:id="@+id/change_class_name_icon"
+                    android:id="@+id/activity_change_class_name_icon_image_view"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
@@ -48,12 +48,12 @@
 
                 <EditText
 
-                    android:id="@+id/change_class_input_name"
+                    android:id="@+id/activity_change_class_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="28dp"
-                    android:layout_toRightOf="@id/change_class_name_icon"
+                    android:layout_toRightOf="@id/activity_change_class_name_icon_image_view"
                     android:hint="Name"
                     android:inputType="textCapWords"
                     android:maxLines="1"
@@ -63,10 +63,10 @@
 
             <RelativeLayout
 
-                android:id="@+id/change_class_location_layout"
+                android:id="@+id/activity_change_class_location_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_below="@id/change_class_name_layout"
+                android:layout_below="@id/activity_change_class_name_relative_layout"
                 android:paddingBottom="4dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -74,7 +74,7 @@
 
                 <ImageView
 
-                    android:id="@+id/change_class_location_icon"
+                    android:id="@+id/activity_change_class_location_icon_image_view"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
@@ -84,13 +84,13 @@
 
                 <EditText
 
-                    android:id="@+id/change_class_input_location"
+                    android:id="@+id/activity_change_class_location_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="28dp"
-                    android:layout_toRightOf="@id/change_class_location_icon"
-                    android:hint="Default Location (Optional)"
+                    android:layout_toRightOf="@id/activity_change_class_location_icon_image_view"
+                    android:hint="Default location"
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:textSize="16sp" />
@@ -99,10 +99,10 @@
 
             <RelativeLayout
 
-                android:id="@+id/change_class_teacher_layout"
+                android:id="@+id/activity_change_class_teacher_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_below="@id/change_class_location_layout"
+                android:layout_below="@id/activity_change_class_location_relative_layout"
                 android:paddingBottom="4dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -110,7 +110,7 @@
 
                 <ImageView
 
-                    android:id="@+id/change_class_teacher_icon"
+                    android:id="@+id/activity_change_class_teacher_icon_image_view"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
@@ -120,13 +120,13 @@
 
                 <EditText
 
-                    android:id="@+id/change_class_input_teacher"
+                    android:id="@+id/activity_change_class_input_teacher_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="28dp"
-                    android:layout_toRightOf="@id/change_class_teacher_icon"
-                    android:hint="Default Teacher (Optional)"
+                    android:layout_toRightOf="@id/activity_change_class_teacher_icon_image_view"
+                    android:hint="Default teacher"
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:textSize="16sp" />
@@ -135,10 +135,10 @@
 
             <FrameLayout
 
-                android:id="@+id/change_class_color_frame_layout"
+                android:id="@+id/activity_change_class_color_frame_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/change_class_teacher_layout"
+                android:layout_below="@id/activity_change_class_teacher_relative_layout"
                 android:layout_margin="6dp" />
 
         </RelativeLayout>

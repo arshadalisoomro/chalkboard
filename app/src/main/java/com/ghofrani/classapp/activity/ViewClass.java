@@ -109,7 +109,7 @@ public class ViewClass extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.view_class_toolbar);
 
         if (noClassesCard == null)
-            noClassesCard = (CardView) findViewById(R.id.activity_view_class_no_classes_card);
+            noClassesCard = (CardView) findViewById(R.id.activity_view_class_no_classes_card_view);
 
         if (upcomingClassesListCardView == null)
             upcomingClassesListCardView = (CardView) findViewById(R.id.activity_view_classes_next_classes_card);

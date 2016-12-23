@@ -39,7 +39,7 @@ public class About extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.about_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_about_toolbar);
         toolbar.setTitle("About Chalkboard");
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setElevation(getPixelFromDP(4));
@@ -47,7 +47,7 @@ public class About extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        listView = (ListView) findViewById(R.id.about_top_list_view);
+        listView = (ListView) findViewById(R.id.activity_about_top_list_view);
         listAdapter = new AboutList(this);
 
         listView.setAdapter(listAdapter);

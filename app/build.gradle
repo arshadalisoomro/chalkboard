@@ -56,6 +56,8 @@ dependencies {
     compile 'com.afollestad.material-dialogs:commons:0.9.0.2'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile('de.psdev.licensesdialog:licensesdialog:1.8.1')
+    compile 'com.facebook.stetho:stetho:1.4.2'
+    compile 'com.facebook.stetho:stetho-okhttp3:1.4.2'
     compile('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.0@aar') {
         transitive = true
     }

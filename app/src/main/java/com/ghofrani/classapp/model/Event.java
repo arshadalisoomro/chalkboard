@@ -2,8 +2,6 @@ package com.ghofrani.classapp.model;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-
 public class Event {
 
     public static final int TYPE_HOMEWORK = 0;
@@ -16,10 +14,10 @@ public class Event {
     private final String className;
     private final DateTime dateTime;
     private final boolean attach;
-    private final ArrayList<DateTime> reminders;
+    private final boolean remind;
     private final int color;
 
-    public Event(String name, String description, int type, String className, DateTime dateTime, boolean attach, ArrayList<DateTime> reminders, int color) {
+    public Event(String name, String description, int type, String className, DateTime dateTime, boolean attach, boolean remind, int color) {
 
         this.name = name;
         this.description = description;
@@ -27,7 +25,7 @@ public class Event {
         this.className = className;
         this.dateTime = dateTime;
         this.attach = attach;
-        this.reminders = reminders;
+        this.remind = remind;
         this.color = color;
 
     }
@@ -56,8 +54,8 @@ public class Event {
         return attach;
     }
 
-    public ArrayList<DateTime> getReminders() {
-        return reminders;
+    public boolean isRemind() {
+        return remind;
     }
 
     public int getColor() {

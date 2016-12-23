@@ -9,7 +9,7 @@
 
     <include
 
-        android:id="@+id/add_event_toolbar"
+        android:id="@+id/activity_add_event_toolbar"
         layout="@layout/view_toolbar_padded" />
 
     <ScrollView
@@ -27,7 +27,7 @@
 
             <RelativeLayout
 
-                android:id="@+id/add_homework_name_layout"
+                android:id="@+id/activity_add_event_name_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
@@ -38,7 +38,7 @@
 
                 <ImageView
 
-                    android:id="@+id/add_homework_name_icon"
+                    android:id="@+id/activity_add_event_name_icon_image_view"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
@@ -49,12 +49,12 @@
 
                 <EditText
 
-                    android:id="@+id/add_event_input_name"
+                    android:id="@+id/activity_add_event_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="28dp"
-                    android:layout_toRightOf="@id/add_homework_name_icon"
+                    android:layout_toRightOf="@id/activity_add_event_name_icon_image_view"
                     android:hint="Name"
                     android:inputType="textCapWords"
                     android:maxLines="1"
@@ -64,10 +64,10 @@
 
             <RelativeLayout
 
-                android:id="@+id/add_homework_class_layout"
+                android:id="@+id/activity_add_event_class_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_below="@id/add_homework_name_layout"
+                android:layout_below="@id/activity_add_event_name_relative_layout"
                 android:layout_marginTop="4dp"
                 android:paddingBottom="4dp"
                 android:paddingLeft="16dp"
@@ -76,7 +76,7 @@
 
                 <ImageView
 
-                    android:id="@+id/add_homework_class_icon"
+                    android:id="@+id/activity_add_event_class_icon_image_view"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
@@ -87,23 +87,59 @@
 
                 <Spinner
 
-                    android:id="@+id/add_event_class_spinner"
+                    android:id="@+id/activity_add_event_class_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="31.75dp"
-                    android:layout_toRightOf="@id/add_homework_class_icon"
-                    android:prompt="@string/spinner_prompt"
+                    android:layout_toRightOf="@id/activity_add_event_class_icon_image_view"
+                    android:prompt="@string/spinner_prompt_class"
                     android:scrollbars="none" />
 
             </RelativeLayout>
 
             <RelativeLayout
 
-                android:id="@+id/add_homework_radio_group_layout"
+                android:id="@+id/activity_add_event_type_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@id/activity_add_event_class_relative_layout"
+                android:layout_marginTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="25dp"
+                android:paddingTop="4dp">
+
+                <ImageView
+
+                    android:id="@+id/activity_add_event_type_icon_image_view"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/event"
+                    android:tint="#757575"
+                    android:translationY="1dp" />
+
+                <Spinner
+
+                    android:id="@+id/activity_add_event_type_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="31.75dp"
+                    android:layout_toRightOf="@id/activity_add_event_type_icon_image_view"
+                    android:prompt="@string/spinner_prompt_type"
+                    android:scrollbars="none" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+
+                android:id="@+id/activity_add_event_time_radio_group_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/add_homework_class_layout"
+                android:layout_below="@id/activity_add_event_type_relative_layout"
                 android:layout_marginLeft="0.5dp"
                 android:paddingBottom="4dp"
                 android:paddingLeft="13.5dp"
@@ -112,14 +148,14 @@
 
                 <RadioGroup
 
-                    android:id="@+id/add_homework_time_radio_group"
+                    android:id="@+id/activity_add_event_time_radio_group"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <RadioButton
 
-                        android:id="@+id/radio_next"
+                        android:id="@+id/activity_add_event_next_radio_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
@@ -130,7 +166,7 @@
 
                     <RadioButton
 
-                        android:id="@+id/radio_specific"
+                        android:id="@+id/activity_add_event_specific_radio_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
@@ -141,7 +177,7 @@
 
                     <RadioButton
 
-                        android:id="@+id/radio_custom"
+                        android:id="@+id/activity_add_event_custom_radio_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonClicked"
@@ -155,16 +191,34 @@
 
             <CheckBox
 
-                android:id="@+id/add_event_high_priority_check_box"
+                android:id="@+id/activity_add_event_remind_me_check_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/add_homework_radio_group_layout"
+                android:layout_below="@id/activity_add_event_time_radio_group_relative_layout"
                 android:layout_marginLeft="13.75dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="12dp"
-                android:checked="false"
+                android:checked="true"
                 android:paddingLeft="27.75dp"
-                android:text="High priority"
+                android:text="Remind me!"
+                android:textSize="16sp" />
+
+            <EditText
+
+                android:id="@+id/activity_add_event_description_edit_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_add_event_remind_me_check_box"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16.75dp"
+                android:layout_marginTop="16dp"
+                android:gravity="top|left"
+                android:hint="Add a description..."
+                android:inputType="textMultiLine|textCapSentences"
+                android:lines="4"
+                android:maxLines="4"
+                android:minLines="2"
+                android:scrollbars="none"
                 android:textSize="16sp" />
 
         </RelativeLayout>
