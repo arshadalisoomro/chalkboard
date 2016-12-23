@@ -434,7 +434,7 @@ public class Overview extends Fragment {
 
                 }
 
-            }, 200);
+            }, 300);
 
         } else {
 
@@ -541,7 +541,7 @@ public class Overview extends Fragment {
 
                 }
 
-            }, 200);
+            }, 300);
 
         } else {
 

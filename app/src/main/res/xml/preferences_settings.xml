@@ -151,6 +151,13 @@
             android:summary="Choose when a notification for the next class appears"
             android:title="Next class notification timing" />
 
+        <CheckBoxPreference
+
+            android:defaultValue="false"
+            android:key="detailed_notification"
+            android:summary="Shows percentage progress"
+            android:title="Show details" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

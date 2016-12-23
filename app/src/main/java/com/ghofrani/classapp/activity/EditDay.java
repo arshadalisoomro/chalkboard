@@ -293,7 +293,7 @@ public class EditDay extends AppCompatActivity {
 
         switch (toolbar.getTitle().toString()) {
 
-            case "Edit Monday's Classes":
+            case "Edit Monday":
 
                 day = DateTimeConstants.MONDAY;
 
@@ -317,7 +317,7 @@ public class EditDay extends AppCompatActivity {
 
                 break;
 
-            case "Edit Tuesday's Classes":
+            case "Edit Tuesday":
 
                 day = DateTimeConstants.TUESDAY;
 
@@ -341,7 +341,7 @@ public class EditDay extends AppCompatActivity {
 
                 break;
 
-            case "Edit Wednesday's Classes":
+            case "Edit Wednesday":
 
                 day = DateTimeConstants.WEDNESDAY;
 
@@ -365,7 +365,7 @@ public class EditDay extends AppCompatActivity {
 
                 break;
 
-            case "Edit Thursday's Classes":
+            case "Edit Thursday":
 
                 day = DateTimeConstants.THURSDAY;
 
@@ -389,7 +389,7 @@ public class EditDay extends AppCompatActivity {
 
                 break;
 
-            case "Edit Friday's Classes":
+            case "Edit Friday":
 
                 day = DateTimeConstants.FRIDAY;
 
@@ -413,7 +413,7 @@ public class EditDay extends AppCompatActivity {
 
                 break;
 
-            case "Edit Saturday's Classes":
+            case "Edit Saturday":
 
                 day = DateTimeConstants.SATURDAY;
 
@@ -437,7 +437,7 @@ public class EditDay extends AppCompatActivity {
 
                 break;
 
-            case "Edit Sunday's Classes":
+            case "Edit Sunday":
 
                 day = DateTimeConstants.SUNDAY;
 
@@ -563,25 +563,25 @@ public class EditDay extends AppCompatActivity {
                             switch (text.toString()) {
 
                                 case "Monday's timetable":
-                                    currentClasses = (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.MONDAY).clone();
+                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.MONDAY) == null ? null : (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.MONDAY).clone();
                                     break;
                                 case "Tuesday's timetable":
-                                    currentClasses = (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.TUESDAY).clone();
+                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.TUESDAY) == null ? null : (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.TUESDAY).clone();
                                     break;
                                 case "Wednesday's timetable":
-                                    currentClasses = (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.WEDNESDAY).clone();
+                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.WEDNESDAY) == null ? null : (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.WEDNESDAY).clone();
                                     break;
                                 case "Thursday's timetable":
-                                    currentClasses = (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.THURSDAY).clone();
+                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.THURSDAY) == null ? null : (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.THURSDAY).clone();
                                     break;
                                 case "Friday's timetable":
-                                    currentClasses = (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.FRIDAY).clone();
+                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.FRIDAY) == null ? null : (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.FRIDAY).clone();
                                     break;
                                 case "Saturday's timetable":
-                                    currentClasses = (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.SATURDAY).clone();
+                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.SATURDAY) == null ? null : (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.SATURDAY).clone();
                                     break;
                                 case "Sunday's timetable":
-                                    currentClasses = (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.SUNDAY).clone();
+                                    currentClasses = Utils.getClassesArrayListOfDay(DateTimeConstants.SUNDAY) == null ? null : (ArrayList<StandardClass>) Utils.getClassesArrayListOfDay(DateTimeConstants.SUNDAY).clone();
                                     break;
 
                             }
@@ -863,7 +863,10 @@ public class EditDay extends AppCompatActivity {
 
                                 }
 
-                                Utils.setClassesArrayListOfDay(day, currentClasses);
+                                if (currentClasses.size() != 0)
+                                    Utils.setClassesArrayListOfDay(day, currentClasses);
+                                else
+                                    Utils.setClassesArrayListOfDay(day, null);
 
                                 materialDialog.dismiss();
 
@@ -1219,7 +1222,10 @@ public class EditDay extends AppCompatActivity {
 
                                 }
 
-                                Utils.setClassesArrayListOfDay(day, currentClasses);
+                                if (currentClasses.size() != 0)
+                                    Utils.setClassesArrayListOfDay(day, currentClasses);
+                                else
+                                    Utils.setClassesArrayListOfDay(day, null);
 
                                 materialDialog.dismiss();
 

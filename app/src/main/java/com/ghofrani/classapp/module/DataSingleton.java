@@ -71,13 +71,13 @@ public class DataSingleton {
         progressBarProgress = 0;
         progressBarText = "0%";
 
-        sundayClasses = new ArrayList<>();
-        mondayClasses = new ArrayList<>();
-        tuesdayClasses = new ArrayList<>();
-        wednesdayClasses = new ArrayList<>();
-        thursdayClasses = new ArrayList<>();
-        fridayClasses = new ArrayList<>();
-        saturdayClasses = new ArrayList<>();
+        sundayClasses = null;
+        mondayClasses = null;
+        tuesdayClasses = null;
+        wednesdayClasses = null;
+        thursdayClasses = null;
+        fridayClasses = null;
+        saturdayClasses = null;
 
         allClassesArrayList = new ArrayList<>();
         allClassNamesArrayList = new ArrayList<>();

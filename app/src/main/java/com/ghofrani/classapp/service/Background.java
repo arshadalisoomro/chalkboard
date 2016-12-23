@@ -950,11 +950,16 @@ public class Background extends Service {
 
             while (eventsCursor.moveToNext()) {
 
-                String[] remindersArray = eventsCursor.getString(7).split(":");
                 final ArrayList<DateTime> remindersDateTimeArrayList = new ArrayList<>();
 
-                for (int i = 0; i < remindersArray.length - 1; i++)
-                    remindersDateTimeArrayList.add(DateTime.parse(remindersArray[i]).withZone(dateTimeZone));
+                if (!eventsCursor.getString(7).isEmpty()) {
+
+                    String[] remindersArray = eventsCursor.getString(7).split(":");
+
+                    for (int i = 0; i < remindersArray.length - 1; i++)
+                        remindersDateTimeArrayList.add(DateTime.parse(remindersArray[i]).withZone(dateTimeZone));
+
+                }
 
                 final Event event = new Event(eventsCursor.getString(1), eventsCursor.getString(2), Integer.parseInt(eventsCursor.getString(3)), eventsCursor.getString(4), DateTime.parse(eventsCursor.getString(5)).withZone(dateTimeZone), eventsCursor.getInt(6) == 1, remindersDateTimeArrayList, databaseHelper.getClassColor(eventsCursor.getString(4)));
 

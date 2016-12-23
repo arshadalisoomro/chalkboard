@@ -1,7 +1,9 @@
 package com.ghofrani.classapp.activity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -137,6 +139,26 @@ public class Settings extends AppCompatActivity {
                     getActivity().recreate();
 
                     Toast.makeText(getActivity(), "Please choose a value between 1 and 1439!", Toast.LENGTH_LONG).show();
+
+                }
+
+            } else if (key.equals("vibrate_only_during_classes")) {
+
+                if (DataSingleton.getInstance().getCurrentClass() != null) {
+
+                    final AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+
+                    if (sharedPreferences.getBoolean(key, false)) {
+
+                        if (audioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+                            audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+
+                    } else {
+
+                        if (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE)
+                            audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+                    }
 
                 }
 

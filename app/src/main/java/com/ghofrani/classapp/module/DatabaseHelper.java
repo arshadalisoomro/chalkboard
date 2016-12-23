@@ -640,8 +640,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 String reminders = "";
 
-                for (final DateTime dateTime : event.getReminders())
-                    reminders += dateTime.toString() + ":";
+                if (!event.getReminders().isEmpty())
+                    for (final DateTime dateTime : event.getReminders())
+                        reminders += dateTime.toString() + ":";
 
                 contentValues.put(DatabaseContract.Events.COLUMN_REMINDERS, reminders);
 
