@@ -111,6 +111,7 @@ public class About extends AppCompatActivity {
                                 .content("Your device information has been copied to the clipboard, you will now be redirected to the issue tracker.")
                                 .contentColorRes(R.color.black)
                                 .positiveText("OK")
+                                .negativeText("CANCEL")
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
 
                                     @Override
@@ -123,6 +124,32 @@ public class About extends AppCompatActivity {
 
                                 })
                                 .positiveColorRes(R.color.black)
+                                .negativeColorRes(R.color.black)
+                                .show();
+
+                        break;
+
+                    case 6:
+
+                        new MaterialDialog.Builder(About.this)
+                                .title("Request Features")
+                                .content("You will now be redirected to the issue tracker, where you can request new features.")
+                                .contentColorRes(R.color.black)
+                                .positiveText("OK")
+                                .negativeText("CANCEL")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                        final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/chalkboard-issue-tracker"));
+                                        startActivity(browserIntent);
+
+                                    }
+
+                                })
+                                .positiveColorRes(R.color.black)
+                                .negativeColorRes(R.color.black)
                                 .show();
 
                         break;

@@ -10,30 +10,26 @@ import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
 
-import java.util.ArrayList;
-
 public class AboutList extends BaseAdapter {
 
     private final LayoutInflater layoutInflater;
-    private final ArrayList<String> aboutTitlesArrayList;
     private final Context context;
 
     public AboutList(Context context) {
 
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        aboutTitlesArrayList = new ArrayList<>();
         this.context = context;
 
     }
 
     @Override
     public int getCount() {
-        return 6;
+        return 7;
     }
 
     @Override
     public Object getItem(int position) {
-        return aboutTitlesArrayList.get(position);
+        return null;
     }
 
     @Override
@@ -102,7 +98,14 @@ public class AboutList extends BaseAdapter {
             case 5:
 
                 listChildIconImageView.setImageResource(R.drawable.bugs);
-                listChildTitleTextView.setText("Report Bugs on GitHub");
+                listChildTitleTextView.setText("Report Bugs");
+
+                break;
+
+            case 6:
+
+                listChildIconImageView.setImageResource(R.drawable.features);
+                listChildTitleTextView.setText("Request Features");
 
                 break;
 
