@@ -577,7 +577,7 @@ public class AddEvent extends AppCompatActivity {
 
                     daySwitches.clear();
 
-                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), getDateTimeOfNextClass(classNameSpinner.getSelectedItem().toString()), true, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim().isEmpty() ? "no-description" : descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), getDateTimeOfNextClass(classNameSpinner.getSelectedItem().toString()), true, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else if (specificClassRadioButton.isChecked()) {
 
@@ -614,11 +614,11 @@ public class AddEvent extends AppCompatActivity {
 
                     }
 
-                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim().isEmpty() ? "no-description" : descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), pickedDateTimeSpecific.plusDays(plusDays).withTime(listItemClasses.get(selectedIndex).getStartTime()), true, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else if (customTimeRadioButton.isChecked()) {
 
-                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                    eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim().isEmpty() ? "no-description" : descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
 
                 } else {
 
