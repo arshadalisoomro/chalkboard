@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.CollapseLists;
 import com.ghofrani.classapp.fragment.Classes;
@@ -62,6 +63,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     private boolean operateOnDrawerClosed;
     private int drawerViewToSwitchTo;
     private boolean floatingActionButtonContrast = false;
+    private int tabPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,6 +250,24 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             return true;
 
+        } else if (menuItem.getItemId() == R.id.toolbar_events_filter_item) {
+
+            new MaterialDialog.Builder(this)
+                    .title("Filter by...")
+                    .items(new String[]{"Homework", "Tasks", "Exams"})
+                    .itemsCallback(new MaterialDialog.ListCallback() {
+
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+
+                        }
+
+                    })
+                    .show();
+
+            return true;
+
         } else {
 
             return super.onOptionsItemSelected(menuItem);
@@ -340,8 +360,23 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        if (currentView == ID_TIMETABLE)
+        if (currentView == ID_OVERVIEW) {
+
+            if (tabPosition == 0) {
+
+                getMenuInflater().inflate(R.menu.toolbar_toggle_notification_on, menu);
+
+            } else if (tabPosition == 1) {
+
+                getMenuInflater().inflate(R.menu.toolbar_events, menu);
+
+            }
+
+        } else if (currentView == ID_TIMETABLE) {
+
             getMenuInflater().inflate(R.menu.toolbar_edit, menu);
+
+        }
 
         return true;
 
@@ -528,8 +563,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             case ID_OVERVIEW:
 
-                invalidateOptionsMenu();
-
                 timetableTabLayout.setVisibility(View.GONE);
                 timetableViewPager.setVisibility(View.GONE);
 
@@ -574,6 +607,10 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                         }
 
+                        tabPosition = tab.getPosition();
+
+                        invalidateOptionsMenu();
+
                     }
 
                     @Override
@@ -586,21 +623,23 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 });
 
+                tabPosition = 0;
+
+                invalidateOptionsMenu();
+
                 break;
 
             case ID_CLASSES:
-
-                invalidateOptionsMenu();
 
                 final Classes classesFragment = new Classes();
                 fragmentTransaction.replace(R.id.activity_main_linear_layout, classesFragment, "classes_fragment");
                 fragmentTransaction.commit();
 
+                invalidateOptionsMenu();
+
                 break;
 
             case ID_TIMETABLE:
-
-                invalidateOptionsMenu();
 
                 overviewTabLayout.setVisibility(View.GONE);
                 overviewViewPager.setVisibility(View.GONE);
@@ -623,9 +662,9 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                 for (int i = 0; i < 7; i++) {
 
                     if (day + i < 8)
-                        timetableAdapter.addFragment(Day.newInstance(day + i), DateTimeFormat.forPattern("EEEE").print(new LocalDate().withDayOfWeek(day + i)));
+                        timetableAdapter.addFragment(Day.newInstance(day + i), DateTimeFormat.forPattern("EEEE").print(new LocalDate().withDayOfWeek(day + i)).toUpperCase());
                     else
-                        timetableAdapter.addFragment(Day.newInstance(day + i - 7), DateTimeFormat.forPattern("EEEE").print(new LocalDate().withDayOfWeek(day + i - 7)));
+                        timetableAdapter.addFragment(Day.newInstance(day + i - 7), DateTimeFormat.forPattern("EEEE").print(new LocalDate().withDayOfWeek(day + i - 7)).toUpperCase());
 
                 }
 
@@ -648,11 +687,11 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 });
 
+                invalidateOptionsMenu();
+
                 break;
 
             case ID_EVENTS:
-
-                invalidateOptionsMenu();
 
                 timetableTabLayout.setVisibility(View.GONE);
                 timetableViewPager.setVisibility(View.GONE);
@@ -698,6 +737,10 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                         }
 
+                        tabPosition = tab.getPosition();
+
+                        invalidateOptionsMenu();
+
                     }
 
                     @Override
@@ -714,19 +757,19 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                 currentView = ID_OVERVIEW;
 
+                tabPosition = 1;
+
+                invalidateOptionsMenu();
+
                 break;
 
             case ID_SETTINGS:
-
-                invalidateOptionsMenu();
 
                 startActivity(new Intent(this, Settings.class));
 
                 break;
 
             case ID_ABOUT:
-
-                invalidateOptionsMenu();
 
                 startActivity(new Intent(this, About.class));
 
