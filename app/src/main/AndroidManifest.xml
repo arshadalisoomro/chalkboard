@@ -90,7 +90,7 @@
             android:name=".service.Background"
             android:exported="false"
             android:icon="@mipmap/ic_launcher"
-            android:label="BackgroundService">
+            android:label="ChalkboardService">
 
         </service>
 

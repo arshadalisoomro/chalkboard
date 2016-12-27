@@ -133,7 +133,7 @@ public class About extends AppCompatActivity {
 
                         new MaterialDialog.Builder(About.this)
                                 .title("Request Features")
-                                .content("You will now be redirected to the issue tracker, where you can request new features.")
+                                .content("You will now be redirected to the issue tracker, where you can request features.")
                                 .contentColorRes(R.color.black)
                                 .positiveText("OK")
                                 .negativeText("CANCEL")
