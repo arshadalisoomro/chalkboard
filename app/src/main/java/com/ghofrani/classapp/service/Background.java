@@ -21,7 +21,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.ghofrani.classapp.R;
-import com.ghofrani.classapp.activity.AddEvent;
+import com.ghofrani.classapp.activity.ChangeEvent;
 import com.ghofrani.classapp.activity.Main;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.event.UpdateClassesUI;
@@ -338,10 +338,10 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    final Intent eventActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
+                    final Intent eventActivityIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
                     final PendingIntent addEventActivityEvent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    remoteViews.setOnClickPendingIntent(R.id.view_notification_add_event_image_button, addEventActivityEvent);
+                    remoteViews.setOnClickPendingIntent(R.id.view_notification_change_event_image_button, addEventActivityEvent);
 
                     remoteViews.setInt(progressBarId, "setVisibility", View.GONE);
                     remoteViews.setInt(textId, "setVisibility", View.GONE);
@@ -354,7 +354,7 @@ public class Background extends Service {
 
                         if (finalCurrentClass.getColor() == lime || finalCurrentClass.getColor() == yellow || finalCurrentClass.getColor() == amber) {
 
-                            remoteViews.setInt(R.id.view_notification_add_event_image_button, "setColorFilter", Color.BLACK);
+                            remoteViews.setInt(R.id.view_notification_change_event_image_button, "setColorFilter", Color.BLACK);
 
                             progressBarId = R.id.view_notification_progress_bar_black_contrast;
                             textId = R.id.view_notification_subtitle_black_text_view;
@@ -363,7 +363,7 @@ public class Background extends Service {
 
                         } else {
 
-                            remoteViews.setInt(R.id.view_notification_add_event_image_button, "setColorFilter", Color.WHITE);
+                            remoteViews.setInt(R.id.view_notification_change_event_image_button, "setColorFilter", Color.WHITE);
 
                             progressBarId = R.id.view_notification_progress_bar_white;
                             textId = R.id.view_notification_subtitle_white_text_view;
@@ -375,7 +375,7 @@ public class Background extends Service {
 
                     } else {
 
-                        remoteViews.setInt(R.id.view_notification_add_event_image_button, "setColorFilter", finalCurrentClass.getColor());
+                        remoteViews.setInt(R.id.view_notification_change_event_image_button, "setColorFilter", finalCurrentClass.getColor());
                         remoteViews.setInt(R.id.view_notification_relative_layout, "setBackgroundColor", Color.TRANSPARENT);
 
                         if (finalCurrentClass.getColor() == red) {
@@ -567,7 +567,7 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    final Intent eventActivityIntent = new Intent(this, AddEvent.class).putExtra("origin_notification", true);
+                    final Intent eventActivityIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
                     final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this)

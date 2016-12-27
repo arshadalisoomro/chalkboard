@@ -28,6 +28,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.model.Event;
+import com.ghofrani.classapp.model.EventWithID;
 import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
@@ -41,8 +42,9 @@ import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
 
-public class AddEvent extends AppCompatActivity {
+public class ChangeEvent extends AppCompatActivity {
 
+    boolean firstRun = true;
     private boolean originNotification = false;
     private Spinner classNameSpinner;
     private Spinner typeSpinner;
@@ -58,6 +60,9 @@ public class AddEvent extends AppCompatActivity {
     private ArrayList<Integer> daySwitches;
     private CheckBox remindMeCheckBox;
     private EditText descriptionEditText;
+    private boolean editMode = false;
+    private Event editEvent;
+    private boolean timeChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,26 +70,39 @@ public class AddEvent extends AppCompatActivity {
         Utils.setTheme(this);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_event);
+        setContentView(R.layout.activity_change_event);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_add_event_toolbar);
-        toolbar.setTitle("Add Event");
+        if (getIntent().hasExtra("origin_notification"))
+            originNotification = true;
+        else if (getIntent().hasExtra("mode_edit"))
+            editMode = true;
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_change_event_toolbar);
+        toolbar.setTitle(editMode ? "Change Event" : "Add Event");
         toolbar.setTitleTextColor(Color.WHITE);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (getIntent().hasExtra("origin_notification"))
-            originNotification = true;
+        if (editMode) {
 
-        if (DataSingleton.getInstance().getCurrentClass() != null) {
+            editEvent = ((EventWithID) DataSingleton.getInstance().getDataArrayList().get(getIntent().getIntExtra("event_position", 0))).getEvent();
 
-            DataSingleton.getInstance().getAllClassNamesArrayList().remove(DataSingleton.getInstance().getCurrentClass().getName());
-            DataSingleton.getInstance().getAllClassNamesArrayList().add(0, DataSingleton.getInstance().getCurrentClass().getName());
+            DataSingleton.getInstance().getAllClassNamesArrayList().remove(editEvent.getClassName());
+            DataSingleton.getInstance().getAllClassNamesArrayList().add(0, editEvent.getClassName());
+
+        } else {
+
+            if (DataSingleton.getInstance().getCurrentClass() != null) {
+
+                DataSingleton.getInstance().getAllClassNamesArrayList().remove(DataSingleton.getInstance().getCurrentClass().getName());
+                DataSingleton.getInstance().getAllClassNamesArrayList().add(0, DataSingleton.getInstance().getCurrentClass().getName());
+
+            }
 
         }
 
-        classNameSpinner = (Spinner) findViewById(R.id.activity_add_event_class_spinner);
+        classNameSpinner = (Spinner) findViewById(R.id.activity_change_event_class_spinner);
 
         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, DataSingleton.getInstance().getAllClassNamesArrayList());
 
@@ -106,13 +124,18 @@ public class AddEvent extends AppCompatActivity {
 
                 } else {
 
-                    nextClassRadioButton.setEnabled(false);
                     nextClassRadioButton.setChecked(false);
+                    nextClassRadioButton.setEnabled(false);
 
-                    specificClassRadioButton.setEnabled(false);
                     specificClassRadioButton.setChecked(false);
+                    specificClassRadioButton.setEnabled(false);
 
                 }
+
+                if (!firstRun)
+                    timeChanged = true;
+                else
+                    firstRun = false;
 
             }
 
@@ -122,23 +145,62 @@ public class AddEvent extends AppCompatActivity {
 
         });
 
-        typeSpinner = (Spinner) findViewById(R.id.activity_add_event_type_spinner);
+        typeSpinner = (Spinner) findViewById(R.id.activity_change_event_type_spinner);
 
         final ArrayList<String> typeArrayList = new ArrayList<>();
 
-        typeArrayList.add("Homework");
-        typeArrayList.add("Task");
-        typeArrayList.add("Exam");
+        if (editMode) {
+
+            if (editEvent.getType() == Event.TYPE_HOMEWORK) {
+
+                typeArrayList.add("Homework");
+                typeArrayList.add("Task");
+                typeArrayList.add("Exam");
+
+            } else if (editEvent.getType() == Event.TYPE_TASK) {
+
+                typeArrayList.add("Task");
+                typeArrayList.add("Exam");
+                typeArrayList.add("Homework");
+
+            } else {
+
+                typeArrayList.add("Exam");
+                typeArrayList.add("Homework");
+                typeArrayList.add("Task");
+
+            }
+
+        } else {
+
+            typeArrayList.add("Homework");
+            typeArrayList.add("Task");
+            typeArrayList.add("Exam");
+
+        }
 
         final ArrayAdapter<String> typeSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, typeArrayList);
 
         typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeSpinnerAdapter);
 
-        nextClassRadioButton = (RadioButton) findViewById(R.id.activity_add_event_next_radio_button);
+        nextClassRadioButton = (RadioButton) findViewById(R.id.activity_change_event_next_radio_button);
 
-        if (DataSingleton.getInstance().getCurrentClass() != null)
+        if (DataSingleton.getInstance().getCurrentClass() != null && !editMode)
             nextClassRadioButton.setChecked(true);
+
+        if (editMode) {
+
+            eventNameEditText = (EditText) findViewById(R.id.activity_change_event_name_edit_text);
+            eventNameEditText.setText(editEvent.getName());
+
+            remindMeCheckBox = (CheckBox) findViewById(R.id.activity_change_event_remind_me_check_box);
+            remindMeCheckBox.setChecked(editEvent.isRemind());
+
+            descriptionEditText = (EditText) findViewById(R.id.activity_change_event_description_edit_text);
+            descriptionEditText.setText(editEvent.getDescription().equals("no-description") ? "" : editEvent.getDescription());
+
+        }
 
     }
 
@@ -148,10 +210,10 @@ public class AddEvent extends AppCompatActivity {
         super.onResume();
 
         if (classNameSpinner == null)
-            classNameSpinner = (Spinner) findViewById(R.id.activity_add_event_class_spinner);
+            classNameSpinner = (Spinner) findViewById(R.id.activity_change_event_class_spinner);
 
         if (typeSpinner == null)
-            typeSpinner = (Spinner) findViewById(R.id.activity_add_event_type_spinner);
+            typeSpinner = (Spinner) findViewById(R.id.activity_change_event_type_spinner);
 
         if (listItemClasses == null)
             listItemClasses = new ArrayList<>();
@@ -163,22 +225,22 @@ public class AddEvent extends AppCompatActivity {
             daySwitches = new ArrayList<>();
 
         if (nextClassRadioButton == null)
-            nextClassRadioButton = (RadioButton) findViewById(R.id.activity_add_event_next_radio_button);
+            nextClassRadioButton = (RadioButton) findViewById(R.id.activity_change_event_next_radio_button);
 
         if (specificClassRadioButton == null)
-            specificClassRadioButton = (RadioButton) findViewById(R.id.activity_add_event_specific_radio_button);
+            specificClassRadioButton = (RadioButton) findViewById(R.id.activity_change_event_specific_radio_button);
 
         if (customTimeRadioButton == null)
-            customTimeRadioButton = (RadioButton) findViewById(R.id.activity_add_event_custom_radio_button);
+            customTimeRadioButton = (RadioButton) findViewById(R.id.activity_change_event_custom_radio_button);
 
         if (eventNameEditText == null)
-            eventNameEditText = (EditText) findViewById(R.id.activity_add_event_name_edit_text);
+            eventNameEditText = (EditText) findViewById(R.id.activity_change_event_name_edit_text);
 
         if (remindMeCheckBox == null)
-            remindMeCheckBox = (CheckBox) findViewById(R.id.activity_add_event_remind_me_check_box);
+            remindMeCheckBox = (CheckBox) findViewById(R.id.activity_change_event_remind_me_check_box);
 
         if (descriptionEditText == null)
-            descriptionEditText = (EditText) findViewById(R.id.activity_add_event_description_edit_text);
+            descriptionEditText = (EditText) findViewById(R.id.activity_change_event_description_edit_text);
 
         if (pickedDateTime == null) {
 
@@ -222,9 +284,11 @@ public class AddEvent extends AppCompatActivity {
 
         if (((RadioButton) view).isChecked()) {
 
+            timeChanged = true;
+
             switch (view.getId()) {
 
-                case R.id.activity_add_event_specific_radio_button:
+                case R.id.activity_change_event_specific_radio_button:
 
                     listItemClasses.clear();
                     listItemTitles.clear();
@@ -313,7 +377,7 @@ public class AddEvent extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            new MaterialDialog.Builder(AddEvent.this)
+                            new MaterialDialog.Builder(ChangeEvent.this)
                                     .title("Due next...")
                                     .items(listItemsArray)
                                     .itemsCallbackSingleChoice(firstRunSpecific ? 0 : selectedIndex, new MaterialDialog.ListCallbackSingleChoice() {
@@ -337,7 +401,7 @@ public class AddEvent extends AppCompatActivity {
 
                     break;
 
-                case R.id.activity_add_event_custom_radio_button:
+                case R.id.activity_change_event_custom_radio_button:
 
                     final View currentFocus = this.getCurrentFocus();
 
@@ -376,7 +440,7 @@ public class AddEvent extends AppCompatActivity {
 
                                                 if (pickedDateTime.isBefore(now.withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0))) {
 
-                                                    Toast.makeText(AddEvent.this, "Choose a time after now!", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(ChangeEvent.this, "Choose a time after now!", Toast.LENGTH_LONG).show();
 
                                                     pickedDateTime.setYear(now.plusDays(1).getYear());
                                                     pickedDateTime.setMonthOfYear(now.plusDays(1).getMonthOfYear());
@@ -389,7 +453,7 @@ public class AddEvent extends AppCompatActivity {
 
                                         };
 
-                                        new android.app.TimePickerDialog(AddEvent.this, onTimeSetListener, now.plusHours(1).getHourOfDay(), now.plusHours(1).getMinuteOfHour(), true).show();
+                                        new android.app.TimePickerDialog(ChangeEvent.this, onTimeSetListener, now.plusHours(1).getHourOfDay(), now.plusHours(1).getMinuteOfHour(), true).show();
 
                                     } else {
 
@@ -398,7 +462,7 @@ public class AddEvent extends AppCompatActivity {
                                         pickedDateTime.setDayOfMonth(now.plusDays(1).getDayOfMonth());
                                         pickedDateTime.setTime(0, 0, 0, 0);
 
-                                        Toast.makeText(AddEvent.this, "Choose a day after yesterday!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(ChangeEvent.this, "Choose a day after yesterday!", Toast.LENGTH_LONG).show();
 
                                     }
 
@@ -406,7 +470,7 @@ public class AddEvent extends AppCompatActivity {
 
                             };
 
-                            new android.app.DatePickerDialog(AddEvent.this, onDateSetListener, pickedDateTime.getYear(), pickedDateTime.getMonthOfYear() - 1, pickedDateTime.getDayOfMonth()).show();
+                            new android.app.DatePickerDialog(ChangeEvent.this, onDateSetListener, pickedDateTime.getYear(), pickedDateTime.getMonthOfYear() - 1, pickedDateTime.getDayOfMonth()).show();
 
                         }
 
@@ -502,7 +566,7 @@ public class AddEvent extends AppCompatActivity {
             final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
 
             materialDialogBuilder.title("Discard changes?");
-            materialDialogBuilder.content("This event will be deleted.");
+            materialDialogBuilder.content(editMode ? "All changes will be discarded." : "This event will be deleted.");
             materialDialogBuilder.positiveText("YES");
             materialDialogBuilder.positiveColorRes(R.color.black);
             materialDialogBuilder.negativeText("CANCEL");
@@ -520,11 +584,11 @@ public class AddEvent extends AppCompatActivity {
                     if (originNotification) {
 
                         finish();
-                        startActivity(new Intent(AddEvent.this, Main.class).putExtra("fragment", 6));
+                        startActivity(new Intent(ChangeEvent.this, Main.class).putExtra("fragment", 6));
 
                     } else {
 
-                        AddEvent.super.onBackPressed();
+                        ChangeEvent.super.onBackPressed();
 
                     }
 
@@ -622,11 +686,22 @@ public class AddEvent extends AppCompatActivity {
 
                 } else {
 
-                    databaseHelper.close();
+                    if (!editMode) {
 
-                    Toast.makeText(this, "Please select a due date!", Toast.LENGTH_LONG).show();
+                        databaseHelper.close();
 
-                    return true;
+                        Toast.makeText(this, "Please select a due date!", Toast.LENGTH_LONG).show();
+
+                        return true;
+
+                    } else {
+
+                        if (!timeChanged)
+                            eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim().isEmpty() ? "no-description" : descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), editEvent.getDateTime(), editEvent.isAttach(), remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+                        else
+                            eventToAdd = new Event(eventNameEditText.getText().toString().trim(), descriptionEditText.getText().toString().trim().isEmpty() ? "no-description" : descriptionEditText.getText().toString().trim(), type, classNameSpinner.getSelectedItem().toString(), pickedDateTime.toDateTime(), false, remindMeCheckBox.isChecked(), databaseHelper.getClassColor(classNameSpinner.getSelectedItem().toString()));
+
+                    }
 
                 }
 
@@ -642,6 +717,9 @@ public class AddEvent extends AppCompatActivity {
                 eventArrayList.addAll(DataSingleton.getInstance().getThisMonthEventArrayList());
                 eventArrayList.addAll(DataSingleton.getInstance().getBeyondThisMonthEventArrayList());
                 eventArrayList.addAll(DataSingleton.getInstance().getPastEventArrayList());
+
+                if (editMode)
+                    eventArrayList.remove(editEvent);
 
                 if (!eventArrayList.isEmpty()) {
 
@@ -709,11 +787,11 @@ public class AddEvent extends AppCompatActivity {
                 if (originNotification) {
 
                     finish();
-                    startActivity(new Intent(AddEvent.this, Main.class).putExtra("fragment", 6));
+                    startActivity(new Intent(ChangeEvent.this, Main.class).putExtra("fragment", 6));
 
                 } else {
 
-                    AddEvent.super.onBackPressed();
+                    ChangeEvent.super.onBackPressed();
 
                 }
 
@@ -749,7 +827,7 @@ public class AddEvent extends AppCompatActivity {
         final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
 
         materialDialogBuilder.title("Discard changes?");
-        materialDialogBuilder.content("This event will be deleted.");
+        materialDialogBuilder.content(editMode ? "All changes will be discarded." : "This event will be deleted.");
         materialDialogBuilder.positiveText("YES");
         materialDialogBuilder.positiveColorRes(R.color.black);
         materialDialogBuilder.negativeText("CANCEL");
@@ -767,11 +845,11 @@ public class AddEvent extends AppCompatActivity {
                 if (originNotification) {
 
                     finish();
-                    startActivity(new Intent(AddEvent.this, Main.class).putExtra("fragment", 6));
+                    startActivity(new Intent(ChangeEvent.this, Main.class).putExtra("fragment", 6));
 
                 } else {
 
-                    AddEvent.super.onBackPressed();
+                    ChangeEvent.super.onBackPressed();
 
                 }
 

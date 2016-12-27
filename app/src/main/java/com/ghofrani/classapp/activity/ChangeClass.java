@@ -60,11 +60,8 @@ public class ChangeClass extends AppCompatActivity {
 
             toolbar.setTitle("Add New Class");
 
-            if (!sharedPreferences.contains("show_toast_add_to_timetable")) {
-
+            if (!sharedPreferences.contains("show_toast_add_to_timetable"))
                 sharedPreferences.edit().putBoolean("show_toast_add_to_timetable", true).commit();
-
-            }
 
         } else {
 

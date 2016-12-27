@@ -211,7 +211,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
                     } else {
 
-                        startActivity(new Intent(Main.this, AddEvent.class));
+                        startActivity(new Intent(Main.this, ChangeEvent.class));
 
                     }
 

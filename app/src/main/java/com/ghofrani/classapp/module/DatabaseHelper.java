@@ -24,84 +24,84 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_MONDAY = "create table "
             + DatabaseContract.Monday.TABLE_NAME + " ("
-            + DatabaseContract.Monday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Monday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Monday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Monday.COLUMN_END_TIME + " TEXT,"
-            + DatabaseContract.Monday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Monday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Monday.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Monday.COLUMN_START_TIME + " TEXT, "
+            + DatabaseContract.Monday.COLUMN_END_TIME + " TEXT, "
+            + DatabaseContract.Monday.COLUMN_CUSTOM_LOCATION + " TEXT, "
             + DatabaseContract.Monday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_TUESDAY = "create table "
             + DatabaseContract.Tuesday.TABLE_NAME + " ("
-            + DatabaseContract.Tuesday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Tuesday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Tuesday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Tuesday.COLUMN_END_TIME + " TEXT,"
-            + DatabaseContract.Tuesday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Tuesday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Tuesday.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Tuesday.COLUMN_START_TIME + " TEXT, "
+            + DatabaseContract.Tuesday.COLUMN_END_TIME + " TEXT, "
+            + DatabaseContract.Tuesday.COLUMN_CUSTOM_LOCATION + " TEXT, "
             + DatabaseContract.Tuesday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_WEDNESDAY = "create table "
             + DatabaseContract.Wednesday.TABLE_NAME + " ("
-            + DatabaseContract.Wednesday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Wednesday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Wednesday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Wednesday.COLUMN_END_TIME + " TEXT,"
-            + DatabaseContract.Wednesday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Wednesday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Wednesday.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Wednesday.COLUMN_START_TIME + " TEXT, "
+            + DatabaseContract.Wednesday.COLUMN_END_TIME + " TEXT, "
+            + DatabaseContract.Wednesday.COLUMN_CUSTOM_LOCATION + " TEXT, "
             + DatabaseContract.Wednesday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_THURSDAY = "create table "
             + DatabaseContract.Thursday.TABLE_NAME + " ("
-            + DatabaseContract.Thursday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Thursday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Thursday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Thursday.COLUMN_END_TIME + " TEXT,"
-            + DatabaseContract.Thursday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Thursday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Thursday.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Thursday.COLUMN_START_TIME + " TEXT, "
+            + DatabaseContract.Thursday.COLUMN_END_TIME + " TEXT, "
+            + DatabaseContract.Thursday.COLUMN_CUSTOM_LOCATION + " TEXT, "
             + DatabaseContract.Thursday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_FRIDAY = "create table "
             + DatabaseContract.Friday.TABLE_NAME + " ("
-            + DatabaseContract.Friday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Friday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Friday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Friday.COLUMN_END_TIME + " TEXT,"
-            + DatabaseContract.Friday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Friday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Friday.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Friday.COLUMN_START_TIME + " TEXT, "
+            + DatabaseContract.Friday.COLUMN_END_TIME + " TEXT, "
+            + DatabaseContract.Friday.COLUMN_CUSTOM_LOCATION + " TEXT, "
             + DatabaseContract.Friday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_SATURDAY = "create table "
             + DatabaseContract.Saturday.TABLE_NAME + " ("
-            + DatabaseContract.Saturday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Saturday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Saturday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Saturday.COLUMN_END_TIME + " TEXT,"
-            + DatabaseContract.Saturday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Saturday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Saturday.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Saturday.COLUMN_START_TIME + " TEXT, "
+            + DatabaseContract.Saturday.COLUMN_END_TIME + " TEXT, "
+            + DatabaseContract.Saturday.COLUMN_CUSTOM_LOCATION + " TEXT, "
             + DatabaseContract.Saturday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_SUNDAY = "create table "
             + DatabaseContract.Sunday.TABLE_NAME + " ("
-            + DatabaseContract.Sunday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Sunday.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Sunday.COLUMN_START_TIME + " TEXT,"
-            + DatabaseContract.Sunday.COLUMN_END_TIME + " TEXT,"
-            + DatabaseContract.Sunday.COLUMN_CUSTOM_LOCATION + " TEXT,"
+            + DatabaseContract.Sunday.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Sunday.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Sunday.COLUMN_START_TIME + " TEXT, "
+            + DatabaseContract.Sunday.COLUMN_END_TIME + " TEXT, "
+            + DatabaseContract.Sunday.COLUMN_CUSTOM_LOCATION + " TEXT, "
             + DatabaseContract.Sunday.COLUMN_CUSTOM_TEACHER + " TEXT)";
 
     private static final String CREATE_CLASSINFO = "create table "
             + DatabaseContract.ClassInfo.TABLE_NAME + " ("
-            + DatabaseContract.ClassInfo.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.ClassInfo.COLUMN_NAME + " TEXT,"
-            + DatabaseContract.ClassInfo.COLUMN_LOCATION + " TEXT,"
-            + DatabaseContract.ClassInfo.COLUMN_TEACHER + " TEXT,"
+            + DatabaseContract.ClassInfo.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.ClassInfo.COLUMN_NAME + " TEXT, "
+            + DatabaseContract.ClassInfo.COLUMN_LOCATION + " TEXT, "
+            + DatabaseContract.ClassInfo.COLUMN_TEACHER + " TEXT, "
             + DatabaseContract.ClassInfo.COLUMN_COLOR + " INTEGER)";
 
     private static final String CREATE_EVENTS = "create table "
             + DatabaseContract.Events.TABLE_NAME + " ("
-            + DatabaseContract.Events.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + DatabaseContract.Events.COLUMN_NAME + " TEXT,"
-            + DatabaseContract.Events.COLUMN_DESCRIPTION + " TEXT,"
-            + DatabaseContract.Events.COLUMN_TYPE + " TEXT,"
-            + DatabaseContract.Events.COLUMN_CLASS + " TEXT,"
-            + DatabaseContract.Events.COLUMN_DATE_TIME + " TEXT,"
-            + DatabaseContract.Events.COLUMN_ATTACH + " BOOLEAN,"
+            + DatabaseContract.Events.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DatabaseContract.Events.COLUMN_NAME + " TEXT, "
+            + DatabaseContract.Events.COLUMN_DESCRIPTION + " TEXT, "
+            + DatabaseContract.Events.COLUMN_TYPE + " TEXT, "
+            + DatabaseContract.Events.COLUMN_CLASS + " TEXT, "
+            + DatabaseContract.Events.COLUMN_DATE_TIME + " TEXT, "
+            + DatabaseContract.Events.COLUMN_ATTACH + " BOOLEAN, "
             + DatabaseContract.Events.COLUMN_REMIND + " BOOLEAN)";
 
     public DatabaseHelper(Context context) {
@@ -242,8 +242,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 cursor = sqLiteDatabase.rawQuery("select * from "
                         + DatabaseContract.ClassInfo.TABLE_NAME + " where "
-                        + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
-                        + classesToInsert.get(i).getName() + "'", null);
+                                + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
+                        new String[]{classesToInsert.get(i).getName()});
 
                 cursor.moveToFirst();
 
@@ -302,10 +302,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Monday.TABLE_NAME + " where "
-                            + DatabaseContract.Monday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Monday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
+                                    + DatabaseContract.Monday.COLUMN_CLASS + "=? and "
+                                    + DatabaseContract.Monday.COLUMN_START_TIME + "=?",
+                            new String[]{classToRemove, startTime.toString()});
 
                     break;
 
@@ -313,10 +312,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Tuesday.TABLE_NAME + " where "
-                            + DatabaseContract.Tuesday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Tuesday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
+                                    + DatabaseContract.Tuesday.COLUMN_CLASS + "=? and "
+                                    + DatabaseContract.Tuesday.COLUMN_START_TIME + "=?",
+                            new String[]{classToRemove, startTime.toString()});
 
                     break;
 
@@ -324,10 +322,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Wednesday.TABLE_NAME + " where "
-                            + DatabaseContract.Wednesday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Wednesday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
+                                    + DatabaseContract.Wednesday.COLUMN_CLASS + "=? and "
+                                    + DatabaseContract.Wednesday.COLUMN_START_TIME + "=?",
+                            new String[]{classToRemove, startTime.toString()});
 
                     break;
 
@@ -335,10 +332,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Thursday.TABLE_NAME + " where "
-                            + DatabaseContract.Thursday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Thursday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
+                                    + DatabaseContract.Thursday.COLUMN_CLASS + "=? and "
+                                    + DatabaseContract.Thursday.COLUMN_START_TIME + "=?",
+                            new String[]{classToRemove, startTime.toString()});
 
                     break;
 
@@ -346,10 +342,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Friday.TABLE_NAME + " where "
-                            + DatabaseContract.Friday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Friday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
+                                    + DatabaseContract.Friday.COLUMN_CLASS + "=? and "
+                                    + DatabaseContract.Friday.COLUMN_START_TIME + "=?",
+                            new String[]{classToRemove, startTime.toString()});
 
                     break;
 
@@ -357,10 +352,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Saturday.TABLE_NAME + " where "
-                            + DatabaseContract.Saturday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Saturday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
+                                    + DatabaseContract.Saturday.COLUMN_CLASS + "=? and "
+                                    + DatabaseContract.Saturday.COLUMN_START_TIME + "=?",
+                            new String[]{classToRemove, startTime.toString()});
 
                     break;
 
@@ -368,10 +362,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     sqLiteDatabase.execSQL("delete from "
                             + DatabaseContract.Sunday.TABLE_NAME + " where "
-                            + DatabaseContract.Sunday.COLUMN_CLASS + "='"
-                            + classToRemove + "' and "
-                            + DatabaseContract.Sunday.COLUMN_START_TIME + "='"
-                            + startTime.toString() + "'");
+                                    + DatabaseContract.Sunday.COLUMN_CLASS + "=? and "
+                                    + DatabaseContract.Sunday.COLUMN_START_TIME + "=?",
+                            new String[]{classToRemove, startTime.toString()});
 
                     break;
 
@@ -393,48 +386,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Monday.TABLE_NAME + " where "
-                    + DatabaseContract.Monday.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Monday.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Tuesday.TABLE_NAME + " where "
-                    + DatabaseContract.Tuesday.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Tuesday.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Wednesday.TABLE_NAME + " where "
-                    + DatabaseContract.Wednesday.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Wednesday.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Thursday.TABLE_NAME + " where "
-                    + DatabaseContract.Thursday.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Thursday.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Friday.TABLE_NAME + " where "
-                    + DatabaseContract.Friday.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Friday.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Saturday.TABLE_NAME + " where "
-                    + DatabaseContract.Saturday.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Saturday.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Sunday.TABLE_NAME + " where "
-                    + DatabaseContract.Sunday.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Sunday.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.ClassInfo.TABLE_NAME + " where "
-                    + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
-                    + className + "'");
+                            + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
+                    new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Events.TABLE_NAME + " where "
-                    + DatabaseContract.Events.COLUMN_CLASS + "='"
-                    + className + "'");
+                            + DatabaseContract.Events.COLUMN_CLASS + "=?",
+                    new String[]{className});
 
         } finally {
 
@@ -473,8 +466,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
-                + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
-                + className + "'", null);
+                        + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
+                new String[]{className});
 
         final String[] locationTeacherColor = new String[3];
 
@@ -508,8 +501,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
                 + DatabaseContract.ClassInfo.TABLE_NAME + " where "
-                + DatabaseContract.ClassInfo.COLUMN_NAME + "='"
-                + className + "'", null);
+                        + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
+                new String[]{className});
 
         if (cursor.moveToNext()) {
 
@@ -603,10 +596,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Events.TABLE_NAME + " where "
-                    + DatabaseContract.Events.COLUMN_DATE_TIME + "='"
-                    + event.getDateTime().toString() + "' and "
-                    + DatabaseContract.Events.COLUMN_NAME + "='"
-                    + event.getName() + "'");
+                            + DatabaseContract.Events.COLUMN_DATE_TIME + "=? and "
+                            + DatabaseContract.Events.COLUMN_NAME + "=?",
+                    new String[]{event.getDateTime().toString(), event.getName()});
 
         } finally {
 

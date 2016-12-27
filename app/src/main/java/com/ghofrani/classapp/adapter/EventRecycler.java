@@ -1,6 +1,7 @@
 package com.ghofrani.classapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ghofrani.classapp.R;
+import com.ghofrani.classapp.activity.ChangeEvent;
 import com.ghofrani.classapp.model.Event;
 import com.ghofrani.classapp.model.EventWithID;
 import com.ghofrani.classapp.model.StandardClass;
@@ -44,9 +46,10 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     private final DateTimeFormatter shortDate;
     private final boolean is24Hour;
     private final DateTime tomorrow;
+    private final View.OnClickListener onClickListener;
     private EventListener eventListener;
 
-    public EventRecycler(final Context context) {
+    public EventRecycler(final Context context, final RecyclerView recyclerView) {
 
         setHasStableIds(true);
 
@@ -56,6 +59,17 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
         shortDate = DateTimeFormat.forPattern("dd/MM/yy");
         is24Hour = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("24_hour_time", true);
         tomorrow = DateTime.now().plusDays(1).withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
+
+        onClickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                context.startActivity(new Intent(context, ChangeEvent.class).putExtra("mode_edit", "true").putExtra("event_position", recyclerView.getChildLayoutPosition(view)));
+
+            }
+
+        };
 
     }
 
@@ -206,6 +220,12 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
             listEventViewHolder.colorIndicatorImageView.setColorFilter(event.getColor());
 
+            if (event.getType() == Event.TYPE_HOMEWORK)
+                listEventViewHolder.typeIndicatorTextView.setText("H");
+            else if (event.getType() == Event.TYPE_TASK)
+                listEventViewHolder.typeIndicatorTextView.setText("T");
+            else if (event.getType() == Event.TYPE_EXAM)
+                listEventViewHolder.typeIndicatorTextView.setText("E");
 
         } else {
 
@@ -232,10 +252,18 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     @Override
     public AbstractSwipeableItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if (viewType == VIEW_TYPE_HOMEWORK)
-            return new ListEventViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_event_recycler_event, parent, false));
-        else
+        if (viewType == VIEW_TYPE_HOMEWORK) {
+
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_event_recycler_event, parent, false);
+            view.setOnClickListener(onClickListener);
+
+            return new ListEventViewHolder(view);
+
+        } else {
+
             return new ListSectionViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_event_recycler_section, parent, false));
+
+        }
 
     }
 
@@ -250,7 +278,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
         if (result == Swipeable.RESULT_CANCELED)
             return new SwipeResultActionDefault();
         else
-            return new HomeworkSwipeResultActionRemoveItem(this, position);
+            return new EventSwipeResultActionRemoveItem(this, position);
 
     }
 
@@ -281,12 +309,12 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     private interface Swipeable extends SwipeableItemConstants {
     }
 
-    static class HomeworkSwipeResultActionRemoveItem extends SwipeResultActionRemoveItem {
+    static class EventSwipeResultActionRemoveItem extends SwipeResultActionRemoveItem {
 
         private final int position;
         private EventRecycler adapter;
 
-        public HomeworkSwipeResultActionRemoveItem(EventRecycler adapter, int position) {
+        public EventSwipeResultActionRemoveItem(EventRecycler adapter, int position) {
 
             this.adapter = adapter;
             this.position = position;
@@ -357,6 +385,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
         final TextView titleTextView;
         final TextView subtitleTextView;
         final ImageView colorIndicatorImageView;
+        final TextView typeIndicatorTextView;
 
         ListEventViewHolder(View itemView) {
 
@@ -366,6 +395,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
             titleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_name_text_view);
             subtitleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_due_text_view);
             colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_event_recycler_event_color_indicator_image_view);
+            typeIndicatorTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_type_indicator_text_view);
 
         }
 

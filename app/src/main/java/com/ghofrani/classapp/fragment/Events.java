@@ -140,7 +140,7 @@ public class Events extends Fragment {
 
             recyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
-            eventRecycler = new EventRecycler(getActivity());
+            eventRecycler = new EventRecycler(getActivity(), recyclerView);
             eventRecycler.setEventListener(new EventRecycler.EventListener() {
 
                 @Override

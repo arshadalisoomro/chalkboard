@@ -35,13 +35,14 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/color_indicator_homework" />
 
-                <ImageView
+                <TextView
 
-                    android:id="@+id/view_event_recycler_event_priority_indicator_image_view"
+                    android:id="@+id/view_event_recycler_event_type_indicator_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/priority" />
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
 
             </RelativeLayout>
 
