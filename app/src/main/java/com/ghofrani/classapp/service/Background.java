@@ -981,7 +981,7 @@ public class Background extends Service {
 
         }
 
-        String[] reminderTimes = new String[]{"no-reminders"};
+        String[] reminderTimes;
         ArrayList<String> reminderSwitches = new ArrayList<>();
         ArrayList<Event> reminderEvents = new ArrayList<>();
 
@@ -1202,7 +1202,7 @@ public class Background extends Service {
                     final Event event = reminderEvents.get(0);
 
                     final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
-                    final PendingIntent homeActivityPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_REMINDERS_ID, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    final PendingIntent homeActivityPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_REMINDERS_ID, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
                     final Intent doneIntent = new Intent(this, Background.class);
 
@@ -1335,7 +1335,7 @@ public class Background extends Service {
                     for (final Event event : reminderEvents) {
 
                         final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
-                        final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, ID, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, ID, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
                         final Intent doneIntent = new Intent(this, Background.class);
 
@@ -1463,7 +1463,7 @@ public class Background extends Service {
                     }
 
                     final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
-                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, NOTIFICATION_REMINDERS_ID, homeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, NOTIFICATION_REMINDERS_ID, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.mipmap.ic_launcher)
