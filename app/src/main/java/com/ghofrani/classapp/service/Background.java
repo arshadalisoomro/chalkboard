@@ -50,6 +50,8 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static com.ghofrani.classapp.R.drawable.event;
+
 public class Background extends Service {
 
     private static IntentFilter backgroundIntentFilter;
@@ -57,6 +59,8 @@ public class Background extends Service {
 
     private final int NOTIFICATION_CURRENT_CLASS_ID = 0;
     private final int NOTIFICATION_NEXT_CLASS_ID = 1;
+    private final int NOTIFICATION_REMINDERS_ID = 2;
+    private final int ID_EVENTS = 6;
 
     private int progressBarId;
     private int progressTextId;
@@ -195,7 +199,8 @@ public class Background extends Service {
 
         unregisterReceiver(backgroundBroadcastReceiver);
 
-        notificationManager.cancelAll();
+        notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+        notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
 
         if (handler != null) {
 
@@ -232,9 +237,7 @@ public class Background extends Service {
                 if (DataSingleton.getInstance().isReactToBroadcastData()) {
 
                     getData();
-
-                    if (DataSingleton.getInstance().isReactToBroadcastEvents())
-                        getEvents();
+                    getEvents();
 
                     if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_DATE_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
 
@@ -321,7 +324,9 @@ public class Background extends Service {
 
                     if (nextToCurrentTransition) {
 
-                        notificationManager.cancelAll();
+                        notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+                        notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
+
                         nextToCurrentTransition = false;
 
                     }
@@ -330,7 +335,9 @@ public class Background extends Service {
 
                     if (simpleToDetailedTransition) {
 
-                        notificationManager.cancelAll();
+                        notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+                        notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
+
                         simpleToDetailedTransition = false;
 
                     }
@@ -576,7 +583,7 @@ public class Background extends Service {
                             .setColor(finalCurrentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
                             .setPriority(Notification.PRIORITY_MAX)
-                            .addAction(R.drawable.event, "ADD EVENT", addEventActivityIntent)
+                            .addAction(event, "ADD EVENT", addEventActivityIntent)
                             .setContentTitle(finalCurrentClass.getName())
                             .setWhen(0);
 
@@ -656,7 +663,8 @@ public class Background extends Service {
                 currentToNextTransition = true;
                 nextToCurrentTransition = false;
 
-                notificationManager.cancelAll();
+                notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+                notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
 
                 if (noNotificationRunnable == null) {
 
@@ -730,7 +738,9 @@ public class Background extends Service {
 
             if (currentToNextTransition) {
 
-                notificationManager.cancelAll();
+                notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+                notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
+
                 currentToNextTransition = false;
 
             }
@@ -768,7 +778,8 @@ public class Background extends Service {
 
             } else {
 
-                notificationManager.cancelAll();
+                notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+                notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
 
             }
 
@@ -783,7 +794,8 @@ public class Background extends Service {
             detailedToSimpleTransition = false;
             simpleToDetailedTransition = false;
 
-            notificationManager.cancelAll();
+            notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+            notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
 
         }
 
@@ -846,7 +858,7 @@ public class Background extends Service {
         final ArrayList<Event> beyondThisMonthEventArrayList = new ArrayList<>();
         final ArrayList<Event> pastEventArrayList = new ArrayList<>();
 
-        final DateTime today = DateTime.now().withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
+        final DateTime today = new DateTime().withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
         final DateTime tomorrow = today.plusDays(1);
 
         boolean thisWeekEnabled = true;
@@ -944,6 +956,16 @@ public class Background extends Service {
 
         }
 
+        String[] reminderTimes = sharedPreferences.getStringSet("reminder_times", null) == null ? new String[]{"no-reminders"} : sharedPreferences.getStringSet("reminder_times", null).toArray(new String[]{});
+
+        final ArrayList<String> reminderSwitches = new ArrayList<>();
+
+        if (!reminderTimes[0].equals("no-reminders"))
+            for (final String switchString : reminderTimes)
+                reminderSwitches.add(switchString);
+
+        final ArrayList<Event> reminderEvents = new ArrayList<>();
+
         final DateTimeZone dateTimeZone = DateTimeZone.getDefault();
 
         try {
@@ -960,9 +982,79 @@ public class Background extends Service {
 
                     todayEventArrayList.add(event);
 
+                    if (event.isRemind()) {
+
+                        if (!reminderSwitches.isEmpty()) {
+
+                            if (reminderSwitches.contains("0")) {
+
+                                if (reminderSwitches.contains("1")) {
+
+                                    if (!event.getDateTime().isAfter(today.withTime(6, 0, 0, 0))) {
+
+                                        if (event.getDateTime().minusHours(1).isEqual(today))
+                                            reminderEvents.add(event);
+
+                                    } else {
+
+                                        if (event.getDateTime().minusHours(1).isEqual(today))
+                                            reminderEvents.add(event);
+                                        else if (today.isEqual(today.withTime(6, 0, 0, 0)))
+                                            reminderEvents.add(event);
+
+                                    }
+
+                                } else {
+
+                                    if (event.getDateTime().minusHours(1).isEqual(today))
+                                        reminderEvents.add(event);
+
+                                }
+
+                            } else if (reminderSwitches.contains("1")) {
+
+                                if (today.isEqual(today.withTime(6, 0, 0, 0)))
+                                    reminderEvents.add(event);
+
+                            }
+
+                        }
+
+                    }
+
                 } else if (tomorrow.withTimeAtStartOfDay().isEqual(event.getDateTime().withTimeAtStartOfDay())) {
 
                     tomorrowEventArrayList.add(event);
+
+                    if (event.isRemind()) {
+
+                        if (!reminderSwitches.isEmpty()) {
+
+                            if (reminderSwitches.contains("2")) {
+
+                                if (today.isEqual(event.getDateTime().minusDays(1).withTime(21, 0, 0, 0)))
+                                    reminderEvents.add(event);
+
+                            }
+
+                            if (reminderSwitches.contains("3")) {
+
+                                if (today.isEqual(event.getDateTime().minusDays(1).withTime(18, 0, 0, 0)))
+                                    reminderEvents.add(event);
+
+                            }
+
+                            if (reminderSwitches.contains("4")) {
+
+                                if (Utils.getClassesArrayListOfDay(today.getDayOfWeek()) != null)
+                                    if (today.isEqual(Utils.getClassesArrayListOfDay(today.getDayOfWeek()).get(Utils.getClassesArrayListOfDay(today.getDayOfWeek()).size() - 1).getEndTime().toDateTimeToday()))
+                                        reminderEvents.add(event);
+
+                            }
+
+                        }
+
+                    }
 
                 } else if (thisWeek.contains(event.getDateTime()) && thisWeekEnabled) {
 
@@ -971,6 +1063,15 @@ public class Background extends Service {
                 } else if (nextWeek.contains(event.getDateTime())) {
 
                     nextWeekEventArrayList.add(event);
+
+                    if (event.isRemind()) {
+
+                        if (!reminderSwitches.isEmpty())
+                            if (reminderSwitches.contains("5"))
+                                if (event.getDateTime().minusDays(7).withTimeAtStartOfDay().equals(today.withTimeAtStartOfDay()))
+                                    reminderEvents.add(event);
+
+                    }
 
                 } else if (thisMonth.contains(event.getDateTime()) && thisMonthEnabled) {
 
@@ -1046,6 +1147,267 @@ public class Background extends Service {
 
         DataSingleton.getInstance().setThisWeekEnd(thisWeekEndDateTime);
         DataSingleton.getInstance().setNextWeekEnd(nextWeek.getEnd());
+
+        if (!reminderEvents.isEmpty()) {
+
+            final DateTimeFormatter dateTimeFormatterDayOfWeekString = DateTimeFormat.forPattern("EEEE");
+            final DateTimeFormatter dateTimeFormatterTime24Hour = DateTimeFormat.forPattern("HH:mm");
+
+            final boolean is24Hour = sharedPreferences.getBoolean("24_hour_time", true);
+
+            if (reminderEvents.size() == 1) {
+
+                final Event event = reminderEvents.get(0);
+
+                final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
+                final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
+
+                /*
+
+                final Intent doneIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
+                final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                */
+
+                notificationCompatBuilder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setColor(event.getColor())
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setContentIntent(addHomeActivityIntent)
+                        .setPriority(Notification.PRIORITY_MAX)
+                        //.addAction(R.drawable.event, "DONE", addEventActivityIntent)
+                        .setContentTitle(event.getClassName() + " • " + event.getName());
+
+                String contentString = "";
+
+                if (event.getType() == Event.TYPE_HOMEWORK)
+                    contentString += "Homework due ";
+                else if (event.getType() == Event.TYPE_TASK)
+                    contentString += "Task due ";
+                else if (event.getType() == Event.TYPE_EXAM)
+                    contentString += "Exam at ";
+
+                if (event.isAttach()) {
+
+                    ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(event.getDateTime().getDayOfWeek());
+                    boolean completed = false;
+
+                    if (classesList != null) {
+
+                        int index = 0;
+
+                        while (index < classesList.size() && !completed) {
+
+                            if (classesList.get(index).getName().equals(event.getClassName())) {
+
+                                if (classesList.get(index).getStartTime().equals(event.getDateTime().toLocalTime())) {
+
+                                    if (todayEventArrayList.contains(event)) {
+
+                                        contentString += "today's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                                    } else if (tomorrowEventArrayList.contains(event)) {
+
+                                        contentString += "tomorrow's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                                    } else if (nextWeekEventArrayList.contains(event)) {
+
+                                        contentString += dateTimeFormatterDayOfWeekString.print(event.getDateTime()) + "'s class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                                    }
+
+                                    completed = true;
+
+                                }
+
+                            }
+
+                            index++;
+
+                        }
+
+                    }
+
+                    if (!completed) {
+
+                        if (todayEventArrayList.contains(event)) {
+
+                            contentString += "today's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                        } else if (tomorrowEventArrayList.contains(event)) {
+
+                            contentString += "tomorrow's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                        } else if (nextWeekEventArrayList.contains(event)) {
+
+                            contentString += dateTimeFormatterDayOfWeekString.print(event.getDateTime()) + "'s class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                        }
+
+                    }
+
+                } else {
+
+                    if (todayEventArrayList.contains(event)) {
+
+                        contentString += "today at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                    } else if (tomorrowEventArrayList.contains(event)) {
+
+                        contentString += "tomorrow at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                    } else if (nextWeekEventArrayList.contains(event)) {
+
+                        contentString += dateTimeFormatterDayOfWeekString.print(event.getDateTime()) + " at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                    }
+
+                }
+
+                notificationCompatBuilder.setContentText(contentString);
+
+                notificationManager.notify(NOTIFICATION_REMINDERS_ID, notificationCompatBuilder.build());
+
+            } else if (reminderEvents.size() > 1) {
+
+                String reminderGroup = "reminder_group";
+                int ID = NOTIFICATION_REMINDERS_ID + 1;
+
+                for (final Event event : reminderEvents) {
+
+                    final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
+                    final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
+
+                /*
+
+                final Intent doneIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
+                final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                */
+
+                    notificationCompatBuilder = new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setAutoCancel(true)
+                            .setContentIntent(addHomeActivityIntent)
+                            .setGroup(reminderGroup)
+                            //.addAction(R.drawable.event, "DONE", addEventActivityIntent)
+                            .setContentTitle(event.getClassName() + " • " + event.getName());
+
+                    String contentString = "";
+
+                    if (event.getType() == Event.TYPE_HOMEWORK)
+                        contentString += "Homework due ";
+                    else if (event.getType() == Event.TYPE_TASK)
+                        contentString += "Task due ";
+                    else if (event.getType() == Event.TYPE_EXAM)
+                        contentString += "Exam at ";
+
+                    if (event.isAttach()) {
+
+                        ArrayList<StandardClass> classesList = Utils.getClassesArrayListOfDay(event.getDateTime().getDayOfWeek());
+                        boolean completed = false;
+
+                        if (classesList != null) {
+
+                            int index = 0;
+
+                            while (index < classesList.size() && !completed) {
+
+                                if (classesList.get(index).getName().equals(event.getClassName())) {
+
+                                    if (classesList.get(index).getStartTime().equals(event.getDateTime().toLocalTime())) {
+
+                                        if (todayEventArrayList.contains(event)) {
+
+                                            contentString += "today's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                                        } else if (tomorrowEventArrayList.contains(event)) {
+
+                                            contentString += "tomorrow's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                                        } else if (nextWeekEventArrayList.contains(event)) {
+
+                                            contentString += dateTimeFormatterDayOfWeekString.print(event.getDateTime()) + "'s class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                                        }
+
+                                        completed = true;
+
+                                    }
+
+                                }
+
+                                index++;
+
+                            }
+
+                        }
+
+                        if (!completed) {
+
+                            if (todayEventArrayList.contains(event)) {
+
+                                contentString += "today's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                            } else if (tomorrowEventArrayList.contains(event)) {
+
+                                contentString += "tomorrow's class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                            } else if (nextWeekEventArrayList.contains(event)) {
+
+                                contentString += dateTimeFormatterDayOfWeekString.print(event.getDateTime()) + "'s class at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                            }
+
+                        }
+
+                    } else {
+
+                        if (todayEventArrayList.contains(event)) {
+
+                            contentString += "today at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                        } else if (tomorrowEventArrayList.contains(event)) {
+
+                            contentString += "tomorrow at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                        } else if (nextWeekEventArrayList.contains(event)) {
+
+                            contentString += dateTimeFormatterDayOfWeekString.print(event.getDateTime()) + " at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
+
+                        }
+
+                    }
+
+                    notificationCompatBuilder.setContentText(contentString);
+
+                    notificationManager.notify(ID, notificationCompatBuilder.build());
+
+                    ID++;
+
+                }
+
+                final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
+                final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
+
+                notificationCompatBuilder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setColor(sharedPreferences.getInt("primary_color", ContextCompat.getColor(this, R.color.teal)))
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setContentTitle("Chalkboard Reminders")
+                        .setContentIntent(addHomeActivityIntent)
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .setContentText("You have " + reminderEvents.size() + " reminders")
+                        .setGroup(reminderGroup)
+                        .setGroupSummary(true);
+
+                notificationManager.notify(NOTIFICATION_REMINDERS_ID, notificationCompatBuilder.build());
+
+            }
+
+        }
 
         EventBus.getDefault().post(new UpdateEventsUI());
 

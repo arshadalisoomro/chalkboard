@@ -391,7 +391,9 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             if (tabPosition == 0) {
 
-                if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("class_notification", true))
+                final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                if (sharedPreferences.getBoolean("class_notification", true) && sharedPreferences.getBoolean("next_class_notification", true))
                     getMenuInflater().inflate(R.menu.toolbar_toggle_notifications_on, menu);
                 else
                     getMenuInflater().inflate(R.menu.toolbar_toggle_notifications_off, menu);

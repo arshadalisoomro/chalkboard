@@ -100,7 +100,6 @@ public class Events extends Fragment {
         }
 
         EventBus.getDefault().unregister(this);
-        DataSingleton.getInstance().setReactToBroadcastEvents(true);
 
         super.onPause();
 
@@ -177,8 +176,6 @@ public class Events extends Fragment {
 
     private void showSnackbar() {
 
-        DataSingleton.getInstance().setReactToBroadcastEvents(false);
-
         deleteEvent();
 
         snackbar = Snackbar.make(getView().findViewById(R.id.fragment_events_container_relative_layout), "1 event done!", Snackbar.LENGTH_LONG);
@@ -237,7 +234,6 @@ public class Events extends Fragment {
 
                 context = null;
 
-                DataSingleton.getInstance().setReactToBroadcastEvents(true);
                 EventBus.getDefault().post(new Update(false, true, false, false));
 
             } else {

@@ -60,7 +60,6 @@ public class DataSingleton {
     private boolean isChangedFirstDay;
 
     private boolean reactToBroadcastData;
-    private boolean reactToBroadcastEvents;
 
     private DataSingleton() {
 
@@ -102,7 +101,6 @@ public class DataSingleton {
         isChangedFirstDay = false;
 
         reactToBroadcastData = true;
-        reactToBroadcastEvents = true;
 
     }
 
@@ -381,14 +379,6 @@ public class DataSingleton {
 
     public void setReactToBroadcastData(boolean reactToBroadcastData) {
         this.reactToBroadcastData = reactToBroadcastData;
-    }
-
-    public boolean isReactToBroadcastEvents() {
-        return reactToBroadcastEvents;
-    }
-
-    public void setReactToBroadcastEvents(boolean reactToBroadcastEvents) {
-        this.reactToBroadcastEvents = reactToBroadcastEvents;
     }
 
 }

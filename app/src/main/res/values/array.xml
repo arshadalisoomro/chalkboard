@@ -28,6 +28,28 @@
 
     </string-array>
 
+    <string-array name="reminder_times_text">
+
+        <item>One hour before</item>
+        <item>At 6 AM on the due date</item>
+        <item>At 9 PM the day before</item>
+        <item>At 6 PM the day before</item>
+        <item>At the end of your timetable the day before</item>
+        <item>At 6 PM seven days earlier</item>
+
+    </string-array>
+
+    <string-array name="reminder_times_values">
+
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+
+    </string-array>
+
     <string-array name="days_of_week">
 
         <item>Monday</item>
