@@ -7,10 +7,10 @@
 
     <item
 
-        android:id="@+id/toolbar_toggle_notification_off_item"
-        android:icon="@drawable/notification_off"
+        android:id="@+id/toolbar_toggle_notification_on_item"
+        android:icon="@drawable/notifications_on"
         android:orderInCategory="1"
-        android:title="Notification On"
+        android:title="Notifications Off"
         app:showAsAction="always" />
 
 </menu>

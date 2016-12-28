@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.CollapseLists;
+import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.fragment.Classes;
 import com.ghofrani.classapp.fragment.Day;
 import com.ghofrani.classapp.fragment.Events;
@@ -250,6 +251,32 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             return true;
 
+        } else if (menuItem.getItemId() == R.id.toolbar_toggle_notification_off_item) {
+
+            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            sharedPreferences.edit().putBoolean("class_notification", true).commit();
+            sharedPreferences.edit().putBoolean("next_class_notification", true).commit();
+
+            EventBus.getDefault().post(new Update(true, false, false, false));
+
+            invalidateOptionsMenu();
+
+            return true;
+
+        } else if (menuItem.getItemId() == R.id.toolbar_toggle_notification_on_item) {
+
+            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            sharedPreferences.edit().putBoolean("class_notification", false).commit();
+            sharedPreferences.edit().putBoolean("next_class_notification", false).commit();
+
+            EventBus.getDefault().post(new Update(true, false, false, false));
+
+            invalidateOptionsMenu();
+
+            return true;
+
         } else if (menuItem.getItemId() == R.id.toolbar_events_filter_item) {
 
             new MaterialDialog.Builder(this)
@@ -364,7 +391,10 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
             if (tabPosition == 0) {
 
-                getMenuInflater().inflate(R.menu.toolbar_toggle_notification_on, menu);
+                if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("class_notification", true))
+                    getMenuInflater().inflate(R.menu.toolbar_toggle_notifications_on, menu);
+                else
+                    getMenuInflater().inflate(R.menu.toolbar_toggle_notifications_off, menu);
 
             } else if (tabPosition == 1) {
 
@@ -554,6 +584,8 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             performRecreate();
         else if (DataSingleton.getInstance().isChangedFirstDay())
             performRecreate();
+
+        invalidateOptionsMenu();
 
     }
 
