@@ -106,6 +106,20 @@ public class Background extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        if (intent != null) {
+
+            if (intent.hasExtra("name")) {
+
+                databaseHelper.deleteEventByProperties(intent.getStringExtra("name"), intent.getStringExtra("date_time"));
+
+                notificationManager.cancel(intent.getIntExtra("notification_id", NOTIFICATION_REMINDERS_ID));
+
+                getEvents();
+
+            }
+
+        }
+
         return START_STICKY;
 
     }
@@ -557,7 +571,9 @@ public class Background extends Service {
 
                     if (nextToCurrentTransition) {
 
-                        notificationManager.cancelAll();
+                        notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+                        notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
+
                         nextToCurrentTransition = false;
 
                     }
@@ -566,7 +582,9 @@ public class Background extends Service {
 
                     if (detailedToSimpleTransition) {
 
-                        notificationManager.cancelAll();
+                        notificationManager.cancel(NOTIFICATION_CURRENT_CLASS_ID);
+                        notificationManager.cancel(NOTIFICATION_NEXT_CLASS_ID);
+
                         detailedToSimpleTransition = false;
 
                     }
@@ -1069,7 +1087,8 @@ public class Background extends Service {
                         if (!reminderSwitches.isEmpty())
                             if (reminderSwitches.contains("5"))
                                 if (event.getDateTime().minusDays(7).withTimeAtStartOfDay().equals(today.withTimeAtStartOfDay()))
-                                    reminderEvents.add(event);
+                                    if (today.equals(today.withTime(18, 0, 0, 0)))
+                                        reminderEvents.add(event);
 
                     }
 
@@ -1160,23 +1179,24 @@ public class Background extends Service {
                 final Event event = reminderEvents.get(0);
 
                 final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
-                final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
+                final PendingIntent homeActivityPendingIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                /*
+                final Intent doneIntent = new Intent(this, Background.class);
 
-                final Intent doneIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
-                final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                doneIntent.putExtra("name", event.getName());
+                doneIntent.putExtra("date_time", event.getDateTime().toString());
+                doneIntent.putExtra("notification_id", NOTIFICATION_REMINDERS_ID);
 
-                */
+                final PendingIntent donePendingIntent = PendingIntent.getService(this, 0, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
                 notificationCompatBuilder = new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setColor(event.getColor())
                         .setAutoCancel(true)
                         .setDefaults(Notification.DEFAULT_ALL)
-                        .setContentIntent(addHomeActivityIntent)
+                        .setContentIntent(homeActivityPendingIntent)
                         .setPriority(Notification.PRIORITY_MAX)
-                        //.addAction(R.drawable.event, "DONE", addEventActivityIntent)
+                        .addAction(R.drawable.event, "DONE", donePendingIntent)
                         .setContentTitle(event.getClassName() + " • " + event.getName());
 
                 String contentString = "";
@@ -1249,6 +1269,9 @@ public class Background extends Service {
 
                 } else {
 
+                    if (event.getType() == Event.TYPE_EXAM)
+                        contentString = contentString.replace("at ", "");
+
                     if (todayEventArrayList.contains(event)) {
 
                         contentString += "today at " + (is24Hour ? dateTimeFormatterTime24Hour.print(event.getDateTime()) : dateTimeFormatterAMPM.print(event.getDateTime()));
@@ -1279,19 +1302,20 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                /*
+                    final Intent doneIntent = new Intent(this, Background.class);
 
-                final Intent doneIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
-                final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    doneIntent.putExtra("name", event.getName());
+                    doneIntent.putExtra("date_time", event.getDateTime().toString());
+                    doneIntent.putExtra("notification_id", ID);
 
-                */
+                    final PendingIntent donePendingIntent = PendingIntent.getService(this, 0, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setAutoCancel(true)
                             .setContentIntent(addHomeActivityIntent)
                             .setGroup(reminderGroup)
-                            //.addAction(R.drawable.event, "DONE", addEventActivityIntent)
+                            .addAction(R.drawable.event, "DONE", donePendingIntent)
                             .setContentTitle(event.getClassName() + " • " + event.getName());
 
                     String contentString = "";

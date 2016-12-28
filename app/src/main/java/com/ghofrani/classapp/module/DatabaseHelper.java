@@ -608,6 +608,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void deleteEventByProperties(String name, String datetime) {
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        try {
+
+            sqLiteDatabase.execSQL("delete from "
+                            + DatabaseContract.Events.TABLE_NAME + " where "
+                            + DatabaseContract.Events.COLUMN_DATE_TIME + "=? and "
+                            + DatabaseContract.Events.COLUMN_NAME + "=?",
+                    new String[]{datetime, name});
+
+        } finally {
+
+            sqLiteDatabase.close();
+
+        }
+
+    }
+
     public void flushEvents(ArrayList<Event> eventsToAdd) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
