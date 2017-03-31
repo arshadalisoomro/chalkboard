@@ -597,8 +597,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("delete from "
                     + DatabaseContract.Events.TABLE_NAME + " where "
                             + DatabaseContract.Events.COLUMN_DATE_TIME + "=? and "
-                            + DatabaseContract.Events.COLUMN_NAME + "=?",
-                    new String[]{event.getDateTime().toString(), event.getName()});
+                            + DatabaseContract.Events.COLUMN_NAME + "=? and "
+                            + DatabaseContract.Events.COLUMN_CLASS + "=? and "
+                            + DatabaseContract.Events.COLUMN_TYPE + "=?",
+                    new String[]{event.getDateTime().toString(), event.getName(), event.getClassName(), String.valueOf(event.getType())});
 
         } finally {
 

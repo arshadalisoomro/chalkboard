@@ -718,14 +718,38 @@ public class ChangeEvent extends AppCompatActivity {
                 eventArrayList.addAll(DataSingleton.getInstance().getBeyondThisMonthEventArrayList());
                 eventArrayList.addAll(DataSingleton.getInstance().getPastEventArrayList());
 
-                if (editMode)
-                    eventArrayList.remove(editEvent);
+                if (editMode) {
+
+                    for (int i = 0; i < eventArrayList.size(); i++) {
+
+                        if (editEvent.getDateTime().isEqual(eventArrayList.get(i).getDateTime()))
+                            if (editEvent.getName().equals(eventArrayList.get(i).getName()))
+                                if (editEvent.getClassName().equals(eventArrayList.get(i).getClassName()))
+                                    if (editEvent.getType() == eventArrayList.get(i).getType())
+                                        eventArrayList.remove(i);
+
+                    }
+
+                }
+
+                boolean cancel = false;
 
                 if (!eventArrayList.isEmpty()) {
 
                     index = 0;
 
                     while (!inserted && index < eventArrayList.size()) {
+
+                        if (eventToAdd.getDateTime().isEqual(eventArrayList.get(index).getDateTime()))
+                            if (eventToAdd.getName().equals(eventArrayList.get(index).getName()))
+                                if (eventToAdd.getClassName().equals(eventArrayList.get(index).getClassName()))
+                                    if (eventToAdd.getType() == eventArrayList.get(index).getType()) {
+
+                                        Toast.makeText(this, "An event with this name, class, date and type already exists!", Toast.LENGTH_LONG).show();
+                                        cancel = true;
+                                        break;
+
+                                    }
 
                         if (index == 0) {
 
@@ -762,6 +786,9 @@ public class ChangeEvent extends AppCompatActivity {
                     eventArrayList.add(eventToAdd);
 
                 }
+
+                if (cancel)
+                    return true;
 
                 try {
 
