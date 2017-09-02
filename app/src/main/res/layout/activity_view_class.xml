@@ -3,84 +3,63 @@
 <LinearLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-
-        android:id="@+id/view_class_toolbar"
-        layout="@layout/view_toolbar_padded" />
-
-    <ScrollView
+    <android.support.design.widget.CoordinatorLayout
 
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <RelativeLayout
+        <android.support.design.widget.AppBarLayout
 
             android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+
+                android:id="@+id/activity_view_class_toolbar"
+                layout="@layout/view_toolbar_padded_without_elevation" />
+
+            <android.support.design.widget.TabLayout
+
+                android:id="@+id/activity_view_class_tab_layout"
+                style="@style/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"
+                app:tabMode="fixed" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v4.view.ViewPager
+
+                android:id="@+id/activity_view_class_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="104dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+
+            android:id="@+id/activity_view_class_floating_action_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:visibility="invisible" />
 
-            <android.support.v7.widget.CardView
-
-                android:id="@+id/activity_view_class_no_classes_card_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:visibility="gone">
-
-                <TextView
-
-                    android:id="@+id/activity_view_class_no_classes_card_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:text="Class is not in timetable."
-                    android:textSize="15sp" />
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-
-                android:id="@+id/activity_view_classes_next_classes_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:visibility="gone">
-
-                <RelativeLayout
-
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp">
-
-                    <ExpandableListView
-
-                        android:id="@+id/activity_view_classes_next_classes_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:childDivider="#d3d3d3"
-                        android:dividerHeight="1dp"
-                        android:layoutDirection="rtl"
-                        android:scrollbars="none">
-
-                    </ExpandableListView>
-
-                </RelativeLayout>
-
-            </android.support.v7.widget.CardView>
-
-        </RelativeLayout>
-
-    </ScrollView>
+    </android.support.design.widget.CoordinatorLayout>
 
 </LinearLayout>

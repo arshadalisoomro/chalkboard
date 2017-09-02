@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -88,7 +89,7 @@ public class ViewClassExpandableList extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_expandable_list_group, parent, false);
 
-        final TextView listGroupTitleTextView = (TextView) convertView.findViewById(R.id.view_expandable_list_group_title_text_view);
+        final TextView listGroupTitleTextView = convertView.findViewById(R.id.view_expandable_list_group_title_text_view);
         listGroupTitleTextView.setText(groupTitle);
 
         return convertView;
@@ -104,10 +105,10 @@ public class ViewClassExpandableList extends BaseExpandableListAdapter {
         final StandardClass standardClass = datedStandardClassArrayList.get(childPosition).getStandardClass();
         final DateTime standardClassDateTime = datedStandardClassArrayList.get(childPosition).getDateTime();
 
-        final RelativeLayout listChildRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.view_timed_class_child_combined_relative_layout);
-        final TextView listChildTitleTextView = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_title_text_view);
-        final TextView listChildLocationTeacherTextView = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_location_teacher_text_view);
-        final TextView listChildTitleTextViewCentered = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
+        final RelativeLayout listChildRelativeLayout = convertView.findViewById(R.id.view_timed_class_child_combined_relative_layout);
+        final TextView listChildTitleTextView = convertView.findViewById(R.id.view_timed_class_child_combined_title_text_view);
+        final TextView listChildLocationTeacherTextView = convertView.findViewById(R.id.view_timed_class_child_combined_location_teacher_text_view);
+        final TextView listChildTitleTextViewCentered = convertView.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
 
         if (standardClass.hasLocation()) {
 
@@ -177,8 +178,11 @@ public class ViewClassExpandableList extends BaseExpandableListAdapter {
 
         }
 
-        final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_time_text_view);
-        listChildTimeTextView.setText(standardClass.getStartTimeString(true) + " - " + standardClass.getEndTimeString(true));
+        final TextView listChildTimeTextView = convertView.findViewById(R.id.view_timed_class_child_combined_time_text_view);
+        listChildTimeTextView.setText(standardClass.getStartTimeString(true) + "\n" + standardClass.getEndTimeString(true));
+
+        final ImageView listChildColorIndicator = convertView.findViewById(R.id.view_timed_class_child_combined_color_indicator_image_view);
+        listChildColorIndicator.setColorFilter(standardClass.getColor());
 
         return convertView;
 
