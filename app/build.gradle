@@ -58,7 +58,4 @@ dependencies {
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.2'
     compile 'com.facebook.stetho:stetho:1.5.0'
     compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-    compile('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6@aar') {
-        transitive = true
-    }
 }

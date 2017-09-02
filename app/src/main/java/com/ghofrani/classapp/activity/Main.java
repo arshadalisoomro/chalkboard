@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.CollapseLists;
 import com.ghofrani.classapp.event.Update;
@@ -74,12 +73,12 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+        toolbar = findViewById(R.id.activity_main_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setTitle("Overview");
         setSupportActionBar(toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        drawerLayout = findViewById(R.id.main_drawer_layout);
 
         final ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
@@ -88,15 +87,15 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         actionBarDrawerToggle.syncState();
 
-        linearLayout = (LinearLayout) findViewById(R.id.activity_main_linear_layout);
+        linearLayout = findViewById(R.id.activity_main_linear_layout);
 
-        overviewTabLayout = (TabLayout) findViewById(R.id.activity_main_overview_tab_layout);
-        overviewViewPager = (ViewPager) findViewById(R.id.activity_main_overview_view_pager);
+        overviewTabLayout = findViewById(R.id.activity_main_overview_tab_layout);
+        overviewViewPager = findViewById(R.id.activity_main_overview_view_pager);
 
-        timetableTabLayout = (TabLayout) findViewById(R.id.activity_main_timetable_tab_layout);
-        timetableViewPager = (ViewPager) findViewById(R.id.activity_main_timetable_view_pager);
+        timetableTabLayout = findViewById(R.id.activity_main_timetable_tab_layout);
+        timetableViewPager = findViewById(R.id.activity_main_timetable_view_pager);
 
-        navigationView = (NavigationView) findViewById(R.id.activity_main_navigation_view);
+        navigationView = findViewById(R.id.activity_main_navigation_view);
         navigationView.setCheckedItem(R.id.drawer_overview_item);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
@@ -198,7 +197,7 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
 
         });
 
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.activity_main_floating_action_button);
+        floatingActionButton = findViewById(R.id.activity_main_floating_action_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -274,24 +273,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
             EventBus.getDefault().post(new Update(true, false, false, false));
 
             invalidateOptionsMenu();
-
-            return true;
-
-        } else if (menuItem.getItemId() == R.id.toolbar_events_filter_item) {
-
-            new MaterialDialog.Builder(this)
-                    .title("Filter by...")
-                    .items(new String[]{"Homework", "Tasks", "Exams"})
-                    .itemsCallback(new MaterialDialog.ListCallback() {
-
-                        @Override
-                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-
-
-                        }
-
-                    })
-                    .show();
 
             return true;
 
@@ -397,10 +378,6 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
                     getMenuInflater().inflate(R.menu.toolbar_toggle_notifications_on, menu);
                 else
                     getMenuInflater().inflate(R.menu.toolbar_toggle_notifications_off, menu);
-
-            } else if (tabPosition == 1) {
-
-                getMenuInflater().inflate(R.menu.toolbar_events, menu);
 
             }
 
@@ -556,31 +533,31 @@ public class Main extends AppCompatActivity implements DrawerLayout.DrawerListen
     private void performOnResume() {
 
         if (toolbar == null)
-            toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+            toolbar = findViewById(R.id.activity_main_toolbar);
 
         if (floatingActionButton == null)
-            floatingActionButton = (FloatingActionButton) findViewById(R.id.activity_main_floating_action_button);
+            floatingActionButton = findViewById(R.id.activity_main_floating_action_button);
 
         if (navigationView == null)
-            navigationView = (NavigationView) findViewById(R.id.activity_main_navigation_view);
+            navigationView = findViewById(R.id.activity_main_navigation_view);
 
         if (drawerLayout == null)
-            drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+            drawerLayout = findViewById(R.id.main_drawer_layout);
 
         if (overviewTabLayout == null)
-            overviewTabLayout = (TabLayout) findViewById(R.id.activity_main_overview_tab_layout);
+            overviewTabLayout = findViewById(R.id.activity_main_overview_tab_layout);
 
         if (overviewViewPager == null)
-            overviewViewPager = (ViewPager) findViewById(R.id.activity_main_overview_view_pager);
+            overviewViewPager = findViewById(R.id.activity_main_overview_view_pager);
 
         if (timetableTabLayout == null)
-            timetableTabLayout = (TabLayout) findViewById(R.id.activity_main_timetable_tab_layout);
+            timetableTabLayout = findViewById(R.id.activity_main_timetable_tab_layout);
 
         if (timetableViewPager == null)
-            timetableViewPager = (ViewPager) findViewById(R.id.activity_main_timetable_view_pager);
+            timetableViewPager = findViewById(R.id.activity_main_timetable_view_pager);
 
         if (linearLayout == null)
-            linearLayout = (LinearLayout) findViewById(R.id.activity_main_linear_layout);
+            linearLayout = findViewById(R.id.activity_main_linear_layout);
 
         if (DataSingleton.getInstance().isRecreate())
             performRecreate();

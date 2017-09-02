@@ -77,7 +77,7 @@ public class ChangeEvent extends AppCompatActivity {
         else if (getIntent().hasExtra("mode_edit"))
             editMode = true;
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_change_event_toolbar);
+        final Toolbar toolbar = findViewById(R.id.activity_change_event_toolbar);
         toolbar.setTitle(editMode ? "Change Event" : "Add Event");
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -102,7 +102,7 @@ public class ChangeEvent extends AppCompatActivity {
 
         }
 
-        classNameSpinner = (Spinner) findViewById(R.id.activity_change_event_class_spinner);
+        classNameSpinner = findViewById(R.id.activity_change_event_class_spinner);
 
         final ArrayAdapter<String> classNameSpinnerAdapter = new ArrayAdapter<>(this, R.layout.view_spinner_item, DataSingleton.getInstance().getAllClassNamesArrayList());
 
@@ -145,7 +145,7 @@ public class ChangeEvent extends AppCompatActivity {
 
         });
 
-        typeSpinner = (Spinner) findViewById(R.id.activity_change_event_type_spinner);
+        typeSpinner = findViewById(R.id.activity_change_event_type_spinner);
 
         final ArrayList<String> typeArrayList = new ArrayList<>();
 
@@ -184,20 +184,20 @@ public class ChangeEvent extends AppCompatActivity {
         typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeSpinnerAdapter);
 
-        nextClassRadioButton = (RadioButton) findViewById(R.id.activity_change_event_next_radio_button);
+        nextClassRadioButton = findViewById(R.id.activity_change_event_next_radio_button);
 
         if (DataSingleton.getInstance().getCurrentClass() != null && !editMode)
             nextClassRadioButton.setChecked(true);
 
         if (editMode) {
 
-            eventNameEditText = (EditText) findViewById(R.id.activity_change_event_name_edit_text);
+            eventNameEditText = findViewById(R.id.activity_change_event_name_edit_text);
             eventNameEditText.setText(editEvent.getName());
 
-            remindMeCheckBox = (CheckBox) findViewById(R.id.activity_change_event_remind_me_check_box);
+            remindMeCheckBox = findViewById(R.id.activity_change_event_remind_me_check_box);
             remindMeCheckBox.setChecked(editEvent.isRemind());
 
-            descriptionEditText = (EditText) findViewById(R.id.activity_change_event_description_edit_text);
+            descriptionEditText = findViewById(R.id.activity_change_event_description_edit_text);
             descriptionEditText.setText(editEvent.getDescription().equals("no-description") ? "" : editEvent.getDescription());
 
         }
@@ -210,10 +210,10 @@ public class ChangeEvent extends AppCompatActivity {
         super.onResume();
 
         if (classNameSpinner == null)
-            classNameSpinner = (Spinner) findViewById(R.id.activity_change_event_class_spinner);
+            classNameSpinner = findViewById(R.id.activity_change_event_class_spinner);
 
         if (typeSpinner == null)
-            typeSpinner = (Spinner) findViewById(R.id.activity_change_event_type_spinner);
+            typeSpinner = findViewById(R.id.activity_change_event_type_spinner);
 
         if (listItemClasses == null)
             listItemClasses = new ArrayList<>();
@@ -225,22 +225,22 @@ public class ChangeEvent extends AppCompatActivity {
             daySwitches = new ArrayList<>();
 
         if (nextClassRadioButton == null)
-            nextClassRadioButton = (RadioButton) findViewById(R.id.activity_change_event_next_radio_button);
+            nextClassRadioButton = findViewById(R.id.activity_change_event_next_radio_button);
 
         if (specificClassRadioButton == null)
-            specificClassRadioButton = (RadioButton) findViewById(R.id.activity_change_event_specific_radio_button);
+            specificClassRadioButton = findViewById(R.id.activity_change_event_specific_radio_button);
 
         if (customTimeRadioButton == null)
-            customTimeRadioButton = (RadioButton) findViewById(R.id.activity_change_event_custom_radio_button);
+            customTimeRadioButton = findViewById(R.id.activity_change_event_custom_radio_button);
 
         if (eventNameEditText == null)
-            eventNameEditText = (EditText) findViewById(R.id.activity_change_event_name_edit_text);
+            eventNameEditText = findViewById(R.id.activity_change_event_name_edit_text);
 
         if (remindMeCheckBox == null)
-            remindMeCheckBox = (CheckBox) findViewById(R.id.activity_change_event_remind_me_check_box);
+            remindMeCheckBox = findViewById(R.id.activity_change_event_remind_me_check_box);
 
         if (descriptionEditText == null)
-            descriptionEditText = (EditText) findViewById(R.id.activity_change_event_description_edit_text);
+            descriptionEditText = findViewById(R.id.activity_change_event_description_edit_text);
 
         if (pickedDateTime == null) {
 
@@ -611,7 +611,7 @@ public class ChangeEvent extends AppCompatActivity {
 
             return true;
 
-        } else if (menuItem.getItemId() == R.id.toolbar_check_check_item) {
+        } else if (menuItem.getItemId() == R.id.toolbar_change_event_check_item) {
 
             if (!eventNameEditText.getText().toString().isEmpty()) {
 
@@ -830,6 +830,61 @@ public class ChangeEvent extends AppCompatActivity {
 
             return true;
 
+        } else if (menuItem.getItemId() == R.id.toolbar_change_event_delete_item) {
+
+            final MaterialDialog.Builder materialDialogBuilder = new MaterialDialog.Builder(this);
+
+            materialDialogBuilder.title("Delete event?");
+            materialDialogBuilder.content("This event will be deleted.");
+            materialDialogBuilder.positiveText("YES");
+            materialDialogBuilder.positiveColorRes(R.color.black);
+            materialDialogBuilder.negativeText("CANCEL");
+            materialDialogBuilder.negativeColorRes(R.color.black);
+
+            materialDialogBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                @Override
+                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
+
+                    materialDialog.dismiss();
+
+                    pickedDateTime = null;
+
+                    DatabaseHelper databaseHelper = new DatabaseHelper(ChangeEvent.this);
+
+                    try {
+
+                        databaseHelper.deleteEvent(editEvent);
+
+                    } finally {
+
+                        databaseHelper.close();
+
+                    }
+
+                    EventBus.getDefault().post(new Update(false, true, false, false));
+
+                    ChangeEvent.super.onBackPressed();
+
+                }
+
+            });
+
+            materialDialogBuilder.onNegative(new MaterialDialog.SingleButtonCallback() {
+
+                @Override
+                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction which) {
+
+                    materialDialog.dismiss();
+
+                }
+
+            });
+
+            materialDialogBuilder.show();
+
+            return true;
+
         } else {
 
             return super.onOptionsItemSelected(menuItem);
@@ -902,7 +957,7 @@ public class ChangeEvent extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.toolbar_check, menu);
+        getMenuInflater().inflate(R.menu.toolbar_change_event, menu);
 
         return true;
 

@@ -28,7 +28,7 @@
                 android:maxLines="1"
                 android:paddingLeft="16dp"
                 android:textColor="#757575"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </RelativeLayout>

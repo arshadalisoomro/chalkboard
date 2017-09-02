@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +19,6 @@ import com.ghofrani.classapp.model.StandardClass;
 import com.ghofrani.classapp.model.StringWithID;
 import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.Utils;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemConstants;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAction;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionDefault;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionRemoveItem;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.annotation.SwipeableItemDrawableTypes;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.annotation.SwipeableItemResults;
-import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractSwipeableItemViewHolder;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -35,7 +26,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 
-public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemViewHolder> implements SwipeableItemAdapter<AbstractSwipeableItemViewHolder> {
+public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_HOMEWORK = 0;
     private final int VIEW_TYPE_SECTION = 1;
@@ -47,11 +38,8 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     private final boolean is24Hour;
     private final DateTime tomorrow;
     private final View.OnClickListener onClickListener;
-    private EventListener eventListener;
 
     public EventRecycler(final Context context, final RecyclerView recyclerView) {
-
-        setHasStableIds(true);
 
         dayOfWeekString = DateTimeFormat.forPattern("EEEE");
         time24Hour = DateTimeFormat.forPattern("HH:mm");
@@ -73,10 +61,6 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
     }
 
-    public void setEventListener(EventListener eventListener) {
-        this.eventListener = eventListener;
-    }
-
     @Override
     public long getItemId(int position) {
 
@@ -88,7 +72,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     }
 
     @Override
-    public void onBindViewHolder(AbstractSwipeableItemViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
 
         if (getItemViewType(position) == VIEW_TYPE_HOMEWORK) {
 
@@ -250,7 +234,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
     }
 
     @Override
-    public AbstractSwipeableItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         if (viewType == VIEW_TYPE_HOMEWORK) {
 
@@ -272,114 +256,7 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
         return DataSingleton.getInstance().getDataArrayList().size();
     }
 
-    @Override
-    public SwipeResultAction onSwipeItem(AbstractSwipeableItemViewHolder listItemViewHolder, int position, @SwipeableItemResults int result) {
-
-        if (result == Swipeable.RESULT_CANCELED)
-            return new SwipeResultActionDefault();
-        else
-            return new EventSwipeResultActionRemoveItem(this, position);
-
-    }
-
-    @Override
-    public int onGetSwipeReactionType(AbstractSwipeableItemViewHolder listItemViewHolder, int position, int x, int y) {
-
-        if (getItemViewType(position) == VIEW_TYPE_HOMEWORK)
-            return Swipeable.REACTION_CAN_SWIPE_LEFT;
-        else
-            return Swipeable.REACTION_CAN_NOT_SWIPE_ANY;
-
-    }
-
-    @Override
-    public void onSetSwipeBackground(AbstractSwipeableItemViewHolder holder, int position, @SwipeableItemDrawableTypes int type) {
-
-        if (getItemViewType(position) == VIEW_TYPE_HOMEWORK)
-            holder.itemView.setBackgroundResource(R.drawable.background_swipe_left);
-
-    }
-
-    public interface EventListener {
-
-        void onItemRemoved();
-
-    }
-
-    private interface Swipeable extends SwipeableItemConstants {
-    }
-
-    static class EventSwipeResultActionRemoveItem extends SwipeResultActionRemoveItem {
-
-        private final int position;
-        private EventRecycler adapter;
-
-        public EventSwipeResultActionRemoveItem(EventRecycler adapter, int position) {
-
-            this.adapter = adapter;
-            this.position = position;
-
-        }
-
-        @Override
-        protected void onPerformAction() {
-
-            boolean triggerSectionRemoved = false;
-
-            if (DataSingleton.getInstance().getDataArrayList().size() == 2) {
-
-                triggerSectionRemoved = true;
-
-            } else if (position == DataSingleton.getInstance().getDataArrayList().size() - 1) {
-
-                if (adapter.getItemViewType(position - 1) == adapter.VIEW_TYPE_SECTION)
-                    triggerSectionRemoved = true;
-
-            } else {
-
-                if (adapter.getItemViewType(position - 1) == adapter.VIEW_TYPE_SECTION)
-                    if (adapter.getItemViewType(position + 1) == adapter.VIEW_TYPE_SECTION)
-                        triggerSectionRemoved = true;
-
-            }
-
-            SparseArray<Object> newLastRemovedSparseArray = new SparseArray<>();
-            newLastRemovedSparseArray.put(position, DataSingleton.getInstance().getDataArrayList().get(position));
-
-            if (triggerSectionRemoved) {
-
-                newLastRemovedSparseArray.put(position - 1, DataSingleton.getInstance().getDataArrayList().get(position - 1));
-
-                DataSingleton.getInstance().getDataArrayList().remove(position);
-                DataSingleton.getInstance().getDataArrayList().remove(position - 1);
-                adapter.notifyItemRangeRemoved(position - 1, position);
-
-            } else {
-
-                DataSingleton.getInstance().getDataArrayList().remove(position);
-                adapter.notifyItemRemoved(position);
-
-            }
-
-            DataSingleton.getInstance().setDataSparseArrayLastRemoved(newLastRemovedSparseArray);
-
-            if (adapter.eventListener != null)
-                adapter.eventListener.onItemRemoved();
-
-        }
-
-        @Override
-        protected void onCleanUp() {
-
-            adapter = null;
-
-            super.onCleanUp();
-
-        }
-
-    }
-
-    class ListEventViewHolder extends AbstractSwipeableItemViewHolder {
+    class ListEventViewHolder extends RecyclerView.ViewHolder {
 
         final FrameLayout frameLayout;
         final TextView titleTextView;
@@ -391,22 +268,17 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
             super(itemView);
 
-            frameLayout = (FrameLayout) itemView.findViewById(R.id.view_event_recycler_event_frame_layout);
-            titleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_name_text_view);
-            subtitleTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_due_text_view);
-            colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_event_recycler_event_color_indicator_image_view);
-            typeIndicatorTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_event_type_indicator_text_view);
+            frameLayout = itemView.findViewById(R.id.view_event_recycler_event_frame_layout);
+            titleTextView = itemView.findViewById(R.id.view_event_recycler_event_name_text_view);
+            subtitleTextView = itemView.findViewById(R.id.view_event_recycler_event_due_text_view);
+            colorIndicatorImageView = itemView.findViewById(R.id.view_event_recycler_event_color_indicator_image_view);
+            typeIndicatorTextView = itemView.findViewById(R.id.view_event_recycler_event_type_indicator_text_view);
 
-        }
-
-        @Override
-        public View getSwipeableContainerView() {
-            return frameLayout;
         }
 
     }
 
-    class ListSectionViewHolder extends AbstractSwipeableItemViewHolder {
+    class ListSectionViewHolder extends RecyclerView.ViewHolder {
 
         final FrameLayout frameLayout;
         final TextView sectionTextView;
@@ -415,14 +287,9 @@ public class EventRecycler extends RecyclerView.Adapter<AbstractSwipeableItemVie
 
             super(itemView);
 
-            frameLayout = (FrameLayout) itemView.findViewById(R.id.view_event_recycler_section_frame_layout);
-            sectionTextView = (TextView) itemView.findViewById(R.id.view_event_recycler_section_title_text_view);
+            frameLayout = itemView.findViewById(R.id.view_event_recycler_section_frame_layout);
+            sectionTextView = itemView.findViewById(R.id.view_event_recycler_section_title_text_view);
 
-        }
-
-        @Override
-        public View getSwipeableContainerView() {
-            return frameLayout;
         }
 
     }

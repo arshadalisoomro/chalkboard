@@ -51,7 +51,7 @@ public class ChangeClass extends AppCompatActivity {
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_change_class_toolbar);
+        final Toolbar toolbar = findViewById(R.id.activity_change_class_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
 
         mode = getIntent().getIntExtra("mode", MODE_ADD);
@@ -91,9 +91,9 @@ public class ChangeClass extends AppCompatActivity {
 
             }
 
-            final EditText inputNameEditText = (EditText) findViewById(R.id.activity_change_class_name_edit_text);
-            final EditText inputLocationEditText = (EditText) findViewById(R.id.activity_change_class_location_edit_text);
-            final EditText inputTeacherEditText = (EditText) findViewById(R.id.activity_change_class_input_teacher_edit_text);
+            final EditText inputNameEditText = findViewById(R.id.activity_change_class_name_edit_text);
+            final EditText inputLocationEditText = findViewById(R.id.activity_change_class_location_edit_text);
+            final EditText inputTeacherEditText = findViewById(R.id.activity_change_class_input_teacher_edit_text);
 
             inputNameEditText.setText(className);
             inputLocationEditText.setText(classLocationTeacherColor[0].equals("no-location") ? "" : classLocationTeacherColor[0]);
@@ -158,16 +158,16 @@ public class ChangeClass extends AppCompatActivity {
 
             return true;
 
-        } else if (menuItem.getItemId() == R.id.toolbar_check_check_item) {
+        } else if (menuItem.getItemId() == R.id.toolbar_change_event_check_item) {
 
-            final EditText inputNameEditText = (EditText) findViewById(R.id.activity_change_class_name_edit_text);
+            final EditText inputNameEditText = findViewById(R.id.activity_change_class_name_edit_text);
 
             if (!inputNameEditText.getText().toString().trim().isEmpty()) {
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
-                final EditText inputLocationEditText = (EditText) findViewById(R.id.activity_change_class_location_edit_text);
-                final EditText inputTeacherEditText = (EditText) findViewById(R.id.activity_change_class_input_teacher_edit_text);
+                final EditText inputLocationEditText = findViewById(R.id.activity_change_class_location_edit_text);
+                final EditText inputTeacherEditText = findViewById(R.id.activity_change_class_input_teacher_edit_text);
 
                 final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -369,7 +369,7 @@ public class ChangeClass extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.toolbar_check, menu);
+        getMenuInflater().inflate(R.menu.toolbar_change_class, menu);
 
         return true;
 
