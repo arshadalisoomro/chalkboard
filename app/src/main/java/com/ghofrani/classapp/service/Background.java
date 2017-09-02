@@ -17,7 +17,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -107,15 +106,9 @@ public class Background extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d("ONSTARTCOMMAND", "RUN");
-
         if (intent != null) {
 
-            Log.d("ONSTARTCOMMAND", "WITHINTENT");
-
             if (intent.hasExtra("name")) {
-
-                Log.d("ONSTARTCOMMAND", "WTIHNAME");
 
                 databaseHelper.deleteEventByProperties(intent.getStringExtra("name"), intent.getStringExtra("date_time"));
 

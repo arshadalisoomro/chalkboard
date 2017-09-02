@@ -19,6 +19,7 @@ import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.event.Update;
 import com.ghofrani.classapp.fragment.ClassOverview;
 import com.ghofrani.classapp.fragment.Events;
+import com.ghofrani.classapp.module.DataSingleton;
 import com.ghofrani.classapp.module.DatabaseHelper;
 import com.ghofrani.classapp.module.Utils;
 
@@ -64,6 +65,9 @@ public class ViewClass extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
+                DataSingleton.getInstance().getAllClassNamesArrayList().remove(className);
+                DataSingleton.getInstance().getAllClassNamesArrayList().add(0, className);
 
                 startActivity(new Intent(ViewClass.this, ChangeEvent.class));
 

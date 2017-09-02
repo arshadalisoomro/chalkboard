@@ -44,7 +44,7 @@ public class DataSingleton {
     private ArrayList<Event> beyondThisMonthEventArrayList;
     private ArrayList<Event> pastEventArrayList;
 
-    private ArrayList<Object> dataArrayList;
+    private ArrayList<Object> eventDataArrayList;
     private SparseArray<Object> dataSparseArrayLastRemoved;
 
     private DateTime thisWeekEnd;
@@ -89,7 +89,7 @@ public class DataSingleton {
         beyondThisMonthEventArrayList = new ArrayList<>();
         pastEventArrayList = new ArrayList<>();
 
-        dataArrayList = new ArrayList<>();
+        eventDataArrayList = new ArrayList<>();
 
         selectedTabPosition = 0;
 
@@ -301,20 +301,12 @@ public class DataSingleton {
         this.pastEventArrayList = pastEventArrayList;
     }
 
-    public ArrayList<Object> getDataArrayList() {
-        return dataArrayList;
+    public ArrayList<Object> getEventDataArrayList() {
+        return eventDataArrayList;
     }
 
     public void setEventDataArrayList(ArrayList<Object> dataArrayList) {
-        this.dataArrayList = dataArrayList;
-    }
-
-    public SparseArray<Object> getDataSparseArrayLastRemoved() {
-        return dataSparseArrayLastRemoved;
-    }
-
-    public void setDataSparseArrayLastRemoved(SparseArray<Object> dataSparseArrayLastRemoved) {
-        this.dataSparseArrayLastRemoved = dataSparseArrayLastRemoved;
+        this.eventDataArrayList = dataArrayList;
     }
 
     public DateTime getThisWeekEnd() {

@@ -86,7 +86,7 @@ public class ChangeEvent extends AppCompatActivity {
 
         if (editMode) {
 
-            editEvent = ((EventWithID) DataSingleton.getInstance().getDataArrayList().get(getIntent().getIntExtra("event_position", 0))).getEvent();
+            editEvent = ((EventWithID) DataSingleton.getInstance().getEventDataArrayList().get(getIntent().getIntExtra("event_position", 0))).getEvent();
 
             DataSingleton.getInstance().getAllClassNamesArrayList().remove(editEvent.getClassName());
             DataSingleton.getInstance().getAllClassNamesArrayList().add(0, editEvent.getClassName());

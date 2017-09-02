@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,10 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final boolean is24Hour;
     private final DateTime tomorrow;
     private final View.OnClickListener onClickListener;
+    private final String filter;
+    private ArrayList<Object> eventDataArrayList;
 
-    public EventRecycler(final Context context, final RecyclerView recyclerView) {
+    public EventRecycler(final Context context, final RecyclerView recyclerView, final String filter) {
 
         dayOfWeekString = DateTimeFormat.forPattern("EEEE");
         time24Hour = DateTimeFormat.forPattern("HH:mm");
@@ -47,13 +50,16 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         shortDate = DateTimeFormat.forPattern("dd/MM/yy");
         is24Hour = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("24_hour_time", true);
         tomorrow = DateTime.now().plusDays(1).withTime(DateTime.now().getHourOfDay(), DateTime.now().getMinuteOfHour(), 0, 0);
+        this.filter = filter;
+
+        generateEventDataArrayList();
 
         onClickListener = new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
-                context.startActivity(new Intent(context, ChangeEvent.class).putExtra("mode_edit", "true").putExtra("event_position", recyclerView.getChildLayoutPosition(view)));
+                context.startActivity(new Intent(context, ChangeEvent.class).putExtra("mode_edit", "true").putExtra("event_position", (int) ((long) recyclerView.getAdapter().getItemId(recyclerView.getChildAdapterPosition(view)))));
 
             }
 
@@ -61,13 +67,65 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
+    public void dataSetChanged() {
+
+        generateEventDataArrayList();
+        notifyDataSetChanged();
+
+    }
+
+    private void generateEventDataArrayList() {
+
+        eventDataArrayList = (ArrayList<Object>) DataSingleton.getInstance().getEventDataArrayList().clone();
+
+        if (!filter.isEmpty()) {
+
+            for (int i = 1; i < eventDataArrayList.size(); i++) {
+
+                if (eventDataArrayList.get(i) instanceof StringWithID)
+                    continue;
+
+                if (!((EventWithID) eventDataArrayList.get(i)).getEvent().getClassName().equals(filter)) {
+
+                    eventDataArrayList.remove(i);
+                    i--;
+
+                }
+
+            }
+
+            boolean lastItemWasTitle = false;
+
+            for (int i = eventDataArrayList.size() - 2; i > 0; i--) {
+
+                if (eventDataArrayList.get(i) instanceof StringWithID) {
+
+                    if (lastItemWasTitle)
+                        eventDataArrayList.remove(i);
+                    else
+                        lastItemWasTitle = true;
+
+                } else {
+
+                    lastItemWasTitle = false;
+
+                }
+
+            }
+
+        }
+
+    }
+
     @Override
     public long getItemId(int position) {
 
-        if (DataSingleton.getInstance().getDataArrayList().get(position) instanceof StringWithID)
-            return ((StringWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getID();
+        Log.d("getItemId", "CALLED!");
+
+        if (eventDataArrayList.get(position) instanceof StringWithID)
+            return ((StringWithID) eventDataArrayList.get(position)).getID();
         else
-            return ((EventWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getID();
+            return ((EventWithID) eventDataArrayList.get(position)).getID();
 
     }
 
@@ -76,7 +134,7 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if (getItemViewType(position) == VIEW_TYPE_HOMEWORK) {
 
-            final Event event = ((EventWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getEvent();
+            final Event event = ((EventWithID) eventDataArrayList.get(position)).getEvent();
             final ListEventViewHolder listEventViewHolder = (ListEventViewHolder) viewHolder;
 
             listEventViewHolder.titleTextView.setText(event.getClassName() + " • " + event.getName());
@@ -213,7 +271,7 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         } else {
 
-            String text = ((StringWithID) DataSingleton.getInstance().getDataArrayList().get(position)).getString();
+            String text = ((StringWithID) eventDataArrayList.get(position)).getString();
 
             final ListSectionViewHolder listSectionViewHolder = (ListSectionViewHolder) viewHolder;
 
@@ -226,7 +284,7 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
 
-        if (DataSingleton.getInstance().getDataArrayList().get(position) instanceof EventWithID)
+        if (eventDataArrayList.get(position) instanceof EventWithID)
             return VIEW_TYPE_HOMEWORK;
         else
             return VIEW_TYPE_SECTION;
@@ -253,7 +311,7 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return DataSingleton.getInstance().getDataArrayList().size();
+        return eventDataArrayList.size();
     }
 
     class ListEventViewHolder extends RecyclerView.ViewHolder {

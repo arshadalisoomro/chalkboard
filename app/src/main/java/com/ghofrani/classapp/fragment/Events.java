@@ -3,6 +3,7 @@ package com.ghofrani.classapp.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.ghofrani.classapp.R;
 import com.ghofrani.classapp.adapter.EventRecycler;
 import com.ghofrani.classapp.event.UpdateEventsUI;
+import com.ghofrani.classapp.model.EventWithID;
 import com.ghofrani.classapp.module.DataSingleton;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,12 +28,13 @@ public class Events extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private RelativeLayout noEventsRelativeLayout;
     private DividerItemDecoration dividerItemDecoration;
+    private String filter;
 
     @Subscribe
     public void onEvent(UpdateEventsUI updateEventsUI) {
 
         if (recyclerView.getVisibility() == View.VISIBLE)
-            eventRecycler.notifyDataSetChanged();
+            eventRecycler.dataSetChanged();
 
     }
 
@@ -93,12 +96,34 @@ public class Events extends Fragment {
 
     private void updateUI() {
 
-        if (!DataSingleton.getInstance().getDataArrayList().isEmpty()) {
+        boolean dataSetEmpty = true;
+
+        if (!((AppCompatActivity) getActivity()).getClass().getSimpleName().equals("Main")) {
+
+            filter = ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString();
+
+            for (final Object object : DataSingleton.getInstance().getEventDataArrayList()) {
+
+                if (object instanceof EventWithID)
+                    if (((EventWithID) object).getEvent().getClassName().equals(filter))
+                        dataSetEmpty = false;
+
+            }
+
+        } else {
+
+            filter = "";
+
+            dataSetEmpty = DataSingleton.getInstance().getEventDataArrayList().isEmpty();
+
+        }
+
+        if (!dataSetEmpty) {
 
             noEventsRelativeLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
 
-            eventRecycler = new EventRecycler(getContext(), recyclerView);
+            eventRecycler = new EventRecycler(getContext(), recyclerView, filter);
 
             dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.line_divider));
 
