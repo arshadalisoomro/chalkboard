@@ -66,13 +66,13 @@ public class Day extends Fragment {
         super.onResume();
 
         if (listView == null)
-            listView = (ListView) getView().findViewById(R.id.fragment_day_list_view);
+            listView = getView().findViewById(R.id.fragment_day_list_view);
 
         if (noClassesRelativeLayout == null)
-            noClassesRelativeLayout = (RelativeLayout) getView().findViewById(R.id.fragment_day_no_classes_relative_layout);
+            noClassesRelativeLayout = getView().findViewById(R.id.fragment_day_no_classes_relative_layout);
 
         if (scrollView == null)
-            scrollView = (ScrollView) getView().findViewById(R.id.fragment_day_scroll_view);
+            scrollView = getView().findViewById(R.id.fragment_day_scroll_view);
 
         updateUI();
 

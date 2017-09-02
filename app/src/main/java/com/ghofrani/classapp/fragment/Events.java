@@ -28,7 +28,6 @@ public class Events extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private RelativeLayout noEventsRelativeLayout;
     private DividerItemDecoration dividerItemDecoration;
-    private String filter;
 
     @Subscribe
     public void onEvent(UpdateEventsUI updateEventsUI) {
@@ -97,6 +96,8 @@ public class Events extends Fragment {
     private void updateUI() {
 
         boolean dataSetEmpty = true;
+
+        String filter;
 
         if (!((AppCompatActivity) getActivity()).getClass().getSimpleName().equals("Main")) {
 

@@ -484,12 +484,12 @@ public class Background extends Service {
                     remoteViews.setInt(progressTextId, "setVisibility", View.VISIBLE);
                     remoteViews.setInt(headerId, "setVisibility", View.VISIBLE);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(this)
+                    notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setOngoing(true)
                             .setContentIntent(addHomeActivityIntent)
                             .setContent(remoteViews)
-                            .setPriority(Notification.PRIORITY_MAX)
+                            .setPriority(NotificationManager.IMPORTANCE_MAX)
                             .setWhen(0);
 
                     notificationRunnable = new Runnable() {
@@ -595,12 +595,12 @@ public class Background extends Service {
                     final Intent eventActivityIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
                     final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(this)
+                    notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setOngoing(true)
                             .setColor(finalCurrentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
-                            .setPriority(Notification.PRIORITY_MAX)
+                            .setPriority(NotificationManager.IMPORTANCE_MAX)
                             .addAction(event, "ADD EVENT", addEventActivityIntent)
                             .setContentTitle(finalCurrentClass.getName())
                             .setWhen(0);
@@ -627,7 +627,7 @@ public class Background extends Service {
                             String remainingNotificationText = remainingText;
 
                             if (DataSingleton.getInstance().getNextClass() != null)
-                                remainingNotificationText += " • Next: " + DataSingleton.getInstance().getNextClass().getName();
+                                remainingNotificationText += " • Next: " + DataSingleton.getInstance().getNextClass().getName() + (DataSingleton.getInstance().getNextClass().hasLocation() ? " at " + DataSingleton.getInstance().getNextClass().getLocation() : "");
                             else
                                 remainingNotificationText += " • No further classes";
 
@@ -772,14 +772,14 @@ public class Background extends Service {
                 final Intent homeActivityIntent = new Intent(this, Main.class);
                 final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                notificationCompatBuilder = new NotificationCompat.Builder(this)
+                notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
                         .setOngoing(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentIntent(addHomeActivityIntent)
                         .setWhen(0)
                         .setColor(nextClass.getColor())
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
-                        .setPriority(Notification.PRIORITY_MAX);
+                        .setPriority(NotificationManager.IMPORTANCE_MAX);
 
                 notificationCompatBuilder.setContentTitle("Next: " + nextClass.getName());
 
@@ -985,8 +985,7 @@ public class Background extends Service {
             reminderSwitches = new ArrayList<>();
 
             if (!reminderTimes[0].equals("no-reminders"))
-                for (final String switchString : reminderTimes)
-                    reminderSwitches.add(switchString);
+                Collections.addAll(reminderSwitches, reminderTimes);
 
             reminderEvents = new ArrayList<>();
 
@@ -1205,13 +1204,13 @@ public class Background extends Service {
 
                     final PendingIntent donePendingIntent = PendingIntent.getService(this, NOTIFICATION_REMINDERS_ID, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(this)
+                    notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setColor(event.getColor())
                             .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_ALL)
                             .setContentIntent(homeActivityPendingIntent)
-                            .setPriority(Notification.PRIORITY_MAX)
+                            .setPriority(NotificationManager.IMPORTANCE_MAX)
                             .addAction(R.drawable.event, "DONE", donePendingIntent)
                             .setContentTitle(event.getClassName() + " • " + event.getName());
 
@@ -1338,7 +1337,7 @@ public class Background extends Service {
 
                         final PendingIntent donePendingIntent = PendingIntent.getService(this, ID, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                        notificationCompatBuilder = new NotificationCompat.Builder(this)
+                        notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setAutoCancel(true)
                                 .setContentIntent(addHomeActivityIntent)
@@ -1458,14 +1457,14 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, NOTIFICATION_REMINDERS_ID, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(this)
+                    notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setColor(sharedPreferences.getInt("primary_color", ContextCompat.getColor(this, R.color.teal)))
                             .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_ALL)
                             .setContentTitle("Chalkboard Reminders")
                             .setContentIntent(addHomeActivityIntent)
-                            .setPriority(Notification.PRIORITY_MAX)
+                            .setPriority(NotificationManager.IMPORTANCE_MAX)
                             .setContentText("You have " + reminderEvents.size() + " reminders")
                             .setGroup(reminderGroup)
                             .setGroupSummary(true);

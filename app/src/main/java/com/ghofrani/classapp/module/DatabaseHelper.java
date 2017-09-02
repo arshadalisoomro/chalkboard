@@ -241,7 +241,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             for (int i = 0; i < classesToInsert.size(); i++) {
 
                 cursor = sqLiteDatabase.rawQuery("select * from "
-                        + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                                + DatabaseContract.ClassInfo.TABLE_NAME + " where "
                                 + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
                         new String[]{classesToInsert.get(i).getName()});
 
@@ -301,7 +301,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case DateTimeConstants.MONDAY:
 
                     sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Monday.TABLE_NAME + " where "
+                                    + DatabaseContract.Monday.TABLE_NAME + " where "
                                     + DatabaseContract.Monday.COLUMN_CLASS + "=? and "
                                     + DatabaseContract.Monday.COLUMN_START_TIME + "=?",
                             new String[]{classToRemove, startTime.toString()});
@@ -311,7 +311,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case DateTimeConstants.TUESDAY:
 
                     sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Tuesday.TABLE_NAME + " where "
+                                    + DatabaseContract.Tuesday.TABLE_NAME + " where "
                                     + DatabaseContract.Tuesday.COLUMN_CLASS + "=? and "
                                     + DatabaseContract.Tuesday.COLUMN_START_TIME + "=?",
                             new String[]{classToRemove, startTime.toString()});
@@ -321,7 +321,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case DateTimeConstants.WEDNESDAY:
 
                     sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Wednesday.TABLE_NAME + " where "
+                                    + DatabaseContract.Wednesday.TABLE_NAME + " where "
                                     + DatabaseContract.Wednesday.COLUMN_CLASS + "=? and "
                                     + DatabaseContract.Wednesday.COLUMN_START_TIME + "=?",
                             new String[]{classToRemove, startTime.toString()});
@@ -331,7 +331,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case DateTimeConstants.THURSDAY:
 
                     sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Thursday.TABLE_NAME + " where "
+                                    + DatabaseContract.Thursday.TABLE_NAME + " where "
                                     + DatabaseContract.Thursday.COLUMN_CLASS + "=? and "
                                     + DatabaseContract.Thursday.COLUMN_START_TIME + "=?",
                             new String[]{classToRemove, startTime.toString()});
@@ -341,7 +341,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case DateTimeConstants.FRIDAY:
 
                     sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Friday.TABLE_NAME + " where "
+                                    + DatabaseContract.Friday.TABLE_NAME + " where "
                                     + DatabaseContract.Friday.COLUMN_CLASS + "=? and "
                                     + DatabaseContract.Friday.COLUMN_START_TIME + "=?",
                             new String[]{classToRemove, startTime.toString()});
@@ -351,7 +351,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case DateTimeConstants.SATURDAY:
 
                     sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Saturday.TABLE_NAME + " where "
+                                    + DatabaseContract.Saturday.TABLE_NAME + " where "
                                     + DatabaseContract.Saturday.COLUMN_CLASS + "=? and "
                                     + DatabaseContract.Saturday.COLUMN_START_TIME + "=?",
                             new String[]{classToRemove, startTime.toString()});
@@ -361,7 +361,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case DateTimeConstants.SUNDAY:
 
                     sqLiteDatabase.execSQL("delete from "
-                            + DatabaseContract.Sunday.TABLE_NAME + " where "
+                                    + DatabaseContract.Sunday.TABLE_NAME + " where "
                                     + DatabaseContract.Sunday.COLUMN_CLASS + "=? and "
                                     + DatabaseContract.Sunday.COLUMN_START_TIME + "=?",
                             new String[]{classToRemove, startTime.toString()});
@@ -385,47 +385,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Monday.TABLE_NAME + " where "
+                            + DatabaseContract.Monday.TABLE_NAME + " where "
                             + DatabaseContract.Monday.COLUMN_CLASS + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Tuesday.TABLE_NAME + " where "
+                            + DatabaseContract.Tuesday.TABLE_NAME + " where "
                             + DatabaseContract.Tuesday.COLUMN_CLASS + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Wednesday.TABLE_NAME + " where "
+                            + DatabaseContract.Wednesday.TABLE_NAME + " where "
                             + DatabaseContract.Wednesday.COLUMN_CLASS + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Thursday.TABLE_NAME + " where "
+                            + DatabaseContract.Thursday.TABLE_NAME + " where "
                             + DatabaseContract.Thursday.COLUMN_CLASS + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Friday.TABLE_NAME + " where "
+                            + DatabaseContract.Friday.TABLE_NAME + " where "
                             + DatabaseContract.Friday.COLUMN_CLASS + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Saturday.TABLE_NAME + " where "
+                            + DatabaseContract.Saturday.TABLE_NAME + " where "
                             + DatabaseContract.Saturday.COLUMN_CLASS + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Sunday.TABLE_NAME + " where "
+                            + DatabaseContract.Sunday.TABLE_NAME + " where "
                             + DatabaseContract.Sunday.COLUMN_CLASS + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                            + DatabaseContract.ClassInfo.TABLE_NAME + " where "
                             + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
                     new String[]{className});
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Events.TABLE_NAME + " where "
+                            + DatabaseContract.Events.TABLE_NAME + " where "
                             + DatabaseContract.Events.COLUMN_CLASS + "=?",
                     new String[]{className});
 
@@ -465,7 +465,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
-                + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                        + DatabaseContract.ClassInfo.TABLE_NAME + " where "
                         + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
                 new String[]{className});
 
@@ -500,7 +500,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery("select * from "
-                + DatabaseContract.ClassInfo.TABLE_NAME + " where "
+                        + DatabaseContract.ClassInfo.TABLE_NAME + " where "
                         + DatabaseContract.ClassInfo.COLUMN_NAME + "=?",
                 new String[]{className});
 
@@ -595,7 +595,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
 
             sqLiteDatabase.execSQL("delete from "
-                    + DatabaseContract.Events.TABLE_NAME + " where "
+                            + DatabaseContract.Events.TABLE_NAME + " where "
                             + DatabaseContract.Events.COLUMN_DATE_TIME + "=? and "
                             + DatabaseContract.Events.COLUMN_NAME + "=? and "
                             + DatabaseContract.Events.COLUMN_CLASS + "=? and "

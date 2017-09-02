@@ -32,10 +32,10 @@ public class Classes extends Fragment {
         super.onResume();
 
         if (recyclerView == null)
-            recyclerView = (RecyclerView) getView().findViewById(R.id.fragment_classes_recycler_view);
+            recyclerView = getView().findViewById(R.id.fragment_classes_recycler_view);
 
         if (noClassesRelativeLayout == null)
-            noClassesRelativeLayout = (RelativeLayout) getView().findViewById(R.id.fragment_classes_no_classes_relative_layout);
+            noClassesRelativeLayout = getView().findViewById(R.id.fragment_classes_no_classes_relative_layout);
 
         updateUI();
 

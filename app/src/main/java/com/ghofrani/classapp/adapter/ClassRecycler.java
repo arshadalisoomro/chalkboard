@@ -124,10 +124,10 @@ public class ClassRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             super(itemView);
 
-            cardView = (CardView) itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_card_view);
-            titleTextView = (TextView) itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_title_text_view);
-            locationTeacherTextView = (TextView) itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_location_teacher_text_view);
-            colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_color_indicator_image_view);
+            cardView = itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_card_view);
+            titleTextView = itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_title_text_view);
+            locationTeacherTextView = itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_location_teacher_text_view);
+            colorIndicatorImageView = itemView.findViewById(R.id.view_classes_recycler_class_with_subtitle_color_indicator_image_view);
 
         }
 
@@ -143,9 +143,9 @@ public class ClassRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             super(itemView);
 
-            cardView = (CardView) itemView.findViewById(R.id.view_classes_recycler_class_without_subtitle_card_view);
-            titleTextView = (TextView) itemView.findViewById(R.id.view_classes_recycler_class_without_subtitle_title_text_view);
-            colorIndicatorImageView = (ImageView) itemView.findViewById(R.id.view_classes_recycler_class_without_subtitle_color_indicator_image_view);
+            cardView = itemView.findViewById(R.id.view_classes_recycler_class_without_subtitle_card_view);
+            titleTextView = itemView.findViewById(R.id.view_classes_recycler_class_without_subtitle_title_text_view);
+            colorIndicatorImageView = itemView.findViewById(R.id.view_classes_recycler_class_without_subtitle_color_indicator_image_view);
 
         }
 

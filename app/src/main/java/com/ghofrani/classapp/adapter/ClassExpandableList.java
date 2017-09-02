@@ -78,7 +78,7 @@ public class ClassExpandableList extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_expandable_list_group, parent, false);
 
-        final TextView listGroupTitleTextView = (TextView) convertView.findViewById(R.id.view_expandable_list_group_title_text_view);
+        final TextView listGroupTitleTextView = convertView.findViewById(R.id.view_expandable_list_group_title_text_view);
         listGroupTitleTextView.setText(groupTitle);
 
         return convertView;
@@ -93,10 +93,10 @@ public class ClassExpandableList extends BaseExpandableListAdapter {
 
         final StandardClass standardClass = classesArrayList.get(childPosition);
 
-        final RelativeLayout relativeLayout = (RelativeLayout) convertView.findViewById(R.id.view_timed_class_child_combined_relative_layout);
-        final TextView titleTextView = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_title_text_view);
-        final TextView locationTeacherTextView = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_location_teacher_text_view);
-        final TextView titleTextViewCentered = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
+        final RelativeLayout relativeLayout = convertView.findViewById(R.id.view_timed_class_child_combined_relative_layout);
+        final TextView titleTextView = convertView.findViewById(R.id.view_timed_class_child_combined_title_text_view);
+        final TextView locationTeacherTextView = convertView.findViewById(R.id.view_timed_class_child_combined_location_teacher_text_view);
+        final TextView titleTextViewCentered = convertView.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
 
         if (standardClass.hasLocation()) {
 
@@ -138,10 +138,10 @@ public class ClassExpandableList extends BaseExpandableListAdapter {
 
         }
 
-        final TextView listChildTimeTextView = (TextView) convertView.findViewById(R.id.view_timed_class_child_combined_time_text_view);
+        final TextView listChildTimeTextView = convertView.findViewById(R.id.view_timed_class_child_combined_time_text_view);
         listChildTimeTextView.setText(standardClass.getStartTimeString(true) + "\n" + standardClass.getEndTimeString(true));
 
-        final ImageView listChildColorIndicator = (ImageView) convertView.findViewById(R.id.view_timed_class_child_combined_color_indicator_image_view);
+        final ImageView listChildColorIndicator = convertView.findViewById(R.id.view_timed_class_child_combined_color_indicator_image_view);
         listChildColorIndicator.setColorFilter(standardClass.getColor());
 
         return convertView;

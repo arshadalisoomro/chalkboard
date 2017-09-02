@@ -44,7 +44,7 @@ import java.util.ArrayList;
 
 public class ChangeEvent extends AppCompatActivity {
 
-    boolean firstRun = true;
+    private boolean firstRun = true;
     private boolean originNotification = false;
     private Spinner classNameSpinner;
     private Spinner typeSpinner;

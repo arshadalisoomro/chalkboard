@@ -96,11 +96,11 @@ public class EventRecycler extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             boolean lastItemWasTitle = false;
 
-            for (int i = eventDataArrayList.size() - 2; i > 0; i--) {
+            for (int i = eventDataArrayList.size() - 1; i >= 0; i--) {
 
                 if (eventDataArrayList.get(i) instanceof StringWithID) {
 
-                    if (lastItemWasTitle)
+                    if (lastItemWasTitle || i == eventDataArrayList.size() - 1)
                         eventDataArrayList.remove(i);
                     else
                         lastItemWasTitle = true;

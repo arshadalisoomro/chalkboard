@@ -181,7 +181,7 @@ public class ClassOverview extends Fragment {
 
         if (viewClassListAdapterUpcoming == null) {
 
-            viewClassListAdapterUpcoming = new ViewClassExpandableList(getContext(), datedStandardClassArrayList, "Upcoming classes");
+            viewClassListAdapterUpcoming = new ViewClassExpandableList(getContext(), datedStandardClassArrayList);
             expandableListViewUpcomingClasses.setAdapter(viewClassListAdapterUpcoming);
 
             if (!expandableListViewUpcomingClasses.isGroupExpanded(0)) {

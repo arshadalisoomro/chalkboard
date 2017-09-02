@@ -29,7 +29,7 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.activity_settings_toolbar);
+        final Toolbar toolbar = findViewById(R.id.activity_settings_toolbar);
         toolbar.setTitle("Settings");
         toolbar.setElevation(getPixelFromDP(4));
         toolbar.setTitleTextColor(Color.WHITE);

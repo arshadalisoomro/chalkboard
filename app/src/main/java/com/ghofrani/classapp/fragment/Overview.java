@@ -132,28 +132,28 @@ public class Overview extends Fragment {
         super.onResume();
 
         if (currentClassCardView == null)
-            currentClassCardView = (CardView) getView().findViewById(R.id.fragment_overview_current_class_card_view);
+            currentClassCardView = getView().findViewById(R.id.fragment_overview_current_class_card_view);
 
         if (currentClassTitleTextView == null)
-            currentClassTitleTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_title_text_view);
+            currentClassTitleTextView = getView().findViewById(R.id.fragment_overview_current_class_card_title_text_view);
 
         if (currentClassLocationTeacherTextView == null)
-            currentClassLocationTeacherTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_location_teacher_text_view);
+            currentClassLocationTeacherTextView = getView().findViewById(R.id.fragment_overview_current_class_card_location_teacher_text_view);
 
         if (currentClassColorIndicator == null)
-            currentClassColorIndicator = (ImageView) getView().findViewById(R.id.fragment_overview_current_class_card_class_color_indicator_image_view);
+            currentClassColorIndicator = getView().findViewById(R.id.fragment_overview_current_class_card_class_color_indicator_image_view);
 
         if (currentClassStartTimeTextView == null)
-            currentClassStartTimeTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_start_time_text_view);
+            currentClassStartTimeTextView = getView().findViewById(R.id.fragment_overview_current_class_card_start_time_text_view);
 
         if (currentClassEndTimeTextView == null)
-            currentClassEndTimeTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_end_time_text_view);
+            currentClassEndTimeTextView = getView().findViewById(R.id.fragment_overview_current_class_card_end_time_text_view);
 
         if (progressBar == null)
-            progressBar = (ProgressBar) getView().findViewById(R.id.fragment_overview_current_class_card_progress_bar);
+            progressBar = getView().findViewById(R.id.fragment_overview_current_class_card_progress_bar);
 
         if (progressTextView == null)
-            progressTextView = (TextView) getView().findViewById(R.id.fragment_overview_current_class_card_progress_percentage_text_view);
+            progressTextView = getView().findViewById(R.id.fragment_overview_current_class_card_progress_percentage_text_view);
 
         updateUI();
 
@@ -227,7 +227,7 @@ public class Overview extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                        final TextView titleTextView = (TextView) view.findViewById(R.id.fragment_overview_current_class_card_title_text_view);
+                        final TextView titleTextView = view.findViewById(R.id.fragment_overview_current_class_card_title_text_view);
 
                         startActivity(new Intent(Overview.this.getContext(), ViewClass.class).putExtra("class", titleTextView.getText()));
 
@@ -342,7 +342,7 @@ public class Overview extends Fragment {
 
         if (expandableListViewNextClasses == null) {
 
-            expandableListViewNextClasses = (ExpandableListView) getView().findViewById(R.id.fragment_overview_next_classes_list_view);
+            expandableListViewNextClasses = getView().findViewById(R.id.fragment_overview_next_classes_list_view);
 
             expandableListViewNextClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
@@ -375,8 +375,8 @@ public class Overview extends Fragment {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
 
-                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_text_view);
-                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
+                    final TextView classNameTextView = view.findViewById(R.id.view_timed_class_child_combined_title_text_view);
+                    final TextView classNameTextViewCentered = view.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
 
                     if (DataSingleton.getInstance().getNextClassesArrayList().get(childPosition).hasLocation())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
@@ -448,7 +448,7 @@ public class Overview extends Fragment {
 
         if (expandableListViewTomorrowClasses == null) {
 
-            expandableListViewTomorrowClasses = (ExpandableListView) getView().findViewById(R.id.fragment_overview_tomorrow_classes_list_view);
+            expandableListViewTomorrowClasses = getView().findViewById(R.id.fragment_overview_tomorrow_classes_list_view);
 
             expandableListViewTomorrowClasses.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
@@ -481,8 +481,8 @@ public class Overview extends Fragment {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
 
-                    final TextView classNameTextView = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_text_view);
-                    final TextView classNameTextViewCentered = (TextView) view.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
+                    final TextView classNameTextView = view.findViewById(R.id.view_timed_class_child_combined_title_text_view);
+                    final TextView classNameTextViewCentered = view.findViewById(R.id.view_timed_class_child_combined_title_centered_text_view);
 
                     if (DataSingleton.getInstance().getTomorrowClassesArrayList().get(childPosition).hasLocation())
                         startActivity(new Intent(getContext(), ViewClass.class).putExtra("class", classNameTextView.getText().toString()));
@@ -575,7 +575,7 @@ public class Overview extends Fragment {
 
         if (changeParams) {
 
-            final TextView groupText = (TextView) expandableListViewNextClasses.findViewById(R.id.view_expandable_list_group_title_text_view);
+            final TextView groupText = expandableListViewNextClasses.findViewById(R.id.view_expandable_list_group_title_text_view);
 
             if (groupText == null)
                 return;
@@ -694,7 +694,7 @@ public class Overview extends Fragment {
 
         if (changeParams) {
 
-            final TextView groupText = (TextView) expandableListViewTomorrowClasses.findViewById(R.id.view_expandable_list_group_title_text_view);
+            final TextView groupText = expandableListViewTomorrowClasses.findViewById(R.id.view_expandable_list_group_title_text_view);
 
             if (groupText == null)
                 return;

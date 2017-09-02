@@ -23,15 +23,13 @@ import java.util.ArrayList;
 public class ViewClassExpandableList extends BaseExpandableListAdapter {
 
     private final ArrayList<DatedStandardClass> datedStandardClassArrayList;
-    private final String groupTitle;
     private final LayoutInflater layoutInflater;
     private final DateTimeFormatter dayOfWeekString;
     private final DateTimeFormatter shortDate;
 
-    public ViewClassExpandableList(Context context, ArrayList<DatedStandardClass> datedStandardClassArrayList, String groupTitle) {
+    public ViewClassExpandableList(Context context, ArrayList<DatedStandardClass> datedStandardClassArrayList) {
 
         this.datedStandardClassArrayList = datedStandardClassArrayList;
-        this.groupTitle = groupTitle;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         dayOfWeekString = DateTimeFormat.forPattern("EEEE");
@@ -90,7 +88,7 @@ public class ViewClassExpandableList extends BaseExpandableListAdapter {
             convertView = layoutInflater.inflate(R.layout.view_expandable_list_group, parent, false);
 
         final TextView listGroupTitleTextView = convertView.findViewById(R.id.view_expandable_list_group_title_text_view);
-        listGroupTitleTextView.setText(groupTitle);
+        listGroupTitleTextView.setText("Upcoming Classes");
 
         return convertView;
 
