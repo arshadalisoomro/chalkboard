@@ -485,7 +485,7 @@ public class Background extends Service {
                     remoteViews.setInt(headerId, "setVisibility", View.VISIBLE);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setOngoing(true)
                             .setContentIntent(addHomeActivityIntent)
                             .setContent(remoteViews)
@@ -596,7 +596,7 @@ public class Background extends Service {
                     final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setOngoing(true)
                             .setColor(finalCurrentClass.getColor())
                             .setContentIntent(addHomeActivityIntent)
@@ -774,7 +774,7 @@ public class Background extends Service {
 
                 notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
                         .setOngoing(true)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentIntent(addHomeActivityIntent)
                         .setWhen(0)
                         .setColor(nextClass.getColor())
@@ -1205,7 +1205,7 @@ public class Background extends Service {
                     final PendingIntent donePendingIntent = PendingIntent.getService(this, NOTIFICATION_REMINDERS_ID, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setColor(event.getColor())
                             .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_ALL)
@@ -1338,7 +1338,7 @@ public class Background extends Service {
                         final PendingIntent donePendingIntent = PendingIntent.getService(this, ID, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
                         notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
-                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setSmallIcon(R.drawable.ic_notification_icon)
                                 .setAutoCancel(true)
                                 .setContentIntent(addHomeActivityIntent)
                                 .setGroup(reminderGroup)
@@ -1458,7 +1458,7 @@ public class Background extends Service {
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, NOTIFICATION_REMINDERS_ID, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
                     notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setColor(sharedPreferences.getInt("primary_color", ContextCompat.getColor(this, R.color.teal)))
                             .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_ALL)
