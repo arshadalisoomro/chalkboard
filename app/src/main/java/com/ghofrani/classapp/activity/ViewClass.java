@@ -31,8 +31,8 @@ public class ViewClass extends AppCompatActivity {
     private final int CHANGE_CLASS_REQUEST = 0;
     private final int RESULT_CHANGED = 0;
 
-    private FloatingActionButton floatingActionButton;
     private Toolbar toolbar;
+    private FloatingActionButton floatingActionButton;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
