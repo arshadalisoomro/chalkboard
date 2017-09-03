@@ -100,6 +100,8 @@ public class ViewClassExpandableList extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = layoutInflater.inflate(R.layout.view_timed_class_child_combined, parent, false);
 
+        convertView.setEnabled(false);
+
         final StandardClass standardClass = datedStandardClassArrayList.get(childPosition).getStandardClass();
         final DateTime standardClassDateTime = datedStandardClassArrayList.get(childPosition).getDateTime();
 

@@ -58,7 +58,21 @@ public class About extends AppCompatActivity {
 
                 switch (i) {
 
-                    case 2:
+                    case 0:
+
+                        final Intent browserIntentArmin = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/"));
+                        startActivity(browserIntentArmin);
+
+                        break;
+
+                    case 1:
+
+                        final Intent browserIntentOliver = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/oliverrausch/"));
+                        startActivity(browserIntentOliver);
+
+                        break;
+
+                    case 3:
 
                         new MaterialDialog.Builder(About.this)
                                 .title("Changelog")
@@ -70,7 +84,7 @@ public class About extends AppCompatActivity {
 
                         break;
 
-                    case 3:
+                    case 4:
 
                         new LicensesDialog.Builder(About.this)
                                 .setNotices(R.raw.licenses)
@@ -82,7 +96,7 @@ public class About extends AppCompatActivity {
 
                         break;
 
-                    case 4:
+                    case 5:
 
                         try {
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
@@ -92,7 +106,7 @@ public class About extends AppCompatActivity {
 
                         break;
 
-                    case 5:
+                    case 6:
 
                         String deviceInformation = "Version: " + getString(R.string.app_version);
                         deviceInformation += "\nVersion Code: " + getString(R.string.app_version_code);
@@ -129,7 +143,7 @@ public class About extends AppCompatActivity {
 
                         break;
 
-                    case 6:
+                    case 7:
 
                         new MaterialDialog.Builder(About.this)
                                 .title("Request Features")

@@ -24,7 +24,7 @@ public class AboutList extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 7;
+        return 8;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class AboutList extends BaseAdapter {
     @Override
     public boolean isEnabled(int position) {
 
-        return !(position == 0 || position == 1);
+        return position != 2;
 
     }
 
@@ -62,47 +62,54 @@ public class AboutList extends BaseAdapter {
 
             case 0:
 
-                listChildIconImageView.setImageResource(R.drawable.developer);
-                listChildTitleTextView.setText("Armin Ghofrani");
+                listChildIconImageView.setImageResource(R.drawable.person);
+                listChildTitleTextView.setText("Armin Ghofrani  •  Development");
 
                 break;
 
             case 1:
+
+                listChildIconImageView.setImageResource(R.drawable.person);
+                listChildTitleTextView.setText("Oliver Rausch  •  Graphic Design");
+
+                break;
+
+            case 2:
 
                 listChildIconImageView.setImageResource(R.drawable.version);
                 listChildTitleTextView.setText("Version " + context.getString(R.string.app_version));
 
                 break;
 
-            case 2:
+            case 3:
 
                 listChildIconImageView.setImageResource(R.drawable.changelog);
                 listChildTitleTextView.setText("View Changelog");
 
                 break;
 
-            case 3:
+            case 4:
 
                 listChildIconImageView.setImageResource(R.drawable.licenses);
                 listChildTitleTextView.setText("View Licenses");
 
                 break;
 
-            case 4:
+            case 5:
 
                 listChildIconImageView.setImageResource(R.drawable.rate);
                 listChildTitleTextView.setText("Rate on Google Play");
 
                 break;
 
-            case 5:
+            case 6:
 
                 listChildIconImageView.setImageResource(R.drawable.bugs);
                 listChildTitleTextView.setText("Report Bugs");
 
                 break;
 
-            case 6:
+            case 7:
 
                 listChildIconImageView.setImageResource(R.drawable.features);
                 listChildTitleTextView.setText("Request Features");
