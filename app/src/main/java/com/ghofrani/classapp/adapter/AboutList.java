@@ -24,7 +24,7 @@ public class AboutList extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 8;
+        return 9;
     }
 
     @Override
@@ -104,12 +104,19 @@ public class AboutList extends BaseAdapter {
 
             case 6:
 
+                listChildIconImageView.setImageResource(R.drawable.code);
+                listChildTitleTextView.setText("View Source Code");
+
+                break;
+
+            case 7:
+
                 listChildIconImageView.setImageResource(R.drawable.bugs);
                 listChildTitleTextView.setText("Report Bugs");
 
                 break;
 
-            case 7:
+            case 8:
 
                 listChildIconImageView.setImageResource(R.drawable.features);
                 listChildTitleTextView.setText("Request Features");

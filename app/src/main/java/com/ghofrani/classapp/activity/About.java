@@ -108,6 +108,31 @@ public class About extends AppCompatActivity {
 
                     case 6:
 
+                        new MaterialDialog.Builder(About.this)
+                                .title("View Source Code")
+                                .content("You will now be redirected to the GitHub repository.")
+                                .contentColorRes(R.color.black)
+                                .positiveText("OK")
+                                .negativeText("CANCEL")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                        final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/chalkboard"));
+                                        startActivity(browserIntent);
+
+                                    }
+
+                                })
+                                .positiveColorRes(R.color.black)
+                                .negativeColorRes(R.color.black)
+                                .show();
+
+                        break;
+
+                    case 7:
+
                         String deviceInformation = "Version: " + getString(R.string.app_version);
                         deviceInformation += "\nVersion Code: " + getString(R.string.app_version_code);
                         deviceInformation += "\nAndroid SDK: " + Build.VERSION.SDK_INT;
@@ -131,7 +156,7 @@ public class About extends AppCompatActivity {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                                        final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/chalkboard-issue-tracker"));
+                                        final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/chalkboard/issues"));
                                         startActivity(browserIntent);
 
                                     }
@@ -143,11 +168,11 @@ public class About extends AppCompatActivity {
 
                         break;
 
-                    case 7:
+                    case 8:
 
                         new MaterialDialog.Builder(About.this)
                                 .title("Request Features")
-                                .content("You will now be redirected to the issue tracker, where you can request features.")
+                                .content("You will now be redirected to the issue tracker, where you can request features by creating an issue.")
                                 .contentColorRes(R.color.black)
                                 .positiveText("OK")
                                 .negativeText("CANCEL")
@@ -156,7 +181,7 @@ public class About extends AppCompatActivity {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                                        final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/chalkboard-issue-tracker"));
+                                        final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/arminghofrani/chalkboard/issues"));
                                         startActivity(browserIntent);
 
                                     }
