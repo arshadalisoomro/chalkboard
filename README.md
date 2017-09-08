@@ -1,5 +1,7 @@
 # Chalkboard - School, Timetable & Homework Planner
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/arminghofrani/chalkboard/blob/master/LICENSE)
+
 Chalkboard is an open source Android app which manages your timetable, homework and exams. More details on the Play Store page.
 
 ### [Report issues](https://github.com/arminghofrani/chalkboard-issue-tracker)
