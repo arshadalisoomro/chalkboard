@@ -3,8 +3,8 @@
 <resources>
 
     <string name="app_name">Chalkboard</string>
-    <string name="app_version">0.0.5</string>
-    <string name="app_version_code">5</string>
+    <string name="app_version">0.0.6</string>
+    <string name="app_version_code">6</string>
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
@@ -12,6 +12,6 @@
     <string name="spinner_prompt_class">Choose your class</string>
     <string name="spinner_prompt_type">Choose your type</string>
 
-    <string name="changelog"><b>0.0.5</b>\nNo changelog available for this first version.</string>
+    <string name="changelog"><b>Version 0.0.6</b>\nAdded support for notifications in Android O, fixed the display of reminder notifications while ongoing notifications are shown.\n\n<b>Version 0.0.5</b>\nNo changelog available for this first version.</string>
 
 </resources>
