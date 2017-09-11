@@ -1,6 +1,8 @@
 package com.ghofrani.classapp.service;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -12,6 +14,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -69,9 +72,11 @@ public class Background extends Service {
     private Handler handler;
     private Runnable notificationRunnable;
     private Runnable noNotificationRunnable;
-    private NotificationCompat.Builder notificationCompatBuilder;
-    private NotificationCompat.Builder notificationCompatBuilderReminders;
+    private NotificationCompat.Builder notificationCompatBuilderClass;
+    private NotificationCompat.Builder notificationCompatBuilderReminder;
     private NotificationManager notificationManager;
+    private NotificationChannel notificationChannelClass;
+    private NotificationChannel notificationChannelReminder;
     private RemoteViews remoteViews;
 
     private int red;
@@ -144,6 +149,9 @@ public class Background extends Service {
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         remoteViews = new RemoteViews(getPackageName(), R.layout.view_notification);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            createNotificationChannel();
 
         progressBarId = R.id.view_notification_progress_bar_red;
         textId = R.id.view_notification_subtitle_text_view;
@@ -232,14 +240,42 @@ public class Background extends Service {
         backgroundBroadcastReceiver = null;
         notificationRunnable = null;
         noNotificationRunnable = null;
-        notificationCompatBuilder = null;
-        notificationCompatBuilderReminders = null;
+        notificationCompatBuilderClass = null;
+        notificationCompatBuilderReminder = null;
         notificationManager = null;
+        notificationChannelClass = null;
+        notificationChannelReminder = null;
         remoteViews = null;
         dateTimeFormatterAMPM = null;
         audioManager = null;
 
         super.onDestroy();
+
+    }
+
+    @TargetApi(26)
+    private void createNotificationChannel() {
+
+        notificationChannelClass = new NotificationChannel("class", "Class Notifications", NotificationManager.IMPORTANCE_LOW);
+        notificationChannelClass.setDescription("Notifications about classes.");
+        notificationChannelClass.enableLights(false);
+        notificationChannelClass.enableVibration(false);
+        notificationChannelClass.setBypassDnd(false);
+        notificationChannelClass.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        notificationChannelClass.setShowBadge(false);
+
+        notificationManager.createNotificationChannel(notificationChannelClass);
+
+        notificationChannelReminder = new NotificationChannel("reminder", "Reminders", NotificationManager.IMPORTANCE_MAX);
+        notificationChannelReminder.setDescription("Notifications about events.");
+        notificationChannelReminder.enableLights(true);
+        notificationChannelReminder.setLightColor(sharedPreferences.getInt("primary_color", ContextCompat.getColor(this, R.color.teal)));
+        notificationChannelReminder.enableVibration(true);
+        notificationChannelReminder.setBypassDnd(true);
+        notificationChannelReminder.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        notificationChannelReminder.setShowBadge(true);
+
+        notificationManager.createNotificationChannel(notificationChannelReminder);
 
     }
 
@@ -486,10 +522,11 @@ public class Background extends Service {
                     remoteViews.setInt(progressTextId, "setVisibility", View.VISIBLE);
                     remoteViews.setInt(headerId, "setVisibility", View.VISIBLE);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
+                    notificationCompatBuilderClass = new NotificationCompat.Builder(this, "class")
                             .setSmallIcon(R.drawable.ic_notification_icon)
                             .setOngoing(true)
                             .setContentIntent(addHomeActivityIntent)
+                            .setColor(finalCurrentClass.getColor())
                             .setContent(remoteViews)
                             .setPriority(NotificationManager.IMPORTANCE_MAX)
                             .setWhen(0);
@@ -555,7 +592,7 @@ public class Background extends Service {
 
                             EventBus.getDefault().post(new UpdateProgressUI());
 
-                            notificationManager.notify(NOTIFICATION_CURRENT_CLASS_ID, notificationCompatBuilder.build());
+                            notificationManager.notify(NOTIFICATION_CURRENT_CLASS_ID, notificationCompatBuilderClass.build());
 
                             handler.postDelayed(this, 15000);
 
@@ -597,7 +634,7 @@ public class Background extends Service {
                     final Intent eventActivityIntent = new Intent(this, ChangeEvent.class).putExtra("origin_notification", true);
                     final PendingIntent addEventActivityIntent = PendingIntent.getActivity(this, 0, eventActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                    notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
+                    notificationCompatBuilderClass = new NotificationCompat.Builder(this, "class")
                             .setSmallIcon(R.drawable.ic_notification_icon)
                             .setOngoing(true)
                             .setColor(finalCurrentClass.getColor())
@@ -633,7 +670,7 @@ public class Background extends Service {
                             else
                                 remainingNotificationText += " • No further classes";
 
-                            notificationCompatBuilder.setContentText(remainingNotificationText);
+                            notificationCompatBuilderClass.setContentText(remainingNotificationText);
 
                             String progressBarText = "";
                             int progressBarProgress = 0;
@@ -661,7 +698,7 @@ public class Background extends Service {
 
                             EventBus.getDefault().post(new UpdateProgressUI());
 
-                            notificationManager.notify(NOTIFICATION_CURRENT_CLASS_ID, notificationCompatBuilder.build());
+                            notificationManager.notify(NOTIFICATION_CURRENT_CLASS_ID, notificationCompatBuilderClass.build());
 
                             handler.postDelayed(this, 15000);
 
@@ -774,7 +811,7 @@ public class Background extends Service {
                 final Intent homeActivityIntent = new Intent(this, Main.class);
                 final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, 0, homeActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                notificationCompatBuilder = new NotificationCompat.Builder(this, "standard")
+                notificationCompatBuilderClass = new NotificationCompat.Builder(this, "class")
                         .setOngoing(true)
                         .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentIntent(addHomeActivityIntent)
@@ -783,18 +820,18 @@ public class Background extends Service {
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
                         .setPriority(NotificationManager.IMPORTANCE_MAX);
 
-                notificationCompatBuilder.setContentTitle("Next: " + nextClass.getName());
+                notificationCompatBuilderClass.setContentTitle("Next: " + nextClass.getName());
 
                 if (minutesLeft >= 60)
-                    notificationCompatBuilder.setContentText("In 60 minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
+                    notificationCompatBuilderClass.setContentText("In 60 minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
                 else if (minutesLeft <= 0)
-                    notificationCompatBuilder.setContentText("In 0 minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
+                    notificationCompatBuilderClass.setContentText("In 0 minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
                 else if (minutesLeft == 1)
-                    notificationCompatBuilder.setContentText("In 1 minute" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
+                    notificationCompatBuilderClass.setContentText("In 1 minute" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
                 else
-                    notificationCompatBuilder.setContentText("In " + minutesLeft + " minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
+                    notificationCompatBuilderClass.setContentText("In " + minutesLeft + " minutes" + (nextClass.hasLocation() ? " at " + nextClass.getLocation() : ""));
 
-                notificationManager.notify(NOTIFICATION_NEXT_CLASS_ID, notificationCompatBuilder.build());
+                notificationManager.notify(NOTIFICATION_NEXT_CLASS_ID, notificationCompatBuilderClass.build());
 
             } else {
 
@@ -1216,7 +1253,7 @@ public class Background extends Service {
 
                     final PendingIntent donePendingIntent = PendingIntent.getService(this, NOTIFICATION_REMINDERS_ID, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                    notificationCompatBuilderReminders = new NotificationCompat.Builder(this, "standard")
+                    notificationCompatBuilderReminder = new NotificationCompat.Builder(this, "reminder")
                             .setSmallIcon(R.drawable.ic_notification_icon)
                             .setColor(event.getColor())
                             .setAutoCancel(true)
@@ -1340,9 +1377,9 @@ public class Background extends Service {
 
                     }
 
-                    notificationCompatBuilderReminders.setContentText(contentString);
+                    notificationCompatBuilderReminder.setContentText(contentString);
 
-                    notificationManager.notify(NOTIFICATION_REMINDERS_ID, notificationCompatBuilderReminders.build());
+                    notificationManager.notify(NOTIFICATION_REMINDERS_ID, notificationCompatBuilderReminder.build());
 
                 } else if (reminderEvents.size() > 1) {
 
@@ -1362,7 +1399,7 @@ public class Background extends Service {
 
                         final PendingIntent donePendingIntent = PendingIntent.getService(this, ID, doneIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                        notificationCompatBuilderReminders = new NotificationCompat.Builder(this, "standard")
+                        notificationCompatBuilderReminder = new NotificationCompat.Builder(this, "reminder")
                                 .setSmallIcon(R.drawable.ic_notification_icon)
                                 .setAutoCancel(true)
                                 .setContentIntent(addHomeActivityIntent)
@@ -1484,9 +1521,9 @@ public class Background extends Service {
 
                         }
 
-                        notificationCompatBuilderReminders.setContentText(contentString);
+                        notificationCompatBuilderReminder.setContentText(contentString);
 
-                        notificationManager.notify(ID, notificationCompatBuilderReminders.build());
+                        notificationManager.notify(ID, notificationCompatBuilderReminder.build());
 
                         ID++;
 
@@ -1495,7 +1532,7 @@ public class Background extends Service {
                     final Intent homeActivityIntent = new Intent(this, Main.class).putExtra("fragment", ID_EVENTS);
                     final PendingIntent addHomeActivityIntent = PendingIntent.getActivity(this, NOTIFICATION_REMINDERS_ID, homeActivityIntent, PendingIntent.FLAG_ONE_SHOT);
 
-                    notificationCompatBuilderReminders = new NotificationCompat.Builder(this, "standard")
+                    notificationCompatBuilderReminder = new NotificationCompat.Builder(this, "reminder")
                             .setSmallIcon(R.drawable.ic_notification_icon)
                             .setColor(sharedPreferences.getInt("primary_color", ContextCompat.getColor(this, R.color.teal)))
                             .setAutoCancel(true)
@@ -1507,7 +1544,7 @@ public class Background extends Service {
                             .setGroup(reminderGroup)
                             .setGroupSummary(true);
 
-                    notificationManager.notify(NOTIFICATION_REMINDERS_ID, notificationCompatBuilderReminders.build());
+                    notificationManager.notify(NOTIFICATION_REMINDERS_ID, notificationCompatBuilderReminder.build());
 
                 }
 
