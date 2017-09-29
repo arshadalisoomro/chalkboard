@@ -4,9 +4,9 @@
 
 Chalkboard is an open source Android app which manages your timetable, homework and exams. More details on the Play Store page.
 
-### [Report issues](https://github.com/arminghofrani/chalkboard-issue-tracker)
+### Report issues
 
-There is a seperate repository for reporting issues, linked in the subheading above.
+Report issues under the 'Issues' tab.
 
 <br />
 
